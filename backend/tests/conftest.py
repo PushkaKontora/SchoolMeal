@@ -1,38 +1,47 @@
 import asyncio
 
 import pytest
+from dependency_injector.containers import DeclarativeContainer, override
+from dependency_injector.providers import Object
 from httpx import AsyncClient
-from sqlalchemy import event
-from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncConnection
 
-from app.database import Session, engine
+from app.database.container import DatabaseContainer
+from app.database.sqlalchemy import AlchemyUnitOfWork
+from app.database.unit_of_work import UnitOfWork
 from app.main import app
+
+
+class TestingUnitOfWork(AlchemyUnitOfWork):
+    async def _begin(self) -> None:
+        self._session = self._session_maker()
+
+        await self._session.begin_nested()
 
 
 @pytest.fixture(scope="session")
 async def connection() -> AsyncConnection:
-    async with engine.connect() as connection:
+    container = DatabaseContainer()
+
+    async with container.engine().connect() as connection:
+
+        @override(DatabaseContainer)
+        class OverridingDatabaseContainer(DeclarativeContainer):
+            engine = Object(connection)
+
         yield connection
 
 
 @pytest.fixture(scope="function")
-async def session(connection: AsyncConnection) -> AsyncSession:
-    Session.configure(bind=connection)
-    main_transaction = await connection.begin()
-
-    session = Session()
-    session.begin_nested()
-
-    @event.listens_for(session.sync_session, "after_transaction_end")
-    def restart_savepoint(db_session, transaction):
-        if transaction.nested and not transaction._parent.nested:
-            session.expire_all()
-            session.begin_nested()
+async def uow(connection: AsyncConnection) -> UnitOfWork:
+    container = DatabaseContainer()
+    transaction = await connection.begin()
 
     try:
-        yield session
+        async with TestingUnitOfWork(container.session_maker()) as uow:
+            yield uow
     finally:
-        await main_transaction.rollback()
+        await transaction.rollback()
 
 
 @pytest.fixture(scope="session")

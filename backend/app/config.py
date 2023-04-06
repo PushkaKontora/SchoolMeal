@@ -1,24 +1,16 @@
 from os.path import join
 from pathlib import Path
 
-from pydantic import BaseSettings, Field
+from pydantic import BaseSettings, Field, PostgresDsn
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DOT_ENV_PATH = join(BASE_DIR, ".env")
+
+_DOT_ENV = join(BASE_DIR, ".env")
 
 
 class DatabaseSettings(BaseSettings):
-    driver: str = Field(env="DB_DRIVER")
-    name: str = Field(env="DB_NAME")
-    user: str = Field(env="DB_USER")
-    password: str = Field(env="DB_PASSWORD")
-    host: str = Field(env="DB_HOST")
-    port: int = Field(env="DB_PORT")
+    dsn: PostgresDsn = Field(env="POSTGRES_DSN")
 
-    @property
-    def dsn(self) -> str:
-        return f"{self.driver}://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
-
-
-database = DatabaseSettings(_env_file=DOT_ENV_PATH)
+    class Config:
+        env_file = _DOT_ENV
