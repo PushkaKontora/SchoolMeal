@@ -37,7 +37,7 @@ npm run web
 
 ---
 
-## Feature slices design
+## Feature sliced design
 
 [Туториал на YouTube](https://youtu.be/c3JGBdxfYcU?t=1620)
 
