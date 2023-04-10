@@ -1,6 +1,6 @@
-import {AUTH_TOKEN_NAME} from "./config/config";
+import {AUTH_TOKEN_NAME} from './config/config';
 import * as JwtManager from '../../7_shared/lib/token-manager';
-import {TokenPayload} from "./model/token";
+import {TokenPayload} from './model/token';
 
 export async function decodeAuthToken(): Promise<TokenPayload> {
   const token = await JwtManager.getToken(AUTH_TOKEN_NAME);
