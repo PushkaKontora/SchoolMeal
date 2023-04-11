@@ -1,1 +1,2 @@
-export {getToken, saveToken, dropToken, decodeToken} from './jwt-manager';
+export * as JwtManager from './jwt-manager';
+export * as HmacManager from './hmac-manager';
