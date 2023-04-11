@@ -9,6 +9,8 @@ from app.database.unit_of_work import IRepository, RepositoryDependency, TReposi
 
 Base: DeclarativeMeta = declarative_base()
 
+CASCADE = "CASCADE"
+
 
 class AlchemyRepository(IRepository, ABC):
     def __init__(self, session: AsyncSession):
