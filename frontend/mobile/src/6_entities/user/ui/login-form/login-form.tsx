@@ -1,0 +1,60 @@
+import {useForm, Controller} from 'react-hook-form';
+import {View} from 'react-native';
+import {LoginFormProps} from './props';
+import {createStyle} from './style';
+import {ButtonPrimary} from '../../../../7_shared/ui/buttons/button-primary';
+import {InputField} from '../../../../7_shared/ui/fields/input-field';
+import {INPUT_DATA} from './input-data';
+import {LoginFormData} from './types';
+
+export function LoginForm(props: LoginFormProps) {
+  const {
+    handleSubmit,
+    control,
+    formState: {errors}
+  } = useForm<LoginFormData>({
+    mode: 'onChange'
+  });
+
+  const styles = createStyle(props);
+
+  const onSubmit = (data: LoginFormData) => {
+    console.log(data);
+  };
+
+  return (
+    <View style={styles.container}>
+
+      <View style={styles.form}>
+
+        <Controller
+          control={control}
+          name={INPUT_DATA[0].name}
+          render={({field: {onChange, value}}) => (
+            <InputField
+              data={INPUT_DATA[0]}
+              onChangeText={onChange}
+              value={value}
+              errors={errors}/>
+          )} />
+
+        <Controller
+          control={control}
+          name={INPUT_DATA[1].name}
+          render={({field: {onChange, value}}) => (
+            <InputField
+              data={INPUT_DATA[1]}
+              onChangeText={onChange}
+              value={value}
+              errors={errors}/>
+          )} />
+
+      </View>
+
+      <ButtonPrimary
+        title={'Войти'}
+        onPress={handleSubmit(onSubmit)}/>
+
+    </View>
+  );
+}

@@ -1,6 +1,8 @@
 import {AUTH_TOKEN_NAME} from './config/config';
 import {JwtManager, HmacManager} from '../../7_shared/lib/token-manager';
 import {TokenPayload} from './model/token';
+import {HMAC_KEY_NAME} from 'react-native-dotenv';
+
 
 export async function decodeAuthToken(): Promise<TokenPayload> {
   const token = await JwtManager.getToken(AUTH_TOKEN_NAME);
@@ -13,7 +15,7 @@ export async function isAuthTokenExpired(decodedToken: TokenPayload) {
 }
 
 export function getHmacToken(): string {
-  const token = process.env.HMAC_KEY_NAME;
+  const token = HMAC_KEY_NAME;
 
   if (!token) {
     throw new Error('You must set HMAC key as environment variable');

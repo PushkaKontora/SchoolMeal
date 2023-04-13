@@ -1,16 +1,16 @@
-import {ScreenConfig} from "./types";
-import {createStackNavigator} from "@react-navigation/stack";
+import {ScreenConfig} from './types';
+import {createStackNavigator, StackNavigationOptions} from '@react-navigation/stack';
 
-export function generateStack(config: ScreenConfig) {
+export function generateStack(config: ScreenConfig, screenOptions?: StackNavigationOptions) {
   const STACK = createStackNavigator();
 
   return (
-    <STACK.Navigator>
+    <STACK.Navigator screenOptions={screenOptions}>
       {
         Object.keys(config)
           .map((key) =>
-            <STACK.Screen name={key} {...config[key]}/>)
+            <STACK.Screen key={key} name={key} {...config[key]}/>)
       }
     </STACK.Navigator>
-  )
+  );
 }
