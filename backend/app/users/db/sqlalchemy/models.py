@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, Str
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.functions import now
 
-from app.database.sqlalchemy import CASCADE, Base
+from app.database.sqlalchemy.base import CASCADE, Base
 from app.users.db.models import Role
 
 

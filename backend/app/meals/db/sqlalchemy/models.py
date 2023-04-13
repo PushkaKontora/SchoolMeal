@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Date, Enum, Float, ForeignKey, Integer, UniqueConstraint
 from sqlalchemy.orm import relationship
 
-from app.database.sqlalchemy import CASCADE, Base
+from app.database.sqlalchemy.base import CASCADE, Base
 from app.meals.db.models import MealType
 
 

@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import relationship
 
-from app.database.sqlalchemy import CASCADE, Base
+from app.database.sqlalchemy.base import CASCADE, Base
 
 
 class SchoolClass(Base):

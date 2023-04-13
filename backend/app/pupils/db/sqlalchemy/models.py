@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, Date, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from app.database.sqlalchemy import CASCADE, Base
+from app.database.sqlalchemy.base import CASCADE, Base
 
 
 class Pupil(Base):

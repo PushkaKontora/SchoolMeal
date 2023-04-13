@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
 
-from app.database.sqlalchemy import CASCADE, Base
+from app.database.sqlalchemy.base import CASCADE, Base
 
 
 class Food(Base):
