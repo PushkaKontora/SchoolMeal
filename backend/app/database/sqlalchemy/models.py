@@ -1,3 +1,4 @@
+from app.auth.db.sqlalchemy.models import IssuedToken, Password
 from app.foods.db.sqlalchemy.models import Food
 from app.meal_requests.db.sqlalchemy.models import DeclaredPupils, MealRequest
 from app.meals.db.sqlalchemy.models import Meal, Menu

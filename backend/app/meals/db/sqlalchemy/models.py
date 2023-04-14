@@ -2,7 +2,7 @@ from sqlalchemy import Column, Date, Enum, Float, ForeignKey, Integer, UniqueCon
 from sqlalchemy.orm import relationship
 
 from app.database.sqlalchemy.base import CASCADE, Base
-from app.meals.db.models import MealType
+from app.meals.domain.entities import MealType
 
 
 class Meal(Base):

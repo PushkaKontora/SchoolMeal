@@ -1,3 +1,5 @@
+from typing import TypeVar
+
 from pydantic import BaseModel
 
 from app.utils.string import camelize_snakecase

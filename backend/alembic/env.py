@@ -4,14 +4,7 @@ from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 from app.config import DatabaseSettings
-from app.database.sqlalchemy import Base
-from app.foods.db.sqlalchemy.models import *
-from app.meal_requests.db.sqlalchemy.models import *
-from app.meals.db.sqlalchemy.models import *
-from app.pupils.db.sqlalchemy.models import *
-from app.school_classes.db.sqlalchemy.models import *
-from app.schools.db.sqlalchemy.models import *
-from app.users.db.sqlalchemy.models import *
+from app.database.sqlalchemy.models import *
 
 
 settings = DatabaseSettings()

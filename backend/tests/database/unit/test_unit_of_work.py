@@ -5,7 +5,7 @@ import pytest
 from dependency_injector.containers import DeclarativeContainer, override
 from dependency_injector.providers import Factory
 
-from app.database.container import DatabaseContainer
+from app.database.container import Database
 from app.database.unit_of_work import TransactionAlreadyBeganError, TransactionNotBeganError, UnitOfWork
 
 
@@ -47,7 +47,7 @@ class MockUnitOfWork(UnitOfWork):
         self.close_mock()
 
 
-@override(DatabaseContainer)
+@override(Database)
 class OverridingDatabaseContainer(DeclarativeContainer):
     begin_mock = Factory(Mock)
     commit_mock = Factory(Mock)

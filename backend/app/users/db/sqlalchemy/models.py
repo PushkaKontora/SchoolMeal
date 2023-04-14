@@ -1,9 +1,9 @@
-from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, Enum, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.functions import now
 
-from app.database.sqlalchemy.base import CASCADE, Base
-from app.users.db.models import Role
+from app.database.sqlalchemy.base import Base
+from app.users.domain.entities import Role
 
 
 class User(Base):
@@ -20,23 +20,4 @@ class User(Base):
     created_at = Column(DateTime, server_default=now(), nullable=False)
 
     passwords = relationship("Password", backref="user")
-    children = relationship("Pupil", secondary="children", backref="parents")
-
-
-class Password(Base):
-    __tablename__ = "passwords"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete=CASCADE), nullable=False)
-    value = Column(String(512), nullable=False)
-    created_at = Column(DateTime, server_default=now(), nullable=False)
-
-
-class IssuedToken(Base):
-    __tablename__ = "issued_tokens"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete=CASCADE), nullable=False)
-    value = Column(String(512), nullable=False)
-    revoked = Column(Boolean, default=False, nullable=False)
-    created_at = Column(DateTime, server_default=now(), nullable=False)
+    children = relationship("Pupil", secondary="children", back_populates="parents")

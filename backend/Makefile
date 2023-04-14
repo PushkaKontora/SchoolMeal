@@ -15,3 +15,11 @@ migration:
 migrate:
 	alembic upgrade head
 
+test:
+	pytest tests
+
+unit:
+	pytest tests -m unit
+
+integration:
+	pytest tests -m integration

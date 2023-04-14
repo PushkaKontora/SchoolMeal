@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 136439a2e91e
+Revision ID: 915a0cd43c5c
 Revises:
-Create Date: 2023-04-11 13:23:38.176889
+Create Date: 2023-04-14 11:30:34.752907
 
 """
 import sqlalchemy as sa
@@ -11,7 +11,7 @@ from alembic import op
 
 
 # revision identifiers, used by Alembic.
-revision = "136439a2e91e"
+revision = "915a0cd43c5c"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -100,7 +100,7 @@ def upgrade() -> None:
         "passwords",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("user_id", sa.Integer(), nullable=False),
-        sa.Column("value", sa.String(length=512), nullable=False),
+        sa.Column("value", sa.LargeBinary(length=100), nullable=False),
         sa.Column("created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
@@ -202,6 +202,4 @@ def downgrade() -> None:
     op.drop_table("users")
     op.drop_table("schools")
     op.drop_table("pupils")
-    op.execute("DROP TYPE role;")
-    op.execute("DROP TYPE mealtype;")
     # ### end Alembic commands ###
