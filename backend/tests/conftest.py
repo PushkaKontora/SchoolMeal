@@ -1,52 +1,88 @@
 import asyncio
 
 import pytest
-from dependency_injector.containers import DeclarativeContainer, override
 from dependency_injector.providers import Object
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy import event
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 
+from app.config import DatabaseSettings, JWTSettings
+from app.container import AppContainer
 from app.database.container import DatabaseContainer
-from app.database.sqlalchemy import AlchemyUnitOfWork
-from app.database.unit_of_work import UnitOfWork
-from app.main import app
-
-
-class TestingUnitOfWork(AlchemyUnitOfWork):
-    async def _begin(self) -> None:
-        self._session = self._session_maker()
-
-        await self._session.begin_nested()
+from app.database.sqlalchemy.models import Base
 
 
 @pytest.fixture(scope="session")
-async def connection() -> AsyncConnection:
-    container = DatabaseContainer()
+def container() -> AppContainer:
+    return AppContainer()
 
-    async with container.engine().connect() as connection:
 
-        @override(DatabaseContainer)
-        class OverridingDatabaseContainer(DeclarativeContainer):
-            engine = Object(connection)
+@pytest.fixture(scope="session")
+def db_container(container: AppContainer) -> DatabaseContainer:
+    return container.database_container()
 
-        yield connection
+
+@pytest.fixture(scope="session")
+def db_settings() -> DatabaseSettings:
+    return DatabaseSettings(database="test_db")
+
+
+@pytest.fixture(scope="session")
+def jwt_settings() -> JWTSettings:
+    return JWTSettings()
+
+
+@pytest.fixture(scope="session")
+async def connection(
+    container: AppContainer, db_container: DatabaseContainer, db_settings: DatabaseSettings
+) -> AsyncConnection:
+    container.database_settings.override(Object(db_settings))
+    engine = db_container.engine()
+
+    async with engine.connect() as conn:
+        db_container.engine.override(Object(conn))
+        db_container.session_maker.reset()
+
+        yield conn
+
+
+@pytest.fixture(scope="session", autouse=True)
+async def prepare_database(container: AppContainer, connection: AsyncConnection):
+    await connection.run_sync(Base.metadata.create_all)
+    await connection.commit()
+
+    yield
+
+    await connection.run_sync(Base.metadata.drop_all)
+    await connection.commit()
 
 
 @pytest.fixture(scope="function")
-async def uow(connection: AsyncConnection) -> UnitOfWork:
-    container = DatabaseContainer()
+async def session(db_container: DatabaseContainer, connection: AsyncConnection) -> AsyncSession:
+    session_maker = db_container.session_maker()
+
     transaction = await connection.begin()
+    nested = await connection.begin_nested()
+
+    session = session_maker(expire_on_commit=False, autoflush=False)
+
+    @event.listens_for(session.sync_session, "after_transaction_end")
+    def end_savepoint(session, transaction):
+        nonlocal nested
+
+        if not nested.is_active:
+            nested = connection.sync_connection.begin_nested()
 
     try:
-        async with TestingUnitOfWork(container.session_maker()) as uow:
-            yield uow
+        yield session
     finally:
         await transaction.rollback()
+        await session.close()
 
 
 @pytest.fixture(scope="session")
-async def client() -> AsyncClient:
-    async with AsyncClient(app=app, base_url="http://localhost") as client:
+async def client(container: AppContainer) -> AsyncClient:
+    async with AsyncClient(app=container.app(), base_url="http://localhost") as client:
         yield client
 
 
