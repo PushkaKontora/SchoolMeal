@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 915a0cd43c5c
+Revision ID: 0c29f4b1271a
 Revises:
-Create Date: 2023-04-14 11:30:34.752907
+Create Date: 2023-04-15 15:29:33.748780
 
 """
 import sqlalchemy as sa
@@ -11,7 +11,7 @@ from alembic import op
 
 
 # revision identifiers, used by Alembic.
-revision = "915a0cd43c5c"
+revision = "0c29f4b1271a"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -56,7 +56,7 @@ def upgrade() -> None:
     op.create_table(
         "cancel_meal_periods",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column("pupil_id", sa.String(), nullable=False),
+        sa.Column("pupil_id", sa.String(length=20), nullable=False),
         sa.Column("start_date", sa.Date(), nullable=False),
         sa.Column("end_date", sa.Date(), nullable=True),
         sa.Column("comment", sa.String(length=512), nullable=True),
@@ -65,7 +65,7 @@ def upgrade() -> None:
     )
     op.create_table(
         "children",
-        sa.Column("pupil_id", sa.String(), nullable=False),
+        sa.Column("pupil_id", sa.String(length=20), nullable=False),
         sa.Column("parent_id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(["parent_id"], ["users.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["pupil_id"], ["pupils.id"], ondelete="CASCADE"),
@@ -133,7 +133,7 @@ def upgrade() -> None:
     op.create_table(
         "pupils_classes",
         sa.Column("class_id", sa.Integer(), nullable=False),
-        sa.Column("pupil_id", sa.String(), nullable=False),
+        sa.Column("pupil_id", sa.String(length=20), nullable=False),
         sa.ForeignKeyConstraint(["class_id"], ["school_classes.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["pupil_id"], ["pupils.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("class_id", "pupil_id"),
@@ -173,7 +173,7 @@ def upgrade() -> None:
     op.create_table(
         "declared_pupils",
         sa.Column("request_id", sa.Integer(), nullable=False),
-        sa.Column("pupil_id", sa.String(), nullable=False),
+        sa.Column("pupil_id", sa.String(length=20), nullable=False),
         sa.Column("breakfast", sa.Boolean(), nullable=False),
         sa.Column("lunch", sa.Boolean(), nullable=False),
         sa.Column("dinner", sa.Boolean(), nullable=False),
@@ -202,4 +202,6 @@ def downgrade() -> None:
     op.drop_table("users")
     op.drop_table("schools")
     op.drop_table("pupils")
+    op.execute("DROP TYPE mealtype;")
+    op.execute("DROP TYPE role;")
     # ### end Alembic commands ###

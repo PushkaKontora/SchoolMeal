@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Float, ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.sqlalchemy.base import CASCADE, Base
 
@@ -6,13 +7,13 @@ from app.database.sqlalchemy.base import CASCADE, Base
 class Food(Base):
     __tablename__ = "foods"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    school_id = Column(Integer, ForeignKey("schools.id", ondelete=CASCADE), nullable=False)
-    name = Column(String(32), nullable=False)
-    photo_path = Column(String(128), nullable=False)
-    components = Column(String(256), nullable=False)
-    weight = Column(Float(precision=2), nullable=True)
-    kcal = Column(Float(precision=2), nullable=True)
-    protein = Column(Float(precision=2), nullable=True)
-    fats = Column(Float(precision=2), nullable=True)
-    carbs = Column(Float(precision=2), nullable=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    school_id: Mapped[int] = mapped_column(ForeignKey("schools.id", ondelete=CASCADE), nullable=False)
+    name: Mapped[str] = mapped_column(String(32), nullable=False)
+    photo_path: Mapped[str] = mapped_column(String(128), nullable=False)
+    components: Mapped[str] = mapped_column(String(256), nullable=False)
+    weight: Mapped[float | None] = mapped_column(Float(precision=2), nullable=True)
+    kcal: Mapped[float | None] = mapped_column(Float(precision=2), nullable=True)
+    protein: Mapped[float | None] = mapped_column(Float(precision=2), nullable=True)
+    fats: Mapped[float | None] = mapped_column(Float(precision=2), nullable=True)
+    carbs: Mapped[float | None] = mapped_column(Float(precision=2), nullable=True)
