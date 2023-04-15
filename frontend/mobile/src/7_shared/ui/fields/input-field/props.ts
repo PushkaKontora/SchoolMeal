@@ -7,21 +7,22 @@ export type InputStyle = {
   paddingHorizontal?: number,
   backgroundColor?: string,
   placeHolderColor?: string,
+  borderRadius?: number,
   color?: string
 };
 
-export type InputData = {
+export type InputData<FormData> = {
   options: any,
   label: string,
-  name: string,
+  name: keyof FormData,
   type?: string,
   placeholder?: string,
   defaultValue?: string
 };
 
-export type InputFieldProps = {
+export type InputFieldProps<FormData> = {
   style?: InputStyle,
-  data: InputData,
+  data: InputData<FormData>,
   errors: any,
   register?: any,
   onChangeText?: any,

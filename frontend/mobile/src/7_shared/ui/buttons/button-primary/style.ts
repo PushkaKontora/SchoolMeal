@@ -7,7 +7,6 @@ export const createStyle = (props: ButtonPrimaryProps) => StyleSheet.create({
     backgroundColor: props.backgroundColor || '#2C2C2C',
     paddingVertical: 8.5,
     width: '100%',
-    flex: 1,
     alignItems: 'center',
 
   },

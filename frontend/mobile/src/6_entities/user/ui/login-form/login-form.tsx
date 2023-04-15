@@ -6,6 +6,7 @@ import {ButtonPrimary} from '../../../../7_shared/ui/buttons/button-primary';
 import {InputField} from '../../../../7_shared/ui/fields/input-field';
 import {INPUT_DATA} from './input-data';
 import {LoginFormData} from './types';
+import {useState} from 'react';
 
 export function LoginForm(props: LoginFormProps) {
   const {
@@ -16,9 +17,12 @@ export function LoginForm(props: LoginFormProps) {
     mode: 'onChange'
   });
 
+  const [disabled, setDisabled] = useState(false);
+
   const styles = createStyle(props);
 
   const onSubmit = (data: LoginFormData) => {
+    setDisabled(true);
     console.log(data);
   };
 
@@ -52,6 +56,7 @@ export function LoginForm(props: LoginFormProps) {
       </View>
 
       <ButtonPrimary
+        disabled={disabled}
         title={'Войти'}
         onPress={handleSubmit(onSubmit)}/>
 

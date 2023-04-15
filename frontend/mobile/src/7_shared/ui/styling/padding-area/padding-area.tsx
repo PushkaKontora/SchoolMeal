@@ -2,8 +2,8 @@ import {PaddingAreaProps} from './props';
 import {View} from 'react-native';
 import {createStyle} from './style';
 
-export function PaddingArea({children, ...paddings}: PaddingAreaProps) {
-  const styles = createStyle(paddings);
+export function PaddingArea({children, style, ...paddings}: PaddingAreaProps) {
+  const styles = createStyle({...style, ...paddings});
 
   return (
     <View

@@ -1,10 +1,10 @@
 import {StyleSheet} from 'react-native';
+import Constants from 'expo-constants';
 
 export const STYLES = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 8,
-    paddingTop: 28,
+    paddingTop: Constants.statusBarHeight + 8,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'

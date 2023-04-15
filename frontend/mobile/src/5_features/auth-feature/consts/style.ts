@@ -3,13 +3,11 @@ import {StyleSheet} from 'react-native';
 
 export const createStyle = (props: AuthFeatureProps) => StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'column'
   },
   titles: {
     flexDirection: 'column',
     gap: 8,
-    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 24
   },
   header: {

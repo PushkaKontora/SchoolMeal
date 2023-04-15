@@ -10,4 +10,6 @@ export type Margins = {
   marginHorizontal?: number,
 }
 
-export type MarginAreaProps = PropsWithChildren & Margins;
+export type MarginAreaProps = {
+  style?: any
+} & PropsWithChildren & Margins;

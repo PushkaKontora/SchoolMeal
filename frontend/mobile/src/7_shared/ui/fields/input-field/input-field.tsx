@@ -1,27 +1,23 @@
-import {TextInput, View} from 'react-native';
+import {TextInput} from 'react-native';
 import {InputFieldProps} from './props';
 import {createStyle} from './style';
 import {PLACEHOLDER_COLOR} from './consts';
 
-export function InputField(props: InputFieldProps) {
+export function InputField<FormData>(props: InputFieldProps<FormData>) {
   const styles = createStyle(props.style);
   const data = props.data;
 
   return (
-    <View>
-      <TextInput
-        style={styles.default}
-        placeholderTextColor={PLACEHOLDER_COLOR}
+    <TextInput
+      style={styles.default}
+      placeholderTextColor={props.style?.placeHolderColor || PLACEHOLDER_COLOR}
+      secureTextEntry={data?.type === 'password'}
 
-        textContentType={data.type}
-        placeholder={data.placeholder}
-        defaultValue={data.defaultValue}
+      placeholder={data.placeholder || ''}
+      defaultValue={data.defaultValue}
 
-        ref={props.inputRef}
-        onChangeText={props.onChangeText}
-        value={props.value}
-      />
-    </View>
-
+      onChangeText={props.onChangeText}
+      value={props.value}
+    />
   );
 }

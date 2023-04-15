@@ -3,7 +3,7 @@ import {LoginPageProps} from '../../../../3_pages/login-page/model/props';
 
 export const createStyle = (props: LoginPageProps) => StyleSheet.create({
   container: {
-    flexDirection: 'column'
+
   },
   form: {
     flexDirection: 'column',

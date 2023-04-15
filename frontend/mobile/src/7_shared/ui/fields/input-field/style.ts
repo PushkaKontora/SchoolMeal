@@ -7,6 +7,7 @@ export const createStyle = (props?: InputStyle) => StyleSheet.create({
     paddingVertical: props?.paddingVertical || 8,
     paddingHorizontal: props?.paddingHorizontal || 12,
     backgroundColor: props?.backgroundColor || '#F2F2F2',
+    borderRadius: props?.borderRadius || 10,
     color: props?.color || '#151515'
   }
 });

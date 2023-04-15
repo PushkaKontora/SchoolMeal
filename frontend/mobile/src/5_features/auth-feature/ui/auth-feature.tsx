@@ -9,15 +9,14 @@ export function AuthFeature(props: AuthFeatureProps) {
 
   return (
     <PaddingArea
+      style={styles.container}
       {...PADDINGS}>
-      <View style={styles.container}>
-        <View style={styles.titles}>
-          <Text style={styles.header}>{props.headerTitle}</Text>
-          <Text style={styles.subHeader}>{props.subHeaderTitle}</Text>
-        </View>
-
-        {props.children}
+      <View style={styles.titles}>
+        <Text style={styles.header}>{props.headerTitle}</Text>
+        <Text style={styles.subHeader}>{props.subHeaderTitle}</Text>
       </View>
+
+      {props.children}
     </PaddingArea>
 
   );

@@ -14,5 +14,8 @@ export const SCREENS: ScreenConfig = {
 };
 
 export const SCREEN_OPTIONS: StackNavigationOptions = {
-  header: ({navigation}) => <Header navigation={navigation}/>
+  header: ({navigation}) => <Header navigation={navigation}/>,
+  cardStyle: {
+    backgroundColor: '#FFFFFF'
+  }
 };

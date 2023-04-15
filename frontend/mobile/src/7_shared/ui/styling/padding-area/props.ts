@@ -10,4 +10,6 @@ export type Paddings = {
   paddingHorizontal?: number,
 }
 
-export type PaddingAreaProps = PropsWithChildren & Paddings;
+export type PaddingAreaProps = {
+  style?: any
+} & PropsWithChildren & Paddings;

@@ -1,14 +1,10 @@
+import {ButtonSecondaryProps} from './props';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {ButtonPrimaryProps} from './props';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {createStyle} from './style';
 
-export function ButtonPrimary(props: ButtonPrimaryProps) {
+export function ButtonSecondary(props: ButtonSecondaryProps) {
   const [disabled, setDisabled] = useState(Boolean(props.disabled));
-
-  useEffect(() => {
-    setDisabled(Boolean(props.disabled));
-  }, [props.disabled]);
 
   const styles = createStyle(props);
 
