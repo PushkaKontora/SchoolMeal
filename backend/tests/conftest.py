@@ -1,7 +1,7 @@
 import asyncio
 
 import pytest
-from dependency_injector.providers import Object, Singleton
+from dependency_injector.providers import Object
 from httpx import AsyncClient
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
@@ -46,16 +46,16 @@ async def session(connection: AsyncConnection) -> AsyncSession:
     session_maker = Database.session_maker()
 
     transaction = await connection.begin()
+    session = session_maker(expire_on_commit=False, autoflush=False, bind=connection)
+
     nested = await connection.begin_nested()
 
-    session = session_maker(expire_on_commit=False, autoflush=False)
-
     @event.listens_for(session.sync_session, "after_transaction_end")
-    def end_savepoint(session, transaction):
+    def end_savepoint(session_, transaction_):
         nonlocal nested
 
         if not nested.is_active:
-            nested = connection.sync_connection.begin_nested()
+            nested = connection.begin_nested()
 
     try:
         yield session
