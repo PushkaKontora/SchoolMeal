@@ -14,3 +14,7 @@ class IIssuedTokensRepository(ABC):
     @abstractmethod
     def create(self, user_id: int, token: str) -> None:
         raise NotImplementedError
+
+    @abstractmethod
+    async def revoke(self, specification: FilterSpecification) -> None:
+        pass

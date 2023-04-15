@@ -6,7 +6,7 @@ from fastapi import APIRouter, FastAPI
 from app.auth.api import AuthAPI
 from app.config import AppSettings
 from app.database.container import Database
-from app.exceptions import DomainExceptionHandler
+from app.exceptions import ExceptionHandler
 
 
 def create_app() -> FastAPI:

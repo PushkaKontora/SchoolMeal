@@ -6,7 +6,7 @@ import pytest
 from httpx import AsyncClient, Response
 
 from app.config import JWTSettings
-from app.database.sqlalchemy.models import User
+from app.users.db.sqlalchemy.models import User
 from app.users.domain.entities import Role
 from tests.auth.conftest import ACTUAL_PASSWORD, LOGIN, OLD_PASSWORD, PREFIX, TokenType, get_expected_payload
 from tests.responses import UNAUTHORIZED

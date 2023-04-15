@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar
 
-from sqlalchemy import Select
+from sqlalchemy import Select, Update
 
 
-TQuery = TypeVar("TQuery", bound=Select)
+TQuery = TypeVar("TQuery", Select, Update)
 
 
 class Specification(ABC):

@@ -40,7 +40,7 @@ class JWTSettings(Settings):
     access_token_ttl: timedelta = Field(env="ACCESS_TOKEN_TTL")
     refresh_token_ttl: timedelta = Field(env="REFRESH_TOKEN_TTL")
 
-    refresh_token_header: str = Field(env="REFRESH_TOKEN_HEADER")
+    refresh_token_cookie: str = Field(env="REFRESH_TOKEN_COOKIE")
 
     domain: str = Field(env="DOMAIN")
 

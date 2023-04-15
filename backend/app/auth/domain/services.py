@@ -4,13 +4,13 @@ import bcrypt
 import jwt
 from dependency_injector.wiring import Provide, inject
 
-from app.auth.db.specifications import PasswordsFilters
+from app.auth.db.specifications import IssuedTokensFilter, PasswordsFilter
 from app.auth.domain.entities import JWTTokens, TokenType
 from app.auth.domain.exceptions import BadCredentialsException, UnknownTokenTypeException
 from app.config import JWTSettings
 from app.database.container import Database
 from app.database.unit_of_work import UnitOfWork
-from app.users.db.specifications import UsersFilters
+from app.users.db.specifications import UsersFilter
 from app.users.domain.entities import Role
 
 
@@ -22,17 +22,23 @@ class AuthService:
     @inject
     async def signin(self, login: str, password: str, uow: UnitOfWork = Provide[Database.unit_of_work]) -> JWTTokens:
         async with uow:
-            user = await uow.users_repo.get_one(UsersFilters.ByLogin(login))
+            user = await uow.users_repo.get_one(UsersFilter.ByLogin(login))
 
             if not user or not await self._passwords_service.verify_password(user.id, password, uow):
                 raise BadCredentialsException
 
             return await self._jwt_service.create_tokens(user.id, user.role, uow)
 
+    @inject
+    async def logout(self, refresh_token: str, uow: UnitOfWork = Provide[Database.unit_of_work]) -> None:
+        async with uow:
+            await uow.issued_tokens_repo.revoke(IssuedTokensFilter.ByValue(refresh_token))
+            await uow.commit()
+
 
 class PasswordsService:
     async def verify_password(self, user_id: int, password: str, uow: UnitOfWork) -> bool:
-        expected = await uow.passwords_repo.get_last(PasswordsFilters.ByUserId(user_id))
+        expected = await uow.passwords_repo.get_last(PasswordsFilter.ByUserId(user_id))
 
         return expected and self.check_password(password, expected.value)
 

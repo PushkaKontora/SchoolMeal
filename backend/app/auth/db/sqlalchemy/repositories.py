@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from app.auth.db.repositories import IIssuedTokensRepository, IPasswordsRepository
 from app.auth.db.sqlalchemy.models import IssuedToken as IssuedTokenModel, Password as PasswordModel
@@ -18,3 +18,8 @@ class AlchemyPasswordsRepository(IPasswordsRepository, AlchemyRepository):
 class AlchemyIssuedTokensRepository(IIssuedTokensRepository, AlchemyRepository):
     def create(self, user_id: int, token: str) -> None:
         self.session.add(IssuedTokenModel(user_id=user_id, value=token))
+
+    async def revoke(self, specification: FilterSpecification) -> None:
+        query = specification.to_query(update(IssuedTokenModel)).values(revoked=True)
+
+        await self.session.execute(query)

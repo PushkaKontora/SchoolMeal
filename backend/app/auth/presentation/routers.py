@@ -11,3 +11,9 @@ class AuthRouter(APIRouter):
         self.add_api_route(
             path="/signin", methods=["POST"], endpoint=auth_handlers.signin, responses={401: {"model": ErrorResponse}}
         )
+
+        self.add_api_route(
+            path="/logout",
+            methods=["POST"],
+            endpoint=auth_handlers.logout,
+        )

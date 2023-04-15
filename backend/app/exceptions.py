@@ -6,7 +6,7 @@ from starlette.responses import JSONResponse
 from app.entities import BaseEntity
 
 
-class DomainExceptionHandler(ABC):
+class ExceptionHandler(ABC):
     def handle(self, request: Request, exc: Exception) -> JSONResponse:
         return JSONResponse(content=self.body.dict(), status_code=self.status_code)
 

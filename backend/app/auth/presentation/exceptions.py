@@ -1,0 +1,2 @@
+class NotFoundRefreshCookieException(Exception):
+    pass
