@@ -10,6 +10,7 @@ from app.users.db.sqlalchemy.models import User
 from app.users.domain.entities import Role
 from tests.auth.conftest import ACTUAL_PASSWORD, LOGIN, OLD_PASSWORD, PREFIX, TokenType, get_expected_payload
 from tests.responses import UNAUTHORIZED
+from tests.utils import get_set_cookies
 
 
 pytestmark = [pytest.mark.integration]
@@ -56,6 +57,7 @@ def assert_complete_authentication(
 ):
     assert response.status_code == 200
     assert_payload_contains_valid_access_token(response, user, auth_settings.access_token_ttl)
+    assert_response_contains_cookie_with_refresh_token(response, user, auth_settings.refresh_token_ttl)
 
 
 def assert_payload_contains_valid_access_token(
@@ -69,8 +71,10 @@ def assert_payload_contains_valid_access_token(
 def assert_response_contains_cookie_with_refresh_token(
     response: Response, user: User, ttl: timedelta, cookie_name: str = "refresh_token"
 ):
-    assert cookie_name in response.cookies
-    validate_token(response.headers[cookie_name], TokenType.REFRESH, user.id, user.role, ttl)
+    cookies = get_set_cookies(response.headers)
+
+    assert cookie_name in cookies
+    validate_token(cookies[cookie_name], TokenType.REFRESH, user.id, user.role, ttl)
 
 
 def validate_token(
