@@ -16,10 +16,12 @@ class AuthRouter(APIRouter):
             path="/logout",
             methods=["POST"],
             endpoint=auth_handlers.logout,
+            responses={400: {"model": ErrorResponse}},
         )
 
         self.add_api_route(
             path="/refresh-tokens",
             methods=["POST"],
             endpoint=auth_handlers.refresh_tokens,
+            responses={400: {"model": ErrorResponse}},
         )
