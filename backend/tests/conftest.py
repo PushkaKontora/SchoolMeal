@@ -2,6 +2,7 @@ import asyncio
 
 import pytest
 from dependency_injector.providers import Object
+from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
@@ -65,8 +66,13 @@ async def session(connection: AsyncConnection) -> AsyncSession:
 
 
 @pytest.fixture(scope="session")
-async def client() -> AsyncClient:
-    async with AsyncClient(app=create_app(), base_url="http://localhost") as client:
+def app_() -> FastAPI:
+    return create_app()
+
+
+@pytest.fixture
+async def client(app_: FastAPI) -> AsyncClient:
+    async with AsyncClient(app=app_, base_url="http://localhost") as client:
         yield client
 
 

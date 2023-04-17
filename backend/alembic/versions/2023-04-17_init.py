@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 0c29f4b1271a
+Revision ID: 0966deb20cb0
 Revises:
-Create Date: 2023-04-15 15:29:33.748780
+Create Date: 2023-04-17 15:50:04.819177
 
 """
 import sqlalchemy as sa
@@ -11,7 +11,7 @@ from alembic import op
 
 
 # revision identifiers, used by Alembic.
-revision = "0c29f4b1271a"
+revision = "0966deb20cb0"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -88,13 +88,12 @@ def upgrade() -> None:
     )
     op.create_table(
         "issued_tokens",
-        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("value", sa.String(length=512), nullable=False),
+        sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("revoked", sa.Boolean(), nullable=False),
         sa.Column("created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("id"),
+        sa.PrimaryKeyConstraint("value"),
     )
     op.create_table(
         "passwords",

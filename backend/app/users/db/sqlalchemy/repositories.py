@@ -8,8 +8,14 @@ from app.users.domain.entities import User
 
 
 class AlchemyUsersRepository(IUsersRepository, AlchemyRepository):
-    async def get_one(self, specification: FilterSpecification) -> User | None:
+    async def find_one(self, specification: FilterSpecification) -> User | None:
         query = specification.to_query(select(UserModel).limit(1))
         user = await self.session.scalar(query)
 
         return User.from_orm(user) if user else None
+
+    async def get_one(self, specification: FilterSpecification) -> User:
+        query = specification.to_query(select(UserModel).limit(1))
+        user = (await self.session.execute(query)).scalar_one()
+
+        return User.from_orm(user)

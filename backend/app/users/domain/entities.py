@@ -4,7 +4,7 @@ from enum import Enum as BaseEnum
 from app.entities import BaseEntity
 
 
-class Role(BaseEnum):
+class Role(str, BaseEnum):
     PARENT = "parent"
     TEACHER = "teacher"
     EMPLOYEE = "employee"

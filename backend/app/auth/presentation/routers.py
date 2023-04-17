@@ -17,3 +17,9 @@ class AuthRouter(APIRouter):
             methods=["POST"],
             endpoint=auth_handlers.logout,
         )
+
+        self.add_api_route(
+            path="/refresh-tokens",
+            methods=["POST"],
+            endpoint=auth_handlers.refresh_tokens,
+        )

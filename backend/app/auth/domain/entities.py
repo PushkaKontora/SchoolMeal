@@ -4,7 +4,7 @@ from enum import Enum
 from app.entities import BaseEntity
 
 
-class TokenType(Enum):
+class TokenType(str, Enum):
     ACCESS = "access"
     REFRESH = "refresh"
 
@@ -16,14 +16,21 @@ class Password(BaseEntity):
     created_at: datetime
 
 
+class IssuedToken(BaseEntity):
+    value: str
+    user_id: int
+    revoked: bool
+    created_at: datetime
+
+
 class LoginSchema(BaseEntity):
     login: str
     password: str
 
 
-class AuthenticationOut(BaseEntity):
+class AccessTokenOut(BaseEntity):
     access_token: str
 
 
-class JWTTokens(AuthenticationOut):
+class JWTTokens(AccessTokenOut):
     refresh_token: str
