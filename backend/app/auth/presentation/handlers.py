@@ -123,4 +123,4 @@ class UnknownTokenHandler(ExceptionHandler):
 
     @property
     def message(self) -> str:
-        return "The token was not created by the service"
+        return "The token was not created or was deleted by the service"

@@ -46,18 +46,23 @@ class AuthService:
 
     @inject
     async def logout(self, refresh_token: str, uow: UnitOfWork = Provide[Database.unit_of_work]) -> None:
-        async with uow:
-            await uow.issued_tokens_repo.revoke(IssuedTokensFilter.ByValue(refresh_token))
-            await uow.commit()
-
-    @inject
-    async def refresh_tokens(self, refresh_token: str, uow: UnitOfWork = Provide[Database.unit_of_work]) -> JWTTokens:
         payload = self._jwt_service.try_decode(refresh_token)
+
         if not payload:
             raise TokenSignatureException
 
         async with uow:
-            token = await self._jwt_service.revoke_refresh_token(refresh_token, uow)
+            await self._jwt_service.revoke_refresh_token(refresh_token, uow, can_others=False)
+
+    @inject
+    async def refresh_tokens(self, refresh_token: str, uow: UnitOfWork = Provide[Database.unit_of_work]) -> JWTTokens:
+        payload = self._jwt_service.try_decode(refresh_token)
+
+        if not payload:
+            raise TokenSignatureException
+
+        async with uow:
+            token = await self._jwt_service.revoke_refresh_token(refresh_token, uow, can_others=True)
 
             if self._jwt_service.expires(token.created_at, TokenType.REFRESH):
                 raise TokenExpirationException
@@ -91,12 +96,12 @@ class JWTService:
 
         return tokens
 
-    async def revoke_refresh_token(self, value: str, uow: UnitOfWork) -> IssuedToken:
+    async def revoke_refresh_token(self, value: str, uow: UnitOfWork, can_others: bool = True) -> IssuedToken:
         token = await uow.issued_tokens_repo.find_one(IssuedTokensFilter.ByValue(value))
         if not token:
             raise UnknownTokenException
 
-        if token.revoked:
+        if token.revoked and can_others:
             await uow.issued_tokens_repo.revoke(IssuedTokensFilter.ByUserId(token.user_id))
             await uow.commit()
 

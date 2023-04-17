@@ -164,7 +164,7 @@ async def test_refresh_with_unknown_refresh_token(
     response = await refresh(client, auth_settings, unknown_token.value)
 
     assert response.status_code == 400
-    assert response.json() == error("UnknownTokenException", "The token was not created by the service")
+    assert response.json() == error("UnknownTokenException", "The token was not created or was deleted by the service")
 
     await assert_db_has_not_been_changed(session)
 
