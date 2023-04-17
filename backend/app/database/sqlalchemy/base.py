@@ -1,13 +1,16 @@
 from abc import ABC
 
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import DeclarativeMeta, declarative_base
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
+
+from app.config import DatabaseSettings
 
 
 CASCADE = "CASCADE"
 
 
-Base: DeclarativeMeta = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class AlchemyRepository(ABC):
@@ -15,3 +18,7 @@ class AlchemyRepository(ABC):
 
     def __init__(self, session: AsyncSession):
         self.session = session
+
+
+def create_engine(settings: DatabaseSettings) -> AsyncEngine:
+    return create_async_engine(settings.dsn)

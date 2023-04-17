@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Type
 
-from app.users.domain.repositories import IUsersRepository
+from app.auth.db.repositories import IIssuedTokensRepository, IPasswordsRepository
+from app.users.db.repositories import IUsersRepository
 
 
 class UnitOfWork(ABC):
@@ -10,31 +11,35 @@ class UnitOfWork(ABC):
             self.name = f"_{name}"
 
         def __get__(self, instance: "UnitOfWork", owner: Type["UnitOfWork"]):
-            if not instance._is_began:
+            if not instance._is_begun:
                 raise TransactionNotBeganError
 
             return getattr(instance, self.name)
 
+    users_repo: IUsersRepository = Repository()
+    passwords_repo: IPasswordsRepository = Repository()
+    issued_tokens_repo: IIssuedTokensRepository = Repository()
+
     def __init__(self):
-        self._is_began = False
+        self._is_begun = False
 
     async def commit(self) -> None:
-        if not self._is_began:
+        if not self._is_begun:
             raise TransactionNotBeganError
 
         await self._commit()
 
     async def rollback(self) -> None:
-        if not self._is_began:
+        if not self._is_begun:
             raise TransactionNotBeganError
 
         await self._rollback()
 
     async def _begin_transaction(self) -> None:
-        if self._is_began:
+        if self._is_begun:
             raise TransactionAlreadyBeganError
 
-        self._is_began = True
+        self._is_begun = True
 
         await self._begin()
 
@@ -47,7 +52,7 @@ class UnitOfWork(ABC):
         if exc_type:
             await self.rollback()
 
-        self._is_began = False
+        self._is_begun = False
         await self._close()
 
     @abstractmethod

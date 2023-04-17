@@ -1,5 +1,5 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, UniqueConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey, String, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.sqlalchemy.base import CASCADE, Base
 
@@ -7,16 +7,13 @@ from app.database.sqlalchemy.base import CASCADE, Base
 class SchoolClass(Base):
     __tablename__ = "school_classes"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    school_id = Column(Integer, ForeignKey("schools.id", ondelete=CASCADE), nullable=False)
-    number = Column(Integer, nullable=False)
-    letter = Column(String(1), nullable=False)
-    has_breakfast = Column(Boolean, nullable=False)
-    has_lunch = Column(Boolean, nullable=False)
-    has_dinner = Column(Boolean, nullable=False)
-
-    pupils = relationship("Pupil", secondary="pupils_classes", back_populates="school_class")
-    teachers = relationship("User", secondary="teachers")
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    school_id: Mapped[int] = mapped_column(ForeignKey("schools.id", ondelete=CASCADE), nullable=False)
+    number: Mapped[int] = mapped_column(nullable=False)
+    letter: Mapped[str] = mapped_column(String(1), nullable=False)
+    has_breakfast: Mapped[bool] = mapped_column(nullable=False)
+    has_lunch: Mapped[bool] = mapped_column(nullable=False)
+    has_dinner: Mapped[bool] = mapped_column(nullable=False)
 
     __table_args__ = (UniqueConstraint("school_id", "number", "letter", name="unique_classes_in_school"),)
 
@@ -24,12 +21,12 @@ class SchoolClass(Base):
 class PupilClass(Base):
     __tablename__ = "pupils_classes"
 
-    class_id = Column(Integer, ForeignKey("school_classes.id", ondelete=CASCADE), primary_key=True)
-    pupil_id = Column(String, ForeignKey("pupils.id", ondelete=CASCADE), primary_key=True, unique=True)
+    class_id: Mapped[int] = mapped_column(ForeignKey("school_classes.id", ondelete=CASCADE), primary_key=True)
+    pupil_id: Mapped[str] = mapped_column(ForeignKey("pupils.id", ondelete=CASCADE), primary_key=True, unique=True)
 
 
 class Teacher(Base):
     __tablename__ = "teachers"
 
-    class_id = Column(Integer, ForeignKey("school_classes.id", ondelete=CASCADE), primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete=CASCADE), primary_key=True)
+    class_id: Mapped[int] = mapped_column(ForeignKey("school_classes.id", ondelete=CASCADE), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete=CASCADE), primary_key=True)

@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 136439a2e91e
+Revision ID: 0966deb20cb0
 Revises:
-Create Date: 2023-04-11 13:23:38.176889
+Create Date: 2023-04-17 15:50:04.819177
 
 """
 import sqlalchemy as sa
@@ -11,7 +11,7 @@ from alembic import op
 
 
 # revision identifiers, used by Alembic.
-revision = "136439a2e91e"
+revision = "0966deb20cb0"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -56,7 +56,7 @@ def upgrade() -> None:
     op.create_table(
         "cancel_meal_periods",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column("pupil_id", sa.String(), nullable=False),
+        sa.Column("pupil_id", sa.String(length=20), nullable=False),
         sa.Column("start_date", sa.Date(), nullable=False),
         sa.Column("end_date", sa.Date(), nullable=True),
         sa.Column("comment", sa.String(length=512), nullable=True),
@@ -65,7 +65,7 @@ def upgrade() -> None:
     )
     op.create_table(
         "children",
-        sa.Column("pupil_id", sa.String(), nullable=False),
+        sa.Column("pupil_id", sa.String(length=20), nullable=False),
         sa.Column("parent_id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(["parent_id"], ["users.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["pupil_id"], ["pupils.id"], ondelete="CASCADE"),
@@ -88,19 +88,18 @@ def upgrade() -> None:
     )
     op.create_table(
         "issued_tokens",
-        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("value", sa.String(length=512), nullable=False),
+        sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("revoked", sa.Boolean(), nullable=False),
         sa.Column("created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("id"),
+        sa.PrimaryKeyConstraint("value"),
     )
     op.create_table(
         "passwords",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("user_id", sa.Integer(), nullable=False),
-        sa.Column("value", sa.String(length=512), nullable=False),
+        sa.Column("value", sa.LargeBinary(length=100), nullable=False),
         sa.Column("created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
@@ -133,7 +132,7 @@ def upgrade() -> None:
     op.create_table(
         "pupils_classes",
         sa.Column("class_id", sa.Integer(), nullable=False),
-        sa.Column("pupil_id", sa.String(), nullable=False),
+        sa.Column("pupil_id", sa.String(length=20), nullable=False),
         sa.ForeignKeyConstraint(["class_id"], ["school_classes.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["pupil_id"], ["pupils.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("class_id", "pupil_id"),
@@ -173,7 +172,7 @@ def upgrade() -> None:
     op.create_table(
         "declared_pupils",
         sa.Column("request_id", sa.Integer(), nullable=False),
-        sa.Column("pupil_id", sa.String(), nullable=False),
+        sa.Column("pupil_id", sa.String(length=20), nullable=False),
         sa.Column("breakfast", sa.Boolean(), nullable=False),
         sa.Column("lunch", sa.Boolean(), nullable=False),
         sa.Column("dinner", sa.Boolean(), nullable=False),
@@ -202,6 +201,6 @@ def downgrade() -> None:
     op.drop_table("users")
     op.drop_table("schools")
     op.drop_table("pupils")
-    op.execute("DROP TYPE role;")
     op.execute("DROP TYPE mealtype;")
+    op.execute("DROP TYPE role;")
     # ### end Alembic commands ###
