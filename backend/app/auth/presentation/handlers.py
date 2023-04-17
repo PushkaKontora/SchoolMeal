@@ -29,7 +29,6 @@ class AuthHandlers:
             key=self._jwt_settings.refresh_token_cookie,
             value=tokens.refresh_token,
             httponly=True,
-            domain=self._jwt_settings.domain,
         )
 
         return cast(AccessTokenOut, tokens)
