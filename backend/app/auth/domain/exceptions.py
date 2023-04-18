@@ -6,15 +6,15 @@ class UnknownTokenTypeException(Exception):
     pass
 
 
-class TokenSignatureException(Exception):
+class InvalidTokenSignatureException(Exception):
     pass
 
 
-class UnknownTokenException(Exception):
+class NotFoundRefreshTokenException(Exception):
     pass
 
 
-class TokenIsRevokedException(Exception):
+class RefreshWithRevokedTokenException(Exception):
     pass
 
 

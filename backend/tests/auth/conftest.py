@@ -10,8 +10,7 @@ from sqlalchemy.sql.functions import now
 
 from app.auth.db.models import IssuedToken, Password
 from app.config import JWTSettings
-from app.users.db.models import User
-from app.users.domain.entities import Role
+from app.users.db.models import Role, User
 from tests.utils import get_set_cookies
 
 

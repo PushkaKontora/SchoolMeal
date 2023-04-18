@@ -5,10 +5,10 @@ from fastapi import Body, Request, Response
 from app.auth.domain.entities import AccessTokenOut, LoginSchema
 from app.auth.domain.exceptions import (
     BadCredentialsException,
+    InvalidTokenSignatureException,
+    NotFoundRefreshTokenException,
+    RefreshWithRevokedTokenException,
     TokenExpirationException,
-    TokenIsRevokedException,
-    TokenSignatureException,
-    UnknownTokenException,
 )
 from app.auth.domain.services import AuthService
 from app.auth.presentation.exceptions import NotFoundRefreshCookieException
@@ -85,20 +85,20 @@ class NotFoundRefreshCookieHandler(ExceptionHandler):
         return "A refresh token is not found in cookies"
 
 
-class TokenSignatureHandler(ExceptionHandler):
+class InvalidTokenSignatureHandler(ExceptionHandler):
     @property
     def exception(self) -> type[Exception]:
-        return TokenSignatureException
+        return InvalidTokenSignatureException
 
     @property
     def message(self) -> str:
-        return "The token's signature was damaged"
+        return "The token's signature was destroyed"
 
 
-class TokenIsRevokedHandler(ExceptionHandler):
+class RefreshWithRevokedTokenHandler(ExceptionHandler):
     @property
     def exception(self) -> type[Exception]:
-        return TokenIsRevokedException
+        return RefreshWithRevokedTokenException
 
     @property
     def message(self) -> str:
@@ -115,10 +115,10 @@ class TokenExpirationHandler(ExceptionHandler):
         return "The token expired"
 
 
-class UnknownTokenHandler(ExceptionHandler):
+class NotFoundRefreshTokenHandler(ExceptionHandler):
     @property
     def exception(self) -> type[Exception]:
-        return UnknownTokenException
+        return NotFoundRefreshTokenException
 
     @property
     def message(self) -> str:

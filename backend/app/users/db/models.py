@@ -1,11 +1,18 @@
 from datetime import datetime
+from enum import Enum as BaseEnum
 
 from sqlalchemy import Enum, String
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.functions import now
 
 from app.database.base import Base
-from app.users.domain.entities import Role
+
+
+class Role(str, BaseEnum):
+    PARENT = "parent"
+    TEACHER = "teacher"
+    EMPLOYEE = "employee"
+    ORGANIZER = "organizer"
 
 
 class User(Base):

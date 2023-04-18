@@ -10,17 +10,17 @@ from app.auth.db.models import IssuedToken
 from app.auth.domain.entities import JWTPayload, JWTTokens, TokenType
 from app.auth.domain.exceptions import (
     BadCredentialsException,
+    InvalidTokenSignatureException,
+    NotFoundRefreshTokenException,
+    RefreshWithRevokedTokenException,
     TokenExpirationException,
-    TokenIsRevokedException,
-    TokenSignatureException,
-    UnknownTokenException,
     UnknownTokenTypeException,
 )
 from app.config import JWTSettings, PasswordSettings
 from app.database.container import Database
 from app.database.unit_of_work import UnitOfWork
 from app.users.db.filters.user import ByLogin
-from app.users.domain.entities import Role
+from app.users.db.models import Role
 
 
 class AuthService:
@@ -46,7 +46,7 @@ class AuthService:
     @inject
     async def logout(self, refresh_token: str, uow: UnitOfWork = Provide[Database.unit_of_work]) -> None:
         if not self._jwt_service.try_decode(refresh_token):
-            raise TokenSignatureException
+            raise InvalidTokenSignatureException
 
         async with uow:
             await uow.issued_tokens_repo.revoke(ByValue(refresh_token))
@@ -57,18 +57,18 @@ class AuthService:
         payload = self._jwt_service.try_decode(refresh_token)
 
         if not payload:
-            raise TokenSignatureException
+            raise InvalidTokenSignatureException
 
         async with uow:
             token = await uow.issued_tokens_repo.find_one(ByValue(refresh_token))
             if not token:
-                raise UnknownTokenException
+                raise NotFoundRefreshTokenException
 
             if token.revoked:
                 await uow.issued_tokens_repo.revoke(TokenByUserId(token.user_id))
                 await uow.commit()
 
-                raise TokenIsRevokedException
+                raise RefreshWithRevokedTokenException
 
             token.revoked = True
 

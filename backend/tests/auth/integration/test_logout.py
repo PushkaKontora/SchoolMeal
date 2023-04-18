@@ -72,7 +72,7 @@ async def test_request_that_contains_damaged_token(
     response = await logout(client, cookies)
 
     assert response.status_code == 400
-    assert response.json() == error("TokenSignatureException", "The token's signature was damaged")
+    assert response.json() == error("InvalidTokenSignatureException", "The token's signature was destroyed")
 
     await session.refresh(user_refresh_token, ["revoked"])
     await session.refresh(token, ["revoked"])

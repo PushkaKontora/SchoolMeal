@@ -5,11 +5,11 @@ from app.auth.domain.services import AuthService, JWTService, PasswordService
 from app.auth.presentation.handlers import (
     AuthHandlers,
     BadCredentialsHandler,
+    InvalidTokenSignatureHandler,
     NotFoundRefreshCookieHandler,
+    NotFoundRefreshTokenHandler,
+    RefreshWithRevokedTokenHandler,
     TokenExpirationHandler,
-    TokenIsRevokedHandler,
-    TokenSignatureHandler,
-    UnknownTokenHandler,
 )
 from app.auth.presentation.routers import AuthRouter
 from app.config import JWTSettings, PasswordSettings
@@ -28,10 +28,10 @@ class AuthAPI(DeclarativeContainer):
     exceptions_handlers: List[Factory[ExceptionHandler]] = List(
         Factory(BadCredentialsHandler),
         Factory(NotFoundRefreshCookieHandler),
-        Factory(TokenSignatureHandler),
-        Factory(UnknownTokenHandler),
+        Factory(InvalidTokenSignatureHandler),
+        Factory(NotFoundRefreshTokenHandler),
         Factory(TokenExpirationHandler),
-        Factory(TokenIsRevokedHandler),
+        Factory(RefreshWithRevokedTokenHandler),
     )
 
     router = Factory(AuthRouter, auth_handlers=auth_handlers)

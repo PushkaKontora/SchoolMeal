@@ -1,7 +1,7 @@
 from enum import Enum
 
 from app.entities import BaseEntity
-from app.users.domain.entities import Role
+from app.users.db.models import Role
 
 
 class TokenType(str, Enum):
