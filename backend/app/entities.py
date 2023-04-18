@@ -9,3 +9,7 @@ class BaseEntity(BaseModel):
         alias_generator = camelize_snakecase
         allow_population_by_field_name = True
         orm_mode = True
+
+
+class SuccessResponse(BaseEntity):
+    msg: str = "Success"

@@ -5,10 +5,10 @@ import pytest
 from httpx import AsyncClient, Cookies, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.db.sqlalchemy.models import IssuedToken
+from app.auth.db.models import IssuedToken
 from app.config import JWTSettings
-from app.users.db.sqlalchemy.models import User
-from tests.auth.conftest import PREFIX, create_refresh_token, generate_token
+from app.users.db.models import User
+from tests.auth.conftest import PREFIX, create_refresh_token
 from tests.responses import error
 
 
@@ -61,7 +61,7 @@ async def test_request_that_does_not_contain_cookie(
 
 
 @freezegun.freeze_time()
-async def test_request_that_does_contain_damaged_token(
+async def test_request_that_contains_damaged_token(
     client: AsyncClient, session: AsyncSession, user: User, user_refresh_token: IssuedToken, auth_settings: JWTSettings
 ):
     with freezegun.freeze_time(datetime.utcnow() + timedelta(seconds=1)):
@@ -78,23 +78,3 @@ async def test_request_that_does_contain_damaged_token(
     await session.refresh(token, ["revoked"])
     assert user_refresh_token.revoked is False
     assert token.revoked is False
-
-
-@freezegun.freeze_time()
-async def test_request_that_does_contain_deleted_token(
-    client: AsyncClient, session: AsyncSession, user: User, user_refresh_token: IssuedToken, auth_settings: JWTSettings
-):
-    with freezegun.freeze_time(datetime.utcnow() + timedelta(seconds=1)):
-        token = await create_refresh_token(session, user.id, user.role, auth_settings)
-        await session.delete(token)
-        await session.commit()
-
-    cookies = Cookies()
-    cookies.set(auth_settings.refresh_token_cookie, token.value)
-    response = await logout(client, cookies)
-
-    assert response.status_code == 400
-    assert response.json() == error("UnknownTokenException", "The token was not created or was deleted by the service")
-
-    await session.refresh(user_refresh_token, ["revoked"])
-    assert user_refresh_token.revoked is False

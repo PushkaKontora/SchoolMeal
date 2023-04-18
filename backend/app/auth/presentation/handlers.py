@@ -13,8 +13,8 @@ from app.auth.domain.exceptions import (
 from app.auth.domain.services import AuthService
 from app.auth.presentation.exceptions import NotFoundRefreshCookieException
 from app.config import JWTSettings
+from app.entities import SuccessResponse
 from app.exceptions import ExceptionHandler
-from app.responses import Success
 
 
 class AuthHandlers:
@@ -33,7 +33,7 @@ class AuthHandlers:
 
         return cast(AccessTokenOut, tokens)
 
-    async def logout(self, request: Request, response: Response) -> Success:
+    async def logout(self, request: Request, response: Response) -> SuccessResponse:
         refresh_token = request.cookies.get(self._jwt_settings.refresh_token_cookie)
 
         if not refresh_token:
@@ -42,7 +42,7 @@ class AuthHandlers:
         await self._auth_service.logout(refresh_token)
         response.delete_cookie(self._jwt_settings.refresh_token_cookie)
 
-        return Success()
+        return SuccessResponse()
 
     async def refresh_tokens(self, request: Request, response: Response) -> AccessTokenOut:
         refresh_token = request.cookies.get(self._jwt_settings.refresh_token_cookie)

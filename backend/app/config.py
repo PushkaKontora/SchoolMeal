@@ -45,7 +45,6 @@ class JWTSettings(Settings):
     domain: str = Field(env="DOMAIN")
 
 
-class Config(DeclarativeContainer):
-    app = Singleton(AppSettings)
-    database = Singleton(DatabaseSettings)
-    jwt = Singleton(JWTSettings)
+class PasswordSettings(Settings):
+    encoding: str = Field(env="PASSWORD_ENCODING")
+    rounds: int = Field(env="PASSWORD_SALT_ROUNDS")

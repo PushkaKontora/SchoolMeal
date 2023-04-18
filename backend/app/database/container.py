@@ -2,10 +2,10 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Callable, Factory, Singleton
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
-from app.auth.db.sqlalchemy.repositories import AlchemyIssuedTokensRepository, AlchemyPasswordsRepository
+from app.auth.db.repositories import IssuedTokensRepository, PasswordsRepository
 from app.config import DatabaseSettings
-from app.database.sqlalchemy.unit_of_work import AlchemyUnitOfWork
-from app.users.db.sqlalchemy.repositories import AlchemyUsersRepository
+from app.database.unit_of_work import UnitOfWork
+from app.users.db.repositories import UsersRepository
 
 
 def create_engine(settings: DatabaseSettings) -> AsyncEngine:
@@ -19,9 +19,9 @@ class Database(DeclarativeContainer):
     session_maker = Singleton(async_sessionmaker[AsyncSession], bind=engine)
 
     unit_of_work = Factory(
-        AlchemyUnitOfWork,
+        UnitOfWork,
         session_maker=session_maker,
-        users_repository=AlchemyUsersRepository,
-        passwords_repository=AlchemyPasswordsRepository,
-        issued_tokens_repository=AlchemyIssuedTokensRepository,
+        users_repository=UsersRepository,
+        passwords_repository=PasswordsRepository,
+        issued_tokens_repository=IssuedTokensRepository,
     )

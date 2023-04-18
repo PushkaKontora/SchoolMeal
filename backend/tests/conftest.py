@@ -7,10 +7,10 @@ from httpx import AsyncClient
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 
-import app.database.sqlalchemy.models
+import app.database.models
 from app.config import DatabaseSettings, JWTSettings
+from app.database.base import Base
 from app.database.container import Database
-from app.database.sqlalchemy.base import Base
 from app.main import create_app
 
 

@@ -8,9 +8,9 @@ from httpx import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.functions import now
 
-from app.auth.db.sqlalchemy.models import IssuedToken, Password
+from app.auth.db.models import IssuedToken, Password
 from app.config import JWTSettings
-from app.users.db.sqlalchemy.models import User
+from app.users.db.models import User
 from app.users.domain.entities import Role
 from tests.utils import get_set_cookies
 

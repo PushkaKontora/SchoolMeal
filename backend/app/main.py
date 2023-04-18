@@ -1,12 +1,8 @@
-from typing import Iterable
-
-from dependency_injector.providers import Factory
 from fastapi import APIRouter, FastAPI
 
 from app.auth.api import AuthAPI
 from app.config import AppSettings
 from app.database.container import Database
-from app.exceptions import ExceptionHandler
 
 
 def create_app() -> FastAPI:
@@ -15,7 +11,7 @@ def create_app() -> FastAPI:
     database = Database()
     database.wire(packages=["app"])
 
-    app = FastAPI(debug=settings.debug, docs_url="/docs" if settings.debug else None)
+    app_ = FastAPI(debug=settings.debug, docs_url="/docs" if settings.debug else None)
 
     apis = [AuthAPI]
     for api in apis:
@@ -23,11 +19,11 @@ def create_app() -> FastAPI:
         router: APIRouter = instance.router()
         exceptions_handlers = instance.exceptions_handlers()
 
-        app.include_router(router)
+        app_.include_router(router)
         for handler in exceptions_handlers:
-            app.add_exception_handler(handler.exception, handler.handle)
+            app_.add_exception_handler(handler.exception, handler.handle)
 
-    return app
+    return app_
 
 
 app = create_app()
