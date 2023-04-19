@@ -22,14 +22,17 @@ class Repository(Generic[T], ABC):
         self.session = session
         self.model = model
 
-    def add(self, obj: T) -> None:
+    def save(self, obj: T) -> None:
         self.session.add(obj)
 
-    def delete(self, obj: T) -> None:
-        self.session.delete(obj)
+    async def delete(self, obj: T) -> None:
+        await self.session.delete(obj)
 
     def update(self, obj: T) -> None:
         self.session.add(obj)
+
+    async def refresh(self, obj: T) -> None:
+        await self.session.refresh(obj)
 
     async def all(self) -> list[T]:
         query = select(self.model)

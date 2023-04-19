@@ -85,7 +85,7 @@ class AuthService:
     def _create_tokens(self, user_id: int, role: Role, uow: UnitOfWork) -> JWTTokens:
         tokens = self._jwt_service.generate_tokens(user_id, role)
 
-        uow.issued_tokens_repo.add(IssuedToken(user_id=user_id, value=tokens.refresh_token))
+        uow.issued_tokens_repo.save(IssuedToken(user_id=user_id, value=tokens.refresh_token))
 
         return tokens
 
@@ -142,3 +142,8 @@ class PasswordService:
 
     def check_password(self, password: str, hashed_password: bytes) -> bool:
         return bcrypt.checkpw(password.encode(self.settings.encoding), hashed_password)
+
+    def make_password(self, password: str) -> bytes:
+        salt = bcrypt.gensalt(self.settings.rounds)
+
+        return bcrypt.hashpw(password.encode(self.settings.encoding), salt)

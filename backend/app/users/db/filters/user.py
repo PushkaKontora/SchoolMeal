@@ -16,3 +16,19 @@ class ByLogin(FilterSpecification):
 
     def __call__(self, query: TQuery) -> TQuery:
         return query.where(User.login == self._login)
+
+
+class ByPhone(FilterSpecification):
+    def __init__(self, phone: str):
+        self._phone = phone
+
+    def __call__(self, query: TQuery) -> TQuery:
+        return query.where(User.phone == self._phone)
+
+
+class ByEmail(FilterSpecification):
+    def __init__(self, email: str):
+        self._email = email
+
+    def __call__(self, query: TQuery) -> TQuery:
+        return query.where(User.email == self._email)

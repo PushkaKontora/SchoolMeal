@@ -14,7 +14,7 @@ from app.users.db.models import Role, User
 from tests.utils import get_set_cookies
 
 
-PREFIX = "/auth"
+AUTH_PREFIX = "/auth"
 
 OLD_PASSWORD, ACTUAL_PASSWORD = ["old_pass", "actual_pass"]
 LOGIN = "metkij_strelok"

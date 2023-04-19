@@ -11,7 +11,7 @@ from app.auth.db.models import IssuedToken
 from app.config import JWTSettings
 from app.users.db.models import User
 from tests.auth.conftest import (
-    PREFIX,
+    AUTH_PREFIX,
     TokenType,
     assert_payload_contains_valid_access_token,
     assert_response_contains_cookie_with_refresh_token,
@@ -24,7 +24,7 @@ from tests.responses import error
 
 pytestmark = [pytest.mark.integration]
 
-URL = PREFIX + "/refresh-tokens"
+URL = AUTH_PREFIX + "/refresh-tokens"
 
 
 class TokenState(IntEnum):

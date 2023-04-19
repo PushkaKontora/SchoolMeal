@@ -3,6 +3,7 @@ from fastapi import APIRouter, FastAPI
 from app.auth.api import AuthAPI
 from app.config import AppSettings
 from app.database.container import Database
+from app.users.api import UsersAPI
 
 
 def create_app() -> FastAPI:
@@ -13,11 +14,12 @@ def create_app() -> FastAPI:
 
     app_ = FastAPI(debug=settings.debug, docs_url="/docs" if settings.debug else None)
 
-    apis = [AuthAPI]
-    for api in apis:
-        instance = api()
-        router: APIRouter = instance.router()
-        exceptions_handlers = instance.exceptions_handlers()
+    auth = AuthAPI()
+    users = UsersAPI(password_service=auth.password_service)
+
+    for api in [auth, users]:
+        router: APIRouter = api.router()
+        exceptions_handlers = api.exceptions_handlers()
 
         app_.include_router(router)
         for handler in exceptions_handlers:
