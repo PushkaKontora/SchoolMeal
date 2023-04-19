@@ -94,6 +94,17 @@ class JWTService:
     def __init__(self, jwt_settings: JWTSettings):
         self._jwt_settings = jwt_settings
 
+    def decode_access_token(self, token: str) -> JWTPayload:
+        payload = self.try_decode(token)
+
+        if not payload or payload.type != TokenType.ACCESS:
+            raise InvalidTokenSignatureException
+
+        if self.is_token_expired_in(payload.expires_in):
+            raise TokenExpirationException
+
+        return payload
+
     def generate_tokens(self, user_id: int, role: Role) -> JWTTokens:
         tokens = JWTTokens(
             access_token=self.generate_token(TokenType.ACCESS, user_id, role),
@@ -124,6 +135,9 @@ class JWTService:
 
     def is_token_expired(self, created_at: datetime, token_type: TokenType) -> bool:
         return datetime.utcnow() >= created_at + self._get_token_ttl(token_type)
+
+    def is_token_expired_in(self, timestamp: float) -> bool:
+        return datetime.utcnow().timestamp() >= timestamp
 
     def _get_token_ttl(self, token_type: TokenType) -> timedelta:
         match token_type:
