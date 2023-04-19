@@ -3,7 +3,7 @@ import pytest
 from httpx import AsyncClient
 
 from app.config import JWTSettings
-from app.users.db.sqlalchemy.models import User
+from app.users.db.models import User
 from tests.auth.conftest import (
     ACTUAL_PASSWORD,
     LOGIN,

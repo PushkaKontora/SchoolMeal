@@ -1,80 +1,57 @@
-from abc import ABC, abstractmethod
-from typing import Type
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from app.auth.db.repositories import IIssuedTokensRepository, IPasswordsRepository
-from app.users.db.repositories import IUsersRepository
+from app.auth.db.models import IssuedToken, Password
+from app.auth.domain.base_repositories import BaseIssuedTokensRepository, BasePasswordsRepository
+from app.users.db.models import User
+from app.users.domain.base_repositories import BaseUsersRepository
 
 
-class UnitOfWork(ABC):
-    class Repository:
-        def __set_name__(self, owner: Type["UnitOfWork"], name: str):
-            self.name = f"_{name}"
+class UnitOfWork:
+    users_repo: BaseUsersRepository
+    passwords_repo: BasePasswordsRepository
+    issued_tokens_repo: BaseIssuedTokensRepository
 
-        def __get__(self, instance: "UnitOfWork", owner: Type["UnitOfWork"]):
-            if not instance._is_begun:
-                raise TransactionNotBeganError
+    def __init__(
+        self,
+        session_maker: async_sessionmaker[AsyncSession],
+        users_repository: type[BaseUsersRepository],
+        passwords_repository: type[BasePasswordsRepository],
+        issued_tokens_repository: type[BaseIssuedTokensRepository],
+    ):
+        self._session = session_maker()
 
-            return getattr(instance, self.name)
+        self._users_repo = users_repository(self._session, User)
+        self._passwords_repo = passwords_repository(self._session, Password)
+        self._issued_tokens_repo = issued_tokens_repository(self._session, IssuedToken)
 
-    users_repo: IUsersRepository = Repository()
-    passwords_repo: IPasswordsRepository = Repository()
-    issued_tokens_repo: IIssuedTokensRepository = Repository()
+    @property
+    def session(self) -> AsyncSession:
+        return self._session
 
-    def __init__(self):
-        self._is_begun = False
+    @property
+    def users_repo(self) -> BaseUsersRepository:
+        return self._users_repo
+
+    @property
+    def passwords_repo(self) -> BasePasswordsRepository:
+        return self._passwords_repo
+
+    @property
+    def issued_tokens_repo(self) -> BaseIssuedTokensRepository:
+        return self._issued_tokens_repo
 
     async def commit(self) -> None:
-        if not self._is_begun:
-            raise TransactionNotBeganError
-
-        await self._commit()
+        await self._session.commit()
 
     async def rollback(self) -> None:
-        if not self._is_begun:
-            raise TransactionNotBeganError
-
-        await self._rollback()
-
-    async def _begin_transaction(self) -> None:
-        if self._is_begun:
-            raise TransactionAlreadyBeganError
-
-        self._is_begun = True
-
-        await self._begin()
+        await self._session.rollback()
 
     async def __aenter__(self):
-        await self._begin_transaction()
-
+        await self._session.begin()
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
             await self.rollback()
 
-        self._is_begun = False
-        await self._close()
-
-    @abstractmethod
-    async def _begin(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def _commit(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def _rollback(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def _close(self) -> None:
-        raise NotImplementedError
-
-
-class TransactionAlreadyBeganError(Exception):
-    pass
-
-
-class TransactionNotBeganError(Exception):
-    pass
+        await self._session.close()

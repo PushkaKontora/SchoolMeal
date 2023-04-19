@@ -7,9 +7,9 @@ from httpx import AsyncClient, Cookies, Response
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.db.sqlalchemy.models import IssuedToken
+from app.auth.db.models import IssuedToken
 from app.config import JWTSettings
-from app.users.db.sqlalchemy.models import User
+from app.users.db.models import User
 from tests.auth.conftest import (
     PREFIX,
     TokenType,
@@ -118,7 +118,7 @@ async def test_refresh_with_expired_or_revoked_token(
             assert another_user_refresh_token.revoked is False
 
         case TokenState.REVOKED:
-            assert response.json() == error("TokenIsRevokedException", "The token is already revoked")
+            assert response.json() == error("RefreshWithRevokedTokenException", "The token is already revoked")
 
             assert refresh_token.revoked is True
             assert user_refresh_token.revoked is True
@@ -134,7 +134,7 @@ async def test_refresh_with_damaged_signature(
     response = await refresh(client, auth_settings, refresh_token)
 
     assert response.status_code == 400
-    assert response.json() == error("TokenSignatureException", "The token's signature was damaged")
+    assert response.json() == error("InvalidTokenSignatureException", "The token's signature was destroyed")
 
     await assert_db_has_not_been_changed(session)
 
@@ -164,7 +164,9 @@ async def test_refresh_with_unknown_refresh_token(
     response = await refresh(client, auth_settings, unknown_token.value)
 
     assert response.status_code == 400
-    assert response.json() == error("UnknownTokenException", "The token was not created or was deleted by the service")
+    assert response.json() == error(
+        "NotFoundRefreshTokenException", "The token was not created or was deleted by the service"
+    )
 
     await assert_db_has_not_been_changed(session)
 

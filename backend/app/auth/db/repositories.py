@@ -1,24 +1,19 @@
-from abc import ABC, abstractmethod
+from sqlalchemy import select, update
 
-from app.auth.domain.entities import IssuedToken, Password
+from app.auth.db.models import IssuedToken, Password
+from app.auth.domain.base_repositories import BaseIssuedTokensRepository, BasePasswordsRepository
 from app.database.specifications import FilterSpecification
 
 
-class IPasswordsRepository(ABC):
-    @abstractmethod
+class PasswordsRepository(BasePasswordsRepository):
     async def get_last(self, specification: FilterSpecification) -> Password | None:
-        raise NotImplementedError
+        query = specification(select(Password).order_by(Password.created_at.desc()).limit(1))
+
+        return await self.session.scalar(query)
 
 
-class IIssuedTokensRepository(ABC):
-    @abstractmethod
-    async def find_one(self, specification: FilterSpecification) -> IssuedToken | None:
-        raise NotImplementedError
-
-    @abstractmethod
-    def create(self, user_id: int, token: str) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
+class IssuedTokensRepository(BaseIssuedTokensRepository):
     async def revoke(self, specification: FilterSpecification) -> None:
-        pass
+        query = specification(update(IssuedToken)).values(revoked=True)
+
+        await self.session.execute(query)

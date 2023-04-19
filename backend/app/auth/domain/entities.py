@@ -1,7 +1,7 @@
-from datetime import datetime
 from enum import Enum
 
 from app.entities import BaseEntity
+from app.users.db.models import Role
 
 
 class TokenType(str, Enum):
@@ -9,18 +9,11 @@ class TokenType(str, Enum):
     REFRESH = "refresh"
 
 
-class Password(BaseEntity):
-    id: int
+class JWTPayload(BaseEntity):
+    type: TokenType
     user_id: int
-    value: bytes
-    created_at: datetime
-
-
-class IssuedToken(BaseEntity):
-    value: str
-    user_id: int
-    revoked: bool
-    created_at: datetime
+    role: Role
+    expires_in: int
 
 
 class LoginSchema(BaseEntity):

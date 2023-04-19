@@ -5,16 +5,16 @@ from fastapi import Body, Request, Response
 from app.auth.domain.entities import AccessTokenOut, LoginSchema
 from app.auth.domain.exceptions import (
     BadCredentialsException,
+    InvalidTokenSignatureException,
+    NotFoundRefreshTokenException,
+    RefreshWithRevokedTokenException,
     TokenExpirationException,
-    TokenIsRevokedException,
-    TokenSignatureException,
-    UnknownTokenException,
 )
 from app.auth.domain.services import AuthService
 from app.auth.presentation.exceptions import NotFoundRefreshCookieException
 from app.config import JWTSettings
+from app.entities import SuccessResponse
 from app.exceptions import ExceptionHandler
-from app.responses import Success
 
 
 class AuthHandlers:
@@ -33,7 +33,7 @@ class AuthHandlers:
 
         return cast(AccessTokenOut, tokens)
 
-    async def logout(self, request: Request, response: Response) -> Success:
+    async def logout(self, request: Request, response: Response) -> SuccessResponse:
         refresh_token = request.cookies.get(self._jwt_settings.refresh_token_cookie)
 
         if not refresh_token:
@@ -42,7 +42,7 @@ class AuthHandlers:
         await self._auth_service.logout(refresh_token)
         response.delete_cookie(self._jwt_settings.refresh_token_cookie)
 
-        return Success()
+        return SuccessResponse()
 
     async def refresh_tokens(self, request: Request, response: Response) -> AccessTokenOut:
         refresh_token = request.cookies.get(self._jwt_settings.refresh_token_cookie)
@@ -85,20 +85,20 @@ class NotFoundRefreshCookieHandler(ExceptionHandler):
         return "A refresh token is not found in cookies"
 
 
-class TokenSignatureHandler(ExceptionHandler):
+class InvalidTokenSignatureHandler(ExceptionHandler):
     @property
     def exception(self) -> type[Exception]:
-        return TokenSignatureException
+        return InvalidTokenSignatureException
 
     @property
     def message(self) -> str:
-        return "The token's signature was damaged"
+        return "The token's signature was destroyed"
 
 
-class TokenIsRevokedHandler(ExceptionHandler):
+class RefreshWithRevokedTokenHandler(ExceptionHandler):
     @property
     def exception(self) -> type[Exception]:
-        return TokenIsRevokedException
+        return RefreshWithRevokedTokenException
 
     @property
     def message(self) -> str:
@@ -115,10 +115,10 @@ class TokenExpirationHandler(ExceptionHandler):
         return "The token expired"
 
 
-class UnknownTokenHandler(ExceptionHandler):
+class NotFoundRefreshTokenHandler(ExceptionHandler):
     @property
     def exception(self) -> type[Exception]:
-        return UnknownTokenException
+        return NotFoundRefreshTokenException
 
     @property
     def message(self) -> str:

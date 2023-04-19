@@ -1,14 +1,5 @@
-from abc import ABC, abstractmethod
-
-from app.database.specifications import FilterSpecification
-from app.users.domain.entities import User
+from app.users.domain.base_repositories import BaseUsersRepository
 
 
-class IUsersRepository(ABC):
-    @abstractmethod
-    async def find_one(self, specification: FilterSpecification) -> User | None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def get_one(self, specification: FilterSpecification) -> User:
-        raise NotImplementedError
+class UsersRepository(BaseUsersRepository):
+    pass
