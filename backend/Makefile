@@ -1,6 +1,9 @@
 dev:
 	uvicorn app.main:app --reload
 
+run:
+	gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000
+
 lint:
 	isort . & \
 	flake8 --config=setup.cfg & \

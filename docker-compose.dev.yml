@@ -1,0 +1,42 @@
+version: "3.4"
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:14-alpine
+    restart: always
+    env_file:
+      - backend/.env
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+
+  app:
+    container_name: app
+    build: backend
+    command: make migrate run
+    restart: always
+    depends_on:
+      - postgres
+
+  mkcert:
+    container_name: mkcert
+    build: mkcert
+    volumes:
+      - ssl-cert:/cert
+
+  nginx:
+    container_name: nginx
+    build: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ssl-cert:/etc/nginx/certs
+    depends_on:
+      - mkcert
+      - app
+
+volumes:
+  postgres_volume:
+  ssl-cert:
