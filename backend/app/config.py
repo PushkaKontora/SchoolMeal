@@ -21,12 +21,12 @@ class AppSettings(Settings):
 
 
 class DatabaseSettings(Settings):
-    driver: str = Field(env="DB_DRIVER")
-    user: str = Field(env="DB_USER")
-    password: SecretStr = Field(env="DB_PASSWORD")
-    host: str = Field(env="DB_HOST")
-    port: int = Field(env="DB_PORT")
-    database: str = Field(env="DB_DATABASE")
+    driver: str = Field(env="POSTGRES_DRIVER")
+    user: str = Field(env="POSTRES_USER")
+    password: SecretStr = Field(env="POSTGRES_PASSWORD")
+    host: str = Field(env="POSTGRES_HOST")
+    port: int = Field(env="POSTGRES_PORT")
+    database: str = Field(env="POSTGRES_DB")
 
     @property
     def dsn(self) -> str:
@@ -41,8 +41,6 @@ class JWTSettings(Settings):
     refresh_token_ttl: timedelta = Field(env="REFRESH_TOKEN_TTL")
 
     refresh_token_cookie: str = Field(env="REFRESH_TOKEN_COOKIE")
-
-    domain: str = Field(env="DOMAIN")
 
 
 class PasswordSettings(Settings):
