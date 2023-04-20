@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum as BaseEnum
 
 from sqlalchemy import Enum, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.functions import now
 
 from app.database.base import Base
@@ -27,3 +27,5 @@ class User(Base):
     email: Mapped[str | None] = mapped_column(String(32), nullable=True, unique=True)
     photo_path: Mapped[str | None] = mapped_column(String(128), nullable=True)
     created_at: Mapped[datetime] = mapped_column(server_default=now(), nullable=False)
+
+    passwords = relationship("Password")

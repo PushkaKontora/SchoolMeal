@@ -4,11 +4,11 @@ from httpx import AsyncClient
 
 from app.config import JWTSettings
 from app.users.db.models import User
-from tests.auth.conftest import (
+from tests.auth.integration.conftest import (
     ACTUAL_PASSWORD,
+    AUTH_PREFIX,
     LOGIN,
     OLD_PASSWORD,
-    PREFIX,
     assert_payload_contains_valid_access_token,
     assert_response_contains_cookie_with_refresh_token,
 )
@@ -17,7 +17,7 @@ from tests.responses import UNAUTHORIZED
 
 pytestmark = [pytest.mark.integration]
 
-URL = PREFIX + "/signin"
+URL = AUTH_PREFIX + "/signin"
 
 
 @pytest.mark.parametrize(

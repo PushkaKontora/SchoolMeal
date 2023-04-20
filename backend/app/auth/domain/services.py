@@ -85,7 +85,7 @@ class AuthService:
     def _create_tokens(self, user_id: int, role: Role, uow: UnitOfWork) -> JWTTokens:
         tokens = self._jwt_service.generate_tokens(user_id, role)
 
-        uow.issued_tokens_repo.add(IssuedToken(user_id=user_id, value=tokens.refresh_token))
+        uow.issued_tokens_repo.save(IssuedToken(user_id=user_id, value=tokens.refresh_token))
 
         return tokens
 
@@ -93,6 +93,17 @@ class AuthService:
 class JWTService:
     def __init__(self, jwt_settings: JWTSettings):
         self._jwt_settings = jwt_settings
+
+    def decode_access_token(self, token: str) -> JWTPayload:
+        payload = self.try_decode(token)
+
+        if not payload or payload.type != TokenType.ACCESS:
+            raise InvalidTokenSignatureException
+
+        if self.is_token_expired_in(payload.expires_in):
+            raise TokenExpirationException
+
+        return payload
 
     def generate_tokens(self, user_id: int, role: Role) -> JWTTokens:
         tokens = JWTTokens(
@@ -125,6 +136,9 @@ class JWTService:
     def is_token_expired(self, created_at: datetime, token_type: TokenType) -> bool:
         return datetime.utcnow() >= created_at + self._get_token_ttl(token_type)
 
+    def is_token_expired_in(self, timestamp: float) -> bool:
+        return datetime.utcnow().timestamp() >= timestamp
+
     def _get_token_ttl(self, token_type: TokenType) -> timedelta:
         match token_type:
             case TokenType.ACCESS:
@@ -142,3 +156,8 @@ class PasswordService:
 
     def check_password(self, password: str, hashed_password: bytes) -> bool:
         return bcrypt.checkpw(password.encode(self.settings.encoding), hashed_password)
+
+    def make_password(self, password: str) -> bytes:
+        salt = bcrypt.gensalt(self.settings.rounds)
+
+        return bcrypt.hashpw(password.encode(self.settings.encoding), salt)

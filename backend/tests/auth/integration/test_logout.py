@@ -8,14 +8,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.db.models import IssuedToken
 from app.config import JWTSettings
 from app.users.db.models import User
-from tests.auth.conftest import PREFIX, create_refresh_token
+from tests.auth.integration.conftest import AUTH_PREFIX, create_refresh_token
 from tests.responses import error
 
 
 pytestmark = [pytest.mark.integration]
 
 
-URL = PREFIX + "/logout"
+URL = AUTH_PREFIX + "/logout"
 
 
 async def logout(client: AsyncClient, cookies: Cookies) -> Response:

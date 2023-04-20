@@ -7,26 +7,18 @@ from app.users.domain.base_repositories import BaseUsersRepository
 
 
 class UnitOfWork:
-    users_repo: BaseUsersRepository
-    passwords_repo: BasePasswordsRepository
-    issued_tokens_repo: BaseIssuedTokensRepository
-
     def __init__(
         self,
-        session_maker: async_sessionmaker[AsyncSession],
+        session: AsyncSession,
         users_repository: type[BaseUsersRepository],
         passwords_repository: type[BasePasswordsRepository],
         issued_tokens_repository: type[BaseIssuedTokensRepository],
     ):
-        self._session = session_maker()
+        self._session = session
 
         self._users_repo = users_repository(self._session, User)
         self._passwords_repo = passwords_repository(self._session, Password)
         self._issued_tokens_repo = issued_tokens_repository(self._session, IssuedToken)
-
-    @property
-    def session(self) -> AsyncSession:
-        return self._session
 
     @property
     def users_repo(self) -> BaseUsersRepository:

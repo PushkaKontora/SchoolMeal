@@ -11,7 +11,11 @@ from app.auth.domain.exceptions import (
     TokenExpirationException,
 )
 from app.auth.domain.services import AuthService
-from app.auth.presentation.exceptions import NotFoundRefreshCookieException
+from app.auth.presentation.exceptions import (
+    InvalidBearerCredentialsException,
+    NotFoundRefreshCookieException,
+    UnauthorizedException,
+)
 from app.config import JWTSettings
 from app.entities import SuccessResponse
 from app.exceptions import ExceptionHandler
@@ -123,3 +127,27 @@ class NotFoundRefreshTokenHandler(ExceptionHandler):
     @property
     def message(self) -> str:
         return "The token was not created or was deleted by the service"
+
+
+class UnauthorizedHandler(ExceptionHandler):
+    @property
+    def exception(self) -> type[Exception]:
+        return UnauthorizedException
+
+    @property
+    def message(self) -> str:
+        return "Permission denied"
+
+    @property
+    def status_code(self) -> int:
+        return 403
+
+
+class InvalidBearerCredentialsHandler(ExceptionHandler):
+    @property
+    def exception(self) -> type[Exception]:
+        return InvalidBearerCredentialsException
+
+    @property
+    def message(self) -> str:
+        return "Invalid Authorization header"

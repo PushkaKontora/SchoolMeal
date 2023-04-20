@@ -1,6 +1,11 @@
-from pydantic import BaseModel
+from functools import partial
+
+from pydantic import BaseModel, Field
 
 from app.utils.string import camelize_snakecase
+
+
+DatetimeField = partial(Field, example="2023-04-19T21:58:30.912109")
 
 
 class BaseEntity(BaseModel):

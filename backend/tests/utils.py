@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from httpx import Cookies, Headers
 
 
@@ -11,3 +13,7 @@ def get_set_cookies(headers: Headers) -> Cookies:
         cookies.set(key, value)
 
     return cookies
+
+
+def dt_to_str(time: datetime) -> str:
+    return time.isoformat(sep="T")
