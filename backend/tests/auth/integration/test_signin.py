@@ -4,7 +4,7 @@ from httpx import AsyncClient
 
 from app.config import JWTSettings
 from app.users.db.models import User
-from tests.auth.conftest import (
+from tests.auth.integration.conftest import (
     ACTUAL_PASSWORD,
     AUTH_PREFIX,
     LOGIN,

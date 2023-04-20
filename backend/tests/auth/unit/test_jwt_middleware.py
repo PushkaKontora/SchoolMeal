@@ -10,10 +10,12 @@ from app.auth.presentation.exceptions import InvalidBearerCredentialsException, 
 from app.auth.presentation.middlewares import JWTAuth
 from app.config import JWTSettings
 from app.users.domain.entities import Role
-from tests.auth.conftest import TokenType, create_access_token, generate_token, get_expected_payload
+from tests.auth.integration.conftest import TokenType, create_access_token, generate_token, get_expected_payload
 
 
 class Auth(JWTAuth):
+    payload: JWTPayload
+
     def authorize(self, payload: JWTPayload) -> bool:
         return payload.user_id == 0
 
@@ -39,9 +41,11 @@ async def test_correct_authentication(
 ):
     with freezegun.freeze_time(datetime.utcnow() - auth_settings.access_token_ttl - delta):
         token = create_access_token(user_id, role, auth_settings)
+        request = get_request(token, schema)
 
-        payload = await jwt_auth(get_request(token, schema))
+        payload = await jwt_auth(request)
         assert payload.dict() == get_expected_payload(TokenType.ACCESS, user_id, role, auth_settings.access_token_ttl)
+        assert request.payload is payload
 
 
 @freezegun.freeze_time()

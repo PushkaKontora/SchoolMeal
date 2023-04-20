@@ -1,13 +1,15 @@
 from dependency_injector.wiring import Provide, inject
 
 from app.auth.db.models import Password
+from app.auth.domain.entities import JWTPayload
 from app.auth.domain.services import PasswordService
 from app.database.container import Database
 from app.database.unit_of_work import UnitOfWork
-from app.users.db.filters.user import ByEmail, ByLogin, ByPhone
+from app.users.db.filters.user import ByEmail, ById, ByLogin, ByPhone
 from app.users.db.models import Role, User
+from app.users.domain.base_repositories import BaseUsersRepository
 from app.users.domain.entities import ProfileOut
-from app.users.domain.exceptions import NonUniqueUserDataException
+from app.users.domain.exceptions import NonUniqueUserDataException, NotFoundUserByTokenException
 
 
 class UserService:
@@ -44,3 +46,14 @@ class UserService:
             await uow.users_repo.refresh(user)
 
             return ProfileOut.from_orm(user)
+
+    @inject
+    async def get_user_profile_by_token(
+        self, payload: JWTPayload, users_repo: BaseUsersRepository = Provide[Database.users_repository]
+    ) -> ProfileOut:
+        user = await users_repo.find_one(ById(payload.user_id))
+
+        if not user:
+            raise NotFoundUserByTokenException
+
+        return ProfileOut.from_orm(user)

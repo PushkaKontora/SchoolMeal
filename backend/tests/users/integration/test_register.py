@@ -140,10 +140,10 @@ async def _test_validation(
     ],
 )
 async def test_unique_constraint_on_phone_and_email(
-    client: AsyncClient, session: AsyncSession, phone: str, email: str, user: User
+    client: AsyncClient, session: AsyncSession, phone: str, email: str, parent
 ):
-    user.login = user.phone = "+78005553535"
-    user.email = "email@email.com"
+    parent.login = parent.phone = "+78005553535"
+    parent.email = "email@email.com"
     await session.commit()
 
     response = await register(client, phone, "secret", "Dykov", "Lima", email)
@@ -151,21 +151,3 @@ async def test_unique_constraint_on_phone_and_email(
     assert response.status_code == 400
     assert response.json() == error("NonUniqueUserDataException", "Login, phone or email should be unique")
     assert await session.scalar(select(func.count()).select_from(User)) == 1
-
-
-@pytest.fixture
-async def user(session: AsyncSession) -> User:
-    user = User(
-        last_name="Dykov",
-        first_name="Lima",
-        login="abc",
-        role=Role.PARENT,
-        phone="+78005553535",
-        email="email@email.com",
-    )
-
-    session.add(user)
-    await session.commit()
-    await session.refresh(user)
-
-    return user

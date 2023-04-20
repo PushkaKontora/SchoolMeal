@@ -15,7 +15,7 @@ def create_app() -> FastAPI:
     app_ = FastAPI(debug=settings.debug, docs_url="/docs" if settings.debug else None)
 
     auth = AuthAPI()
-    users = UsersAPI(password_service=auth.password_service)
+    users = UsersAPI(password_service=auth.password_service, jwt_auth=auth.jwt_auth)
 
     for api in [auth, users]:
         router: APIRouter = api.router()
