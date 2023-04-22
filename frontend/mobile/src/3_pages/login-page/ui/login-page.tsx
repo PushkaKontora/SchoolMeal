@@ -1,9 +1,9 @@
-import {Text, View} from "react-native";
+import {LoginPageProps} from '../model/props';
+import {LoginWidget} from '../../../4_widgets/login-widget';
 
-export function LoginPage() {
+export function LoginPage({navigation}: LoginPageProps) {
   return (
-    <View>
-      <Text>Login page</Text>
-    </View>
-  )
+    <LoginWidget
+      navigation={navigation}/>
+  );
 }

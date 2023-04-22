@@ -1,10 +1,11 @@
-import React from "react";
+import React from 'react';
 
 export type ScreenInfo = {
-  component: React.ComponentType,
+  component: React.ComponentType<any>,
   options?: any
 };
 
 export type ScreenConfig = {
   [index: string]: ScreenInfo
 };
+
