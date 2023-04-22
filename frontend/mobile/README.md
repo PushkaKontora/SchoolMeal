@@ -91,4 +91,5 @@ npm run web
 - consts
 
 ### Слой App:
-В node_modules/expo/AppEntry.js импортируется наш главный компонент App
+
+
