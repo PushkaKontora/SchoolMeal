@@ -1,16 +1,9 @@
-import {Button, Text, View} from 'react-native';
 import {SignUpProps} from '../model/props';
+import {SignUpWidget} from '../../../4_widgets/signup-widget';
 
 export function SignUpPage({navigation}: SignUpProps) {
-  const loginButtonHandler = () => {
-    navigation.goBack();
-  };
-
   return (
-    <View>
-      <Text>Sign up page</Text>
-
-      <Button title={'Войти'} onPress={loginButtonHandler}/>
-    </View>
+    <SignUpWidget
+      navigation={navigation}/>
   );
 }
