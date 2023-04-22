@@ -34,6 +34,7 @@ export function LoginForm(props: LoginFormProps) {
         <Controller
           control={control}
           name={INPUT_DATA[0].name}
+          rules={INPUT_DATA[0].options}
           render={({field: {onChange, value}}) => (
             <InputField
               data={INPUT_DATA[0]}
@@ -45,6 +46,7 @@ export function LoginForm(props: LoginFormProps) {
         <Controller
           control={control}
           name={INPUT_DATA[1].name}
+          rules={INPUT_DATA[1].options}
           render={({field: {onChange, value}}) => (
             <InputField
               data={INPUT_DATA[1]}
