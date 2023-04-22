@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import 'react-native-gesture-handler';
 
 import {AuthProvider} from "../../2_processes/contexts/auth-context";
