@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import AnyHttpUrl, EmailStr, Field
 
-from app.entities import BaseEntity, DatetimeField
+from app.base_entity import BaseEntity, DatetimeField
 from app.users.db.models import Role
 
 
