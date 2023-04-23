@@ -1,4 +1,5 @@
 import app.auth.db.models
+import app.children.db.models
 import app.foods.db.models
 import app.meal_requests.db.models
 import app.meals.db.models

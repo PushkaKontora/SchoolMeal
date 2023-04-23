@@ -28,10 +28,3 @@ class CancelMealPeriod(Base):
     start_date: Mapped[datetime] = mapped_column(Date, nullable=False)
     end_date: Mapped[datetime | None] = mapped_column(Date, nullable=True)
     comment: Mapped[str | None] = mapped_column(String(512), nullable=True)
-
-
-class Child(Base):
-    __tablename__ = "children"
-
-    pupil_id: Mapped[str] = mapped_column(ForeignKey("pupils.id", ondelete=CASCADE), primary_key=True)
-    parent_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete=CASCADE), primary_key=True)
