@@ -1,6 +1,6 @@
 from enum import Enum
 
-from app.entities import BaseEntity
+from app.base_entity import BaseEntity
 from app.users.db.models import Role
 
 

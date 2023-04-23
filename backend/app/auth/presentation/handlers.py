@@ -3,22 +3,10 @@ from typing import cast
 from fastapi import Body, Request, Response
 
 from app.auth.domain.entities import AccessTokenOut, LoginSchema
-from app.auth.domain.exceptions import (
-    BadCredentialsException,
-    InvalidTokenSignatureException,
-    NotFoundRefreshTokenException,
-    RefreshWithRevokedTokenException,
-    TokenExpirationException,
-)
 from app.auth.domain.services import AuthService
-from app.auth.presentation.exceptions import (
-    InvalidBearerCredentialsException,
-    NotFoundRefreshCookieException,
-    UnauthorizedException,
-)
+from app.auth.presentation.exceptions import NotFoundRefreshCookieException
+from app.base_entity import SuccessResponse
 from app.config import JWTSettings
-from app.entities import SuccessResponse
-from app.exceptions import ExceptionHandler
 
 
 class AuthHandlers:
@@ -63,91 +51,3 @@ class AuthHandlers:
         )
 
         return cast(AccessTokenOut, tokens)
-
-
-class BadCredentialsHandler(ExceptionHandler):
-    @property
-    def exception(self) -> type[Exception]:
-        return BadCredentialsException
-
-    @property
-    def message(self) -> str:
-        return "Incorrect login or password"
-
-    @property
-    def status_code(self) -> int:
-        return 401
-
-
-class NotFoundRefreshCookieHandler(ExceptionHandler):
-    @property
-    def exception(self) -> type[Exception]:
-        return NotFoundRefreshCookieException
-
-    @property
-    def message(self) -> str:
-        return "A refresh token is not found in cookies"
-
-
-class InvalidTokenSignatureHandler(ExceptionHandler):
-    @property
-    def exception(self) -> type[Exception]:
-        return InvalidTokenSignatureException
-
-    @property
-    def message(self) -> str:
-        return "The token's signature was destroyed"
-
-
-class RefreshWithRevokedTokenHandler(ExceptionHandler):
-    @property
-    def exception(self) -> type[Exception]:
-        return RefreshWithRevokedTokenException
-
-    @property
-    def message(self) -> str:
-        return "The token is already revoked"
-
-
-class TokenExpirationHandler(ExceptionHandler):
-    @property
-    def exception(self) -> type[Exception]:
-        return TokenExpirationException
-
-    @property
-    def message(self) -> str:
-        return "The token expired"
-
-
-class NotFoundRefreshTokenHandler(ExceptionHandler):
-    @property
-    def exception(self) -> type[Exception]:
-        return NotFoundRefreshTokenException
-
-    @property
-    def message(self) -> str:
-        return "The token was not created or was deleted by the service"
-
-
-class UnauthorizedHandler(ExceptionHandler):
-    @property
-    def exception(self) -> type[Exception]:
-        return UnauthorizedException
-
-    @property
-    def message(self) -> str:
-        return "Permission denied"
-
-    @property
-    def status_code(self) -> int:
-        return 403
-
-
-class InvalidBearerCredentialsHandler(ExceptionHandler):
-    @property
-    def exception(self) -> type[Exception]:
-        return InvalidBearerCredentialsException
-
-    @property
-    def message(self) -> str:
-        return "Invalid Authorization header"

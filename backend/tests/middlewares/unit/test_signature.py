@@ -1,9 +1,9 @@
 import hmac
+import json
 from unittest.mock import AsyncMock, Mock
 
 import pytest
 from pydantic import SecretStr
-from starlette.exceptions import HTTPException
 
 from app.config import SignedRequestSettings
 from app.middlewares import SignatureMiddleware
@@ -25,9 +25,10 @@ async def test_wrong_signature_processing(
     request_.headers[settings.signature_header] = "wrong signature"
 
     call_next = Mock()
-    with pytest.raises(HTTPException):
-        await middleware.dispatch(request_, call_next)
+    response = await middleware.dispatch(request_, call_next)
 
+    assert response.status_code == 400
+    assert json.loads(response.body) == {"msg": "The request signature is wrong or destroyed"}
     call_next.assert_not_called()
 
 

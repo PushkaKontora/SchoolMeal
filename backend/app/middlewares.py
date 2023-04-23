@@ -1,9 +1,8 @@
 import hmac
 
-from starlette.exceptions import HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
-from starlette.responses import Response
+from starlette.responses import JSONResponse, Response
 from starlette.types import ASGIApp
 
 from app.config import SignedRequestSettings
@@ -18,7 +17,7 @@ class SignatureMiddleware(BaseHTTPMiddleware):
         if self._settings.debug or self._verify(request):
             return await call_next(request)
 
-        raise HTTPException(status_code=400, detail="Invalid request signature")
+        return JSONResponse(content={"msg": "The request signature is wrong or destroyed"}, status_code=400)
 
     def _verify(self, request: Request) -> bool:
         actual = request.headers.get(self._settings.signature_header)
