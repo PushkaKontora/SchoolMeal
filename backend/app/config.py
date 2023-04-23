@@ -46,3 +46,11 @@ class JWTSettings(Settings):
 class PasswordSettings(Settings):
     encoding: str = Field(env="PASSWORD_ENCODING")
     rounds: int = Field(env="PASSWORD_SALT_ROUNDS")
+
+
+class SignedRequestSettings(Settings):
+    debug: bool = Field(env="DEBUG")
+    secret: SecretStr = Field(env="SIGNATURE_SECRET")
+    signature_header: str = Field(env="SIGNATURE_HEADER")
+    encoding: str = Field(env="SIGNATURE_ENCODING")
+    digest_mod: str = Field(env="SIGNATURE_DIGEST_MOD")
