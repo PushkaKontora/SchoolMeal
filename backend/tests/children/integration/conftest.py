@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.pupils.db.models import Pupil
+from app.pupils.db.pupil.model import Pupil
 
 
 CHILDREN_PREFIX = "/children"

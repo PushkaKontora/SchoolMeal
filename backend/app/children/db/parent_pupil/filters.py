@@ -1,8 +1,8 @@
-from app.children.db.models import ParentPupil
+from app.children.db.parent_pupil.model import ParentPupil
 from app.database.specifications import FilterSpecification, TQuery
 
 
-class ParentById(FilterSpecification):
+class ByParentId(FilterSpecification):
     def __init__(self, parent_id: int):
         self._parent_id = parent_id
 
@@ -10,7 +10,7 @@ class ParentById(FilterSpecification):
         return query.where(ParentPupil.parent_id == self._parent_id)
 
 
-class ChildById(FilterSpecification):
+class ByPupilId(FilterSpecification):
     def __init__(self, child_id: str):
         self._child_id = child_id
 

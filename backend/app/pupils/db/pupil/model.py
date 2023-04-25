@@ -1,11 +1,10 @@
-from datetime import date, datetime
+from datetime import datetime
 
-from _decimal import Decimal
-from sqlalchemy import Date, Float, ForeignKey, String
+from sqlalchemy import ForeignKey, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
-from app.database.constants import CASCADE, SET_NULL
+from app.database.constants import SET_NULL
 
 
 class Pupil(Base):
@@ -16,20 +15,10 @@ class Pupil(Base):
     last_name: Mapped[str] = mapped_column(String(32), nullable=False)
     first_name: Mapped[str] = mapped_column(String(32), nullable=False)
     certificate_before_date: Mapped[datetime | None] = mapped_column(nullable=True)
-    balance: Mapped[Decimal] = mapped_column(Float(precision=2, asdecimal=True), nullable=False)
+    balance: Mapped[float] = mapped_column(Numeric(precision=10, scale=2), nullable=False)
     breakfast: Mapped[bool] = mapped_column(default=False, nullable=False)
     lunch: Mapped[bool] = mapped_column(default=False, nullable=False)
     dinner: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     school_class = relationship("SchoolClass")
     cancel_meal_periods = relationship("CancelMealPeriod")
-
-
-class CancelMealPeriod(Base):
-    __tablename__ = "cancel_meal_periods"
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    pupil_id: Mapped[str] = mapped_column(ForeignKey("pupils.id", ondelete=CASCADE), nullable=False)
-    start_date: Mapped[date] = mapped_column(Date, nullable=False)
-    end_date: Mapped[date | None] = mapped_column(Date, nullable=True)
-    comment: Mapped[str | None] = mapped_column(String(512), nullable=True)

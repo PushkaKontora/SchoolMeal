@@ -3,10 +3,10 @@ from httpx import AsyncClient, Response
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.children.db.models import ParentPupil
+from app.children.db.parent_pupil.model import ParentPupil
 from app.config import JWTSettings
-from app.pupils.db.models import Pupil
-from app.users.db.models import Role, User
+from app.pupils.db.pupil.model import Pupil
+from app.users.db.user.model import Role, User
 from tests.auth.integration.conftest import create_access_token
 from tests.children.integration.conftest import CHILDREN_PREFIX
 from tests.conftest import BearerAuth

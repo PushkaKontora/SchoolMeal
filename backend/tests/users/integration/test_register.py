@@ -5,11 +5,11 @@ from httpx import AsyncClient, Response
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.db.models import Password
-from app.users.db.models import Role, User
+from app.auth.db.password.model import Password
+from app.users.db.user.model import Role, User
 from tests.responses import error
 from tests.users.integration.conftest import USERS_PREFIX
-from tests.utils import dt_to_str
+from tests.utils import datetime_to_str
 
 
 pytestmark = [pytest.mark.integration]
@@ -65,7 +65,7 @@ async def test_register_parent(
         "phone": phone,
         "email": email,
         "login": phone,
-        "createdAt": dt_to_str(user.created_at),
+        "createdAt": datetime_to_str(user.created_at),
         "role": Role.PARENT.value,
         "photoPath": None,
     }

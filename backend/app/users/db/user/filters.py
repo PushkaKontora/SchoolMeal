@@ -1,5 +1,5 @@
 from app.database.specifications import FilterSpecification, TQuery
-from app.users.db.models import User
+from app.users.db.user.model import User
 
 
 class ById(FilterSpecification):

@@ -1,5 +1,5 @@
 from app.database.specifications import FilterSpecification, TQuery
-from app.pupils.db.models import Pupil
+from app.pupils.db.pupil.model import Pupil
 
 
 class ById(FilterSpecification):

@@ -20,10 +20,3 @@ class SchoolClass(Base):
     teachers = relationship("User", secondary="teachers")
     pupils = relationship("Pupil", back_populates="school_class")
     school = relationship("School", uselist=False)
-
-
-class Teacher(Base):
-    __tablename__ = "teachers"
-
-    class_id: Mapped[int] = mapped_column(ForeignKey("school_classes.id", ondelete=CASCADE), primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete=CASCADE), primary_key=True)

@@ -1,18 +1,18 @@
 from dependency_injector.wiring import Provide, inject
 
-from app.children.db.filters.parent_pupil import ChildById, ParentById
-from app.children.db.models import ParentPupil
+from app.children.db.parent_pupil.filters import ByParentId, ByPupilId
+from app.children.db.parent_pupil.model import ParentPupil
 from app.children.domain.entities import CancelMealPeriodOut, ChildOut, ClassOut, SchoolOut, TeacherOut
 from app.children.domain.exceptions import NotFoundChildException, NotFoundParentException, NotUniqueChildException
 from app.database.container import Database
 from app.database.unit_of_work import UnitOfWork
-from app.pupils.db.filters.pupil import ById as PupilById, ByIds
-from app.pupils.db.joins import WithCancelMealPeriods, WithClass, WithSchool, WithTeachers
-from app.pupils.db.models import Pupil
-from app.school_classes.db.models import SchoolClass
-from app.schools.db.models import School
-from app.users.db.filters.user import ById as UserById
-from app.users.db.models import User
+from app.pupils.db.pupil.filters import ById as PupilById, ByIds
+from app.pupils.db.pupil.joins import WithCancelMealPeriods, WithClass, WithSchool, WithTeachers
+from app.pupils.db.pupil.model import Pupil
+from app.school_classes.db.school_class.model import SchoolClass
+from app.schools.db.school.model import School
+from app.users.db.user.filters import ById as UserById
+from app.users.db.user.model import User
 
 
 class ChildService:
@@ -25,7 +25,7 @@ class ChildService:
             if not await uow.pupils_repo.exists(PupilById(child_id)):
                 raise NotFoundChildException
 
-            if await uow.children_repo.exists(ParentById(parent_id) & ChildById(child_id)):
+            if await uow.children_repo.exists(ByParentId(parent_id) & ByPupilId(child_id)):
                 raise NotUniqueChildException
 
             uow.children_repo.save(ParentPupil(parent_id=parent_id, pupil_id=child_id))
@@ -34,7 +34,7 @@ class ChildService:
     @inject
     async def get_children(self, parent_id: int, uow: UnitOfWork = Provide[Database.unit_of_work]) -> list[ChildOut]:
         async with uow:
-            ids = await uow.children_repo.get_children_ids(ParentById(parent_id))
+            ids = await uow.children_repo.get_children_ids(ByParentId(parent_id))
 
             children = await uow.pupils_repo.find(
                 ByIds(ids), WithClass(), WithSchool(), WithTeachers(), WithCancelMealPeriods()

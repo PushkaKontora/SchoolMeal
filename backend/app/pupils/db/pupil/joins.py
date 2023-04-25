@@ -1,8 +1,8 @@
 from sqlalchemy.orm import joinedload, selectinload
 
 from app.database.specifications import Specification, TQuery
-from app.pupils.db.models import Pupil
-from app.school_classes.db.models import SchoolClass
+from app.pupils.db.pupil.model import Pupil
+from app.school_classes.db.school_class.model import SchoolClass
 
 
 class WithClass(Specification):

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from app.children.db.models import ParentPupil
+from app.children.db.parent_pupil.model import ParentPupil
 from app.database.base import Repository
 from app.database.specifications import FilterSpecification
 

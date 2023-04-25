@@ -11,7 +11,7 @@ from app.config import DatabaseSettings, JWTSettings
 from app.database.base import Base
 from app.database.container import Database
 from app.main import create_app
-from app.users.db.models import Role, User
+from app.users.db.user.model import Role, User
 from tests.auth.integration.conftest import create_access_token
 
 

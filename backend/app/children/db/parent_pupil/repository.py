@@ -1,6 +1,6 @@
 from sqlalchemy import select
 
-from app.children.db.models import ParentPupil
+from app.children.db.parent_pupil.model import ParentPupil
 from app.children.domain.base_repositories import BaseChildrenRepository
 from app.database.specifications import FilterSpecification
 

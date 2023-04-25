@@ -2,13 +2,14 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Callable, Factory, Singleton
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
-from app.auth.db.repositories import IssuedTokensRepository, PasswordsRepository
-from app.children.db.repositories import ChildrenRepository
+from app.auth.db.issued_token.repository import IssuedTokensRepository
+from app.auth.db.password.repository import PasswordsRepository
+from app.children.db.parent_pupil.repository import ChildrenRepository
 from app.config import DatabaseSettings
 from app.database.unit_of_work import UnitOfWork
-from app.pupils.db.repositories import PupilsRepository
-from app.users.db.models import User
-from app.users.db.repositories import UsersRepository
+from app.pupils.db.pupil.repository import PupilsRepository
+from app.users.db.user.model import User
+from app.users.db.user.repository import UsersRepository
 from app.users.domain.base_repositories import BaseUsersRepository
 
 

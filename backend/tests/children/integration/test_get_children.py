@@ -4,16 +4,18 @@ import pytest
 from httpx import AsyncClient, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.children.db.models import ParentPupil
+from app.children.db.parent_pupil.model import ParentPupil
 from app.config import JWTSettings
-from app.pupils.db.models import CancelMealPeriod, Pupil
-from app.school_classes.db.models import SchoolClass, Teacher
-from app.schools.db.models import School
-from app.users.db.models import User
+from app.pupils.db.cancel_meal_period.model import CancelMealPeriod
+from app.pupils.db.pupil.model import Pupil
+from app.school_classes.db.school_class.model import SchoolClass
+from app.school_classes.db.teacher.model import Teacher
+from app.schools.db.school.model import School
+from app.users.db.user.model import User
 from tests.auth.integration.conftest import create_access_token
 from tests.children.integration.conftest import CHILDREN_PREFIX
 from tests.conftest import BearerAuth
-from tests.utils import dt_to_str
+from tests.utils import date_to_str, datetime_to_str
 
 
 URL = CHILDREN_PREFIX
@@ -43,8 +45,8 @@ async def test_getting_children(
             "id": child.id,
             "lastName": child.last_name,
             "firstName": child.first_name,
-            "certificateBeforeDate": dt_to_str(child.certificate_before_date),
-            "balance": float(child.balance),
+            "certificateBeforeDate": datetime_to_str(child.certificate_before_date),
+            "balance": child.balance,
             "breakfast": child.breakfast,
             "lunch": child.lunch,
             "dinner": child.dinner,
@@ -72,8 +74,8 @@ async def test_getting_children(
             "cancelMealPeriods": [
                 {
                     "id": cancel_meal_period.id,
-                    "startDate": str(cancel_meal_period.start_date),
-                    "endDate": str(cancel_meal_period.end_date) if cancel_meal_period.end_date is not None else None,
+                    "startDate": date_to_str(cancel_meal_period.start_date),
+                    "endDate": date_to_str(cancel_meal_period.end_date),
                     "comment": cancel_meal_period.comment,
                 }
             ],
@@ -129,5 +131,6 @@ async def prepare_data(session: AsyncSession, parent: User, child: Pupil, teache
     session.add(ParentPupil(parent_id=parent.id, pupil_id=child.id))
     session.add(Teacher(class_id=school_class.id, user_id=teacher.id))
     child.class_id = school_class.id
+    child.balance = 0.15
     session.add(child)
     await session.commit()

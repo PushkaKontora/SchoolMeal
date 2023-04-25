@@ -28,4 +28,4 @@ class User(Base):
     photo_path: Mapped[str | None] = mapped_column(String(128), nullable=True)
     created_at: Mapped[datetime] = mapped_column(server_default=now(), nullable=False)
 
-    passwords = relationship("Password", lazy=True)
+    passwords = relationship("Password")

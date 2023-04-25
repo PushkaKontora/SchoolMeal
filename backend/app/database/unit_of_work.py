@@ -1,12 +1,13 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.db.models import IssuedToken, Password
+from app.auth.db.issued_token.model import IssuedToken
+from app.auth.db.password.model import Password
 from app.auth.domain.base_repositories import BaseIssuedTokensRepository, BasePasswordsRepository
-from app.children.db.models import ParentPupil
+from app.children.db.parent_pupil.model import ParentPupil
 from app.children.domain.base_repositories import BaseChildrenRepository
-from app.pupils.db.models import Pupil
+from app.pupils.db.pupil.model import Pupil
 from app.pupils.domain.base_repositories import BasePupilsRepository
-from app.users.db.models import User
+from app.users.db.user.model import User
 from app.users.domain.base_repositories import BaseUsersRepository
 
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from httpx import Cookies, Headers
 
@@ -15,5 +15,9 @@ def get_set_cookies(headers: Headers) -> Cookies:
     return cookies
 
 
-def dt_to_str(time: datetime | None) -> str:
+def datetime_to_str(time: datetime | None) -> str | None:
     return time.isoformat(sep="T") if time is not None else None
+
+
+def date_to_str(d: date | None) -> str | None:
+    return str(d) if d is not None else None
