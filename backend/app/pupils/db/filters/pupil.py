@@ -8,3 +8,11 @@ class ById(FilterSpecification):
 
     def __call__(self, query: TQuery) -> TQuery:
         return query.where(Pupil.id == self._pupil_id)
+
+
+class ByIds(FilterSpecification):
+    def __init__(self, ids: set[str]):
+        self._ids = ids
+
+    def __call__(self, query: TQuery) -> TQuery:
+        return query.where(Pupil.id.in_(self._ids))

@@ -45,6 +45,25 @@ async def parent(session: AsyncSession) -> User:
 
 
 @pytest.fixture
+async def teacher(session: AsyncSession) -> User:
+    user = User(
+        last_name="Samkov",
+        first_name="Nikita",
+        login="qwersvasdf",
+        role=Role.TEACHER,
+        phone="+79999999999",
+        email="asdfqwer@email.com",
+        photo_path=r"https://yandex.ru/images/qwfdvxzcv",
+    )
+
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+
+    return user
+
+
+@pytest.fixture
 def parent_token(parent: User, jwt_settings: JWTSettings) -> str:
     return create_access_token(parent.id, parent.role, jwt_settings)
 

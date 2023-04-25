@@ -105,9 +105,9 @@ async def create_refresh_token(
     return token
 
 
-def create_access_token(user_id: int, role: Role, auth_settings: JWTSettings) -> str:
-    payload = get_expected_payload(TokenType.ACCESS, user_id, role, auth_settings.access_token_ttl)
-    return generate_token(payload, auth_settings.secret.get_secret_value(), auth_settings.algorithm)
+def create_access_token(user_id: int, role: Role, jwt_settings: JWTSettings) -> str:
+    payload = get_expected_payload(TokenType.ACCESS, user_id, role, jwt_settings.access_token_ttl)
+    return generate_token(payload, jwt_settings.secret.get_secret_value(), jwt_settings.algorithm)
 
 
 def generate_token(payload: dict, secret: str, algorithm: str) -> str:

@@ -15,5 +15,5 @@ def get_set_cookies(headers: Headers) -> Cookies:
     return cookies
 
 
-def dt_to_str(time: datetime) -> str:
-    return time.isoformat(sep="T")
+def dt_to_str(time: datetime | None) -> str:
+    return time.isoformat(sep="T") if time is not None else None

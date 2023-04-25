@@ -1,4 +1,4 @@
-from app.children.db.models import Child
+from app.children.db.models import ParentPupil
 from app.database.specifications import FilterSpecification, TQuery
 
 
@@ -7,7 +7,7 @@ class ParentById(FilterSpecification):
         self._parent_id = parent_id
 
     def __call__(self, query: TQuery) -> TQuery:
-        return query.where(Child.parent_id == self._parent_id)
+        return query.where(ParentPupil.parent_id == self._parent_id)
 
 
 class ChildById(FilterSpecification):
@@ -15,4 +15,4 @@ class ChildById(FilterSpecification):
         self._child_id = child_id
 
     def __call__(self, query: TQuery) -> TQuery:
-        return query.where(Child.pupil_id == self._child_id)
+        return query.where(ParentPupil.pupil_id == self._child_id)

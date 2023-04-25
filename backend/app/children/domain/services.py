@@ -1,12 +1,18 @@
 from dependency_injector.wiring import Provide, inject
 
-from app.children.db.filters.child import ChildById, ParentById
-from app.children.db.models import Child
+from app.children.db.filters.parent_pupil import ChildById, ParentById
+from app.children.db.models import ParentPupil
+from app.children.domain.entities import CancelMealPeriodOut, ChildOut, ClassOut, SchoolOut, TeacherOut
 from app.children.domain.exceptions import NotFoundChildException, NotFoundParentException, NotUniqueChildException
 from app.database.container import Database
 from app.database.unit_of_work import UnitOfWork
-from app.pupils.db.filters.pupil import ById as PupilById
+from app.pupils.db.filters.pupil import ById as PupilById, ByIds
+from app.pupils.db.joins import WithCancelMealPeriods, WithClass, WithSchool, WithTeachers
+from app.pupils.db.models import Pupil
+from app.school_classes.db.models import SchoolClass
+from app.schools.db.models import School
 from app.users.db.filters.user import ById as UserById
+from app.users.db.models import User
 
 
 class ChildService:
@@ -22,5 +28,44 @@ class ChildService:
             if await uow.children_repo.exists(ParentById(parent_id) & ChildById(child_id)):
                 raise NotUniqueChildException
 
-            uow.children_repo.save(Child(parent_id=parent_id, pupil_id=child_id))
+            uow.children_repo.save(ParentPupil(parent_id=parent_id, pupil_id=child_id))
             await uow.commit()
+
+    @inject
+    async def get_children(self, parent_id: int, uow: UnitOfWork = Provide[Database.unit_of_work]) -> list[ChildOut]:
+        async with uow:
+            ids = await uow.children_repo.get_children_ids(ParentById(parent_id))
+
+            children = await uow.pupils_repo.find(
+                ByIds(ids), WithClass(), WithSchool(), WithTeachers(), WithCancelMealPeriods()
+            )
+
+            return [self._get_child_out(child) for child in children]
+
+    @staticmethod
+    def _get_child_out(child: Pupil) -> ChildOut:
+        school_class: SchoolClass = child.school_class
+        school: School = school_class.school
+        teachers: list[User] = school_class.teachers
+
+        return ChildOut(
+            id=child.id,
+            last_name=child.last_name,
+            first_name=child.first_name,
+            certificate_before_date=child.certificate_before_date,
+            balance=child.balance,
+            breakfast=child.breakfast,
+            lunch=child.lunch,
+            dinner=child.dinner,
+            school_class=ClassOut(
+                id=school_class.id,
+                number=school_class.number,
+                letter=school_class.letter,
+                has_breakfast=school_class.has_breakfast,
+                has_lunch=school_class.has_lunch,
+                has_dinner=school_class.has_dinner,
+                teachers=[TeacherOut.from_orm(teacher) for teacher in teachers],
+            ),
+            school=SchoolOut.from_orm(school),
+            cancel_meal_periods=[CancelMealPeriodOut.from_orm(period) for period in child.cancel_meal_periods],
+        )

@@ -1,7 +1,7 @@
 from fastapi import Request
 
 from app.base_entity import SuccessResponse
-from app.children.domain.entities import NewChildSchema
+from app.children.domain.entities import ChildOut, NewChildSchema
 from app.children.domain.services import ChildService
 
 
@@ -13,3 +13,6 @@ class ChildrenHandlers:
         await self._child_service.add_child(request.payload.user_id, schema.child_id)
 
         return SuccessResponse()
+
+    async def get_children(self, request: Request) -> list[ChildOut]:
+        return await self._child_service.get_children(request.payload.user_id)
