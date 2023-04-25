@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.db.models import IssuedToken, Password
 from app.auth.domain.base_repositories import BaseIssuedTokensRepository, BasePasswordsRepository
-from app.children.db.models import Child
+from app.children.db.models import ParentPupil
 from app.children.domain.base_repositories import BaseChildrenRepository
 from app.pupils.db.models import Pupil
 from app.pupils.domain.base_repositories import BasePupilsRepository
@@ -26,7 +26,7 @@ class UnitOfWork:
         self._passwords_repo = passwords_repository(self._session, Password)
         self._issued_tokens_repo = issued_tokens_repository(self._session, IssuedToken)
         self._pupils_repo = pupils_repository(self._session, Pupil)
-        self._children_repo = children_repository(self._session, Child)
+        self._children_repo = children_repository(self._session, ParentPupil)
 
     @property
     def users_repo(self) -> BaseUsersRepository:
