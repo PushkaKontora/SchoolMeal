@@ -1,92 +1,49 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from typing import Generic, Iterable, Type, TypeVar
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+
+from app.auth.db.models import IssuedToken, Password
+from app.auth.domain.base_repositories import BaseIssuedTokensRepository, BasePasswordsRepository
+from app.users.db.models import User
+from app.users.domain.base_repositories import BaseUsersRepository
 
 
-class IRepository:
-    pass
+class UnitOfWork:
+    def __init__(
+        self,
+        session: AsyncSession,
+        users_repository: type[BaseUsersRepository],
+        passwords_repository: type[BasePasswordsRepository],
+        issued_tokens_repository: type[BaseIssuedTokensRepository],
+    ):
+        self._session = session
 
+        self._users_repo = users_repository(self._session, User)
+        self._passwords_repo = passwords_repository(self._session, Password)
+        self._issued_tokens_repo = issued_tokens_repository(self._session, IssuedToken)
 
-TRepository = TypeVar("TRepository", bound=IRepository)
-TRepositoryImplementation = TypeVar("TRepositoryImplementation")
+    @property
+    def users_repo(self) -> BaseUsersRepository:
+        return self._users_repo
 
+    @property
+    def passwords_repo(self) -> BasePasswordsRepository:
+        return self._passwords_repo
 
-@dataclass
-class RepositoryDependency(Generic[TRepositoryImplementation]):
-    interface: Type[IRepository]
-    implementation: Type[TRepositoryImplementation]
-
-
-class UnitOfWork(Generic[TRepositoryImplementation], ABC):
-    def __init__(self, repositories: Iterable[RepositoryDependency]):
-        self._is_began = False
-        self._interfaces: dict[Type[IRepository], Type[TRepositoryImplementation]] = {
-            d.interface: d.implementation for d in repositories
-        }
+    @property
+    def issued_tokens_repo(self) -> BaseIssuedTokensRepository:
+        return self._issued_tokens_repo
 
     async def commit(self) -> None:
-        if not self._is_began:
-            raise TransactionNotBeganException
-
-        await self._commit()
+        await self._session.commit()
 
     async def rollback(self) -> None:
-        if not self._is_began:
-            raise TransactionNotBeganException
-
-        await self._rollback()
-
-    def get_repository(self, interface: Type[TRepository]) -> TRepository:
-        if not self._is_began:
-            raise TransactionNotBeganException
-
-        if interface not in self._interfaces:
-            raise NotFoundRepositoryInterfaceException
-
-        return self._get_repository(interface)
-
-    @abstractmethod
-    async def _begin(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def _commit(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def _rollback(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    def _get_repository(self, interface: Type[TRepository]) -> TRepository:
-        raise NotImplementedError
-
-    async def _begin_transaction(self) -> None:
-        if self._is_began:
-            raise TransactionAlreadyBeganException
-
-        self._is_began = True
-        await self._begin()
+        await self._session.rollback()
 
     async def __aenter__(self):
-        await self._begin_transaction()
-
+        await self._session.begin()
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
             await self.rollback()
 
-        self._is_began = False
-
-
-class TransactionAlreadyBeganException(Exception):
-    pass
-
-
-class TransactionNotBeganException(Exception):
-    pass
-
-
-class NotFoundRepositoryInterfaceException(Exception):
-    pass
+        await self._session.close()
