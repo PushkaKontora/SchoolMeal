@@ -36,22 +36,30 @@ async def change(
 
 
 @pytest.mark.parametrize(
-    "plan",
+    ["plan", "breakfast_init", "lunch_init", "dinner_init"],
     [
-        {},
-        {"breakfast": True},
-        {"lunch": True},
-        {"dinner": True},
-        {"breakfast": True, "lunch": True, "dinner": True},
-        {"breakfast": False, "lunch": False, "dinner": False},
+        [{}, True, True, True],
+        [{"breakfast": True}, False, True, True],
+        [{"lunch": True}, True, False, True],
+        [{"dinner": True}, True, True, False],
+        [{"breakfast": False}, True, True, True],
+        [{"lunch": False}, True, True, True],
+        [{"dinner": False}, True, True, True],
+        [{"breakfast": True, "lunch": True, "dinner": True}, False, False, False],
+        [{"breakfast": False, "lunch": False, "dinner": False}, True, True, True],
+        [{"breakfast": False, "lunch": False, "dinner": False}, False, False, False],
     ],
     ids=[
         "empty body",
-        "only breakfast",
-        "only lunch",
-        "only dinner",
-        "all true",
-        "all false",
+        "enable only breakfast",
+        "enable only lunch",
+        "enable only dinner",
+        "disable only breakfast",
+        "disable only lunch",
+        "disable only dinner",
+        "enable all",
+        "disable all",
+        "disable already disabled",
     ],
 )
 async def test_change_meal_plan(
@@ -61,8 +69,11 @@ async def test_change_meal_plan(
     parent: User,
     child: Pupil,
     plan: dict,
+    breakfast_init: bool,
+    lunch_init: bool,
+    dinner_init: bool,
 ):
-    child.breakfast = child.lunch = child.dinner = False
+    child.breakfast, child.lunch, child.dinner = breakfast_init, lunch_init, dinner_init
     session.add(child)
     old_plan = {meal: getattr(child, meal) for meal in MEALS}
     await session.commit()
@@ -70,16 +81,12 @@ async def test_change_meal_plan(
     response = await change(client, jwt_settings, parent, child, **plan)
 
     await session.refresh(child)
+    expected = {meal: plan[meal] if meal in plan else old_plan[meal] for meal in MEALS}
 
     assert response.status_code == 200
-    assert response.json() == {
-        "breakfast": child.breakfast,
-        "lunch": child.lunch,
-        "dinner": child.dinner,
-    }
+    assert response.json() == expected
 
     actual = {meal: getattr(child, meal) for meal in MEALS}
-    expected = {meal: plan.get(meal) or old_plan[meal] for meal in MEALS}
     assert actual == expected
 
 

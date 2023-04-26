@@ -63,9 +63,9 @@ class ChildService:
                 raise UserIsNotParentOfThePupilException
 
             child = await uow.pupils_repo.find_one(PupilById(child_id), ForUpdate())
-            child.breakfast = breakfast or child.breakfast
-            child.lunch = lunch or child.lunch
-            child.dinner = dinner or child.dinner
+            child.breakfast = breakfast if breakfast is not None else child.breakfast
+            child.lunch = lunch if lunch is not None else child.lunch
+            child.dinner = dinner if dinner is not None else child.dinner
 
             uow.pupils_repo.save(child)
             await uow.commit()
