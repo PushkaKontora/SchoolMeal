@@ -1,8 +1,14 @@
-import app.auth.db.models
-import app.foods.db.models
-import app.meal_requests.db.models
-import app.meals.db.models
-import app.pupils.db.models
-import app.school_classes.db.models
-import app.schools.db.models
-import app.users.db.models
+from app.auth.db.issued_token.model import IssuedToken
+from app.auth.db.password.model import Password
+from app.children.db.parent_pupil.model import ParentPupil
+from app.foods.db.food.model import Food
+from app.meal_requests.db.declared_pupil.model import DeclaredPupils
+from app.meal_requests.db.meal_request.model import MealRequest
+from app.meals.db.meal.model import Meal
+from app.meals.db.menu.model import Menu
+from app.pupils.db.cancel_meal_period.model import CancelMealPeriod
+from app.pupils.db.pupil.model import Pupil
+from app.school_classes.db.school_class.model import SchoolClass
+from app.school_classes.db.teacher.model import Teacher
+from app.schools.db.school.model import School
+from app.users.db.user.model import User

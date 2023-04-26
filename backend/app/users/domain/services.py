@@ -1,12 +1,12 @@
 from dependency_injector.wiring import Provide, inject
 
-from app.auth.db.models import Password
+from app.auth.db.password.model import Password
 from app.auth.domain.entities import JWTPayload
 from app.auth.domain.services import PasswordService
 from app.database.container import Database
 from app.database.unit_of_work import UnitOfWork
-from app.users.db.filters.user import ByEmail, ById, ByLogin, ByPhone
-from app.users.db.models import Role, User
+from app.users.db.user.filters import ByEmail, ById, ByLogin, ByPhone
+from app.users.db.user.model import Role, User
 from app.users.domain.base_repositories import BaseUsersRepository
 from app.users.domain.entities import ProfileOut
 from app.users.domain.exceptions import NonUniqueUserDataException, NotFoundUserByTokenException

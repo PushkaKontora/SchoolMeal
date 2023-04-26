@@ -1,12 +1,12 @@
 from httpx import AsyncClient, Response
 
 from app.config import JWTSettings
-from app.users.db.models import Role, User
+from app.users.db.user.model import Role, User
 from tests.auth.integration.conftest import create_access_token
 from tests.conftest import BearerAuth
 from tests.responses import error
 from tests.users.integration.me.conftest import ME_PREFIX
-from tests.utils import dt_to_str
+from tests.utils import datetime_to_str
 
 
 URL = ME_PREFIX
@@ -29,7 +29,7 @@ async def test_get_me(client: AsyncClient, parent: User, parent_token: str):
         "email": parent.email,
         "phone": parent.phone,
         "photoPath": parent.photo_path,
-        "createdAt": dt_to_str(parent.created_at),
+        "createdAt": datetime_to_str(parent.created_at),
     }
 
 

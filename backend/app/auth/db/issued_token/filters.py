@@ -1,4 +1,4 @@
-from app.auth.db.models import IssuedToken
+from app.auth.db.issued_token.model import IssuedToken
 from app.database.specifications import FilterSpecification, TQuery
 
 

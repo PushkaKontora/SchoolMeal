@@ -1,4 +1,4 @@
-from app.auth.db.models import Password
+from app.auth.db.password.model import Password
 from app.database.specifications import FilterSpecification, TQuery
 
 

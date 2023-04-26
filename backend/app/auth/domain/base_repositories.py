@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-from app.auth.db.models import IssuedToken, Password
+from app.auth.db.issued_token.model import IssuedToken
+from app.auth.db.password.model import Password
 from app.database.base import Repository
 from app.database.specifications import FilterSpecification
 

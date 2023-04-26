@@ -5,9 +5,9 @@ import pytest
 from httpx import AsyncClient, Cookies, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.db.models import IssuedToken
+from app.auth.db.issued_token.model import IssuedToken
 from app.config import JWTSettings
-from app.users.db.models import User
+from app.users.db.user.model import User
 from tests.auth.integration.conftest import AUTH_PREFIX, create_refresh_token
 from tests.responses import error
 

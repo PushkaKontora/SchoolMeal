@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import AnyHttpUrl, EmailStr, Field
 
 from app.base_entity import BaseEntity, DatetimeField
-from app.users.db.models import Role
+from app.users.db.user.model import Role
 
 
 class RegistrationSchema(BaseEntity):

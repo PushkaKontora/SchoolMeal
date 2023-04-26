@@ -4,9 +4,9 @@ import bcrypt
 import jwt
 from dependency_injector.wiring import Provide, inject
 
-from app.auth.db.filters.issued_token import ByUserId as TokenByUserId, ByValue
-from app.auth.db.filters.password import ByUserId as PasswordByUserId
-from app.auth.db.models import IssuedToken
+from app.auth.db.issued_token.filters import ByUserId as TokenByUserId, ByValue
+from app.auth.db.issued_token.model import IssuedToken
+from app.auth.db.password.filters import ByUserId as PasswordByUserId
 from app.auth.domain.entities import JWTPayload, JWTTokens, TokenType
 from app.auth.domain.exceptions import (
     BadCredentialsException,
@@ -19,8 +19,8 @@ from app.auth.domain.exceptions import (
 from app.config import JWTSettings, PasswordSettings
 from app.database.container import Database
 from app.database.unit_of_work import UnitOfWork
-from app.users.db.filters.user import ByLogin
-from app.users.db.models import Role
+from app.users.db.user.filters import ByLogin
+from app.users.db.user.model import Role
 
 
 class AuthService:
