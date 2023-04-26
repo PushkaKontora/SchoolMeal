@@ -66,10 +66,10 @@ async def test_getting_children(
                         "email": teacher.email,
                     }
                 ],
-            },
-            "school": {
-                "id": school.id,
-                "name": school.name,
+                "school": {
+                    "id": school.id,
+                    "name": school.name,
+                },
             },
             "cancelMealPeriods": [
                 {
@@ -79,6 +79,38 @@ async def test_getting_children(
                     "comment": cancel_meal_period.comment,
                 }
             ],
+        }
+    ]
+
+
+async def test_get_without_class_and_periods(
+    client: AsyncClient,
+    session: AsyncSession,
+    parent: User,
+    child: Pupil,
+    cancel_meal_period: CancelMealPeriod,
+    jwt_settings: JWTSettings,
+):
+    child.class_id = None
+    session.add(child)
+    await session.delete(cancel_meal_period)
+    await session.commit()
+
+    response = await get_children(client, parent, jwt_settings)
+
+    assert response.status_code == 200
+    assert response.json() == [
+        {
+            "id": child.id,
+            "lastName": child.last_name,
+            "firstName": child.first_name,
+            "certificateBeforeDate": datetime_to_str(child.certificate_before_date),
+            "balance": child.balance,
+            "breakfast": child.breakfast,
+            "lunch": child.lunch,
+            "dinner": child.dinner,
+            "schoolClass": None,
+            "cancelMealPeriods": [],
         }
     ]
 

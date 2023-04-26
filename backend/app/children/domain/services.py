@@ -79,9 +79,21 @@ class ChildService:
 
     @staticmethod
     def _get_child_out(child: Pupil) -> ChildOut:
-        school_class: SchoolClass = child.school_class
-        school: School = school_class.school
-        teachers: list[User] = school_class.teachers
+        school_class: SchoolClass | None = child.school_class
+        school_class_out = (
+            ClassOut(
+                id=school_class.id,
+                number=school_class.number,
+                letter=school_class.letter,
+                has_breakfast=school_class.has_breakfast,
+                has_lunch=school_class.has_lunch,
+                has_dinner=school_class.has_dinner,
+                teachers=[TeacherOut.from_orm(teacher) for teacher in school_class.teachers],
+                school=SchoolOut.from_orm(school_class.school),
+            )
+            if school_class
+            else None
+        )
 
         return ChildOut(
             id=child.id,
@@ -92,15 +104,6 @@ class ChildService:
             breakfast=child.breakfast,
             lunch=child.lunch,
             dinner=child.dinner,
-            school_class=ClassOut(
-                id=school_class.id,
-                number=school_class.number,
-                letter=school_class.letter,
-                has_breakfast=school_class.has_breakfast,
-                has_lunch=school_class.has_lunch,
-                has_dinner=school_class.has_dinner,
-                teachers=[TeacherOut.from_orm(teacher) for teacher in teachers],
-            ),
-            school=SchoolOut.from_orm(school),
+            school_class=school_class_out,
             cancel_meal_periods=[CancelMealPeriodOut.from_orm(period) for period in child.cancel_meal_periods],
         )

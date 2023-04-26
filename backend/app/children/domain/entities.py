@@ -22,6 +22,11 @@ class TeacherOut(BaseEntity):
     email: str
 
 
+class SchoolOut(BaseEntity):
+    id: int
+    name: str
+
+
 class ClassOut(BaseEntity):
     id: int
     number: int
@@ -30,11 +35,7 @@ class ClassOut(BaseEntity):
     has_lunch: bool
     has_dinner: bool
     teachers: list[TeacherOut]
-
-
-class SchoolOut(BaseEntity):
-    id: int
-    name: str
+    school: SchoolOut
 
 
 class ChildOut(BaseEntity):
@@ -46,8 +47,7 @@ class ChildOut(BaseEntity):
     breakfast: bool
     lunch: bool
     dinner: bool
-    school_class: ClassOut
-    school: SchoolOut
+    school_class: ClassOut | None
     cancel_meal_periods: list[CancelMealPeriodOut]
 
 
