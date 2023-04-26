@@ -7,6 +7,10 @@ from app.pupils.db.pupil.model import Pupil
 CHILDREN_PREFIX = "/children"
 
 
+def child_prefix(child_id: str) -> str:
+    return CHILDREN_PREFIX + f"/{child_id}"
+
+
 @pytest.fixture
 async def child(session: AsyncSession) -> Pupil:
     child = Pupil(

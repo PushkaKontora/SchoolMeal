@@ -17,3 +17,13 @@ class NotUniqueChildException(APIException):
     @property
     def message(self) -> str:
         return "The child was already added by the user"
+
+
+class UserIsNotParentOfThePupilException(APIException):
+    @property
+    def message(self) -> str:
+        return "The user is not a parent of the pupil"
+
+    @property
+    def status_code(self) -> int:
+        return 403

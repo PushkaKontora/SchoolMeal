@@ -49,3 +49,15 @@ class ChildOut(BaseEntity):
     school_class: ClassOut
     school: SchoolOut
     cancel_meal_periods: list[CancelMealPeriodOut]
+
+
+class MealPlanIn(BaseEntity):
+    breakfast: bool | None = None
+    lunch: bool | None = None
+    dinner: bool | None = None
+
+
+class MealPlanOut(BaseEntity):
+    breakfast: bool
+    lunch: bool
+    dinner: bool

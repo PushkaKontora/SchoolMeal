@@ -2,9 +2,15 @@ from dependency_injector.wiring import Provide, inject
 
 from app.children.db.parent_pupil.filters import ByParentId, ByPupilId
 from app.children.db.parent_pupil.model import ParentPupil
-from app.children.domain.entities import CancelMealPeriodOut, ChildOut, ClassOut, SchoolOut, TeacherOut
-from app.children.domain.exceptions import NotFoundChildException, NotFoundParentException, NotUniqueChildException
+from app.children.domain.entities import CancelMealPeriodOut, ChildOut, ClassOut, MealPlanOut, SchoolOut, TeacherOut
+from app.children.domain.exceptions import (
+    NotFoundChildException,
+    NotFoundParentException,
+    NotUniqueChildException,
+    UserIsNotParentOfThePupilException,
+)
 from app.database.container import Database
+from app.database.specifications import ForUpdate
 from app.database.unit_of_work import UnitOfWork
 from app.pupils.db.pupil.filters import ById as PupilById, ByIds
 from app.pupils.db.pupil.joins import WithCancelMealPeriods, WithClass, WithSchool, WithTeachers
@@ -41,6 +47,35 @@ class ChildService:
             )
 
             return [self._get_child_out(child) for child in children]
+
+    @inject
+    async def change_meal_plan(
+        self,
+        parent_id: int,
+        child_id: str,
+        breakfast: bool | None,
+        lunch: bool | None,
+        dinner: bool | None,
+        uow: UnitOfWork = Provide[Database.unit_of_work],
+    ) -> MealPlanOut:
+        async with uow:
+            if not await uow.children_repo.exists(ByParentId(parent_id) & ByPupilId(child_id)):
+                raise UserIsNotParentOfThePupilException
+
+            child = await uow.pupils_repo.find_one(PupilById(child_id), ForUpdate())
+            child.breakfast = breakfast or child.breakfast
+            child.lunch = lunch or child.lunch
+            child.dinner = dinner or child.dinner
+
+            uow.pupils_repo.save(child)
+            await uow.commit()
+            await uow.pupils_repo.refresh(child)
+
+            return MealPlanOut(
+                breakfast=child.breakfast,
+                lunch=child.lunch,
+                dinner=child.dinner,
+            )
 
     @staticmethod
     def _get_child_out(child: Pupil) -> ChildOut:
