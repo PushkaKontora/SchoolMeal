@@ -1,7 +1,7 @@
 from datetime import date
 
 from sqlalchemy import Date, ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
 from app.database.constants import CASCADE
@@ -15,3 +15,5 @@ class CancelMealPeriod(Base):
     start_date: Mapped[date] = mapped_column(Date, nullable=False)
     end_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     comment: Mapped[str | None] = mapped_column(String(512), nullable=True)
+
+    pupil = relationship("Pupil", back_populates="cancel_meal_periods", uselist=False)

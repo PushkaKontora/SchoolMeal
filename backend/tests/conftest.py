@@ -11,6 +11,7 @@ from app.config import DatabaseSettings, JWTSettings
 from app.database.base import Base
 from app.database.container import Database
 from app.main import create_app
+from app.pupils.db.pupil.model import Pupil
 from app.users.db.user.model import Role, User
 from tests.auth.integration.conftest import create_access_token
 
@@ -42,6 +43,26 @@ async def parent(session: AsyncSession) -> User:
     await session.refresh(user)
 
     return user
+
+
+@pytest.fixture
+async def pupil(session: AsyncSession) -> Pupil:
+    child = Pupil(
+        id="b1goimpl8htpmf97faiv",
+        last_name="Samkov",
+        first_name="Nikita",
+        certificate_before_date=None,
+        balance=0,
+        breakfast=False,
+        lunch=False,
+        dinner=False,
+    )
+
+    session.add(child)
+    await session.commit()
+    await session.refresh(child)
+
+    return child
 
 
 @pytest.fixture

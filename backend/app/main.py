@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.auth.api import AuthAPI
+from app.cancel_meal_periods.api import CancelMealPeriodsAPI
 from app.children.api import ChildrenAPI
 from app.config import AppSettings, SignedRequestSettings
 from app.database.container import Database
@@ -28,6 +29,9 @@ def create_app() -> FastAPI:
 
     children = ChildrenAPI(jwt_auth=auth.jwt_auth)
     app_.include_router(children.router())
+
+    periods = CancelMealPeriodsAPI(jwt_auth=auth.jwt_auth)
+    app_.include_router(periods.router())
 
     return app_
 
