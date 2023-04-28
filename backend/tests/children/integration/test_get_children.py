@@ -4,9 +4,9 @@ import pytest
 from httpx import AsyncClient, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
 from app.children.db.parent_pupil.model import ParentPupil
 from app.config import JWTSettings
-from app.pupils.db.cancel_meal_period.model import CancelMealPeriod
 from app.pupils.db.pupil.model import Pupil
 from app.school_classes.db.school_class.model import SchoolClass
 from app.school_classes.db.teacher.model import Teacher
@@ -32,7 +32,7 @@ async def test_getting_children(
     parent: User,
     school: School,
     school_class: SchoolClass,
-    child: Pupil,
+    pupil: Pupil,
     teacher: User,
     cancel_meal_period: CancelMealPeriod,
     jwt_settings: JWTSettings,
@@ -42,14 +42,14 @@ async def test_getting_children(
     assert response.status_code == 200
     assert response.json() == [
         {
-            "id": child.id,
-            "lastName": child.last_name,
-            "firstName": child.first_name,
-            "certificateBeforeDate": datetime_to_str(child.certificate_before_date),
-            "balance": child.balance,
-            "breakfast": child.breakfast,
-            "lunch": child.lunch,
-            "dinner": child.dinner,
+            "id": pupil.id,
+            "lastName": pupil.last_name,
+            "firstName": pupil.first_name,
+            "certificateBeforeDate": datetime_to_str(pupil.certificate_before_date),
+            "balance": pupil.balance,
+            "breakfast": pupil.breakfast,
+            "lunch": pupil.lunch,
+            "dinner": pupil.dinner,
             "schoolClass": {
                 "id": school_class.id,
                 "number": school_class.number,
@@ -87,12 +87,12 @@ async def test_get_without_class_and_periods(
     client: AsyncClient,
     session: AsyncSession,
     parent: User,
-    child: Pupil,
+    pupil: Pupil,
     cancel_meal_period: CancelMealPeriod,
     jwt_settings: JWTSettings,
 ):
-    child.class_id = None
-    session.add(child)
+    pupil.class_id = None
+    session.add(pupil)
     await session.delete(cancel_meal_period)
     await session.commit()
 
@@ -101,14 +101,14 @@ async def test_get_without_class_and_periods(
     assert response.status_code == 200
     assert response.json() == [
         {
-            "id": child.id,
-            "lastName": child.last_name,
-            "firstName": child.first_name,
-            "certificateBeforeDate": datetime_to_str(child.certificate_before_date),
-            "balance": child.balance,
-            "breakfast": child.breakfast,
-            "lunch": child.lunch,
-            "dinner": child.dinner,
+            "id": pupil.id,
+            "lastName": pupil.last_name,
+            "firstName": pupil.first_name,
+            "certificateBeforeDate": datetime_to_str(pupil.certificate_before_date),
+            "balance": pupil.balance,
+            "breakfast": pupil.breakfast,
+            "lunch": pupil.lunch,
+            "dinner": pupil.dinner,
             "schoolClass": None,
             "cancelMealPeriods": [],
         }
@@ -144,9 +144,9 @@ async def school(session: AsyncSession) -> School:
 
 
 @pytest.fixture
-async def cancel_meal_period(session: AsyncSession, child: Pupil) -> CancelMealPeriod:
+async def cancel_meal_period(session: AsyncSession, pupil: Pupil) -> CancelMealPeriod:
     period = CancelMealPeriod(
-        pupil_id=child.id,
+        pupil_id=pupil.id,
         start_date=datetime.utcnow(),
         end_date=None,
         comment="Comment",
@@ -159,10 +159,10 @@ async def cancel_meal_period(session: AsyncSession, child: Pupil) -> CancelMealP
 
 
 @pytest.fixture(autouse=True)
-async def prepare_data(session: AsyncSession, parent: User, child: Pupil, teacher: User, school_class: SchoolClass):
-    session.add(ParentPupil(parent_id=parent.id, pupil_id=child.id))
+async def prepare_data(session: AsyncSession, parent: User, pupil: Pupil, teacher: User, school_class: SchoolClass):
+    session.add(ParentPupil(parent_id=parent.id, pupil_id=pupil.id))
     session.add(Teacher(class_id=school_class.id, user_id=teacher.id))
-    child.class_id = school_class.id
-    child.balance = 0.15
-    session.add(child)
+    pupil.class_id = school_class.id
+    pupil.balance = 0.15
+    session.add(pupil)
     await session.commit()
