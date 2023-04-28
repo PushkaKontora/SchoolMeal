@@ -9,3 +9,13 @@ class UserIsNotParentException(APIException):
     @property
     def status_code(self) -> int:
         return 403
+
+
+class NotFoundPeriodException(APIException):
+    @property
+    def message(self) -> str:
+        return "Not found period"
+
+    @property
+    def status_code(self) -> int:
+        return 404

@@ -16,3 +16,10 @@ class CancelMealPeriodsRouter(APIRouter):
             responses={400: {"model": ErrorResponse}},
             status_code=201,
         )
+
+        self.add_api_route(
+            path="/{period_id:int}",
+            methods=["DELETE"],
+            endpoint=periods_handlers.delete_period,
+            responses={400: {"model": ErrorResponse}, 404: {"model": ErrorResponse}},
+        )

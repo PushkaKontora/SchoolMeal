@@ -48,7 +48,7 @@ class Repository(Generic[T], ABC):
 
         return list(await self.session.scalars(query))
 
-    async def find_one(self, *specifications: Specification) -> T:
+    async def find_one(self, *specifications: Specification) -> T | None:
         query = select(self.model).limit(1)
 
         for spec in specifications:
