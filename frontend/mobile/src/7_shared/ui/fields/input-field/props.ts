@@ -8,6 +8,8 @@ export type InputStyle = {
   backgroundColor?: string,
   placeHolderColor?: string,
   borderRadius?: number,
+  borderColor?: string,
+  borderWidth?: number,
   color?: string
 };
 
