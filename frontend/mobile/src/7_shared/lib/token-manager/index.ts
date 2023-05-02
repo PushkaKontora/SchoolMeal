@@ -1,2 +1,2 @@
-export * as JwtManager from './jwt-manager';
-export * as HmacManager from './hmac-manager';
+export {JwtManager} from './jwt-manager';
+export {HmacManager} from './hmac-manager';
