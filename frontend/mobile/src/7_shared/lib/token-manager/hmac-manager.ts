@@ -1,15 +1,18 @@
 import {HMAC_DEFAULT_ALGORITHM} from './config/config';
+import CryptoJS from 'crypto-js';
 
-export function getHash(message: string, passphrase: string) {
-  return CryptoJS.HmacSHA256(message, passphrase);
-}
+export const HmacManager = {
+  getHash(message: string, passphrase: string) {
+    return CryptoJS.HmacSHA256(message, passphrase);
+  },
 
-export function getProgressiveHash(messages: Array<string>, passphrase: string) {
-  const hmac = CryptoJS.algo.HMAC.create(HMAC_DEFAULT_ALGORITHM, passphrase);
+  getProgressiveHash(messages: Array<string>, passphrase: string) {
+    const hmac = CryptoJS.algo.HMAC.create(HMAC_DEFAULT_ALGORITHM, passphrase);
 
-  messages
-    .forEach(
-      (item) => hmac.update(item));
+    messages
+      .forEach(
+        (item) => hmac.update(item));
 
-  return hmac.finalize();
-}
+    return hmac.finalize();
+  }
+};

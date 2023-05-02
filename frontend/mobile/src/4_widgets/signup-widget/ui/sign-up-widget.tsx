@@ -4,6 +4,7 @@ import {HEADER_TITLE, SUBHEADER_TITLE} from '../consts/consts';
 import {MarginArea} from '../../../7_shared/ui/styling/margin-area';
 import {HorizontalLine} from '../../../7_shared/ui/styling/horizontal-line';
 import {ButtonSecondary} from '../../../7_shared/ui/buttons/button-secondary/button-secondary';
+import {SignUpForm} from '../../../6_entities/user/ui/sign-up-form';
 
 export function SignUpWidget({navigation}: SignUpProps) {
   const navigateToLogin = () => {
@@ -18,7 +19,7 @@ export function SignUpWidget({navigation}: SignUpProps) {
       <MarginArea
         marginBottom={16}>
 
-
+        <SignUpForm/>
 
       </MarginArea>
 
