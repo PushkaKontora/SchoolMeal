@@ -12,9 +12,10 @@ import {INPUT_DATA} from "../inputData";
 import {Controller, useForm} from "react-hook-form";
 import {idChildData} from "../types";
 import {ErrorMessage} from "../../../6_entities/modal/ui/error-message/error-message";
-
+// http://localhost:8000
 
 export function AddChildrenWidget(props: ModalAddChildProps) {
+    const [idChild, setIdChild] = useState('');
     const [disabled, setDisabled] = useState(true);
     const [invisibleErrorMessage, setInvisibleErrorMessage] = useState(true);
     const {
@@ -47,7 +48,7 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
                             onChangeText={onChange}
                             value={value}
                             errors={errors}/>
-                    )} />
+                    )}/>
                 <ErrorMessage
                     displayErrorMessage={invisibleErrorMessage}
                     textMessage={'Индентификатора не существует'}/>
