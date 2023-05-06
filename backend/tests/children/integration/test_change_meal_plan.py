@@ -10,7 +10,7 @@ from app.users.db.user.model import User
 from tests.auth.integration.conftest import create_access_token
 from tests.children.integration.conftest import child_prefix
 from tests.conftest import BearerAuth
-from tests.responses import FORBIDDEN, error
+from tests.responses import error
 from tests.utils import prepare_patch_data
 
 
@@ -23,12 +23,12 @@ async def change(
     client: AsyncClient,
     jwt_settings: JWTSettings,
     parent: User,
-    child: Pupil,
+    pupil: Pupil,
     breakfast: bool | None = None,
     lunch: bool | None = None,
     dinner: bool | None = None,
 ) -> Response:
-    url = child_prefix(child.id)
+    url = child_prefix(pupil.id)
     body = prepare_patch_data({"breakfast": breakfast, "lunch": lunch, "dinner": dinner})
     token = create_access_token(parent.id, parent.role, jwt_settings)
 
@@ -67,48 +67,48 @@ async def test_change_meal_plan(
     session: AsyncSession,
     jwt_settings: JWTSettings,
     parent: User,
-    child: Pupil,
+    pupil: Pupil,
     plan: dict,
     breakfast_init: bool,
     lunch_init: bool,
     dinner_init: bool,
 ):
-    child.breakfast, child.lunch, child.dinner = breakfast_init, lunch_init, dinner_init
-    session.add(child)
-    old_plan = {meal: getattr(child, meal) for meal in MEALS}
+    pupil.breakfast, pupil.lunch, pupil.dinner = breakfast_init, lunch_init, dinner_init
+    session.add(pupil)
+    old_plan = {meal: getattr(pupil, meal) for meal in MEALS}
     await session.commit()
 
-    response = await change(client, jwt_settings, parent, child, **plan)
+    response = await change(client, jwt_settings, parent, pupil, **plan)
 
-    await session.refresh(child)
+    await session.refresh(pupil)
     expected = {meal: plan[meal] if meal in plan else old_plan[meal] for meal in MEALS}
 
     assert response.status_code == 200
     assert response.json() == expected
 
-    actual = {meal: getattr(child, meal) for meal in MEALS}
+    actual = {meal: getattr(pupil, meal) for meal in MEALS}
     assert actual == expected
 
 
 async def test_change_the_childs_plan_by_some_parent(
-    client: AsyncClient, session: AsyncSession, jwt_settings: JWTSettings, parent: User, child: Pupil
+    client: AsyncClient, session: AsyncSession, jwt_settings: JWTSettings, parent: User, pupil: Pupil
 ):
     await session.execute(
-        delete(ParentPupil).where(ParentPupil.parent_id == parent.id, ParentPupil.pupil_id == child.id)
+        delete(ParentPupil).where(ParentPupil.parent_id == parent.id, ParentPupil.pupil_id == pupil.id)
     )
-    old_plan = {meal: getattr(child, meal) for meal in MEALS}
+    old_plan = {meal: getattr(pupil, meal) for meal in MEALS}
 
-    response = await change(client, jwt_settings, parent, child, True, True, True)
+    response = await change(client, jwt_settings, parent, pupil, True, True, True)
 
-    await session.refresh(child)
+    await session.refresh(pupil)
 
     assert response.status_code == 403
     assert response.json() == error("UserIsNotParentOfThePupilException", "The user is not a parent of the pupil")
 
-    assert {meal: getattr(child, meal) for meal in MEALS} == old_plan
+    assert {meal: getattr(pupil, meal) for meal in MEALS} == old_plan
 
 
 @pytest.fixture(autouse=True)
-async def prepare_data(session: AsyncSession, parent: User, child: Pupil):
-    session.add(ParentPupil(parent_id=parent.id, pupil_id=child.id))
+async def prepare_data(session: AsyncSession, parent: User, pupil: Pupil):
+    session.add(ParentPupil(parent_id=parent.id, pupil_id=pupil.id))
     await session.commit()

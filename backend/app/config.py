@@ -3,9 +3,7 @@ from datetime import timedelta
 from os.path import join
 from pathlib import Path
 
-from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Singleton
-from pydantic import BaseSettings, Field, PostgresDsn, SecretStr
+from pydantic import BaseSettings, Field, SecretStr
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +20,7 @@ class AppSettings(Settings):
 
 class DatabaseSettings(Settings):
     driver: str = Field(env="POSTGRES_DRIVER")
-    user: str = Field(env="POSTRES_USER")
+    user: str = Field(env="POSTGRES_USER")
     password: SecretStr = Field(env="POSTGRES_PASSWORD")
     host: str = Field(env="POSTGRES_HOST")
     port: int = Field(env="POSTGRES_PORT")

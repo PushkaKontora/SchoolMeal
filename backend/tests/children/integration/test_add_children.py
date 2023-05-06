@@ -18,20 +18,20 @@ pytestmark = [pytest.mark.integration]
 URL = CHILDREN_PREFIX
 
 
-async def add_child(client: AsyncClient, parent: User, child: Pupil, jwt_settings: JWTSettings) -> Response:
+async def add_child(client: AsyncClient, parent: User, pupil: Pupil, jwt_settings: JWTSettings) -> Response:
     token = create_access_token(parent.id, parent.role, jwt_settings)
 
-    return await client.post(URL, json={"childId": child.id}, auth=BearerAuth(token))
+    return await client.post(URL, json={"childId": pupil.id}, auth=BearerAuth(token))
 
 
 @pytest.mark.parametrize("role", Role)
 async def test_any_user_can_add_child(
-    client: AsyncClient, session: AsyncSession, parent: User, role: Role, child: Pupil, jwt_settings: JWTSettings
+    client: AsyncClient, session: AsyncSession, parent: User, role: Role, pupil: Pupil, jwt_settings: JWTSettings
 ):
     parent.role = role
     await session.commit()
 
-    response = await add_child(client, parent, child, jwt_settings)
+    response = await add_child(client, parent, pupil, jwt_settings)
 
     assert response.status_code == 200
     assert response.json() == SUCCESS
@@ -39,7 +39,7 @@ async def test_any_user_can_add_child(
     children = await session.scalars(
         select(ParentPupil).with_only_columns(ParentPupil.pupil_id).where(ParentPupil.parent_id == parent.id)
     )
-    assert list(children) == [child.id]
+    assert list(children) == [pupil.id]
 
 
 async def test_child_can_be_added_by_multiple_parents(
@@ -47,13 +47,13 @@ async def test_child_can_be_added_by_multiple_parents(
     session: AsyncSession,
     parent: User,
     another_parent: User,
-    child: Pupil,
+    pupil: Pupil,
     jwt_settings: JWTSettings,
 ):
-    session.add(ParentPupil(parent_id=another_parent.id, pupil_id=child.id))
+    session.add(ParentPupil(parent_id=another_parent.id, pupil_id=pupil.id))
     await session.commit()
 
-    response = await add_child(client, parent, child, jwt_settings)
+    response = await add_child(client, parent, pupil, jwt_settings)
 
     assert response.status_code == 200
     assert response.json() == SUCCESS
@@ -64,17 +64,17 @@ async def test_child_can_be_added_by_multiple_parents(
     another_parent_children = await session.scalars(
         select(ParentPupil).with_only_columns(ParentPupil.pupil_id).where(ParentPupil.parent_id == another_parent.id)
     )
-    assert list(parent_children) == [child.id]
-    assert list(another_parent_children) == [child.id]
+    assert list(parent_children) == [pupil.id]
+    assert list(another_parent_children) == [pupil.id]
 
 
 async def test_unknown_user_cannot_add_child(
-    client: AsyncClient, session: AsyncSession, parent: User, child: Pupil, jwt_settings: JWTSettings
+    client: AsyncClient, session: AsyncSession, parent: User, pupil: Pupil, jwt_settings: JWTSettings
 ):
     await session.delete(parent)
     await session.commit()
 
-    response = await add_child(client, parent, child, jwt_settings)
+    response = await add_child(client, parent, pupil, jwt_settings)
 
     assert response.status_code == 400
     assert response.json() == error("NotFoundParentException", "The parent was not found")
@@ -86,12 +86,12 @@ async def test_unknown_user_cannot_add_child(
 
 
 async def test_parent_cannot_add_unknown_child(
-    client: AsyncClient, session: AsyncSession, parent: User, child: Pupil, jwt_settings: JWTSettings
+    client: AsyncClient, session: AsyncSession, parent: User, pupil: Pupil, jwt_settings: JWTSettings
 ):
-    await session.delete(child)
+    await session.delete(pupil)
     await session.commit()
 
-    response = await add_child(client, parent, child, jwt_settings)
+    response = await add_child(client, parent, pupil, jwt_settings)
 
     assert response.status_code == 400
     assert response.json() == error("NotFoundChildException", "The child was not found")
@@ -103,12 +103,12 @@ async def test_parent_cannot_add_unknown_child(
 
 
 async def test_user_add_child_that_was_added_by_him(
-    client: AsyncClient, session: AsyncSession, parent: User, child: Pupil, jwt_settings: JWTSettings
+    client: AsyncClient, session: AsyncSession, parent: User, pupil: Pupil, jwt_settings: JWTSettings
 ):
-    session.add(ParentPupil(parent_id=parent.id, pupil_id=child.id))
+    session.add(ParentPupil(parent_id=parent.id, pupil_id=pupil.id))
     await session.commit()
 
-    response = await add_child(client, parent, child, jwt_settings)
+    response = await add_child(client, parent, pupil, jwt_settings)
 
     assert response.status_code == 400
     assert response.json() == error("NotUniqueChildException", "The child was already added by the user")

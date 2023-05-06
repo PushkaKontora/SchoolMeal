@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.db.issued_token.model import IssuedToken
 from app.auth.db.password.model import Password
 from app.auth.domain.base_repositories import BaseIssuedTokensRepository, BasePasswordsRepository
+from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
+from app.cancel_meal_periods.domain.base_repositories import BaseCancelMealPeriodsRepository
 from app.children.db.parent_pupil.model import ParentPupil
 from app.children.domain.base_repositories import BaseChildrenRepository
 from app.pupils.db.pupil.model import Pupil
@@ -20,6 +22,7 @@ class UnitOfWork:
         issued_tokens_repository: type[BaseIssuedTokensRepository],
         pupils_repository: type[BasePupilsRepository],
         children_repository: type[BaseChildrenRepository],
+        cancel_meal_periods_repository: type[BaseCancelMealPeriodsRepository],
     ):
         self._session = session
 
@@ -28,6 +31,7 @@ class UnitOfWork:
         self._issued_tokens_repo = issued_tokens_repository(self._session, IssuedToken)
         self._pupils_repo = pupils_repository(self._session, Pupil)
         self._children_repo = children_repository(self._session, ParentPupil)
+        self._cancel_meal_periods_repo = cancel_meal_periods_repository(self._session, CancelMealPeriod)
 
     @property
     def users_repo(self) -> BaseUsersRepository:
@@ -48,6 +52,10 @@ class UnitOfWork:
     @property
     def children_repo(self) -> BaseChildrenRepository:
         return self._children_repo
+
+    @property
+    def cancel_meal_periods_repo(self) -> BaseCancelMealPeriodsRepository:
+        return self._cancel_meal_periods_repo
 
     async def commit(self) -> None:
         await self._session.commit()

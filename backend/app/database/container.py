@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from app.auth.db.issued_token.repository import IssuedTokensRepository
 from app.auth.db.password.repository import PasswordsRepository
+from app.cancel_meal_periods.db.cancel_meal_period.repository import CancelMealPeriodsRepository
 from app.children.db.parent_pupil.repository import ChildrenRepository
 from app.config import DatabaseSettings
 from app.database.unit_of_work import UnitOfWork
@@ -38,4 +39,5 @@ class Database(DeclarativeContainer):
         issued_tokens_repository=IssuedTokensRepository,
         pupils_repository=PupilsRepository,
         children_repository=ChildrenRepository,
+        cancel_meal_periods_repository=CancelMealPeriodsRepository,
     )
