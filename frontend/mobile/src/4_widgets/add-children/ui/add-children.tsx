@@ -12,7 +12,9 @@ import {INPUT_DATA} from "../inputData";
 import {Controller, useForm} from "react-hook-form";
 import {idChildData} from "../types";
 import {ErrorMessage} from "../../../6_entities/modal/ui/error-message/error-message";
-// http://localhost:8000
+import {ControlledInputField} from "../../../6_entities/controlled/controlled-input-field";
+import {SignUpFormData} from "../../../6_entities/user/ui/sign-up-form/types";
+
 
 export function AddChildrenWidget(props: ModalAddChildProps) {
     const [idChild, setIdChild] = useState('');
@@ -22,9 +24,18 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
         handleSubmit,
         control,
         formState: {errors}
-    } = useForm<idChildData>({
+    } = useForm<SignUpFormData>({
         mode: 'onChange'
     });
+    const item = {
+        name: 'name',
+        label: 'id',
+        type: '',
+        options: {
+            required: 'Вы не заполнили это поле'
+        },
+        placeholder: ''
+    };
 
     const styles = createStyle(props);
     const ConfirmationModal = () => (
@@ -37,18 +48,11 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
                 <Text style={styles.contentTitle}>
                     Идентификатор, выданный в школе
                 </Text>
-                <Controller
+                <ControlledInputField
+                    key={item.name}
                     control={control}
-                    name={INPUT_DATA[0].name}
-                    rules={INPUT_DATA[0].options}
-                    render={({field: {onChange, value}}) => (
-                        <InputField
-                            style={styles.inputField}
-                            data={INPUT_DATA[0]}
-                            onChangeText={onChange}
-                            value={value}
-                            errors={errors}/>
-                    )}/>
+                    errors={errors}
+                    data={item}/>
                 <ErrorMessage
                     displayErrorMessage={invisibleErrorMessage}
                     textMessage={'Индентификатора не существует'}/>
