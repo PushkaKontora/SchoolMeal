@@ -1,28 +1,38 @@
-import {ConfigSettings} from "../../../7_shared/api";
-import {fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {BASE_BACKEND_URL} from "../../../7_shared/api/config";
+import {Child} from "../model/child";
+import {FindChildBody} from "./types";
+import {ConfigSettings} from "../../../7_shared/api";
 import {User} from "../../user";
-import {RegisterBody} from "../../user/api/types";
-import {Tags} from "../../user/api/config";
 
-export const CONFIG: ConfigSettings = {
-    reducerPath: 'api/users',
+export const CHILD_API = createApi({
+    reducerPath: 'api/children',
     baseQuery: fetchBaseQuery({
-        baseUrl: BASE_BACKEND_URL + '/users'
+        baseUrl: BASE_BACKEND_URL + '/children'
     }),
-    tagTypes: Object.values(Tags),
+    tagTypes: ['UserChildren'],
     endpoints: build => ({
-        register: build.mutation<User, RegisterBody>({
+        findChildOnID: build.mutation<Child, FindChildBody>({
             query: (body) => ({
                 url: '',
                 method: 'POST',
                 body: body,
-            })
+            }),
+            invalidatesTags: [{type: 'UserChildren', id: 'LIST'}]
         }),
-        currentUser: build.query<User, undefined>({
+        getUserChild: build.query<Child[], void>({
             query: () => ({
-                url: '/me'
-            })
+                url: '/'
+            }),
+            providesTags: (result) =>
+                result
+                    ? [
+                        ...result.map(({ id }) => ({ type: 'UserChildren' as const, id })),
+                        { type: 'UserChildren', id: 'LIST' },
+                    ]
+                    : [{ type: 'UserChildren', id: 'LIST' }],
         })
     })
-};
+});
+
+export const {useGetUserChildQuery, useFindChildOnIDMutation} = CHILD_API;

@@ -7,28 +7,28 @@ import {createStyle} from "../consts/styleModal";
 import {ModalFeature} from "../../../5_features/modal-feature/ui/modal-feature";
 import {useState} from "react";
 import {Text, View} from "react-native";
-import {InputField} from "../../../7_shared/ui/fields/input-field";
-import {INPUT_DATA} from "../inputData";
-import {Controller, useForm} from "react-hook-form";
-import {idChildData} from "../types";
+import {useForm} from "react-hook-form";
 import {ErrorMessage} from "../../../6_entities/modal/ui/error-message/error-message";
 import {ControlledInputField} from "../../../6_entities/controlled/controlled-input-field";
-import {SignUpFormData} from "../../../6_entities/user/ui/sign-up-form/types";
+import {useGetUserChildQuery, useFindChildOnIDMutation} from "../../../6_entities/child/api/config";
+import {idChildData} from "../types";
 
 
 export function AddChildrenWidget(props: ModalAddChildProps) {
-    const [idChild, setIdChild] = useState('');
-    const [disabled, setDisabled] = useState(true);
+    const {data: userChild} = useGetUserChildQuery();
+    const [addChildByID, {isError, isSuccess}] = useFindChildOnIDMutation();
+    // const [idChild, setIdChild] = useState('');
+    const [disabled, setDisabled] = useState(false);
     const [invisibleErrorMessage, setInvisibleErrorMessage] = useState(true);
     const {
         handleSubmit,
         control,
         formState: {errors}
-    } = useForm<SignUpFormData>({
+    } = useForm<idChildData>({
         mode: 'onChange'
     });
     const item = {
-        name: 'name',
+        name: 'idChild',
         label: 'id',
         type: '',
         options: {
@@ -37,11 +37,30 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
         placeholder: ''
     };
 
+    const handleAddChildByID = (data: idChildData) => {
+        if (data) {
+            addChildByID({childId: data.idChild}).unwrap()
+        }
+        console.log(data);
+    }
+
+    if (isSuccess) {
+        setInvisibleErrorMessage(true)
+
+        magicModal.hide().then(r => console.log('modal close'));
+    }
+
+    if (isError) {
+        setInvisibleErrorMessage(false)
+        setDisabled(true)
+    }
+//todo: сделать очищение поля при закрытии модалки
+
     const styles = createStyle(props);
     const ConfirmationModal = () => (
         <ModalFeature
             headerModalTitle={'Добавить ребёнка'}
-            functionButton={() => magicModal.hide()}
+            functionButton={() => handleSubmit(handleAddChildByID)}
             disabledButton={disabled}
             clickExit={() => magicModal.hide()}>
             <View style={styles.content}>
@@ -65,16 +84,20 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
     };
 
     return (
-        <EmojiTextFeature
-            imageEmoji={require('../../../5_features/emoji-text-feature/images/angelAmoji.png')}
-            subEmojiTitle={SUB_EMOJI_TITLE}>
-            <ButtonPrimary
-                title={'Добавить ребёнка'}
-                onPress={handleAddChild}
-                backgroundColor={'#EC662A'}
-                textColor={'#FFFFFF'}
-                borderRadius={10}/>
-            <MagicModalPortal/>
-        </EmojiTextFeature>
+        <>{userChild !== undefined
+            ? <>
+            </>
+            : <EmojiTextFeature
+                imageEmoji={require('../../../5_features/emoji-text-feature/images/angelAmoji.png')}
+                subEmojiTitle={SUB_EMOJI_TITLE}>
+                <ButtonPrimary
+                    title={'Добавить ребёнка'}
+                    onPress={handleAddChild}
+                    backgroundColor={'#EC662A'}
+                    textColor={'#FFFFFF'}
+                    borderRadius={10}/>
+                <MagicModalPortal/>
+            </EmojiTextFeature>}
+        </>
     );
 }
