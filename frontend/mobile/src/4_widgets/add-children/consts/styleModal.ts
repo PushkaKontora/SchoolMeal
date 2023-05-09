@@ -5,8 +5,8 @@ export const createStyle = (props: ModalAddChildProps) => StyleSheet.create({
     container: {},
     inputField: {
         backgroundColor: '#FFFFFF',
-        borderRadius: 10,
-
+        borderRadius: 0,
+        width: '10',
         borderColor: '#E9E9E9',
         borderWidth: 1,
 

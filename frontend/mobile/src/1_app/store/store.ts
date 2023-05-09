@@ -10,7 +10,7 @@ export const store = configureStore({
     },
     middleware: getDefaultMiddleware =>
         getDefaultMiddleware()
-            .concat(AUTH_API.middleware)
+            // .concat(AUTH_API.middleware)
             .concat(CHILD_API.middleware)
 });
 

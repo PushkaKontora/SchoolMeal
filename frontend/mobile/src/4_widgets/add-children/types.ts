@@ -1,3 +1,3 @@
 export type idChildData = {
-    idChild: string,
+    childId: string,
 }

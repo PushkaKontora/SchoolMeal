@@ -2,14 +2,14 @@ import {Class} from "../../../7_shared/model/class";
 import {CancelMealPeriods} from "../../../7_shared/model/cancelMealPeriods";
 
 export type Child = {
-    id: number,
+    id: string,
     lastName: string,
     firstName: string,
-    certificateBeforeDate: string,
+    certificateBeforeDate: Date,
     balance: number,
     breakfast: boolean,
     lunch: boolean,
     dinner: boolean,
-    class: Class,
+    schoolClass: Class,
     cancelMealPeriods: CancelMealPeriods[]
 }

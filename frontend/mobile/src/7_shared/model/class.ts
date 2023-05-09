@@ -11,5 +11,4 @@ export type Class   = {
     hasDinner: boolean,
     school: School,
     teachers: Teachers[],
-    pupils: Child[],
 }

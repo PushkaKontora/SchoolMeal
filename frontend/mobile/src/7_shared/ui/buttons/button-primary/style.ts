@@ -5,7 +5,8 @@ export const createStyle = (props: ButtonPrimaryProps) => StyleSheet.create({
   default: {
     borderRadius: props.borderRadius || 10,
     backgroundColor: props.backgroundColor || '#2C2C2C',
-    paddingVertical: 8.5,
+    paddingVertical: props.paddingVertical || 8.5,
+    paddingHorizontal: props.paddingHorizontal || 0,
     width: '100%',
     alignItems: 'center',
 
@@ -16,6 +17,6 @@ export const createStyle = (props: ButtonPrimaryProps) => StyleSheet.create({
   title: {
     color: props.textColor || '#FFFFFF',
     fontWeight: '600',
-    fontSize: 16
+    fontSize: props.fontSize || 16
   }
 });

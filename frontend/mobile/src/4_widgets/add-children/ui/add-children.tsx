@@ -12,6 +12,7 @@ import {ErrorMessage} from "../../../6_entities/modal/ui/error-message/error-mes
 import {ControlledInputField} from "../../../6_entities/controlled/controlled-input-field";
 import {useGetUserChildQuery, useFindChildOnIDMutation} from "../../../6_entities/child/api/config";
 import {idChildData} from "../types";
+import {INPUT_DATA} from "../inputData";
 
 
 export function AddChildrenWidget(props: ModalAddChildProps) {
@@ -23,38 +24,34 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
     const {
         handleSubmit,
         control,
+        reset,
         formState: {errors}
     } = useForm<idChildData>({
         mode: 'onChange'
     });
-    const item = {
-        name: 'idChild',
-        label: 'id',
-        type: '',
-        options: {
-            required: 'Вы не заполнили это поле'
-        },
-        placeholder: ''
-    };
 
-    const handleAddChildByID = (data: idChildData) => {
+    const handleAddChildByID = (data: any): any => {
+        console.log(data?.childId + ' 1');
         if (data) {
-            addChildByID({childId: data.idChild}).unwrap()
+            addChildByID({childId: data?.childId}).unwrap()
         }
-        console.log(data);
+
+        console.log(data?.childId + ' 2');
+    }
+
+    const closeModal = (): any => {
+        magicModal.hide();
+        setInvisibleErrorMessage(true)
     }
 
     if (isSuccess) {
-        setInvisibleErrorMessage(true)
-
-        magicModal.hide().then(r => console.log('modal close'));
+        closeModal();
     }
 
     if (isError) {
         setInvisibleErrorMessage(false)
         setDisabled(true)
     }
-//todo: сделать очищение поля при закрытии модалки
 
     const styles = createStyle(props);
     const ConfirmationModal = () => (
@@ -62,16 +59,18 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
             headerModalTitle={'Добавить ребёнка'}
             functionButton={() => handleSubmit(handleAddChildByID)}
             disabledButton={disabled}
-            clickExit={() => magicModal.hide()}>
+            clickExit={() => closeModal()}>
             <View style={styles.content}>
                 <Text style={styles.contentTitle}>
                     Идентификатор, выданный в школе
                 </Text>
                 <ControlledInputField
-                    key={item.name}
+                    key={INPUT_DATA.name}
                     control={control}
                     errors={errors}
-                    data={item}/>
+                    data={INPUT_DATA}
+                    style={styles.inputField}
+                />
                 <ErrorMessage
                     displayErrorMessage={invisibleErrorMessage}
                     textMessage={'Индентификатора не существует'}/>
@@ -80,6 +79,7 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
     );
 
     const handleAddChild = () => {
+        reset();
         return magicModal.show(ConfirmationModal);
     };
 

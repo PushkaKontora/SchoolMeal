@@ -18,18 +18,15 @@ export function ModalFeature(props: ModalProps) {
                     headerModalTitle={props.headerModalTitle}
                     clickExit={props.clickExit}/>
                 {props.children}
-                <TouchableOpacity
-                    onPress={props?.functionButton}>
-                    <MarginArea marginHorizontal={16}>
-                        <ButtonPrimary
-                            title={'Сохранить изменения'}
-                            onPress={props.functionButton}
-                            backgroundColor={'#EC662A'}
-                            disabled={props.disabledButton}
-                            textColor={'#FFFFFF'}
-                            borderRadius={10}/>
-                    </MarginArea>
-                </TouchableOpacity>
+                <MarginArea marginHorizontal={32}>
+                    <ButtonPrimary
+                        title={'Сохранить изменения'}
+                        onPress={props.functionButton}
+                        backgroundColor={'#EC662A'}
+                        disabled={props.disabledButton}
+                        textColor={'#FFFFFF'}
+                        borderRadius={10}/>
+                </MarginArea>
             </PaddingArea>
         </View>
     );
