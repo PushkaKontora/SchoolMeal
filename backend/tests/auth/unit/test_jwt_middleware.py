@@ -9,7 +9,7 @@ from app.auth.domain.exceptions import InvalidTokenSignatureException, TokenExpi
 from app.auth.presentation.exceptions import InvalidBearerCredentialsException, UnauthorizedException
 from app.auth.presentation.middlewares import JWTAuth
 from app.config import JWTSettings
-from app.users.domain.entities import Role
+from app.users.db.user.model import Role
 from tests.auth.integration.conftest import TokenType, create_access_token, generate_token, get_expected_payload
 
 

@@ -33,3 +33,8 @@ class CompositeFilterSpecification(FilterSpecification, ABC):
         specs = [spec(query=Select()).whereclause for spec in self._specifications]
 
         return query.where(self._func(*specs))
+
+
+class ForUpdate(Specification):
+    def __call__(self, query: TQuery) -> TQuery:
+        return query.with_for_update()
