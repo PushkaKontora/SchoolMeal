@@ -3,6 +3,7 @@ from app.auth.db.password.model import Password
 from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
 from app.children.db.parent_pupil.model import ParentPupil
 from app.foods.db.food.model import Food
+from app.foods.db.portion.model import Portion
 from app.meal_requests.db.declared_pupil.model import DeclaredPupils
 from app.meal_requests.db.meal_request.model import MealRequest
 from app.meals.db.meal.model import Meal

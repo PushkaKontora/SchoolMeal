@@ -6,6 +6,7 @@ from app.children.api import ChildrenAPI
 from app.config import AppSettings, SignedRequestSettings
 from app.database.container import Database
 from app.exceptions import APIException, handle_api_exception
+from app.meals.api import MealsAPI
 from app.middlewares import SignatureMiddleware
 from app.users.api import UsersAPI
 
@@ -32,6 +33,9 @@ def create_app() -> FastAPI:
 
     periods = CancelMealPeriodsAPI(jwt_auth=auth.jwt_auth)
     app_.include_router(periods.router())
+
+    meals = MealsAPI()
+    app_.include_router(meals.router())
 
     return app_
 

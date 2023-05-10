@@ -16,9 +16,7 @@ from app.pupils.db.pupil.filters import ById as PupilById, ByIds
 from app.pupils.db.pupil.joins import WithCancelMealPeriods, WithClass, WithSchool, WithTeachers
 from app.pupils.db.pupil.model import Pupil
 from app.school_classes.db.school_class.model import SchoolClass
-from app.schools.db.school.model import School
 from app.users.db.user.filters import ById as UserById
-from app.users.db.user.model import User
 
 
 class ChildService:

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Callable, TypeVar
+from typing import Any, Callable, TypeVar
 
 from sqlalchemy import Select, Update, and_, not_, or_
 
@@ -30,7 +30,8 @@ class CompositeFilterSpecification(FilterSpecification, ABC):
         self._func = func
 
     def __call__(self, query: TQuery) -> TQuery:
-        specs = [spec(query=Select()).whereclause for spec in self._specifications]
+        specs = (spec(query=Select()).whereclause for spec in self._specifications)
+        specs = (spec for spec in specs if spec is not None)
 
         return query.where(self._func(*specs))
 

@@ -8,6 +8,7 @@ from app.cancel_meal_periods.db.cancel_meal_period.repository import CancelMealP
 from app.children.db.parent_pupil.repository import ChildrenRepository
 from app.config import DatabaseSettings
 from app.database.unit_of_work import UnitOfWork
+from app.meals.db.meal.repository import MealsRepository
 from app.pupils.db.pupil.repository import PupilsRepository
 from app.users.db.user.model import User
 from app.users.db.user.repository import UsersRepository
@@ -15,7 +16,7 @@ from app.users.domain.base_repositories import BaseUsersRepository
 
 
 def create_engine(settings: DatabaseSettings) -> AsyncEngine:
-    return create_async_engine(url=settings.dsn)
+    return create_async_engine(url=settings.dsn, echo=True)
 
 
 def create_session(session_maker: async_sessionmaker[AsyncSession]) -> AsyncSession:
@@ -40,4 +41,5 @@ class Database(DeclarativeContainer):
         pupils_repository=PupilsRepository,
         children_repository=ChildrenRepository,
         cancel_meal_periods_repository=CancelMealPeriodsRepository,
+        meals_repository=MealsRepository,
     )

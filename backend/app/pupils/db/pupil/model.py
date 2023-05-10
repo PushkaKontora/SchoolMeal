@@ -15,7 +15,7 @@ class Pupil(Base):
     last_name: Mapped[str] = mapped_column(String(32), nullable=False)
     first_name: Mapped[str] = mapped_column(String(32), nullable=False)
     certificate_before_date: Mapped[datetime | None] = mapped_column(nullable=True)
-    balance: Mapped[float] = mapped_column(Numeric(precision=10, scale=2), nullable=False)
+    balance: Mapped[float] = mapped_column(Numeric(scale=2), nullable=False)
     breakfast: Mapped[bool] = mapped_column(default=False, nullable=False)
     lunch: Mapped[bool] = mapped_column(default=False, nullable=False)
     dinner: Mapped[bool] = mapped_column(default=False, nullable=False)
