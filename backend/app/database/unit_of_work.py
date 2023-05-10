@@ -7,6 +7,8 @@ from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
 from app.cancel_meal_periods.domain.base_repositories import BaseCancelMealPeriodsRepository
 from app.children.db.parent_pupil.model import ParentPupil
 from app.children.domain.base_repositories import BaseChildrenRepository
+from app.foods.db.portion.model import Portion
+from app.foods.domain.base_repositories import BasePortionsRepository
 from app.meals.db.meal.model import Meal
 from app.meals.domain.base_repositories import BaseMealsRepository
 from app.pupils.db.pupil.model import Pupil
@@ -26,6 +28,7 @@ class UnitOfWork:
         children_repository: type[BaseChildrenRepository],
         cancel_meal_periods_repository: type[BaseCancelMealPeriodsRepository],
         meals_repository: type[BaseMealsRepository],
+        portions_repository: type[BasePortionsRepository],
     ):
         self._session = session
 
@@ -36,6 +39,7 @@ class UnitOfWork:
         self._children_repo = children_repository(self._session, ParentPupil)
         self._cancel_meal_periods_repo = cancel_meal_periods_repository(self._session, CancelMealPeriod)
         self._meals_repo = meals_repository(self._session, Meal)
+        self._portions_repo = portions_repository(self._session, Portion)
 
     @property
     def users_repo(self) -> BaseUsersRepository:
@@ -60,6 +64,10 @@ class UnitOfWork:
     @property
     def cancel_meal_periods_repo(self) -> BaseCancelMealPeriodsRepository:
         return self._cancel_meal_periods_repo
+
+    @property
+    def portions_repo(self) -> BasePortionsRepository:
+        return self._portions_repo
 
     @property
     def meals_repo(self) -> BaseMealsRepository:

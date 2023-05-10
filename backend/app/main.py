@@ -6,6 +6,7 @@ from app.children.api import ChildrenAPI
 from app.config import AppSettings, SignedRequestSettings
 from app.database.container import Database
 from app.exceptions import APIException, handle_api_exception
+from app.foods.api import FoodAPI
 from app.meals.api import MealsAPI
 from app.middlewares import SignatureMiddleware
 from app.users.api import UsersAPI
@@ -36,6 +37,9 @@ def create_app() -> FastAPI:
 
     meals = MealsAPI()
     app_.include_router(meals.router())
+
+    foods = FoodAPI()
+    app_.include_router(foods.portions_router())
 
     return app_
 
