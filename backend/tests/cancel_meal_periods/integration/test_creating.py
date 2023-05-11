@@ -73,7 +73,7 @@ async def test_creating(
 
     response = await create(client, jwt_settings, parent, pupil, start, end, comment)
 
-    assert response.status_code == status_code
+    assert response.status_code == status_code, response.text
     match status_code:
         case 201:
             assert response.json() == {

@@ -46,7 +46,7 @@ class PasswordSettings(Settings):
     rounds: int = Field(env="PASSWORD_SALT_ROUNDS")
 
 
-class SignedRequestSettings(Settings):
+class RequestSignatureSettings(Settings):
     debug: bool = Field(env="DEBUG")
     secret: SecretStr = Field(env="SIGNATURE_SECRET")
     signature_header: str = Field(env="SIGNATURE_HEADER")

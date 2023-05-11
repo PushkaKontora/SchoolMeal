@@ -33,7 +33,7 @@ async def test_any_user_can_add_child(
 
     response = await add_child(client, parent, pupil, jwt_settings)
 
-    assert response.status_code == 200
+    assert response.status_code == 200, response.text
     assert response.json() == SUCCESS
 
     children = await session.scalars(

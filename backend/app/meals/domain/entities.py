@@ -1,7 +1,7 @@
 from datetime import date
 
 from app.base_entity import BaseEntity
-from app.foods.domain.entities import PortionOut
+from app.portions.domain.entities import PortionOut
 
 
 class MealsOptions(BaseEntity):

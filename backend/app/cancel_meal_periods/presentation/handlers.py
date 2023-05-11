@@ -1,18 +1,17 @@
-from fastapi import Body, Path, Request
+from fastapi import Body, Depends, Path
 
+from app.auth.domain.entities import JWTPayload
+from app.auth.presentation.middlewares import JWTAuth
 from app.base_entity import SuccessResponse
 from app.cancel_meal_periods.domain.entities import PeriodIn, PeriodOut
-from app.cancel_meal_periods.domain.services import PeriodService
+from app.cancel_meal_periods.domain.services import create_period_by_parent, delete_period_by_parent
 
 
-class PeriodsHandlers:
-    def __init__(self, period_service: PeriodService):
-        self._period_service = period_service
+async def create_period(period: PeriodIn = Body(), payload: JWTPayload = Depends(JWTAuth())) -> PeriodOut:
+    return await create_period_by_parent(payload.user_id, period)
 
-    async def create_period(self, request: Request, data: PeriodIn = Body(...)) -> PeriodOut:
-        return await self._period_service.create_period(request.payload.user_id, data)
 
-    async def delete_period(self, request: Request, period_id: int = Path(...)) -> SuccessResponse:
-        await self._period_service.delete_period(request.payload.user_id, period_id)
+async def delete_period(period_id: int = Path(), payload: JWTPayload = Depends(JWTAuth())) -> SuccessResponse:
+    await delete_period_by_parent(payload.user_id, period_id)
 
-        return SuccessResponse()
+    return SuccessResponse()

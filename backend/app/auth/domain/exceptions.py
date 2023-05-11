@@ -33,7 +33,3 @@ class TokenExpirationException(APIException):
     @property
     def message(self) -> str:
         return "The token expired"
-
-
-class UnknownTokenTypeException(Exception):
-    pass

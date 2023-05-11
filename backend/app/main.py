@@ -1,47 +1,43 @@
 from fastapi import FastAPI
 
-from app.auth.api import AuthAPI
-from app.cancel_meal_periods.api import CancelMealPeriodsAPI
-from app.children.api import ChildrenAPI
-from app.config import AppSettings, SignedRequestSettings
+from app.auth.app import register_auth_api
+from app.cancel_meal_periods.app import register_cancel_meal_periods_api
+from app.children.app import register_children_api
+from app.config import RequestSignatureSettings
+from app.container import Container
 from app.database.container import Database
 from app.exceptions import APIException, handle_api_exception
-from app.foods.api import FoodAPI
-from app.meals.api import MealsAPI
-from app.middlewares import SignatureMiddleware
-from app.users.api import UsersAPI
+from app.meals.app import register_meals_api
+from app.middlewares import RequestSignatureMiddleware
+from app.portions.app import register_portions_api
+from app.users.app import register_users_api
 
 
 def create_app() -> FastAPI:
-    settings = AppSettings()
-    signature_settings = SignedRequestSettings()
+    container = Container()
+    settings = container.app_settings()
 
     database = Database()
     database.wire(packages=["app"])
 
-    app_ = FastAPI(debug=settings.debug, docs_url="/docs" if settings.debug else None)
-    app_.add_exception_handler(APIException, handle_api_exception)
-    app_.add_middleware(SignatureMiddleware, settings=signature_settings)
+    application = FastAPI(debug=settings.debug, docs_url="/docs" if settings.debug else None)
+    application.add_exception_handler(APIException, handle_api_exception)
 
-    auth = AuthAPI()
-    app_.include_router(auth.router())
+    if not settings.debug:
+        application.add_middleware(RequestSignatureMiddleware, settings=container.request_signature_settings())
 
-    users = UsersAPI(password_service=auth.password_service, jwt_auth=auth.jwt_auth)
-    app_.include_router(users.router())
+    registers = (
+        register_auth_api,
+        register_cancel_meal_periods_api,
+        register_children_api,
+        register_meals_api,
+        register_portions_api,
+        register_users_api,
+    )
+    for register in registers:
+        register(application)
 
-    children = ChildrenAPI(jwt_auth=auth.jwt_auth)
-    app_.include_router(children.router())
-
-    periods = CancelMealPeriodsAPI(jwt_auth=auth.jwt_auth)
-    app_.include_router(periods.router())
-
-    meals = MealsAPI()
-    app_.include_router(meals.router())
-
-    foods = FoodAPI()
-    app_.include_router(foods.portions_router())
-
-    return app_
+    return application
 
 
 app = create_app()

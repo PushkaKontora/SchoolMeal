@@ -45,7 +45,6 @@ async def test_correct_authentication(
 
         payload = await jwt_auth(request)
         assert payload.dict() == get_expected_payload(TokenType.ACCESS, user_id, role, auth_settings.access_token_ttl)
-        assert request.payload is payload
 
 
 @freezegun.freeze_time()
@@ -104,7 +103,7 @@ async def test_invalid_header_processing(jwt_auth: JWTAuth, header: str, schema:
 async def test_authorization(
     jwt_auth: JWTAuth, user_id: int, is_authorized: bool, auth_settings: JWTSettings, role: Role = Role.PARENT
 ):
-    auth = Auth(jwt_auth._jwt_service)
+    auth = Auth()
     token = create_access_token(user_id, role, auth_settings)
 
     if is_authorized:

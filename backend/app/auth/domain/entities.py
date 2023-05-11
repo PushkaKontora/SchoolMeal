@@ -16,7 +16,7 @@ class JWTPayload(BaseEntity):
     expires_in: int
 
 
-class LoginSchema(BaseEntity):
+class CredentialsIn(BaseEntity):
     login: str
     password: str
 
@@ -25,5 +25,5 @@ class AccessTokenOut(BaseEntity):
     access_token: str
 
 
-class JWTTokens(AccessTokenOut):
+class JWTTokensOut(AccessTokenOut):
     refresh_token: str

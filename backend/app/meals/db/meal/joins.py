@@ -1,9 +1,9 @@
 from sqlalchemy.orm import joinedload, selectinload
 
 from app.database.specifications import Specification, TQuery
-from app.foods.db.portion.model import Portion
 from app.meals.db.meal.model import Meal
 from app.meals.db.menu.model import Menu
+from app.portions.db.portion.model import Portion
 
 
 class WithSchoolClass(Specification):

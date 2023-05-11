@@ -5,14 +5,14 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 from pydantic import SecretStr
 
-from app.config import SignedRequestSettings
-from app.middlewares import SignatureMiddleware
+from app.config import RequestSignatureSettings
+from app.middlewares import RequestSignatureMiddleware
 
 
 pytestmark = [pytest.mark.unit]
 
 
-async def test_correct_verification(middleware: SignatureMiddleware, request_: Mock):
+async def test_correct_verification(middleware: RequestSignatureMiddleware, request_: Mock):
     call_next = AsyncMock()
     await middleware.dispatch(request_, call_next)
 
@@ -20,7 +20,7 @@ async def test_correct_verification(middleware: SignatureMiddleware, request_: M
 
 
 async def test_wrong_signature_processing(
-    middleware: SignatureMiddleware, request_: Mock, settings: SignedRequestSettings
+    middleware: RequestSignatureMiddleware, request_: Mock, settings: RequestSignatureSettings
 ):
     request_.headers[settings.signature_header] = "wrong signature"
 
@@ -32,7 +32,7 @@ async def test_wrong_signature_processing(
     call_next.assert_not_called()
 
 
-async def test_debug_mode(middleware: SignatureMiddleware):
+async def test_debug_mode(middleware: RequestSignatureMiddleware):
     middleware._settings.debug = True
     call_next = AsyncMock()
     await middleware.dispatch(Mock(), call_next)
@@ -41,12 +41,12 @@ async def test_debug_mode(middleware: SignatureMiddleware):
 
 
 @pytest.fixture
-def middleware(settings: SignedRequestSettings) -> SignatureMiddleware:
-    return SignatureMiddleware(AsyncMock(), settings)
+def middleware(settings: RequestSignatureSettings) -> RequestSignatureMiddleware:
+    return RequestSignatureMiddleware(AsyncMock(), settings)
 
 
 @pytest.fixture
-def request_(settings: SignedRequestSettings) -> Mock:
+def request_(settings: RequestSignatureSettings) -> Mock:
     request = Mock()
     request.method = "POST"
     request.url = "http://localhost:8000/collection"
@@ -72,8 +72,8 @@ header_1=value_1header_2=value_2"""
 
 
 @pytest.fixture
-def settings() -> SignedRequestSettings:
-    return SignedRequestSettings(
+def settings() -> RequestSignatureSettings:
+    return RequestSignatureSettings(
         _env_file=None,
         secret=SecretStr("secret"),
         signature_header="X-Signature",

@@ -5,11 +5,11 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 from starlette.types import ASGIApp
 
-from app.config import SignedRequestSettings
+from app.config import RequestSignatureSettings
 
 
-class SignatureMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app: ASGIApp, settings: SignedRequestSettings):
+class RequestSignatureMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app: ASGIApp, settings: RequestSignatureSettings):
         super().__init__(app)
         self._settings = settings
 

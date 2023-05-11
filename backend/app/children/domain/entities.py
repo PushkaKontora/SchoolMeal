@@ -3,11 +3,11 @@ from datetime import date, datetime
 from app.base_entity import BaseEntity
 
 
-class NewChildSchema(BaseEntity):
+class ChildIn(BaseEntity):
     child_id: str
 
 
-class CancelMealPeriodOut(BaseEntity):
+class PeriodOut(BaseEntity):
     id: int
     start_date: date
     end_date: date | None
@@ -48,16 +48,16 @@ class ChildOut(BaseEntity):
     lunch: bool
     dinner: bool
     school_class: ClassOut | None
-    cancel_meal_periods: list[CancelMealPeriodOut]
+    cancel_meal_periods: list[PeriodOut]
 
 
-class MealPlanIn(BaseEntity):
+class PlanIn(BaseEntity):
     breakfast: bool | None = None
     lunch: bool | None = None
     dinner: bool | None = None
 
 
-class MealPlanOut(BaseEntity):
+class PlanOut(BaseEntity):
     breakfast: bool
     lunch: bool
     dinner: bool
