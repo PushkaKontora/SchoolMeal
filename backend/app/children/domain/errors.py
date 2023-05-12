@@ -1,25 +1,25 @@
-from app.exceptions import APIException
+from app.error import Error
 
 
-class NotFoundParentException(APIException):
+class NotFoundParentError(Error):
     @property
     def message(self) -> str:
         return "The parent was not found"
 
 
-class NotFoundChildException(APIException):
+class NotFoundChildError(Error):
     @property
     def message(self) -> str:
         return "The child was not found"
 
 
-class NotUniqueChildException(APIException):
+class NotUniqueChildError(Error):
     @property
     def message(self) -> str:
         return "The child was already added by the user"
 
 
-class UserIsNotParentOfThePupilException(APIException):
+class UserIsNotParentOfThePupilError(Error):
     @property
     def message(self) -> str:
         return "The user is not a parent of the pupil"

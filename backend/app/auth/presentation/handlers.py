@@ -4,9 +4,9 @@ from fastapi import Body, Depends, Response
 from app.auth.domain.entities import AccessTokenOut, CredentialsIn
 from app.auth.domain.services.auth import authenticate, revoke_refresh_token, update_tokens_using_refresh_token
 from app.auth.presentation.dependencies import get_refresh_token_from_cookies
-from app.base_entity import SuccessResponse
 from app.config import JWTSettings
 from app.container import Container
+from app.responses import SuccessResponse
 
 
 @inject

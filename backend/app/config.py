@@ -16,6 +16,7 @@ class Settings(BaseSettings, ABC):
 
 class AppSettings(Settings):
     debug: bool = Field(env="DEBUG")
+    docs_url: str = Field(env="DOCS_URL")
 
 
 class DatabaseSettings(Settings):
@@ -47,7 +48,6 @@ class PasswordSettings(Settings):
 
 
 class RequestSignatureSettings(Settings):
-    debug: bool = Field(env="DEBUG")
     secret: SecretStr = Field(env="SIGNATURE_SECRET")
     signature_header: str = Field(env="SIGNATURE_HEADER")
     encoding: str = Field(env="SIGNATURE_ENCODING")

@@ -1,7 +1,7 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import Depends, Request
 
-from app.auth.presentation.exceptions import NotFoundRefreshCookieException
+from app.auth.presentation.errors import NotFoundRefreshTokenInCookiesError
 from app.config import JWTSettings
 from app.container import Container
 
@@ -13,6 +13,6 @@ def get_refresh_token_from_cookies(
     refresh_token = request.cookies.get(settings.refresh_token_cookie)
 
     if not refresh_token:
-        raise NotFoundRefreshCookieException
+        raise NotFoundRefreshTokenInCookiesError
 
     return refresh_token

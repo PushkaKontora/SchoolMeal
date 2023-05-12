@@ -1,6 +1,6 @@
 from enum import Enum
 
-from app.base_entity import BaseEntity
+from app.entity import Entity
 from app.users.db.user.model import Role
 
 
@@ -9,19 +9,19 @@ class TokenType(str, Enum):
     REFRESH = "refresh"
 
 
-class JWTPayload(BaseEntity):
+class JWTPayload(Entity):
     type: TokenType
     user_id: int
     role: Role
     expires_in: int
 
 
-class CredentialsIn(BaseEntity):
+class CredentialsIn(Entity):
     login: str
     password: str
 
 
-class AccessTokenOut(BaseEntity):
+class AccessTokenOut(Entity):
     access_token: str
 
 

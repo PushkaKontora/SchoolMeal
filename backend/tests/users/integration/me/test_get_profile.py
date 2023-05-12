@@ -39,4 +39,4 @@ async def test_get_me_by_unknown_user_id(client: AsyncClient, jwt_settings: JWTS
     response = await get(client, token)
 
     assert response.status_code == 404
-    assert response.json() == error("NotFoundUserByTokenException", "Not found user")
+    assert response.json() == error("NotFoundUserError", "Not found user")

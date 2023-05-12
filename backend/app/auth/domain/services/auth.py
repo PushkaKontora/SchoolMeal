@@ -6,12 +6,12 @@ from app.auth.db.password.filters import ByUserId as PasswordByUserId
 from app.auth.db.password.model import Password
 from app.auth.db.password.sorters import SortByCreationDateDESC
 from app.auth.domain.entities import CredentialsIn, JWTTokensOut, TokenType
-from app.auth.domain.exceptions import (
-    BadCredentialsException,
-    InvalidTokenSignatureException,
-    NotFoundRefreshTokenException,
-    RefreshWithRevokedTokenException,
-    TokenExpirationException,
+from app.auth.domain.errors import (
+    BadCredentialsError,
+    InvalidTokenSignatureError,
+    NotFoundRefreshTokenError,
+    RefreshUsingRevokedTokenError,
+    TokenExpirationError,
 )
 from app.auth.domain.services.jwt import generate_tokens, is_token_expired, try_decode
 from app.auth.domain.services.password import check_password
@@ -26,11 +26,11 @@ async def authenticate(credentials: CredentialsIn, uow: UnitOfWork = Provide[Con
     async with uow:
         user = await uow.repository(User).find_first(ByLogin(credentials.login))
         if not user:
-            raise BadCredentialsException
+            raise BadCredentialsError
 
         password = await uow.repository(Password).find_first(PasswordByUserId(user.id), SortByCreationDateDESC())
         if not password or not check_password(credentials.password, password.value):
-            raise BadCredentialsException
+            raise BadCredentialsError
 
         tokens = _create_tokens(user.id, user.role, uow)
 
@@ -42,7 +42,7 @@ async def authenticate(credentials: CredentialsIn, uow: UnitOfWork = Provide[Con
 @inject
 async def revoke_refresh_token(token: str, uow: UnitOfWork = Provide[Container.unit_of_work]) -> None:
     if not try_decode(token):
-        raise InvalidTokenSignatureException
+        raise InvalidTokenSignatureError
 
     async with uow:
         await uow.repository(IssuedToken).update(ByValue(token), revoked=True)
@@ -56,24 +56,24 @@ async def update_tokens_using_refresh_token(
     payload = try_decode(token)
 
     if not payload:
-        raise InvalidTokenSignatureException
+        raise InvalidTokenSignatureError
 
     async with uow:
         token = await uow.repository(IssuedToken).find_first(ByValue(token))
         if not token:
-            raise NotFoundRefreshTokenException
+            raise NotFoundRefreshTokenError
 
         if token.revoked:
             await uow.repository(IssuedToken).update(TokenByUserId(token.user_id), revoked=True)
             await uow.commit()
 
-            raise RefreshWithRevokedTokenException
+            raise RefreshUsingRevokedTokenError
 
         token.revoked = True
 
         if is_token_expired(token.created_at, TokenType.REFRESH):
             await uow.commit()
-            raise TokenExpirationException
+            raise TokenExpirationError
 
         tokens = _create_tokens(payload.user_id, payload.role, uow)
 

@@ -6,7 +6,7 @@ from app.portions.db.portion.filters import ByPortionId
 from app.portions.db.portion.joins import WithFood
 from app.portions.db.portion.model import Portion
 from app.portions.domain.entities import PortionOut
-from app.portions.domain.exceptions import NotFoundPortionException
+from app.portions.domain.errors import NotFoundPortionError
 
 
 @inject
@@ -15,6 +15,6 @@ async def get_portion_by_id(portion_id: int, uow: UnitOfWork = Provide[Container
         portion = await uow.repository(Portion).find_first(ByPortionId(portion_id), WithFood())
 
         if portion is None:
-            raise NotFoundPortionException
+            raise NotFoundPortionError
 
         return PortionOut.from_orm(portion) if portion is not None else None

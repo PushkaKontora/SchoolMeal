@@ -14,7 +14,7 @@ class RequestSignatureMiddleware(BaseHTTPMiddleware):
         self._settings = settings
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        if self._settings.debug or self._verify(request):
+        if self._verify(request):
             return await call_next(request)
 
         return JSONResponse(content={"msg": "The request signature is wrong or destroyed"}, status_code=400)

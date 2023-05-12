@@ -112,7 +112,7 @@ async def test_creating_by_not_parent(
     response = await create(client, jwt_settings, parent, pupil, date.fromisoformat(start_date), None, None)
 
     assert response.status_code == 403
-    assert response.json() == error("UserIsNotParentException", "The user is not a parent of the pupil")
+    assert response.json() == error("UserIsNotParentError", "The user is not a parent of the pupil")
 
     q = select(CancelMealPeriod).with_only_columns(func.count()).where(CancelMealPeriod.pupil_id == pupil.id)
     assert await session.scalar(q) == 0

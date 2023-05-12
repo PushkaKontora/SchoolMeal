@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.children.presentation.handlers import add_child, change_meal_plan, get_children
-from app.exceptions import ErrorResponse
+from app.responses import ErrorResponse
 
 
 def get_children_router() -> APIRouter:

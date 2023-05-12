@@ -77,7 +77,7 @@ async def test_unknown_user_cannot_add_child(
     response = await add_child(client, parent, pupil, jwt_settings)
 
     assert response.status_code == 400
-    assert response.json() == error("NotFoundParentException", "The parent was not found")
+    assert response.json() == error("NotFoundParentError", "The parent was not found")
 
     children_count = await session.scalar(
         select(Child).with_only_columns(func.count()).where(Child.parent_id == parent.id)
@@ -94,7 +94,7 @@ async def test_parent_cannot_add_unknown_child(
     response = await add_child(client, parent, pupil, jwt_settings)
 
     assert response.status_code == 400
-    assert response.json() == error("NotFoundChildException", "The child was not found")
+    assert response.json() == error("NotFoundChildError", "The child was not found")
 
     children_count = await session.scalar(
         select(Child).with_only_columns(func.count()).where(Child.parent_id == parent.id)
@@ -111,7 +111,7 @@ async def test_user_add_child_that_was_added_by_him(
     response = await add_child(client, parent, pupil, jwt_settings)
 
     assert response.status_code == 400
-    assert response.json() == error("NotUniqueChildException", "The child was already added by the user")
+    assert response.json() == error("NotUniqueChildError", "The child was already added by the user")
 
     children_count = await session.scalar(
         select(Child).with_only_columns(func.count()).where(Child.parent_id == parent.id)

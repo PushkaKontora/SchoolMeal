@@ -5,8 +5,8 @@ import freezegun
 import pytest
 
 from app.auth.domain.entities import JWTPayload
-from app.auth.domain.exceptions import InvalidTokenSignatureException, TokenExpirationException
-from app.auth.presentation.exceptions import InvalidBearerCredentialsException, UnauthorizedException
+from app.auth.domain.errors import InvalidTokenSignatureError, TokenExpirationError
+from app.auth.presentation.errors import InvalidAuthorizationHeaderError, UnauthorizedError
 from app.auth.presentation.middlewares import JWTAuth
 from app.config import JWTSettings
 from app.users.db.user.model import Role
@@ -51,7 +51,7 @@ async def test_correct_authentication(
 async def test_invalid_signature_processing(jwt_auth: JWTAuth, auth_settings: JWTSettings):
     token = create_access_token(0, Role.PARENT, auth_settings)[:-2]
 
-    with pytest.raises(InvalidTokenSignatureException):
+    with pytest.raises(InvalidTokenSignatureError):
         await jwt_auth(get_request(token))
 
 
@@ -60,7 +60,7 @@ async def test_invalid_token_type_processing(jwt_auth: JWTAuth, jwt_settings: JW
     payload = get_expected_payload(TokenType.REFRESH, 0, Role.PARENT, jwt_settings.access_token_ttl)
     token = generate_token(payload, jwt_settings.secret.get_secret_value(), jwt_settings.algorithm)
 
-    with pytest.raises(InvalidTokenSignatureException):
+    with pytest.raises(InvalidTokenSignatureError):
         await jwt_auth(get_request(token))
 
 
@@ -70,7 +70,7 @@ async def test_expiration_processing(jwt_auth: JWTAuth, auth_settings: JWTSettin
     with freezegun.freeze_time(datetime.utcnow() - auth_settings.access_token_ttl - delta):
         token = create_access_token(0, Role.PARENT, auth_settings)
 
-    with pytest.raises(TokenExpirationException):
+    with pytest.raises(TokenExpirationError):
         await jwt_auth(get_request(token))
 
 
@@ -95,7 +95,7 @@ async def test_invalid_header_processing(jwt_auth: JWTAuth, header: str, schema:
     request = Mock()
     request.headers = {header: f"{schema} {token}".lstrip()}
 
-    with pytest.raises(InvalidBearerCredentialsException):
+    with pytest.raises(InvalidAuthorizationHeaderError):
         await jwt_auth(request)
 
 
@@ -110,5 +110,5 @@ async def test_authorization(
         payload = await auth(get_request(token))
         assert payload.dict() == get_expected_payload(TokenType.ACCESS, user_id, role, auth_settings.access_token_ttl)
     else:
-        with pytest.raises(UnauthorizedException):
+        with pytest.raises(UnauthorizedError):
             await auth(get_request(token))

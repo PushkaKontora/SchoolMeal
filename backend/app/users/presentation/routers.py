@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.exceptions import ErrorResponse
+from app.responses import ErrorResponse
 from app.users.presentation.handlers import get_profile, register_parent
 
 

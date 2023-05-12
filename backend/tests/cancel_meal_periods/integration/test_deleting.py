@@ -60,7 +60,7 @@ async def test_deleting_by_not_parent_of_the_child(
     response = await delete_period(client, jwt_settings, parent, period.id)
 
     assert response.status_code == 403
-    assert response.json() == error("UserIsNotParentException", "The user is not a parent of the pupil")
+    assert response.json() == error("UserIsNotParentError", "The user is not a parent of the pupil")
 
     assert (
         await session.scalar(
@@ -76,7 +76,7 @@ async def test_deleting_unknown_period(
     response = await delete_period(client, jwt_settings, parent, 0)
 
     assert response.status_code == 404
-    assert response.json() == error("NotFoundPeriodException", "Not found period")
+    assert response.json() == error("NotFoundPeriodError", "Not found period")
 
     pupil_ids = select(Child).with_only_columns(Child.pupil_id).where(Child.parent_id == parent.id).scalar_subquery()
     query = select(CancelMealPeriod).with_only_columns(func.count()).where(CancelMealPeriod.pupil_id == pupil_ids)

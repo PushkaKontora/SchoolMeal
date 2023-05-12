@@ -54,7 +54,7 @@ async def test_request_that_does_not_contain_cookie(
     response = await logout(client, Cookies())
 
     assert response.status_code == 400
-    assert response.json() == error("NotFoundRefreshCookieException", "A refresh token is not found in cookies")
+    assert response.json() == error("NotFoundRefreshTokenInCookiesError", "A refresh token is not found in cookies")
 
     await session.refresh(user_refresh_token, ["revoked"])
     assert user_refresh_token.revoked is False
@@ -72,7 +72,7 @@ async def test_request_that_contains_damaged_token(
     response = await logout(client, cookies)
 
     assert response.status_code == 400
-    assert response.json() == error("InvalidTokenSignatureException", "The token's signature was destroyed")
+    assert response.json() == error("InvalidTokenSignatureError", "The token's signature was destroyed")
 
     await session.refresh(user_refresh_token, ["revoked"])
     await session.refresh(token, ["revoked"])

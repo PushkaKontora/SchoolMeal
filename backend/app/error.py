@@ -3,19 +3,10 @@ from abc import ABC, abstractmethod
 from fastapi import Request
 from starlette.responses import JSONResponse
 
-from app.base_entity import BaseEntity
+from app.responses import ErrorDescription, ErrorResponse
 
 
-class ErrorDescription(BaseEntity):
-    code: str
-    msg: str
-
-
-class ErrorResponse(BaseEntity):
-    error: ErrorDescription
-
-
-class APIException(Exception, ABC):
+class Error(Exception, ABC):
     @property
     @abstractmethod
     def message(self) -> str:
@@ -26,7 +17,7 @@ class APIException(Exception, ABC):
         return 400
 
 
-def handle_api_exception(request: Request, exc: APIException) -> JSONResponse:
+def handle_api_error(request: Request, exc: Error) -> JSONResponse:
     return JSONResponse(
         content=ErrorResponse(error=ErrorDescription(code=exc.__class__.__name__, msg=exc.message)).dict(),
         status_code=exc.status_code,

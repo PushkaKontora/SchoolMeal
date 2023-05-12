@@ -111,14 +111,14 @@ async def test_refresh_with_expired_or_revoked_token(
 
     match state:
         case TokenState.EXPIRED:
-            assert response.json() == error("TokenExpirationException", "The token expired")
+            assert response.json() == error("TokenExpirationError", "The token expired")
 
             assert refresh_token.revoked is True
             assert user_refresh_token.revoked is False
             assert another_user_refresh_token.revoked is False
 
         case TokenState.REVOKED:
-            assert response.json() == error("RefreshWithRevokedTokenException", "The token is already revoked")
+            assert response.json() == error("RefreshUsingRevokedTokenError", "The token is already revoked")
 
             assert refresh_token.revoked is True
             assert user_refresh_token.revoked is True
@@ -134,7 +134,7 @@ async def test_refresh_with_damaged_signature(
     response = await refresh(client, auth_settings, refresh_token)
 
     assert response.status_code == 400
-    assert response.json() == error("InvalidTokenSignatureException", "The token's signature was destroyed")
+    assert response.json() == error("InvalidTokenSignatureError", "The token's signature was destroyed")
 
     await assert_db_has_not_been_changed(session)
 
@@ -149,7 +149,7 @@ async def test_refresh_with_empty_cookie(
     response = await refresh(client, auth_settings, refresh_token=None)
 
     assert response.status_code == 400
-    assert response.json() == error("NotFoundRefreshCookieException", "A refresh token is not found in cookies")
+    assert response.json() == error("NotFoundRefreshTokenInCookiesError", "A refresh token is not found in cookies")
 
     await assert_db_has_not_been_changed(session)
 
@@ -165,7 +165,7 @@ async def test_refresh_with_unknown_refresh_token(
 
     assert response.status_code == 400
     assert response.json() == error(
-        "NotFoundRefreshTokenException", "The token was not created or was deleted by the service"
+        "NotFoundRefreshTokenError", "The token was not created or was deleted by the service"
     )
 
     await assert_db_has_not_been_changed(session)

@@ -3,9 +3,12 @@ import json
 from unittest.mock import AsyncMock, Mock
 
 import pytest
+from dependency_injector.containers import DeclarativeContainer, override
+from dependency_injector.providers import Object
 from pydantic import SecretStr
 
-from app.config import RequestSignatureSettings
+from app.config import AppSettings, RequestSignatureSettings
+from app.container import Container
 from app.middlewares import RequestSignatureMiddleware
 
 
@@ -30,14 +33,6 @@ async def test_wrong_signature_processing(
     assert response.status_code == 400
     assert json.loads(response.body) == {"msg": "The request signature is wrong or destroyed"}
     call_next.assert_not_called()
-
-
-async def test_debug_mode(middleware: RequestSignatureMiddleware):
-    middleware._settings.debug = True
-    call_next = AsyncMock()
-    await middleware.dispatch(Mock(), call_next)
-
-    call_next.assert_called_once()
 
 
 @pytest.fixture
@@ -79,5 +74,16 @@ def settings() -> RequestSignatureSettings:
         signature_header="X-Signature",
         encoding="utf-8",
         digest_mod="sha256",
-        debug=False,
     )
+
+
+@pytest.fixture(scope="module")
+def app_settings() -> AppSettings:
+    return AppSettings(debug=False)
+
+
+@pytest.fixture(scope="module", autouse=True)
+def prepare_container(app_settings: AppSettings) -> None:
+    @override(Container)
+    class TestContainer(DeclarativeContainer):
+        app_settings = Object(app_settings)

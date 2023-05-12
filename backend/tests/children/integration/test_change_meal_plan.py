@@ -101,7 +101,7 @@ async def test_change_the_childs_plan_by_some_parent(
     await session.refresh(pupil)
 
     assert response.status_code == 403
-    assert response.json() == error("UserIsNotParentOfThePupilException", "The user is not a parent of the pupil")
+    assert response.json() == error("UserIsNotParentOfThePupilError", "The user is not a parent of the pupil")
 
     assert {meal: getattr(pupil, meal) for meal in MEALS} == old_plan
 

@@ -3,6 +3,6 @@ def error(code: str, message: str) -> dict:
 
 
 SUCCESS = {"msg": "Success"}
-UNAUTHORIZED = error("BadCredentialsException", "Incorrect login or password")
+UNAUTHORIZED = error("BadCredentialsError", "Incorrect login or password")
 FORBIDDEN = error("ForbiddenError", "Permission denied")
 NOT_FOUND = error("NotFoundError", "Not found")

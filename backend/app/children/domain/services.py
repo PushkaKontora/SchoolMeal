@@ -4,11 +4,11 @@ from app.children.db.child.filters import ByParentId, ByPupilId
 from app.children.db.child.model import Child
 from app.children.db.child.selectors import OnlyPupilId
 from app.children.domain.entities import ChildIn, ChildOut, ClassOut, PeriodOut, PlanIn, PlanOut, SchoolOut, TeacherOut
-from app.children.domain.exceptions import (
-    NotFoundChildException,
-    NotFoundParentException,
-    NotUniqueChildException,
-    UserIsNotParentOfThePupilException,
+from app.children.domain.errors import (
+    NotFoundChildError,
+    NotFoundParentError,
+    NotUniqueChildError,
+    UserIsNotParentOfThePupilError,
 )
 from app.container import Container
 from app.db.specifications import ForUpdate
@@ -27,13 +27,13 @@ async def add_pupil_to_parent_children(
 ) -> None:
     async with uow:
         if not await uow.repository(User).exists(UserById(parent_id)):
-            raise NotFoundParentException
+            raise NotFoundParentError
 
         if not await uow.repository(Pupil).exists(PupilById(child.child_id)):
-            raise NotFoundChildException
+            raise NotFoundChildError
 
         if await uow.repository(Child).exists(ByParentId(parent_id) & ByPupilId(child.child_id)):
-            raise NotUniqueChildException
+            raise NotUniqueChildError
 
         uow.repository(Child).save(Child(parent_id=parent_id, pupil_id=child.child_id))
         await uow.commit()
@@ -61,7 +61,7 @@ async def change_meal_plan_by_parent(
 ) -> PlanOut:
     async with uow:
         if not await uow.repository(Child).exists(ByParentId(parent_id) & ByPupilId(child_id)):
-            raise UserIsNotParentOfThePupilException
+            raise UserIsNotParentOfThePupilError
 
         child = await uow.repository(Pupil).find_first(PupilById(child_id), ForUpdate())
         child.breakfast = plan.breakfast if plan.breakfast is not None else child.breakfast

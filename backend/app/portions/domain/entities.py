@@ -1,14 +1,14 @@
-from app.base_entity import BaseEntity
+from app.entity import Entity
 
 
-class FoodOut(BaseEntity):
+class FoodOut(Entity):
     id: int
     school_id: int
     name: str
     photo_path: str | None
 
 
-class PortionOut(BaseEntity):
+class PortionOut(Entity):
     id: int
     food: FoodOut
     components: str | None

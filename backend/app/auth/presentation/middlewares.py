@@ -4,7 +4,7 @@ from fastapi.security.utils import get_authorization_scheme_param
 
 from app.auth.domain.entities import JWTPayload
 from app.auth.domain.services.jwt import decode_access_token
-from app.auth.presentation.exceptions import InvalidBearerCredentialsException, UnauthorizedException
+from app.auth.presentation.errors import InvalidAuthorizationHeaderError, UnauthorizedError
 
 
 class JWTAuth(HTTPBearer):
@@ -18,12 +18,12 @@ class JWTAuth(HTTPBearer):
         scheme, access_token = get_authorization_scheme_param(authorization)
 
         if not (authorization and scheme and access_token) or scheme.lower() != self._scheme.lower():
-            raise InvalidBearerCredentialsException
+            raise InvalidAuthorizationHeaderError
 
         payload = decode_access_token(access_token)
 
         if not self.authorize(payload):
-            raise UnauthorizedException
+            raise UnauthorizedError
 
         return payload
 

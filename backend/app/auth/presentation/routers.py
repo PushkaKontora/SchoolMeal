@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.auth.presentation.handlers import logout, refresh_tokens, signin
-from app.exceptions import ErrorResponse
+from app.responses import ErrorResponse
 
 
 def get_auth_router() -> APIRouter:

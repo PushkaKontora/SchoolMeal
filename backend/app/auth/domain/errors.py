@@ -1,7 +1,7 @@
-from app.exceptions import APIException
+from app.error import Error
 
 
-class BadCredentialsException(APIException):
+class BadCredentialsError(Error):
     @property
     def message(self) -> str:
         return "Incorrect login or password"
@@ -11,25 +11,25 @@ class BadCredentialsException(APIException):
         return 401
 
 
-class InvalidTokenSignatureException(APIException):
+class InvalidTokenSignatureError(Error):
     @property
     def message(self) -> str:
         return "The token's signature was destroyed"
 
 
-class NotFoundRefreshTokenException(APIException):
+class NotFoundRefreshTokenError(Error):
     @property
     def message(self) -> str:
         return "The token was not created or was deleted by the service"
 
 
-class RefreshWithRevokedTokenException(APIException):
+class RefreshUsingRevokedTokenError(Error):
     @property
     def message(self) -> str:
         return "The token is already revoked"
 
 
-class TokenExpirationException(APIException):
+class TokenExpirationError(Error):
     @property
     def message(self) -> str:
         return "The token expired"

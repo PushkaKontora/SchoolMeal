@@ -149,5 +149,5 @@ async def test_unique_constraint_on_phone_and_email(
     response = await register(client, phone, "secret", "Dykov", "Lima", email)
 
     assert response.status_code == 400
-    assert response.json() == error("NonUniqueUserDataException", "Login, phone or email should be unique")
+    assert response.json() == error("NonUniqueUserDataError", "Login, phone or email should be unique")
     assert await session.scalar(select(func.count()).select_from(User)) == 1

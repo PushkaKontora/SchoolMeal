@@ -4,7 +4,7 @@ from dependency_injector.wiring import Provide
 from jwt import PyJWTError, decode, encode
 
 from app.auth.domain.entities import JWTPayload, JWTTokensOut, TokenType
-from app.auth.domain.exceptions import InvalidTokenSignatureException, TokenExpirationException
+from app.auth.domain.errors import InvalidTokenSignatureError, TokenExpirationError
 from app.config import JWTSettings
 from app.container import Container
 from app.users.db.user.model import Role
@@ -14,10 +14,10 @@ def decode_access_token(token: str) -> JWTPayload:
     payload = try_decode(token)
 
     if not payload or payload.type != TokenType.ACCESS:
-        raise InvalidTokenSignatureException
+        raise InvalidTokenSignatureError
 
     if is_token_expired_in(payload.expires_in):
-        raise TokenExpirationException
+        raise TokenExpirationError
 
     return payload
 

@@ -1,7 +1,7 @@
-from app.exceptions import APIException
+from app.error import Error
 
 
-class UserIsNotParentException(APIException):
+class UserIsNotParentError(Error):
     @property
     def message(self) -> str:
         return "The user is not a parent of the pupil"
@@ -11,7 +11,7 @@ class UserIsNotParentException(APIException):
         return 403
 
 
-class NotFoundPeriodException(APIException):
+class NotFoundPeriodError(Error):
     @property
     def message(self) -> str:
         return "Not found period"

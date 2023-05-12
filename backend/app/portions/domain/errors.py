@@ -1,7 +1,7 @@
-from app.exceptions import APIException
+from app.error import Error
 
 
-class NotFoundPortionException(APIException):
+class NotFoundPortionError(Error):
     @property
     def message(self) -> str:
         return "Not found portion"

@@ -1,13 +1,13 @@
-from app.exceptions import APIException
+from app.error import Error
 
 
-class NonUniqueUserDataException(APIException):
+class NonUniqueUserDataError(Error):
     @property
     def message(self) -> str:
         return "Login, phone or email should be unique"
 
 
-class NotFoundUserByTokenException(APIException):
+class NotFoundUserError(Error):
     @property
     def message(self) -> str:
         return "Not found user"

@@ -1,19 +1,19 @@
-from app.exceptions import APIException
+from app.error import Error
 
 
-class NotFoundRefreshCookieException(APIException):
+class NotFoundRefreshTokenInCookiesError(Error):
     @property
     def message(self) -> str:
         return "A refresh token is not found in cookies"
 
 
-class InvalidBearerCredentialsException(APIException):
+class InvalidAuthorizationHeaderError(Error):
     @property
     def message(self) -> str:
         return "Invalid Authorization header"
 
 
-class UnauthorizedException(APIException):
+class UnauthorizedError(Error):
     @property
     def message(self) -> str:
         return "Permission denied"
