@@ -1,4 +1,4 @@
-from app.database.specifications import FilterSpecification, TQuery
+from app.db.specifications import FilterSpecification, TQuery
 from app.pupils.db.pupil.model import Pupil
 
 

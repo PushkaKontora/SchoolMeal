@@ -2,10 +2,10 @@ from datetime import date
 
 from pydantic import Field, validator
 
-from app.base_entity import BaseEntity
+from app.utils.entity import Entity
 
 
-class PeriodIn(BaseEntity):
+class PeriodIn(Entity):
     pupil_id: str
     start_date: date
     end_date: date | None

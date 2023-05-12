@@ -2,11 +2,11 @@ from datetime import datetime
 
 from pydantic import AnyHttpUrl, EmailStr, Field
 
-from app.base_entity import BaseEntity, DatetimeField
 from app.users.db.user.model import Role
+from app.utils.entity import DatetimeField, Entity
 
 
-class RegistrationSchema(BaseEntity):
+class RegistrationSchema(Entity):
     phone: str = Field(regex=r"^\+7[0-9]{10}$")
     password: str
     email: EmailStr | None
@@ -14,7 +14,7 @@ class RegistrationSchema(BaseEntity):
     first_name: str
 
 
-class ProfileOut(BaseEntity):
+class ProfileOut(Entity):
     id: int
     last_name: str
     first_name: str

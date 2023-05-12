@@ -1,11 +1,11 @@
 from datetime import datetime
 
 from sqlalchemy import ForeignKey, LargeBinary
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.functions import now
 
-from app.database.base import Base
-from app.database.constants import CASCADE
+from app.db.base import Base
+from app.db.constants import CASCADE
 
 
 class Password(Base):

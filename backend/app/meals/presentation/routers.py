@@ -1,14 +1,15 @@
 from fastapi import APIRouter
 
-from app.meals.presentation.handlers import MealsHandlers
+from app.meals.presentation.handlers import get_meals
 
 
-class MealsRouter(APIRouter):
-    def __init__(self, meals_handlers: MealsHandlers):
-        super().__init__(tags=["meals"], prefix="/meals")
+def get_meals_router() -> APIRouter:
+    router = APIRouter()
 
-        self.add_api_route(
-            path="",
-            methods=["GET"],
-            endpoint=meals_handlers.get_meals,
-        )
+    router.add_api_route(
+        path="",
+        methods=["GET"],
+        endpoint=get_meals,
+    )
+
+    return router

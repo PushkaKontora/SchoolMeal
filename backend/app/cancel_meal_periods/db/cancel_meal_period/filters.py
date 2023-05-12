@@ -1,5 +1,5 @@
 from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
-from app.database.specifications import FilterSpecification, TQuery
+from app.db.specifications import FilterSpecification, TQuery
 
 
 class ByPeriodId(FilterSpecification):

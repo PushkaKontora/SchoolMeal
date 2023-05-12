@@ -3,8 +3,8 @@ import enum
 from sqlalchemy import Enum, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.database.base import Base
-from app.database.constants import CASCADE
+from app.db.base import Base
+from app.db.constants import CASCADE
 
 
 class MealType(str, enum.Enum):
@@ -20,4 +20,4 @@ class Menu(Base):
     portion_id: Mapped[int] = mapped_column(ForeignKey("portions.id", ondelete=CASCADE), primary_key=True)
     meal_type: Mapped[MealType] = mapped_column(Enum(MealType), nullable=False, primary_key=True)
 
-    portion = relationship("Portion")
+    portion = relationship("Portion", lazy="raise")

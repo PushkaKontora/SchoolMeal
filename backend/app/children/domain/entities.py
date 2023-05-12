@@ -1,20 +1,20 @@
 from datetime import date, datetime
 
-from app.base_entity import BaseEntity
+from app.utils.entity import Entity
 
 
-class NewChildSchema(BaseEntity):
+class ChildIn(Entity):
     child_id: str
 
 
-class CancelMealPeriodOut(BaseEntity):
+class PeriodOut(Entity):
     id: int
     start_date: date
     end_date: date | None
     comment: str
 
 
-class TeacherOut(BaseEntity):
+class TeacherOut(Entity):
     id: int
     last_name: str
     first_name: str
@@ -22,12 +22,12 @@ class TeacherOut(BaseEntity):
     email: str
 
 
-class SchoolOut(BaseEntity):
+class SchoolOut(Entity):
     id: int
     name: str
 
 
-class ClassOut(BaseEntity):
+class ClassOut(Entity):
     id: int
     number: int
     letter: str
@@ -38,7 +38,7 @@ class ClassOut(BaseEntity):
     school: SchoolOut
 
 
-class ChildOut(BaseEntity):
+class ChildOut(Entity):
     id: str
     last_name: str
     first_name: str
@@ -48,16 +48,16 @@ class ChildOut(BaseEntity):
     lunch: bool
     dinner: bool
     school_class: ClassOut | None
-    cancel_meal_periods: list[CancelMealPeriodOut]
+    cancel_meal_periods: list[PeriodOut]
 
 
-class MealPlanIn(BaseEntity):
+class PlanIn(Entity):
     breakfast: bool | None = None
     lunch: bool | None = None
     dinner: bool | None = None
 
 
-class MealPlanOut(BaseEntity):
+class PlanOut(Entity):
     breakfast: bool
     lunch: bool
     dinner: bool

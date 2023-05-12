@@ -19,10 +19,10 @@ migrate:
 	alembic upgrade head
 
 test:
-	pytest tests
+	pytest tests -v
 
 unit:
-	pytest tests -m unit
+	pytest tests -v -m unit
 
 integration:
-	pytest tests -m integration
+	pytest tests -v -m integration

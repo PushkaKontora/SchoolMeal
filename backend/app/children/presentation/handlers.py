@@ -1,28 +1,23 @@
-from fastapi import Body, Path, Request
+from fastapi import Body, Depends, Path
 
-from app.base_entity import SuccessResponse
-from app.children.domain.entities import ChildOut, MealPlanIn, MealPlanOut, NewChildSchema
-from app.children.domain.services import ChildService
-
-
-class ChildrenHandlers:
-    def __init__(self, child_service: ChildService):
-        self._child_service = child_service
-
-    async def add_child(self, request: Request, schema: NewChildSchema) -> SuccessResponse:
-        await self._child_service.add_child(request.payload.user_id, schema.child_id)
-
-        return SuccessResponse()
-
-    async def get_children(self, request: Request) -> list[ChildOut]:
-        return await self._child_service.get_children(request.payload.user_id)
+from app.auth.domain.entities import JWTPayload
+from app.auth.presentation.dependencies import JWTAuth
+from app.children.domain.entities import ChildIn, ChildOut, PlanIn, PlanOut
+from app.children.domain.services import add_pupil_to_parent_children, change_meal_plan_by_parent, get_parent_children
+from app.utils.responses import SuccessResponse
 
 
-class ChildHandlers:
-    def __init__(self, child_service: ChildService):
-        self._child_service = child_service
+async def add_child(schema: ChildIn = Body(), payload: JWTPayload = Depends(JWTAuth())) -> SuccessResponse:
+    await add_pupil_to_parent_children(payload.user_id, schema)
 
-    async def change_meal_plan(
-        self, request: Request, child_id: str = Path(...), plan: MealPlanIn = Body(...)
-    ) -> MealPlanOut:
-        return await self._child_service.change_meal_plan(request.payload.user_id, child_id, **plan.dict())
+    return SuccessResponse()
+
+
+async def get_children(payload: JWTPayload = Depends(JWTAuth())) -> list[ChildOut]:
+    return await get_parent_children(payload.user_id)
+
+
+async def change_meal_plan(
+    child_id: str = Path(), plan: PlanIn = Body(), payload: JWTPayload = Depends(JWTAuth())
+) -> PlanOut:
+    return await change_meal_plan_by_parent(payload.user_id, child_id, plan)
