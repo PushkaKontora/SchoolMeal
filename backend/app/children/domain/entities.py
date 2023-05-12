@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from app.entity import Entity
+from app.utils.entity import Entity
 
 
 class ChildIn(Entity):

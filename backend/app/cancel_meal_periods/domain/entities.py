@@ -2,7 +2,7 @@ from datetime import date
 
 from pydantic import Field, validator
 
-from app.entity import Entity
+from app.utils.entity import Entity
 
 
 class PeriodIn(Entity):

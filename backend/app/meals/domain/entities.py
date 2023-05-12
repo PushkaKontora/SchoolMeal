@@ -1,7 +1,7 @@
 from datetime import date
 
-from app.entity import Entity
 from app.portions.domain.entities import PortionOut
+from app.utils.entity import Entity
 
 
 class MealsOptions(Entity):

@@ -1,4 +1,4 @@
-from app.error import Error
+from app.utils.error import Error
 
 
 class BadCredentialsError(Error):

@@ -4,7 +4,7 @@ from app.auth.domain.entities import JWTPayload
 from app.auth.presentation.middlewares import JWTAuth
 from app.cancel_meal_periods.domain.entities import PeriodIn, PeriodOut
 from app.cancel_meal_periods.domain.services import create_period_by_parent, delete_period_by_parent
-from app.responses import SuccessResponse
+from app.utils.responses import SuccessResponse
 
 
 async def create_period(period: PeriodIn = Body(), payload: JWTPayload = Depends(JWTAuth())) -> PeriodOut:

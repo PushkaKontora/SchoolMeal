@@ -1,4 +1,4 @@
-from app.entity import Entity
+from app.utils.entity import Entity
 
 
 class SuccessResponse(Entity):

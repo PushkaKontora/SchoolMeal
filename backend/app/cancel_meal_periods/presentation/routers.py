@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.cancel_meal_periods.presentation.handlers import create_period, delete_period
-from app.responses import ErrorResponse
+from app.utils.responses import ErrorResponse
 
 
 def get_cancel_meal_router() -> APIRouter:

@@ -6,7 +6,7 @@ from app.auth.domain.services.auth import authenticate, revoke_refresh_token, up
 from app.auth.presentation.dependencies import get_refresh_token_from_cookies
 from app.config import JWTSettings
 from app.container import Container
-from app.responses import SuccessResponse
+from app.utils.responses import SuccessResponse
 
 
 @inject

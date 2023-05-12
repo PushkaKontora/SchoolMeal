@@ -4,11 +4,11 @@ from app.auth.app import register_auth_api
 from app.cancel_meal_periods.app import register_cancel_meal_periods_api
 from app.children.app import register_children_api
 from app.container import Container
-from app.error import Error, handle_api_error
 from app.meals.app import register_meals_api
-from app.middlewares import RequestSignatureMiddleware
 from app.portions.app import register_portions_api
 from app.users.app import register_users_api
+from app.utils.error import Error, handle_api_error
+from app.utils.middlewares import RequestSignatureMiddleware
 
 
 def create_app() -> FastAPI:

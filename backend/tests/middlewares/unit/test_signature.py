@@ -9,7 +9,7 @@ from pydantic import SecretStr
 
 from app.config import AppSettings, RequestSignatureSettings
 from app.container import Container
-from app.middlewares import RequestSignatureMiddleware
+from app.utils.middlewares import RequestSignatureMiddleware
 
 
 pytestmark = [pytest.mark.unit]

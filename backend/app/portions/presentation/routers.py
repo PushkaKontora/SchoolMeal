@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.portions.presentation.handlers import get_portion
-from app.responses import ErrorResponse
+from app.utils.responses import ErrorResponse
 
 
 def get_portions_router() -> APIRouter:

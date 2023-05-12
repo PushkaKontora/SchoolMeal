@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from app.responses import ErrorResponse
 from app.users.presentation.handlers import get_profile, register_parent
+from app.utils.responses import ErrorResponse
 
 
 def get_users_router() -> APIRouter:

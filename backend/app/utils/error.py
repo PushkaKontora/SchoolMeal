@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from fastapi import Request
 from starlette.responses import JSONResponse
 
-from app.responses import ErrorDescription, ErrorResponse
+from app.utils.responses import ErrorDescription, ErrorResponse
 
 
 class Error(Exception, ABC):

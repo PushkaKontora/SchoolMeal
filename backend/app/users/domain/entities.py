@@ -2,8 +2,8 @@ from datetime import datetime
 
 from pydantic import AnyHttpUrl, EmailStr, Field
 
-from app.entity import DatetimeField, Entity
 from app.users.db.user.model import Role
+from app.utils.entity import DatetimeField, Entity
 
 
 class RegistrationSchema(Entity):
