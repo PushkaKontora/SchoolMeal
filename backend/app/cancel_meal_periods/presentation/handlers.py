@@ -1,7 +1,7 @@
 from fastapi import Body, Depends, Path
 
 from app.auth.domain.entities import JWTPayload
-from app.auth.presentation.middlewares import JWTAuth
+from app.auth.presentation.dependencies import JWTAuth
 from app.cancel_meal_periods.domain.entities import PeriodIn, PeriodOut
 from app.cancel_meal_periods.domain.services import create_period_by_parent, delete_period_by_parent
 from app.utils.responses import SuccessResponse

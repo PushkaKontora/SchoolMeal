@@ -6,8 +6,8 @@ import pytest
 
 from app.auth.domain.entities import JWTPayload
 from app.auth.domain.errors import InvalidTokenSignatureError, TokenExpirationError
+from app.auth.presentation.dependencies import JWTAuth
 from app.auth.presentation.errors import InvalidAuthorizationHeaderError, UnauthorizedError
-from app.auth.presentation.middlewares import JWTAuth
 from app.config import JWTSettings
 from app.users.db.user.model import Role
 from tests.integration.auth.conftest import TokenType, create_access_token, generate_token, get_expected_payload

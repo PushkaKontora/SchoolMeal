@@ -1,7 +1,7 @@
 from fastapi import Body, Depends
 
 from app.auth.domain.entities import JWTPayload
-from app.auth.presentation.middlewares import JWTAuth
+from app.auth.presentation.dependencies import JWTAuth
 from app.users.domain.entities import ProfileOut, RegistrationSchema
 from app.users.domain.services import get_profile_by_access_token_payload, register_parent as register_parent_
 
