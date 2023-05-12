@@ -7,9 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.db.password.model import Password
 from app.users.db.user.model import Role, User
-from tests.responses import error
-from tests.users.integration.conftest import USERS_PREFIX
-from tests.utils import datetime_to_str
+from tests.integration.responses import error
+from tests.integration.users.conftest import USERS_PREFIX
+from tests.integration.utils import datetime_to_str
 
 
 pytestmark = [pytest.mark.integration]

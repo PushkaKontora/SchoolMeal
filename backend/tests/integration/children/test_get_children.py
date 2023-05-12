@@ -12,10 +12,10 @@ from app.school_classes.db.school_class.model import SchoolClass
 from app.school_classes.db.teacher.model import Teacher
 from app.schools.db.school.model import School
 from app.users.db.user.model import User
-from tests.auth.integration.conftest import create_access_token
-from tests.children.integration.conftest import CHILDREN_PREFIX
-from tests.conftest import BearerAuth
-from tests.utils import date_to_str, datetime_to_str
+from tests.integration.auth.conftest import create_access_token
+from tests.integration.children.conftest import CHILDREN_PREFIX
+from tests.integration.conftest import BearerAuth
+from tests.integration.utils import date_to_str, datetime_to_str
 
 
 URL = CHILDREN_PREFIX

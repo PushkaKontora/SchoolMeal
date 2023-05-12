@@ -2,18 +2,15 @@ from httpx import AsyncClient, Response
 
 from app.config import JWTSettings
 from app.users.db.user.model import Role, User
-from tests.auth.integration.conftest import create_access_token
-from tests.conftest import BearerAuth
-from tests.responses import error
-from tests.users.integration.me.conftest import ME_PREFIX
-from tests.utils import datetime_to_str
-
-
-URL = ME_PREFIX
+from tests.integration.auth.conftest import create_access_token
+from tests.integration.conftest import BearerAuth
+from tests.integration.responses import error
+from tests.integration.users.conftest import ME_PREFIX
+from tests.integration.utils import datetime_to_str
 
 
 async def get(client: AsyncClient, token: str) -> Response:
-    return await client.get(URL, auth=BearerAuth(token))
+    return await client.get(ME_PREFIX, auth=BearerAuth(token))
 
 
 async def test_get_me(client: AsyncClient, parent: User, parent_token: str):

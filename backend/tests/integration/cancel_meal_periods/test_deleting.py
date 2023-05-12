@@ -10,10 +10,10 @@ from app.children.db.child.model import Child
 from app.config import JWTSettings
 from app.pupils.db.pupil.model import Pupil
 from app.users.db.user.model import User
-from tests.auth.integration.conftest import create_access_token
-from tests.cancel_meal_periods.integration.conftest import period_prefix
-from tests.conftest import BearerAuth
-from tests.responses import SUCCESS, error
+from tests.integration.auth.conftest import create_access_token
+from tests.integration.cancel_meal_periods.conftest import period_prefix
+from tests.integration.conftest import BearerAuth
+from tests.integration.responses import SUCCESS, error
 
 
 async def delete_period(client: AsyncClient, jwt_settings: JWTSettings, parent: User, period_id: int) -> Response:

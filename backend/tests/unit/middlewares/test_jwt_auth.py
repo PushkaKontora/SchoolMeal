@@ -10,7 +10,7 @@ from app.auth.presentation.errors import InvalidAuthorizationHeaderError, Unauth
 from app.auth.presentation.middlewares import JWTAuth
 from app.config import JWTSettings
 from app.users.db.user.model import Role
-from tests.auth.integration.conftest import TokenType, create_access_token, generate_token, get_expected_payload
+from tests.integration.auth.conftest import TokenType, create_access_token, generate_token, get_expected_payload
 
 
 class Auth(JWTAuth):
@@ -56,9 +56,9 @@ async def test_invalid_signature_processing(jwt_auth: JWTAuth, auth_settings: JW
 
 
 @freezegun.freeze_time()
-async def test_invalid_token_type_processing(jwt_auth: JWTAuth, jwt_settings: JWTSettings):
-    payload = get_expected_payload(TokenType.REFRESH, 0, Role.PARENT, jwt_settings.access_token_ttl)
-    token = generate_token(payload, jwt_settings.secret.get_secret_value(), jwt_settings.algorithm)
+async def test_invalid_token_type_processing(jwt_auth: JWTAuth, auth_settings: JWTSettings):
+    payload = get_expected_payload(TokenType.REFRESH, 0, Role.PARENT, auth_settings.access_token_ttl)
+    token = generate_token(payload, auth_settings.secret.get_secret_value(), auth_settings.algorithm)
 
     with pytest.raises(InvalidTokenSignatureError):
         await jwt_auth(get_request(token))
@@ -112,3 +112,13 @@ async def test_authorization(
     else:
         with pytest.raises(UnauthorizedError):
             await auth(get_request(token))
+
+
+@pytest.fixture
+def jwt_auth() -> JWTAuth:
+    return JWTAuth()
+
+
+@pytest.fixture
+def auth_settings() -> JWTSettings:
+    return JWTSettings()

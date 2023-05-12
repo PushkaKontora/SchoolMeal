@@ -12,7 +12,7 @@ from app.auth.db.issued_token.model import IssuedToken
 from app.auth.db.password.model import Password
 from app.config import JWTSettings
 from app.users.db.user.model import Role, User
-from tests.utils import get_set_cookies
+from tests.integration.utils import get_set_cookies
 
 
 AUTH_PREFIX = "/auth"
@@ -84,6 +84,11 @@ async def another_user_refresh_token(
     session: AsyncSession, another_user: User, auth_settings: JWTSettings
 ) -> IssuedToken:
     return await create_refresh_token(session, another_user.id, another_user.role, auth_settings)
+
+
+@pytest.fixture(scope="session")
+def auth_settings() -> JWTSettings:
+    return JWTSettings()
 
 
 async def create_refresh_token(

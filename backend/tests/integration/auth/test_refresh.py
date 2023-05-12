@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.db.issued_token.model import IssuedToken
 from app.config import JWTSettings
 from app.users.db.user.model import User
-from tests.auth.integration.conftest import (
+from tests.integration.auth.conftest import (
     AUTH_PREFIX,
     TokenType,
     assert_payload_contains_valid_access_token,
@@ -19,7 +19,7 @@ from tests.auth.integration.conftest import (
     generate_token,
     get_expected_payload,
 )
-from tests.responses import error
+from tests.integration.responses import error
 
 
 pytestmark = [pytest.mark.integration]
