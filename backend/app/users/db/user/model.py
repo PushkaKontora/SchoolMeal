@@ -5,7 +5,7 @@ from sqlalchemy import Enum, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.functions import now
 
-from app.database.base import Base
+from app.db.base import Base
 
 
 class Role(str, BaseEnum):

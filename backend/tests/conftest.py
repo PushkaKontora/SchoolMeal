@@ -8,8 +8,8 @@ from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 
 from app.config import DatabaseSettings, JWTSettings
-from app.database.base import Base
-from app.database.container import Database
+from app.container import Container
+from app.db.base import Base
 from app.main import create_app
 from app.pupils.db.pupil.model import Pupil
 from app.users.db.user.model import Role, User
@@ -96,12 +96,12 @@ def jwt_settings() -> JWTSettings:
 
 @pytest.fixture(scope="session")
 async def connection() -> AsyncConnection:
-    Database.settings.override(DatabaseSettings(database="test_db"))
-    engine = Database.engine()
+    Container.database_settings.override(DatabaseSettings(database="test_db"))
+    engine = Container.engine()
 
     async with engine.connect() as conn:
-        Database.engine.override(Object(conn))
-        Database.session_maker.reset()
+        Container.engine.override(Object(conn))
+        Container.session_maker.reset()
 
         yield conn
 
@@ -119,7 +119,7 @@ async def prepare_database(connection: AsyncConnection):
 
 @pytest.fixture(scope="function")
 async def session(connection: AsyncConnection) -> AsyncSession:
-    session_maker = Database.session_maker()
+    session_maker = Container.session_maker()
 
     transaction = await connection.begin()
     session = session_maker(expire_on_commit=False, autoflush=False, bind=connection)

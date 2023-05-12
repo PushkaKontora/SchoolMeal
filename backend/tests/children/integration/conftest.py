@@ -1,10 +1,4 @@
-import pytest
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.pupils.db.pupil.model import Pupil
-
-
-CHILDREN_PREFIX = "/children"
+CHILDREN_PREFIX = "/child"
 
 
 def child_prefix(child_id: str) -> str:

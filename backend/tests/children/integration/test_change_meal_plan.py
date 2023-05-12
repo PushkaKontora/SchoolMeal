@@ -3,7 +3,7 @@ from httpx import AsyncClient, Response
 from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.children.db.parent_pupil.model import ParentPupil
+from app.children.db.child.model import Child
 from app.config import JWTSettings
 from app.pupils.db.pupil.model import Pupil
 from app.users.db.user.model import User
@@ -93,9 +93,7 @@ async def test_change_meal_plan(
 async def test_change_the_childs_plan_by_some_parent(
     client: AsyncClient, session: AsyncSession, jwt_settings: JWTSettings, parent: User, pupil: Pupil
 ):
-    await session.execute(
-        delete(ParentPupil).where(ParentPupil.parent_id == parent.id, ParentPupil.pupil_id == pupil.id)
-    )
+    await session.execute(delete(Child).where(Child.parent_id == parent.id, Child.pupil_id == pupil.id))
     old_plan = {meal: getattr(pupil, meal) for meal in MEALS}
 
     response = await change(client, jwt_settings, parent, pupil, True, True, True)
@@ -110,5 +108,5 @@ async def test_change_the_childs_plan_by_some_parent(
 
 @pytest.fixture(autouse=True)
 async def prepare_data(session: AsyncSession, parent: User, pupil: Pupil):
-    session.add(ParentPupil(parent_id=parent.id, pupil_id=pupil.id))
+    session.add(Child(parent_id=parent.id, pupil_id=pupil.id))
     await session.commit()

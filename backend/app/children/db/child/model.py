@@ -5,7 +5,7 @@ from app.db.base import Base
 from app.db.constants import CASCADE
 
 
-class Children(Base):
+class Child(Base):
     __tablename__ = "parents_pupils"
 
     pupil_id: Mapped[str] = mapped_column(ForeignKey("pupils.id", ondelete=CASCADE), primary_key=True)

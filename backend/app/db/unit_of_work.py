@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.repository import Repository, TModel
+from app.db.repository import Repository, TModel
 
 
 class TransactionHasNotStartedException(Exception):
@@ -17,7 +17,7 @@ class UnitOfWork:
         if not self._is_began:
             raise TransactionHasNotStartedException
 
-        self._repositories[model] = self._repositories[model] or Repository(self._session, model)
+        self._repositories[model] = self._repositories.get(model) or Repository(self._session, model)
 
         return self._repositories[model]
 
@@ -35,7 +35,6 @@ class UnitOfWork:
 
     async def begin(self) -> None:
         self._is_began = True
-        self._repositories.clear()
 
         await self._session.begin()
 
@@ -44,7 +43,6 @@ class UnitOfWork:
             raise TransactionHasNotStartedException
 
         self._is_began = False
-        self._repositories.clear()
 
         await self._session.close()
 

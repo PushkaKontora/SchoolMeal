@@ -1,6 +1,6 @@
 from sqlalchemy.orm import joinedload
 
-from app.database.specifications import Specification, TQuery
+from app.db.specifications import Specification, TQuery
 from app.portions.db.portion.model import Portion
 
 

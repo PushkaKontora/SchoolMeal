@@ -1,5 +1,5 @@
 from app.auth.db.issued_token.model import IssuedToken
-from app.database.specifications import FilterSpecification, TQuery
+from app.db.specifications import FilterSpecification, TQuery
 
 
 class ByUserId(FilterSpecification):

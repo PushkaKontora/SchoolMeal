@@ -5,7 +5,7 @@ from httpx import AsyncClient, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
-from app.children.db.parent_pupil.model import ParentPupil
+from app.children.db.child.model import Child
 from app.config import JWTSettings
 from app.pupils.db.pupil.model import Pupil
 from app.school_classes.db.school_class.model import SchoolClass
@@ -160,7 +160,7 @@ async def cancel_meal_period(session: AsyncSession, pupil: Pupil) -> CancelMealP
 
 @pytest.fixture(autouse=True)
 async def prepare_data(session: AsyncSession, parent: User, pupil: Pupil, teacher: User, school_class: SchoolClass):
-    session.add(ParentPupil(parent_id=parent.id, pupil_id=pupil.id))
+    session.add(Child(parent_id=parent.id, pupil_id=pupil.id))
     session.add(Teacher(class_id=school_class.id, user_id=teacher.id))
     pupil.class_id = school_class.id
     pupil.balance = 0.15

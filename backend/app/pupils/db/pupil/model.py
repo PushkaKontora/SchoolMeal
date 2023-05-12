@@ -3,8 +3,8 @@ from datetime import datetime
 from sqlalchemy import ForeignKey, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.database.base import Base
-from app.database.constants import SET_NULL
+from app.db.base import Base
+from app.db.constants import SET_NULL
 
 
 class Pupil(Base):

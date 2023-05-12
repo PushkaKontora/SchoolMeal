@@ -5,7 +5,6 @@ from app.cancel_meal_periods.app import register_cancel_meal_periods_api
 from app.children.app import register_children_api
 from app.config import RequestSignatureSettings
 from app.container import Container
-from app.database.container import Database
 from app.exceptions import APIException, handle_api_exception
 from app.meals.app import register_meals_api
 from app.middlewares import RequestSignatureMiddleware
@@ -16,9 +15,6 @@ from app.users.app import register_users_api
 def create_app() -> FastAPI:
     container = Container()
     settings = container.app_settings()
-
-    database = Database()
-    database.wire(packages=["app"])
 
     application = FastAPI(debug=settings.debug, docs_url="/docs" if settings.debug else None)
     application.add_exception_handler(APIException, handle_api_exception)

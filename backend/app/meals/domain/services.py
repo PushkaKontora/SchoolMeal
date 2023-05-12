@@ -1,7 +1,7 @@
 from dependency_injector.wiring import Provide, inject
 
-from app.database.container import Database
-from app.database.unit_of_work import UnitOfWork
+from app.container import Container
+from app.db.unit_of_work import UnitOfWork
 from app.meals.db.meal.filters import BySomeClassId, BySomeDateFromInclusive, BySomeDateToInclusive
 from app.meals.db.meal.joins import WithFoods, WithMenus, WithPortions, WithSchoolClass
 from app.meals.db.meal.model import Meal
@@ -14,7 +14,7 @@ from app.school_classes.db.school_class.model import SchoolClass
 
 @inject
 async def get_meals_by_filters(
-    options: MealsOptions, uow: UnitOfWork = Provide[Database.unit_of_work]
+    options: MealsOptions, uow: UnitOfWork = Provide[Container.unit_of_work]
 ) -> list[MealOut]:
     async with uow:
         spec = (
@@ -23,7 +23,7 @@ async def get_meals_by_filters(
             & BySomeDateToInclusive(options.date_to)
         )
 
-        meals = await uow.meals_repo.find(spec, WithSchoolClass(), WithMenus(), WithPortions(), WithFoods())
+        meals = await uow.repository(Meal).find(spec, WithSchoolClass(), WithMenus(), WithPortions(), WithFoods())
 
     return [_get_meal_out(meal) for meal in meals]
 

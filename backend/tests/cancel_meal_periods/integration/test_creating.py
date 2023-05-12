@@ -6,7 +6,7 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
-from app.children.db.parent_pupil.model import ParentPupil
+from app.children.db.child.model import Child
 from app.config import JWTSettings
 from app.pupils.db.pupil.model import Pupil
 from app.users.db.user.model import User
@@ -105,7 +105,7 @@ async def test_creating_by_not_parent(
     pupil: Pupil,
     start_date="2023-04-10",
 ):
-    query = delete(ParentPupil).where(ParentPupil.parent_id == parent.id, ParentPupil.pupil_id == pupil.id)
+    query = delete(Child).where(Child.parent_id == parent.id, Child.pupil_id == pupil.id)
     await session.execute(query)
     await session.commit()
 
@@ -120,5 +120,5 @@ async def test_creating_by_not_parent(
 
 @pytest.fixture(autouse=True)
 async def prepare_data(session: AsyncSession, parent: User, pupil: Pupil):
-    session.add(ParentPupil(parent_id=parent.id, pupil_id=pupil.id))
+    session.add(Child(parent_id=parent.id, pupil_id=pupil.id))
     await session.commit()

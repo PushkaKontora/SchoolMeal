@@ -1,4 +1,4 @@
-from app.database.specifications import FilterSpecification, TQuery
+from app.db.specifications import FilterSpecification, TQuery
 from app.portions.db.portion.model import Portion
 
 

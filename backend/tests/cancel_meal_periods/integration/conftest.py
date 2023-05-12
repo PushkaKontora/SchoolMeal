@@ -4,9 +4,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
-from app.children.db.parent_pupil.model import ParentPupil
 from app.pupils.db.pupil.model import Pupil
-from app.users.db.user.model import User
 
 
 PERIODS_PREFIX = "/cancel-meal-periods"
