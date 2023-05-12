@@ -19,5 +19,5 @@ class Meal(Base):
     lunch_price: Mapped[Decimal] = mapped_column(Numeric(scale=2, asdecimal=True), nullable=False)
     dinner_price: Mapped[Decimal] = mapped_column(Numeric(scale=2, asdecimal=True), nullable=False)
 
-    menus = relationship("Menu")
-    school_class = relationship("SchoolClass", uselist=False)
+    menus = relationship("Menu", lazy="raise")
+    school_class = relationship("SchoolClass", uselist=False, lazy="raise")

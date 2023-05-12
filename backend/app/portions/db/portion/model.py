@@ -17,4 +17,4 @@ class Portion(Base):
     fats: Mapped[float | None] = mapped_column(Numeric(scale=2), nullable=True)
     carbs: Mapped[float | None] = mapped_column(Numeric(scale=2), nullable=True)
 
-    food = relationship("Food")
+    food = relationship("Food", lazy="raise")

@@ -20,4 +20,4 @@ class Menu(Base):
     portion_id: Mapped[int] = mapped_column(ForeignKey("portions.id", ondelete=CASCADE), primary_key=True)
     meal_type: Mapped[MealType] = mapped_column(Enum(MealType), nullable=False, primary_key=True)
 
-    portion = relationship("Portion")
+    portion = relationship("Portion", lazy="raise")

@@ -20,5 +20,5 @@ class Pupil(Base):
     lunch: Mapped[bool] = mapped_column(default=False, nullable=False)
     dinner: Mapped[bool] = mapped_column(default=False, nullable=False)
 
-    school_class = relationship("SchoolClass")
-    cancel_meal_periods = relationship("CancelMealPeriod", back_populates="pupil")
+    school_class = relationship("SchoolClass", lazy="raise")
+    cancel_meal_periods = relationship("CancelMealPeriod", back_populates="pupil", lazy="raise")

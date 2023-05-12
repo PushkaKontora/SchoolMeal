@@ -16,4 +16,4 @@ class CancelMealPeriod(Base):
     end_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     comment: Mapped[str | None] = mapped_column(String(512), nullable=True)
 
-    pupil = relationship("Pupil", back_populates="cancel_meal_periods", uselist=False)
+    pupil = relationship("Pupil", back_populates="cancel_meal_periods", uselist=False, lazy="raise")
