@@ -13,6 +13,7 @@ export function ControlledInputField<FormData>
       rules={data.options}
       render={({field: {onChange, value}}) => (
         <InputField
+          style={props.style}
           data={data}
           onChangeText={onChange}
           value={value}
