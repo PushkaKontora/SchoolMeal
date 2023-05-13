@@ -21,9 +21,11 @@ export function LoginForm(props: LoginFormProps) {
 
   const styles = createStyle(props);
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = (currentData: LoginFormData) => {
     setDisabled(true);
-    console.log(data);
+    props.onSubmit(currentData);
+
+    console.log(currentData);
   };
 
   return (

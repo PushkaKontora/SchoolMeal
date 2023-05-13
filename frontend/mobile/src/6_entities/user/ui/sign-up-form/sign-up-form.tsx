@@ -6,8 +6,9 @@ import {View} from 'react-native';
 import {ButtonPrimary} from '../../../../7_shared/ui/buttons/button-primary';
 import {ControlledInputField} from '../../../controlled/controlled-input-field';
 import {INPUT_DATA} from './input-data';
+import {SignUpFormProps} from './props';
 
-export function SignUpForm() {
+export function SignUpForm(props: SignUpFormProps) {
   const {
     handleSubmit,
     control,
@@ -22,6 +23,8 @@ export function SignUpForm() {
 
   const onSubmit = (data: SignUpFormData) => {
     setDisabled(true);
+    props.onSubmit(data);
+
     console.log(data);
   };
 

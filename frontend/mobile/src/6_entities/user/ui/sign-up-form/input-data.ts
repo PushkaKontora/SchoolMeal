@@ -3,7 +3,7 @@ import {SignUpFormData} from './types';
 
 export const INPUT_DATA: InputData<SignUpFormData>[] = [
   {
-    name: 'name',
+    name: 'firstName',
     label: 'Имя',
     type: '',
     options: {
@@ -12,7 +12,7 @@ export const INPUT_DATA: InputData<SignUpFormData>[] = [
     placeholder: 'Имя'
   },
   {
-    name: 'surname',
+    name: 'lastName',
     label: 'Фамилия',
     type: '',
     options: {

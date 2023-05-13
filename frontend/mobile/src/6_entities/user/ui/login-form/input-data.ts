@@ -3,7 +3,7 @@ import {LoginFormData} from './types';
 
 export const INPUT_DATA: InputData<LoginFormData>[] = [
   {
-    name: 'phone',
+    name: 'login',
     label: 'Логин',
     type: 'telephoneNumber',
     options: {
