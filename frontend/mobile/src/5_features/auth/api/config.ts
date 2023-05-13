@@ -18,7 +18,7 @@ export const CONFIG: ConfigSettings = {
       query: (body) => ({
         url: '/signin',
         method: 'POST',
-        body: body,
+        body: body
       })
     }),
     logout: build.mutation<UniversalResponse, undefined>({
