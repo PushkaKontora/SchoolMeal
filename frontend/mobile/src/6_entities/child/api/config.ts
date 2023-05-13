@@ -2,8 +2,6 @@ import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {BASE_BACKEND_URL} from "../../../7_shared/api/config";
 import {Child} from "../model/child";
 import {FindChildBody} from "./types";
-import {ConfigSettings} from "../../../7_shared/api";
-import {User} from "../../user";
 
 export const CHILD_API = createApi({
     reducerPath: 'api/children',

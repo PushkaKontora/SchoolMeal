@@ -5,7 +5,7 @@ import {magicModal, MagicModalPortal} from "react-native-magic-modal";
 import {ModalAddChildProps} from "../model/props";
 import {createStyle} from "../consts/styleModal";
 import {ModalFeature} from "../../../5_features/modal-feature/ui/modal-feature";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Text, View} from "react-native";
 import {useForm} from "react-hook-form";
 import {ErrorMessage} from "../../../6_entities/modal/ui/error-message/error-message";
@@ -31,33 +31,37 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
     });
 
     const handleAddChildByID = (data: any): any => {
-        console.log(data?.childId + ' 1');
         if (data) {
-            addChildByID({childId: data?.childId}).unwrap()
+            addChildByID({childId: data.childId}).unwrap()
         }
-
-        console.log(data?.childId + ' 2');
+        console.log(data?.childId + ' 1');
     }
 
     const closeModal = (): any => {
         magicModal.hide();
-        setInvisibleErrorMessage(true)
+        setInvisibleErrorMessage(true);
+        setDisabled(false)
     }
 
-    if (isSuccess) {
-        closeModal();
-    }
+    useEffect(() => {
+        if (isSuccess) {
+            closeModal();
+        }
+    }, [isSuccess]);
 
-    if (isError) {
-        setInvisibleErrorMessage(false)
-        setDisabled(true)
-    }
+    useEffect(() => {
+        if (isError) {
+            console.log('error' + ' 2');
+            setInvisibleErrorMessage(true);
+            setDisabled(false);
+        }
+    }, [isError]);
 
     const styles = createStyle(props);
     const ConfirmationModal = () => (
         <ModalFeature
             headerModalTitle={'Добавить ребёнка'}
-            functionButton={() => handleSubmit(handleAddChildByID)}
+            functionButton={handleSubmit(handleAddChildByID)}
             disabledButton={disabled}
             clickExit={() => closeModal()}>
             <View style={styles.content}>
@@ -70,6 +74,7 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
                     errors={errors}
                     data={INPUT_DATA}
                     style={styles.inputField}
+
                 />
                 <ErrorMessage
                     displayErrorMessage={invisibleErrorMessage}
