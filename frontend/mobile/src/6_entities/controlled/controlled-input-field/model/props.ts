@@ -3,5 +3,5 @@ import {Control, FieldErrors} from 'react-hook-form';
 
 export type ControlledInputFieldProps<FormData> = {
   control: Control<any, any>,
-  errors: FieldErrors
+  errors: FieldErrors,
 } & InputFieldProps<FormData>

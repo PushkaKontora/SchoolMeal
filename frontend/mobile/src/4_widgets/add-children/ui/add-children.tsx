@@ -43,17 +43,26 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
         setDisabled(false)
     }
 
+    const handleChangeText = (): void => {
+        console.log(' !');
+        setInvisibleErrorMessage(true);
+        setDisabled(false)
+    }
+
     useEffect(() => {
+        console.log('isSuccess' + ' 1');
         if (isSuccess) {
             closeModal();
+            console.log('isSuccess' + ' 2');
         }
     }, [isSuccess]);
 
     useEffect(() => {
+        console.log('error' + ' 1');
         if (isError) {
             console.log('error' + ' 2');
-            setInvisibleErrorMessage(true);
-            setDisabled(false);
+            setInvisibleErrorMessage(false);
+            setDisabled(true);
         }
     }, [isError]);
 
@@ -74,7 +83,6 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
                     errors={errors}
                     data={INPUT_DATA}
                     style={styles.inputField}
-
                 />
                 <ErrorMessage
                     displayErrorMessage={invisibleErrorMessage}
@@ -89,8 +97,9 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
     };
 
     return (
-        <>{userChild !== undefined
+        <>{userChild && userChild.length !== 0
             ? <>
+                <Text>ddd</Text>
             </>
             : <EmojiTextFeature
                 imageEmoji={require('../../../5_features/emoji-text-feature/images/angelAmoji.png')}

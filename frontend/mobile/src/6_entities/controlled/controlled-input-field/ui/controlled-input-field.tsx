@@ -15,11 +15,10 @@ export function ControlledInputField<FormData>
                 <InputField
                     style={props.style}
                     data={data}
-                    onChangeText={onChange}
                     value={value}
                     errors={props.errors}/>
             )}>
 
-    </Controller>
-  );
+        </Controller>
+    );
 }
