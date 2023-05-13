@@ -4,21 +4,21 @@ import {InputData, InputField} from '../../../../7_shared/ui/fields/input-field'
 
 export function ControlledInputField<FormData>
 (props: ControlledInputFieldProps<FormData>) {
-  const data: InputData<FormData> = props.data;
+    const data: InputData<FormData> = props.data;
 
-  return (
-    <Controller
-      control={props.control}
-      name={data.name}
-      rules={data.options}
-      render={({field: {onChange, value}}) => (
-        <InputField
-          style={props.style}
-          data={data}
-          onChangeText={onChange}
-          value={value}
-          errors={props.errors}/>
-      )}>
+    return (
+        <Controller
+            control={props.control}
+            name={data.name}
+            rules={data.options}
+            render={({field: {onChange, value}}) => (
+                <InputField
+                    style={props.style}
+                    data={data}
+                    onChangeText={onChange}
+                    value={value}
+                    errors={props.errors}/>
+            )}>
 
     </Controller>
   );

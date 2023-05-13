@@ -8,6 +8,8 @@ export const createStyle = (props?: InputStyle) => StyleSheet.create({
     paddingHorizontal: props?.paddingHorizontal || 12,
     backgroundColor: props?.backgroundColor || '#F2F2F2',
     borderRadius: props?.borderRadius || 10,
+    borderColor: props?.borderColor,
+    borderWidth: props?.borderWidth,
     color: props?.color || '#151515'
   }
 });
