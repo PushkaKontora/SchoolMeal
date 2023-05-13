@@ -1,0 +1,2 @@
+USERS_PREFIX = "/users"
+ME_PREFIX = USERS_PREFIX + "/me"

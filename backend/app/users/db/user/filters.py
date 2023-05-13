@@ -1,8 +1,8 @@
-from app.database.specifications import FilterSpecification, TQuery
+from app.db.specifications import FilterSpecification, TQuery
 from app.users.db.user.model import User
 
 
-class ById(FilterSpecification):
+class ByUserId(FilterSpecification):
     def __init__(self, user_id: int):
         self._user_id = user_id
 

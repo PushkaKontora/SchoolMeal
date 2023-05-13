@@ -1,5 +1,5 @@
 from app.auth.db.password.model import Password
-from app.database.specifications import FilterSpecification, TQuery
+from app.db.specifications import FilterSpecification, TQuery
 
 
 class ByUserId(FilterSpecification):

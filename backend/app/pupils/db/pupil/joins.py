@@ -1,6 +1,6 @@
 from sqlalchemy.orm import joinedload, selectinload
 
-from app.database.specifications import Specification, TQuery
+from app.db.specifications import Specification, TQuery
 from app.pupils.db.pupil.model import Pupil
 from app.school_classes.db.school_class.model import SchoolClass
 

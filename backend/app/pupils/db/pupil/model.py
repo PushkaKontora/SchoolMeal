@@ -3,8 +3,8 @@ from datetime import datetime
 from sqlalchemy import ForeignKey, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.database.base import Base
-from app.database.constants import SET_NULL
+from app.db.base import Base
+from app.db.constants import SET_NULL
 
 
 class Pupil(Base):
@@ -15,10 +15,10 @@ class Pupil(Base):
     last_name: Mapped[str] = mapped_column(String(32), nullable=False)
     first_name: Mapped[str] = mapped_column(String(32), nullable=False)
     certificate_before_date: Mapped[datetime | None] = mapped_column(nullable=True)
-    balance: Mapped[float] = mapped_column(Numeric(precision=10, scale=2), nullable=False)
+    balance: Mapped[float] = mapped_column(Numeric(scale=2), nullable=False)
     breakfast: Mapped[bool] = mapped_column(default=False, nullable=False)
     lunch: Mapped[bool] = mapped_column(default=False, nullable=False)
     dinner: Mapped[bool] = mapped_column(default=False, nullable=False)
 
-    school_class = relationship("SchoolClass")
-    cancel_meal_periods = relationship("CancelMealPeriod", back_populates="pupil")
+    school_class = relationship("SchoolClass", lazy="raise")
+    cancel_meal_periods = relationship("CancelMealPeriod", back_populates="pupil", lazy="raise")

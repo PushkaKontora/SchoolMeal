@@ -5,7 +5,7 @@ from sqlalchemy import Enum, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql.functions import now
 
-from app.database.base import Base
+from app.db.base import Base
 
 
 class Role(str, BaseEnum):
@@ -28,4 +28,4 @@ class User(Base):
     photo_path: Mapped[str | None] = mapped_column(String(128), nullable=True)
     created_at: Mapped[datetime] = mapped_column(server_default=now(), nullable=False)
 
-    passwords = relationship("Password")
+    passwords = relationship("Password", lazy="raise")

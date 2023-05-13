@@ -1,8 +1,8 @@
 from sqlalchemy import ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.database.base import Base
-from app.database.constants import CASCADE
+from app.db.base import Base
+from app.db.constants import CASCADE
 
 
 class SchoolClass(Base):
@@ -17,6 +17,6 @@ class SchoolClass(Base):
     has_lunch: Mapped[bool] = mapped_column(nullable=False)
     has_dinner: Mapped[bool] = mapped_column(nullable=False)
 
-    teachers = relationship("User", secondary="teachers")
-    pupils = relationship("Pupil", back_populates="school_class")
-    school = relationship("School", uselist=False)
+    teachers = relationship("User", secondary="teachers", lazy="raise")
+    pupils = relationship("Pupil", back_populates="school_class", lazy="raise")
+    school = relationship("School", uselist=False, lazy="raise")

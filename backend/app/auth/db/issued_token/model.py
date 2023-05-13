@@ -4,8 +4,8 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.functions import now
 
-from app.database.base import Base
-from app.database.constants import CASCADE
+from app.db.base import Base
+from app.db.constants import CASCADE
 
 
 class IssuedToken(Base):

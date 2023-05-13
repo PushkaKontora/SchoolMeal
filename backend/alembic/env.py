@@ -4,8 +4,8 @@ from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 from app.config import DatabaseSettings
-from app.database.base import Base
-from app.database.models import *
+from app.db.base import Base
+from app.db.models import *
 
 
 settings = DatabaseSettings()
