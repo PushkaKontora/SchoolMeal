@@ -16,6 +16,7 @@ export function ControlledInputField<FormData>
                     style={props.style}
                     data={data}
                     value={value}
+                    onChangeText={onChange}
                     errors={props.errors}/>
             )}>
 

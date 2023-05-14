@@ -5,7 +5,8 @@ export const createStyle = (props: ChildCardProps) => StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
         borderRadius: 10,
-        marginTop: 8
+        marginTop: 8,
+        // marginHorizontal: 16,
     },
     tagContainer: {
         flexDirection: 'column',

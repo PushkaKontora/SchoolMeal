@@ -13,7 +13,7 @@ export function ChildCard(props: ChildCardProps) {
         certificateBeforeDate
     } = props;
     const handlerNavigateToChildPage = () => {
-        navigation.navigate(props.childPagePath);
+        navigation.navigate('ProfileChild', {childInformation: props.childPagePath});
     }
 
     const styles = createStyle(props);
@@ -21,7 +21,7 @@ export function ChildCard(props: ChildCardProps) {
 
     return (
         <TouchableOpacity
-            // onPress={handlerNavigateToChildPage}
+            onPress={handlerNavigateToChildPage}
             style={styles.container}>
             <ChildCardHeader ChildCardHeaderTitle={nameChild}/>
             <View style={styles.content}>

@@ -10,7 +10,7 @@ export const createStyle = (props: TagInformationProps) => StyleSheet.create({
         borderRadius: props.borderRadius || 5,
 
         paddingVertical: 4,
-        paddingHorizontal: 8,
+        paddingHorizontal:  props.paddingHorizontal || 8,
         marginRight: 'auto',
     },
     titles: {

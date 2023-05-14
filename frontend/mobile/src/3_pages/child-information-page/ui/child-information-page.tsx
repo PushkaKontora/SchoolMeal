@@ -1,8 +1,13 @@
-import {AddChildrenWidget} from '../../../4_widgets/add-children/ui/add-children';
 import {ChildInformationProps} from "../model/props";
+import {
+    ChildPersonalInformation
+} from "../../../4_widgets/child/child-information/child-personal-information/ui/child-personal-information";
 
 export function ChildInformationPage(props: ChildInformationProps) {
+
     return (
-        <AddChildrenWidget/>
+        <>
+            <ChildPersonalInformation childInformation={props.childInformation}/>
+        </>
     );
 }

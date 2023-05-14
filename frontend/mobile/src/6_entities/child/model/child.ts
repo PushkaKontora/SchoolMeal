@@ -5,7 +5,7 @@ export type Child = {
     id: string,
     lastName: string,
     firstName: string,
-    certificateBeforeDate: Date,
+    certificateBeforeDate: string,
     balance: number,
     breakfast: boolean,
     lunch: boolean,
