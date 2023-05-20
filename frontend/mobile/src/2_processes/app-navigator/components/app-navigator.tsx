@@ -42,7 +42,6 @@ export function AppNavigator() {
             <AppStack/>
           )
         }
-
         <StatusBar style="auto" />
       </NavigationContainer>
     </View>
