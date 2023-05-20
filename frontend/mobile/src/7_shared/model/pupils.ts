@@ -1,4 +1,4 @@
-import {Parents} from "./parents";
+import {Parents} from './parents';
 
 export type Pupils ={
     id: number,
