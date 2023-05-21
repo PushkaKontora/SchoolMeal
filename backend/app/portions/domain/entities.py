@@ -11,6 +11,7 @@ class FoodOut(Entity):
 class PortionOut(Entity):
     id: int
     food: FoodOut
+    price: float
     components: str | None
     weight: float | None
     kcal: float | None

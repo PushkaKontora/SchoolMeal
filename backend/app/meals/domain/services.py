@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from dependency_injector.wiring import Provide, inject
 
 from app.container import Container
@@ -42,23 +44,15 @@ def _get_meal_out(meal: Meal) -> MealOut:
         class_id=meal.class_id,
         date=meal.date,
         menu=MenuOut(
-            breakfast=MealTypeOut(
-                price=meal.breakfast_price,
-                portions=[PortionOut.from_orm(portion) for portion in portions[MealType.BREAKFAST]],
-            )
-            if school_class.has_breakfast
-            else None,
-            lunch=MealTypeOut(
-                price=meal.lunch_price,
-                portions=[PortionOut.from_orm(portion) for portion in portions[MealType.LUNCH]],
-            )
-            if school_class.has_lunch
-            else None,
-            dinner=MealTypeOut(
-                price=meal.dinner_price,
-                portions=[PortionOut.from_orm(portion) for portion in portions[MealType.DINNER]],
-            )
-            if school_class.has_dinner
-            else None,
+            breakfast=_get_meal_type_out(portions[MealType.BREAKFAST]) if school_class.has_breakfast else None,
+            lunch=_get_meal_type_out(portions[MealType.LUNCH]) if school_class.has_lunch else None,
+            dinner=_get_meal_type_out(portions[MealType.DINNER]) if school_class.has_dinner else None,
         ),
     )
+
+
+def _get_meal_type_out(portions: Iterable[Portion]) -> MealTypeOut:
+    portions_out = [PortionOut.from_orm(portion) for portion in portions]
+    price = sum(portion.price for portion in portions)
+
+    return MealTypeOut(price=price, portions=portions_out)
