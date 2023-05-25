@@ -22,6 +22,19 @@ from app.users.db.user.model import User
 
 
 @inject
+async def get_child_by_id(parent_id: int, child_id: str, uow: UnitOfWork = Provide[Container.unit_of_work]) -> ChildOut:
+    async with uow:
+        if not await uow.repository(Child).exists(ByParentId(parent_id) & ByPupilId(child_id)):
+            raise UserIsNotParentOfThePupilError
+
+        pupil = await uow.repository(Pupil).get_one(
+            PupilById(child_id), WithClass(), WithSchool(), WithTeachers(), WithCancelMealPeriods()
+        )
+
+        return _get_child_out(pupil)
+
+
+@inject
 async def add_pupil_to_parent_children(
     parent_id: int, child: ChildIn, uow: UnitOfWork = Provide[Container.unit_of_work]
 ) -> None:

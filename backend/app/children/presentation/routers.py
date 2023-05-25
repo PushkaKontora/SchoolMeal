@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.children.presentation.handlers import add_child, change_meal_plan, get_children
+from app.children.presentation.handlers import add_child, change_meal_plan, get_child, get_children
 from app.utils.responses import ErrorResponse
 
 
@@ -29,5 +29,7 @@ def get_child_router() -> APIRouter:
     router = APIRouter()
 
     router.add_api_route(path="", methods=["PATCH"], endpoint=change_meal_plan)
+
+    router.add_api_route(path="", methods=["GET"], endpoint=get_child)
 
     return router
