@@ -1,4 +1,7 @@
+import {Child} from '../../../6_entities/child/model/child';
+
 export type NutritionHeaderFeatureProps = {
-  name: string,
-  onToggle: (turnedOn: boolean) => void;
+  child?: Child,
+  onToggle: (turnedOn: boolean) => void,
+  defaultToggleState?: boolean
 };

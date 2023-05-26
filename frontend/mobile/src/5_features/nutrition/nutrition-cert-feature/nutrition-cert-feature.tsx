@@ -7,15 +7,20 @@ export function NutritionCertFeature(props: NutritionCertFeatureProps) {
   return (
     <View
       style={styles.container}>
-      <Text
-        style={styles.title}>
-        {'Справка действительна до'}
-      </Text>
+      {
+        props?.child?.certificateBeforeDate &&
+        <View>
+          <Text
+            style={styles.title}>
+            {'Справка действительна до'}
+          </Text>
 
-      <Text
-        style={styles.dateBadge}>
-        {formatDate(props.date)}
-      </Text>
+          <Text
+            style={styles.dateBadge}>
+            {formatDate(new Date(props.child.certificateBeforeDate))}
+          </Text>
+        </View>
+      }
     </View>
   );
 }

@@ -28,8 +28,8 @@ export function NutritionTogglesFeature(props: NutritionTogglesFeatureProps) {
         </Text>
 
         <Switch
-          onToggle={props.onToggleBreakfast}
-          defaultState={props.breakfastState}/>
+          onToggle={props.onToggleLunch}
+          defaultState={props.lunchState}/>
       </View>
 
       <View
@@ -40,8 +40,8 @@ export function NutritionTogglesFeature(props: NutritionTogglesFeatureProps) {
         </Text>
 
         <Switch
-          onToggle={props.onToggleBreakfast}
-          defaultState={props.breakfastState}/>
+          onToggle={props.onToggleAfternoonSnack}
+          defaultState={props.afternoonSnackState}/>
       </View>
 
     </View>
