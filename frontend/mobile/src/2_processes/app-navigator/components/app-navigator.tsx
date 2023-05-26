@@ -16,7 +16,11 @@ export function AppNavigator() {
 
   const checkToken = () => {
     AuthTokenService.getToken()
-      .then(() => dispatch(setAuthorized(true)))
+      .then((value) => {
+        const result = value !== null;
+
+        dispatch(setAuthorized(result));
+      })
       .catch(() => dispatch(setAuthorized(false)));
   };
 
