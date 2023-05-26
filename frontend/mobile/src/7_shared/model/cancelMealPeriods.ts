@@ -1,6 +1,6 @@
 export type CancelMealPeriods = {
-    id: number,
-    startDate: Date,
-    endDate: Date,
-    comment: string,
+    pupilId: number,
+    startDate: string,
+    endDate?: string,
+    comment?: string,
 }
