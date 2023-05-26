@@ -1,4 +1,4 @@
-import {dateButton} from './styles';
+import {dateButton} from './consts/styles';
 import {StyleSheet} from 'react-native';
 
 export function createContainerStyle(selectionColor: string, checked: boolean) {

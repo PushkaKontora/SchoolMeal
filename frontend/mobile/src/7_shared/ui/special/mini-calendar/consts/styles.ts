@@ -25,7 +25,8 @@ export const datePicker = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     gap: 16,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center'
   }
 });
 

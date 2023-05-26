@@ -1,7 +1,11 @@
+import {PaddingAreaProps} from '../../../styling/padding-area';
+
 export type MiniCalendarProps = {
   selectionColor: string,
   currentDate?: Date,
-  itemNumber?: number
+  itemNumber?: number,
+  onDateChange: (date: Date) => void,
+  paddingProps?: PaddingAreaProps
 };
 
 export type DateButtonProps = {

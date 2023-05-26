@@ -1,19 +1,18 @@
-import {DateButtonProps} from './props';
+import {DateButtonProps} from '../types/props';
 import {Text, TouchableOpacity, View} from 'react-native';
-import {dateButton} from './styles';
 import {useEffect, useState} from 'react';
-import {getShortDayName} from './utils';
-import {createContainerStyle, createTextStyle} from './button-style-utils';
+import {getShortDayName} from '../lib/dates-utils';
+import {createContainerStyle, createTextStyle} from '../button-style-utils';
 
 export function DateButton(props: DateButtonProps) {
   const [date, setDate] = useState(props.date);
-  const [checked, setChecked] = useState(props?.checked as boolean);
+  const [checked, setChecked] = useState(props?.checked || false);
 
   const [containerStyle, setContainerStyle] =
-    useState(createContainerStyle(props.selectionColor, props?.checked as boolean));
+    useState(createContainerStyle(props.selectionColor, props?.checked || false));
 
   const [textStyle, setTextStyle] =
-    useState(createTextStyle(props.selectionColor, props?.checked as boolean));
+    useState(createTextStyle(props.selectionColor, props?.checked || false));
 
   useEffect(() => {
     setContainerStyle(createContainerStyle(props.selectionColor, checked));
@@ -21,8 +20,12 @@ export function DateButton(props: DateButtonProps) {
   }, [checked]);
 
   useEffect(() => {
-    setChecked(props.checked as boolean);
+    setChecked(props.checked || false);
   }, [props.checked]);
+
+  useEffect(() => {
+    setDate(props.date);
+  }, [props.date]);
 
   const onPress = () => {
     setChecked(true);

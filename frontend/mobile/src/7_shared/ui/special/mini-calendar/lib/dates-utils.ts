@@ -1,3 +1,5 @@
+import {SHORT_WEEKDAYS} from '../config/config';
+
 export function findDatesFrom(selectedDate: Date, amount: number): Date[] {
   const result = [selectedDate];
 
@@ -28,22 +30,22 @@ export function getPreferredMonth(dates: Date[]) {
   return preferredMonth;
 }
 
-export function findNext(leftDate: Date, amount: number) {
-  const day = leftDate.getDay();
-  const newLeftDate = new Date(leftDate);
-  newLeftDate.setDate(day + amount);
+export function findNext(currentLeftDate: Date, amount: number) {
+  const date = currentLeftDate.getDate();
+  const newLeftDate = new Date(currentLeftDate);
+  newLeftDate.setDate(date + amount);
 
   return findDatesFrom(newLeftDate, amount);
 }
 
-export function findPrev(leftDate: Date, amount: number) {
-  const day = leftDate.getDay();
-  const newLeftDate = new Date(leftDate);
-  newLeftDate.setDate(day - amount);
+export function findPrev(currentLeftDate: Date, amount: number) {
+  const date = currentLeftDate.getDate();
+  const newLeftDate = new Date(currentLeftDate);
+  newLeftDate.setDate(date - amount);
 
   return findDatesFrom(newLeftDate, amount);
 }
 
 export function getShortDayName(date: Date) {
-  return 'пн';
+  return SHORT_WEEKDAYS[date.getDay()];
 }
