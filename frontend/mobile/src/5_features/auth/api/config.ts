@@ -4,7 +4,7 @@ import {BASE_BACKEND_URL} from '../../../7_shared/api/config';
 import {SignInBody, TokenResponse} from './types';
 
 export enum Tags {
-
+  User = 'User'
 }
 
 export const CONFIG: ConfigSettings = {
@@ -19,7 +19,8 @@ export const CONFIG: ConfigSettings = {
         url: '/signin',
         method: 'POST',
         body: body
-      })
+      }),
+      invalidatesTags: ['User']
     }),
     logout: build.mutation<UniversalResponse, undefined>({
       query: () => ({
