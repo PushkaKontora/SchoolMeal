@@ -4,19 +4,24 @@ import {useEffect, useState} from 'react';
 import {createStyle} from './styles';
 
 export function Switch(props: SwitchProps) {
-  const [turnedOn, setTurnedOn] = useState(props?.defaultState as boolean);
+  const [turnedOn, setTurnedOn] = useState(props?.defaultState || false);
 
   let styles = createStyle(turnedOn);
-
-  const onPress = () => {
-    const prevTurnedOn = turnedOn;
-    setTurnedOn(!turnedOn);
-    props.onToggle(prevTurnedOn);
-  };
 
   useEffect(() => {
     styles = createStyle(turnedOn);
   }, [turnedOn]);
+
+  useEffect(() => {
+    setTurnedOn(props.defaultState || false);
+  }, [props.defaultState]);
+
+  const onPress = () => {
+    setTurnedOn((prev) => {
+      props.onToggle(!prev);
+      return !prev;
+    });
+  };
 
   return (
     <TouchableWithoutFeedback

@@ -1,10 +1,14 @@
 import {ToggleButtonProps} from './props';
 import {Text, TouchableNativeFeedback, TouchableWithoutFeedback, View} from 'react-native';
 import {styles} from './styles';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 export function ToggleButton(props: ToggleButtonProps) {
   const [turnedOn, setTurnedOn] = useState(props?.defaultState);
+
+  useEffect(() => {
+    setTurnedOn(props.defaultState);
+  }, [props.defaultState]);
 
   const onPress = (state: boolean) => {
     setTurnedOn(state);
