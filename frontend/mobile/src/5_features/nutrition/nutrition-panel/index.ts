@@ -1,1 +1,1 @@
-export {NutritionPanel} from './nutrition-panel';
+export {NutritionPanel} from './ui/nutrition-panel';
