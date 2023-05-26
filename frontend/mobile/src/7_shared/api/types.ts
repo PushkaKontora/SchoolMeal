@@ -9,7 +9,7 @@ import {EndpointBuilder} from '@reduxjs/toolkit/dist/query/endpointDefinitions';
 export type ConfigSettings = {
   reducerPath: string,
   baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, object, FetchBaseQueryMeta>,
-  tagTypes: string[],
+  tagTypes?: string[],
   endpoints: (build: EndpointBuilder<any, any, any>) => any
 };
 
