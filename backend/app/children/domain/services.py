@@ -1,9 +1,10 @@
 from dependency_injector.wiring import Provide, inject
 
+from app.cancel_meal_periods.domain.entities import PeriodOut
 from app.children.db.child.filters import ByParentId, ByPupilId
 from app.children.db.child.model import Child
 from app.children.db.child.selectors import OnlyPupilId
-from app.children.domain.entities import ChildIn, ChildOut, ClassOut, PeriodOut, PlanIn, PlanOut, SchoolOut, TeacherOut
+from app.children.domain.entities import ChildIn, PlanIn, PlanOut
 from app.children.domain.errors import (
     NotFoundChildError,
     NotFoundParentError,
@@ -16,13 +17,17 @@ from app.db.unit_of_work import UnitOfWork
 from app.pupils.db.pupil.filters import ById as PupilById, ByIds
 from app.pupils.db.pupil.joins import WithCancelMealPeriods, WithClass, WithSchool, WithTeachers
 from app.pupils.db.pupil.model import Pupil
+from app.pupils.domain.entities import PupilOut
 from app.school_classes.db.school_class.model import SchoolClass
+from app.school_classes.domain.entities import ClassOut
+from app.schools.domain.entities import SchoolOut
 from app.users.db.user.filters import ByUserId as UserById
 from app.users.db.user.model import User
+from app.users.domain.entities import ContactOut
 
 
 @inject
-async def get_child_by_id(parent_id: int, child_id: str, uow: UnitOfWork = Provide[Container.unit_of_work]) -> ChildOut:
+async def get_child_by_id(parent_id: int, child_id: str, uow: UnitOfWork = Provide[Container.unit_of_work]) -> PupilOut:
     async with uow:
         if not await uow.repository(Child).exists(ByParentId(parent_id) & ByPupilId(child_id)):
             raise UserIsNotParentOfThePupilError
@@ -35,7 +40,7 @@ async def get_child_by_id(parent_id: int, child_id: str, uow: UnitOfWork = Provi
 
 
 @inject
-async def add_pupil_to_parent_children(
+async def add_pupil_to_children(
     parent_id: int, child: ChildIn, uow: UnitOfWork = Provide[Container.unit_of_work]
 ) -> None:
     async with uow:
@@ -53,7 +58,9 @@ async def add_pupil_to_parent_children(
 
 
 @inject
-async def get_parent_children(parent_id: int, uow: UnitOfWork = Provide[Container.unit_of_work]) -> list[ChildOut]:
+async def get_children_by_parent_id(
+    parent_id: int, uow: UnitOfWork = Provide[Container.unit_of_work]
+) -> list[PupilOut]:
     async with uow:
         children = await uow.repository(Child).find(ByParentId(parent_id), OnlyPupilId())
         child_ids = set(child.pupil_id for child in children)
@@ -66,7 +73,7 @@ async def get_parent_children(parent_id: int, uow: UnitOfWork = Provide[Containe
 
 
 @inject
-async def change_meal_plan_by_parent(
+async def change_meal_plan_by_parent_id(
     parent_id: int,
     child_id: str,
     plan: PlanIn,
@@ -92,7 +99,7 @@ async def change_meal_plan_by_parent(
         )
 
 
-def _get_child_out(child: Pupil) -> ChildOut:
+def _get_child_out(child: Pupil) -> PupilOut:
     school_class: SchoolClass | None = child.school_class
     school_class_out = (
         ClassOut(
@@ -102,14 +109,14 @@ def _get_child_out(child: Pupil) -> ChildOut:
             has_breakfast=school_class.has_breakfast,
             has_lunch=school_class.has_lunch,
             has_dinner=school_class.has_dinner,
-            teachers=[TeacherOut.from_orm(teacher) for teacher in school_class.teachers],
+            teachers=[ContactOut.from_orm(teacher) for teacher in school_class.teachers],
             school=SchoolOut.from_orm(school_class.school),
         )
         if school_class
         else None
     )
 
-    return ChildOut(
+    return PupilOut(
         id=child.id,
         last_name=child.last_name,
         first_name=child.first_name,

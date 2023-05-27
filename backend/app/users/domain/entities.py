@@ -24,3 +24,11 @@ class ProfileOut(Entity):
     email: EmailStr | None
     photo_path: AnyHttpUrl | None
     created_at: datetime = DatetimeField()
+
+
+class ContactOut(Entity):
+    id: int
+    last_name: str
+    first_name: str
+    phone: str
+    email: str
