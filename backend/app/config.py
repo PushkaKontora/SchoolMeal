@@ -1,5 +1,6 @@
 from abc import ABC
 from datetime import timedelta
+from enum import Enum
 from os.path import join
 from pathlib import Path
 
@@ -9,12 +10,19 @@ from pydantic import BaseSettings, Field, SecretStr
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+class Environment(Enum):
+    DEV = "dev"
+    PRE_PRODUCTION = "pre-prod"
+    PRODUCTION = "prod"
+
+
 class Settings(BaseSettings, ABC):
     class Config:
         env_file = join(BASE_DIR, ".env")
 
 
 class AppSettings(Settings):
+    environment: Environment = Field(env="ENV")
     debug: bool = Field(env="DEBUG")
     docs_url: str = Field(env="DOCS_URL")
 
