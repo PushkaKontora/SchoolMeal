@@ -1,5 +1,7 @@
-dev:
-	docker-compose -f docker-compose.dev.yml up --build
+-include backend/.env
+
+up:
+	docker-compose -f docker-compose.yml -f docker-compose.${ENV}.yml up --build
 
 down:
-	docker-compose -f docker-compose.dev.yml down
+	docker-compose -f docker-compose.yml -f docker-compose.${ENV}.yml down
