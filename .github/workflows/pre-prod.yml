@@ -12,20 +12,6 @@ jobs:
     environment: pre-prod
 
     steps:
-      - name: Install make
-        run: sudo apt install make
-
-      - name: Install docker
-        run: sudo apt install docker.io
-
-      - name: Install Docker Compose
-        run: sudo apt install docker-compose
-
-      - name: Add user to docker group
-        run: |
-          sudo usermod -aG docker $USER
-          newgrp docker
-
       - name: Clone the repository
         uses: actions/checkout@v3
 
@@ -33,4 +19,4 @@ jobs:
         run: echo "${{ secrets.DOT_ENV }}" > backend/.env
 
       - name: Run service
-        run: make up
+        run: sudo make up
