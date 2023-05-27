@@ -22,4 +22,4 @@ class PeriodIn(Entity):
 
 
 class PeriodOut(PeriodIn):
-    pass
+    id: int
