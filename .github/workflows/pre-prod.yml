@@ -7,8 +7,8 @@ on:
     branches: [master]
 
 jobs:
-  deploy:
-    runs-on: self-hosted
+  build:
+    runs-on: ubuntu-20.04
     environment: pre-prod
 
     steps:
@@ -18,5 +18,32 @@ jobs:
       - name: Create .env
         run: echo "${{ secrets.DOT_ENV }}" > backend/.env
 
-      - name: Run service
-        run: sudo make up
+      - name: Build images
+        run: sudo make build
+
+      - name: Login to registry
+        run: sudo docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push images to registry
+        run: sudo make push
+
+  deploy:
+    runs-on: self-hosted
+    environment: pre-prod
+    needs: [build]
+
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v3
+
+      - name: Create .env
+        run: echo "${{ secrets.DOT_ENV }}" > backend/.env
+
+      - name: Login to registry
+        run: sudo docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Pull images
+        run: sudo make pull
+
+      - name: Run
+        run: sudo make down up
