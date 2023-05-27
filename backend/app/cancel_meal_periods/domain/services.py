@@ -26,13 +26,9 @@ async def create_period_by_parent(
         )
         uow.repository(CancelMealPeriod).save(period)
         await uow.commit()
+        await uow.repository(CancelMealPeriod).refresh(period)
 
-        return PeriodOut(
-            pupil_id=period_in.pupil_id,
-            start_date=period_in.start_date,
-            end_date=period_in.end_date,
-            comment=period_in.comment,
-        )
+        return PeriodOut.from_orm(period)
 
 
 @inject
