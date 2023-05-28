@@ -12,6 +12,7 @@ export function ModalHeader(props: ModalHeaderProps) {
             style={styles.headerContent}
             {...PADDINGS_HEADER}>
             <TouchableOpacity
+                style={styles.image}
                 onPress={props?.clickExit}>
                 <Image onAccessibilityTap={props?.clickExit}
                        source={require('../../../../7_shared/assets/images/exit.png')}/>

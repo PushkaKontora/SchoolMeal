@@ -37,8 +37,8 @@ const moks: Child = {
     return (
         <Provider store={store}>
             <MagicModalPortal/>
-            <ChildInformationPage childInformation={moks}/>
-            {/*<AppNavigator/>*/}
-                </Provider>
-                );
-            }
+            {/*<ChildInformationPage childInformation={moks}/>*/}
+            <AppNavigator/>
+        </Provider>
+    );
+}

@@ -1,5 +1,5 @@
 import {SUB_EMOJI_TITLE} from '../consts/consts';
-import {ButtonPrimary} from '../../../7_shared/ui/buttons/button-primary/button-primary';
+import {ButtonPrimary} from '../../../7_shared/ui/buttons/button-primary';
 import {EmojiTextFeature} from '../../../5_features/emoji-text-feature/ui/emoji-text-feature';
 import {magicModal, MagicModalPortal} from "react-native-magic-modal";
 import {ModalAddChildProps} from "../model/props";
@@ -14,6 +14,7 @@ import {useGetUserChildQuery, useFindChildOnIDMutation} from "../../../6_entitie
 import {idChildData} from "../types";
 import {INPUT_DATA} from "../inputData";
 import {ChildCard} from "../../child/child-card/ui/child-card";
+import {MarginArea} from "../../../7_shared/ui/styling/margin-area";
 
 
 export function AddChildrenWidget(props: ModalAddChildProps) {
@@ -102,19 +103,18 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
             ? <>
                 {userChild ? userChild.map(child =>
                     <ChildCard key={child.id}
-                               childPagePath={child}
-                               nameChild={`${child.firstName} ${child.lastName}`}
-                               schoolAdress={child.schoolClass.school.name}
-                               classNumberAndLetter={`${child.schoolClass.number} ${child.schoolClass.letter}`}
-                               certificateBeforeDate={"2023-05-14T05:36:52.344Z"}
+                               child={child}
                                navigation={props.navigation}/>) : null}
-                <ButtonPrimary
-                    title={'Добавить ребёнка'}
-                    onPress={handleAddChild}
-                    backgroundColor={'#EC662A'}
-                    textColor={'#FFFFFF'}
-                    borderRadius={10}/>
-                <MagicModalPortal/>
+                <MarginArea
+                    marginTop={16}>
+                    <ButtonPrimary
+                        title={'Добавить ребёнка'}
+                        onPress={handleAddChild}
+                        backgroundColor={'#EC662A'}
+                        textColor={'#FFFFFF'}
+                        borderRadius={10}/>
+                    <MagicModalPortal/>
+                </MarginArea>
             </>
             : <EmojiTextFeature
                 imageEmoji={require('../../../5_features/emoji-text-feature/images/angelAmoji.png')}
