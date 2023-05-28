@@ -27,20 +27,20 @@ export const CHILD_API = createApi({
         method: 'POST',
         body: body,
       }),
-      //  invalidatesTags: [{type: 'UserChildren', id: 'LIST'}]
+      invalidatesTags: [{type: 'UserChildren', id: 'LIST'}]
     }),
 
     getUserChild: build.query<Child[], void>({
       query: () => ({
         url: ''
       }),
-      // providesTags: (result) =>
-      //     result
-      //         ? [
-      //             ...result.map(({ id }) => ({ type: 'UserChildren' as const, id })),
-      //             { type: 'UserChildren', id: 'LIST' },
-      //         ]
-      //         : [{ type: 'UserChildren', id: 'LIST' }],
+      providesTags: (result) =>
+          result
+              ? [
+                  ...result.map(({ id }) => ({ type: 'UserChildren' as const, id })),
+                  { type: 'UserChildren', id: 'LIST' },
+              ]
+              : [{ type: 'UserChildren', id: 'LIST' }],
     }),
     changeMealPlan: build.mutation<ChildMealData, ChildMealDataWithId>({
       query: ({childId, ...body}) => ({
