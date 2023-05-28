@@ -8,9 +8,12 @@ import {createStyle} from "../consts/style";
 
 export function ChildPersonalInformation(props: ChildPersonalInformationProps) {
     const styles = createStyle(props);
+    const {navigation} = props;
 
     const navigateNutritionPage = () => {
-
+        navigation.navigate('Nutrition', {
+            childId: props.childInformation.id
+        });
     };
 
     return (
@@ -30,3 +33,5 @@ export function ChildPersonalInformation(props: ChildPersonalInformationProps) {
         </View>
     );
 }
+
+//todo: изменить 26 строку на даныые  сервера

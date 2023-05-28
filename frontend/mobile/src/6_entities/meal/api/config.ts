@@ -1,13 +1,9 @@
 import {addAuthHeader, ConfigSettings, UniversalResponse} from '../../../7_shared/api';
-import {fetchBaseQuery} from '@reduxjs/toolkit/dist/query/react';
 import {BASE_BACKEND_URL} from '../../../7_shared/api/config';
 import {AuthTokenService} from '../../../5_features/auth';
 import {CancelMealPeriods} from '../../../7_shared/model/cancelMealPeriods';
 
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import {BASE_BACKEND_URL} from "../../../7_shared/api/config";
-import {AuthTokenService} from "../../../5_features/auth";
-import {addAuthHeader} from "../../../7_shared/api";
 import {Meals} from "../../../7_shared/model/meals";
 import {MealsParams} from "./types";
 export const CANCEL_CONFIG: ConfigSettings = {

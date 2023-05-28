@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {styles} from '../consts/styles';
 import {NutritionHeaderFeature} from '../../../5_features/nutrition/nutrition-header-feature';
 import {NutritionCertFeature} from '../../../5_features/nutrition/nutrition-cert-feature';
@@ -11,104 +11,112 @@ import {isFeeding} from '../lib/check-utils';
 import {ChildMealData} from '../../../6_entities/child/types/child-meal-data';
 
 export function NutritionWidget(props: NutritionWidgetProps) {
-  // === states ===
-  const [mealData, setMealData] = useState<ChildMealData>({
-    breakfast: false,
-    lunch: false,
-    dinner: false
-  });
-  const [feeding, setFeeding] = useState(isFeeding(mealData));
-
-  // === variables ===
-
-  const [changeMeal, {isSuccess: isChangingMealSuccess}] = useChangeMealPlanMutation();
-
-  const {data: child, isSuccess: childSuccess, refetch: refetchChild} = useGetChildByIdQuery(props.childId);
-
-  // === useEffects ===
-
-  useEffect(() => {
-    refetchChild();
-  }, []);
-
-  useEffect(() => {
-    init();
-  }, [child]);
-
-  useEffect(() => {
-    setFeeding(isFeeding(mealData));
-  }, [mealData]);
-
-  // === functions ===
-
-  const init = () => {
-    if (childSuccess) {
-      const newMealData = {
-        breakfast: child.breakfast,
-        lunch: child.lunch,
-        dinner: child.dinner
-      };
-
-      setMealData(newMealData);
-    }
-  };
-
-  const onCheckChange = async (changedProperties: Partial<ChildMealData>) => {
-    if (child) {
-      const newMealData = {
-        ...mealData,
-        ...changedProperties
-      };
-
-      await changeMeal({
-        childId: child.id,
-        ...newMealData
-      });
-
-      setMealData(newMealData);
-    }
-  };
-
-  const onHeaderCheckChange = async (turnedOn: boolean) => {
-    await onCheckChange({
-      breakfast: turnedOn,
-      lunch: turnedOn,
-      dinner: turnedOn
+    // === states ===
+    const [mealData, setMealData] = useState<ChildMealData>({
+        breakfast: false,
+        lunch: false,
+        dinner: false
     });
-  };
+    const [feeding, setFeeding] = useState(isFeeding(mealData));
 
-  // === render ===
+    // === variables ===
 
-  return (
-    <View
-      style={styles.background}>
-      <View
-        style={styles.card}>
+    const [changeMeal, {isSuccess: isChangingMealSuccess}] = useChangeMealPlanMutation();
 
-        <NutritionHeaderFeature
-          child={child}
-          onToggle={(turnedOn: boolean) => onHeaderCheckChange(turnedOn)}
-          defaultToggleState={feeding}/>
+    const {data: child, isSuccess: childSuccess, refetch: refetchChild} = useGetChildByIdQuery(props.childId);
 
-        <NutritionCertFeature
-          child={child}/>
+    // === useEffects ===
 
-        <NutritionTogglesFeature
-          onToggleBreakfast={(turnedOn: boolean) => {onCheckChange({breakfast: turnedOn});}}
-          onToggleLunch={(turnedOn: boolean) => {onCheckChange({lunch: turnedOn});}}
-          onToggleAfternoonSnack={(turnedOn: boolean) => {onCheckChange({dinner: turnedOn});}}
-          breakfastState={mealData?.breakfast}
-          lunchState={mealData?.lunch}
-          afternoonSnackState={mealData?.dinner}/>
+    useEffect(() => {
+        refetchChild();
+    }, []);
 
-        {
-          feeding &&
-          <NutritionPanel
-            child={child}
-            refetchChild={refetchChild}/>
+    useEffect(() => {
+        init();
+    }, [child]);
+
+    useEffect(() => {
+        setFeeding(isFeeding(mealData));
+    }, [mealData]);
+
+    // === functions ===
+
+    const init = () => {
+        if (childSuccess) {
+            const newMealData = {
+                breakfast: child.breakfast,
+                lunch: child.lunch,
+                dinner: child.dinner
+            };
+
+            setMealData(newMealData);
         }
+    };
 
-      </View>
-    </View>
-  );
+    const onCheckChange = async (changedProperties: Partial<ChildMealData>) => {
+        if (child) {
+            const newMealData = {
+                ...mealData,
+                ...changedProperties
+            };
+
+            await changeMeal({
+                childId: child.id,
+                ...newMealData
+            });
+
+            setMealData(newMealData);
+        }
+    };
+
+    const onHeaderCheckChange = async (turnedOn: boolean) => {
+        await onCheckChange({
+            breakfast: turnedOn,
+            lunch: turnedOn,
+            dinner: turnedOn
+        });
+    };
+
+    // === render ===
+
+    return (
+        <ScrollView>
+            <View
+                style={styles.background}>
+                <View
+                    style={styles.card}>
+
+                    <NutritionHeaderFeature
+                        child={child}
+                        onToggle={(turnedOn: boolean) => onHeaderCheckChange(turnedOn)}
+                        defaultToggleState={feeding}/>
+
+                    <NutritionCertFeature
+                        child={child}/>
+
+                    <NutritionTogglesFeature
+                        onToggleBreakfast={(turnedOn: boolean) => {
+                            onCheckChange({breakfast: turnedOn});
+                        }}
+                        onToggleLunch={(turnedOn: boolean) => {
+                            onCheckChange({lunch: turnedOn});
+                        }}
+                        onToggleAfternoonSnack={(turnedOn: boolean) => {
+                            onCheckChange({dinner: turnedOn});
+                        }}
+                        breakfastState={mealData?.breakfast}
+                        lunchState={mealData?.lunch}
+                        afternoonSnackState={mealData?.dinner}/>
+
+                    {
+                        feeding &&
+                        <NutritionPanel
+                            child={child}
+                            refetchChild={refetchChild}/>
+                    }
+
+                </View>
+            </View>
+        </ScrollView>
+    );
 }
