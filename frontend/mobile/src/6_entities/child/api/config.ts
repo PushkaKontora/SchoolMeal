@@ -15,6 +15,7 @@ export const CHILD_API = createApi({
       if (token) {
         return addAuthHeader(headers, token);
       }
+      return headers;
     }
   }),
   tagTypes: ['UserChildren'],
