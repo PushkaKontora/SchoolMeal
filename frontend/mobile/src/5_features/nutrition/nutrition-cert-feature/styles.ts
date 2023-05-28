@@ -2,8 +2,7 @@ import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    gap: 8,
-    marginTop: 8
+    marginTop: 12
   },
   title: {
     fontWeight: '600',
@@ -15,5 +14,6 @@ export const styles = StyleSheet.create({
     backgroundColor: '#E5E5E5',
     alignSelf: 'flex-start',
     borderRadius: 100,
+    marginTop: 8
   },
 });
