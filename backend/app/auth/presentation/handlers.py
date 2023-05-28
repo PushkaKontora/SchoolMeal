@@ -1,7 +1,9 @@
+from datetime import datetime, timezone
+
 from dependency_injector.wiring import Provide, inject
 from fastapi import Body, Depends, Response
 
-from app.auth.domain.entities import AccessTokenOut, CredentialsIn
+from app.auth.domain.entities import AccessTokenOut, CredentialsIn, JWTTokensOut
 from app.auth.domain.services.auth import authenticate, revoke_refresh_token, update_tokens_using_refresh_token
 from app.auth.presentation.dependencies import get_refresh_token_from_cookies
 from app.config import JWTSettings
@@ -17,11 +19,7 @@ async def signin(
 ) -> AccessTokenOut:
     tokens = await authenticate(credentials)
 
-    response.set_cookie(
-        key=settings.refresh_token_cookie,
-        value=tokens.refresh_token,
-        httponly=True,
-    )
+    _set_auth_cookies(response, tokens, settings)
 
     return tokens
 
@@ -47,10 +45,15 @@ async def refresh_tokens(
 ) -> AccessTokenOut:
     tokens = await update_tokens_using_refresh_token(token)
 
+    _set_auth_cookies(response, tokens, settings)
+
+    return tokens
+
+
+def _set_auth_cookies(response: Response, tokens: JWTTokensOut, settings: JWTSettings) -> None:
     response.set_cookie(
         key=settings.refresh_token_cookie,
         value=tokens.refresh_token,
         httponly=True,
+        expires=datetime.now(timezone.utc) + settings.refresh_token_ttl,
     )
-
-    return tokens

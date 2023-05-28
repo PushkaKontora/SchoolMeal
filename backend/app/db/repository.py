@@ -41,6 +41,14 @@ class Repository(Generic[TModel]):
 
         return await self.session.scalar(query)
 
+    async def get_one(self, *specifications: Specification) -> TModel:
+        obj = await self.find_first(*specifications)
+
+        if obj is None:
+            raise NotFoundObjectException
+
+        return obj
+
     async def find(self, *specifications: Specification) -> list[TModel]:
         query = self._apply_specification(select(self.model), specifications)
 
@@ -57,3 +65,7 @@ class Repository(Generic[TModel]):
             query = spec(query)
 
         return query
+
+
+class NotFoundObjectException(Exception):
+    pass
