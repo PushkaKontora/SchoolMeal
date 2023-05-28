@@ -24,7 +24,15 @@ export function NutritionPanel(props: NutritionPanelProps) {
         findPeriodIdByDate(props.child.cancelMealPeriods, selectedDate)
       );
     }
-  }, [selectedDate, props.child]);
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (props.child && selectedDate) {
+      setCurrentCancelMeal(
+        findPeriodIdByDate(props.child.cancelMealPeriods, selectedDate)
+      );
+    }
+  }, [props.child]);
 
   useEffect(() => {
     if (canceledSuccess) {
