@@ -101,9 +101,12 @@ export function NutritionWidget(props: NutritionWidgetProps) {
           lunchState={mealData?.lunch}
           afternoonSnackState={mealData?.dinner}/>
 
-        <NutritionPanel
-          child={child}
-          refetchChild={refetchChild}/>
+        {
+          feeding &&
+          <NutritionPanel
+            child={child}
+            refetchChild={refetchChild}/>
+        }
 
       </View>
     </View>
