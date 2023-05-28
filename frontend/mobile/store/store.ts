@@ -5,7 +5,7 @@ import {entitiesMiddlewares} from '../src/6_entities/reducer';
 import authSlice from '../src/5_features/auth/model/auth-slice/auth-slice';
 import {AUTH_API} from '../src/5_features/auth';
 import {USER_API} from '../src/6_entities/user';
-import {CHILD_API} from "../src/6_entities/child/api/config";
+import {CHILD_API} from '../src/6_entities/child/api/config';
 import {MEAL_API} from '../src/6_entities/meal/api/api';
 
 const middleware = [
