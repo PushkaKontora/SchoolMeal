@@ -1,14 +1,18 @@
 import {PanelContentProps} from './props';
 import {ReactElement} from 'react';
 
-export type PanelConfig = {[index: string]: Omit<PanelContentProps, 'onButtonPress'>}
+export type PanelNames = 'canceled' | 'submitted';
+
+export type PanelConfig = {
+  [index in PanelNames]: Omit<PanelContentProps, 'onButtonPress'>;
+};
 
 export type PanelPressListeners = {
-  onRegister: () => void,
-  onDeregister: () => void
+  onCancel: () => void,
+  onSubmit: () => void
 }
 
 export type PanelList = {
-  register: ReactElement,
-  deregister: ReactElement
+  canceled: ReactElement,
+  submitted: ReactElement
 }

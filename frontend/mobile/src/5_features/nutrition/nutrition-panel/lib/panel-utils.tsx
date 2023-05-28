@@ -3,15 +3,15 @@ import {PanelContent} from '../ui/panel-content';
 
 export function createPanels(config: PanelConfig, listeners: PanelPressListeners): PanelList {
   return {
-    register: (
+    canceled: (
       <PanelContent
-        {...config.registered}
-        onButtonPress={listeners.onRegister}/>
+        {...config.canceled}
+        onButtonPress={listeners.onSubmit}/>
     ),
-    deregister: (
+    submitted: (
       <PanelContent
-        {...config.deregistered}
-        onButtonPress={listeners.onDeregister}/>
+        {...config.submitted}
+        onButtonPress={listeners.onCancel}/>
     )
   };
 }

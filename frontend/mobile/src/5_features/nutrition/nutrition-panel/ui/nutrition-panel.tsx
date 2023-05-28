@@ -6,16 +6,17 @@ import {useEffect, useState} from 'react';
 import {NutritionPanelProps} from '../types/props';
 import {createPanels} from '../lib/panel-utils';
 import {PanelPressListeners} from '../types/types';
-import {useCancelMealMutation} from '../../../../6_entities/meal/api/api';
+import {useCancelMealMutation, useDeleteCanceledMealMutation} from '../../../../6_entities/meal/api/api';
 import {CancelMealPeriods} from '../../../../7_shared/model/cancelMealPeriods';
 import {findPeriodIdByDate} from '../lib/meal-utils';
+import {dateToISOWithoutTime} from '../../../../6_entities/date/lib/utils';
 
 export function NutritionPanel(props: NutritionPanelProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(DEFAULT_DATE);
   const [currentCancelMeal, setCurrentCancelMeal] = useState<CancelMealPeriods | undefined>(undefined);
 
   const [cancelMeal, {isSuccess: canceledSuccess}] = useCancelMealMutation();
-  const [deleteCanceledMeal, {isSuccess: deletedSuccess}] = useCancelMealMutation();
+  const [deleteCanceledMeal, {isSuccess: deletedSuccess}] = useDeleteCanceledMealMutation();
 
   useEffect(() => {
     if (props.child && selectedDate) {
@@ -23,7 +24,7 @@ export function NutritionPanel(props: NutritionPanelProps) {
         findPeriodIdByDate(props.child.cancelMealPeriods, selectedDate)
       );
     }
-  }, [props.child]);
+  }, [selectedDate, props.child]);
 
   useEffect(() => {
     if (canceledSuccess) {
@@ -38,15 +39,15 @@ export function NutritionPanel(props: NutritionPanelProps) {
   }, [deletedSuccess]);
 
   const panelListeners: PanelPressListeners = {
-    onRegister: async () => {
+    onCancel: async () => {
       await cancelMeal({
         pupilId: props?.child?.id,
-        startDate: selectedDate
+        startDate: dateToISOWithoutTime(selectedDate)
       });
     },
-    onDeregister: async () => {
+    onSubmit: async () => {
       if (currentCancelMeal) {
-        await deleteCanceledMeal(currentCancelMeal.pupilId);
+        await deleteCanceledMeal(currentCancelMeal.id);
       }
     }
   };
@@ -78,8 +79,8 @@ export function NutritionPanel(props: NutritionPanelProps) {
 
       {
         currentCancelMeal
-          ? panels.deregister
-          : panels.register
+          ? panels.canceled
+          : panels.submitted
       }
 
     </View>

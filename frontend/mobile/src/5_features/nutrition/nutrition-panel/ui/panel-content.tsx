@@ -3,10 +3,12 @@ import {EmojiTextFeature} from '../../../emoji-text-feature/ui/emoji-text-featur
 import {ButtonSecondary} from '../../../../7_shared/ui/buttons/button-secondary/button-secondary';
 import {SELECTION_COLOR} from '../config/config';
 import {PanelContentProps} from '../types/props';
+import {styles} from '../consts/styles';
 
 export function PanelContent(props: PanelContentProps) {
   return (
-    <View>
+    <View
+      style={styles.emojiContainer}>
       <View>
         <EmojiTextFeature
           imageEmoji={props.emojiImage}
