@@ -4,7 +4,6 @@ import {ModalHeaderProps} from "./props";
 export const createStyle = (props: ModalHeaderProps) => StyleSheet.create({
     headerContent:{
         flexDirection: 'row',
-        gap: 69,
         marginBottom: 16,
 
         borderBottomColor: '#F3F3F3',
@@ -14,7 +13,10 @@ export const createStyle = (props: ModalHeaderProps) => StyleSheet.create({
         fontWeight: '700',
         fontSize: 16,
         lineHeight: 18,
-
+        marginRight: 'auto',
         color: '#212121',
     },
+    image: {
+        marginRight: 'auto',
+    }
 });

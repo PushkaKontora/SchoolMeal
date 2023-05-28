@@ -1,5 +1,5 @@
 import {SUB_EMOJI_TITLE} from '../consts/consts';
-import {ButtonPrimary} from '../../../7_shared/ui/buttons/button-primary/button-primary';
+import {ButtonPrimary} from '../../../7_shared/ui/buttons/button-primary';
 import {EmojiTextFeature} from '../../../5_features/emoji-text-feature/ui/emoji-text-feature';
 import {magicModal, MagicModalPortal} from "react-native-magic-modal";
 import {ModalAddChildProps} from "../model/props";
@@ -13,6 +13,8 @@ import {ControlledInputField} from "../../../6_entities/controlled/controlled-in
 import {useGetUserChildQuery, useFindChildOnIDMutation} from "../../../6_entities/child/api/config";
 import {idChildData} from "../types";
 import {INPUT_DATA} from "../inputData";
+import {ChildCard} from "../../child/child-card/ui/child-card";
+import {MarginArea} from "../../../7_shared/ui/styling/margin-area";
 
 
 export function AddChildrenWidget(props: ModalAddChildProps) {
@@ -99,7 +101,20 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
     return (
         <>{userChild && userChild.length !== 0
             ? <>
-                <Text>ddd</Text>
+                {userChild ? userChild.map(child =>
+                    <ChildCard key={child.id}
+                               child={child}
+                               navigation={props.navigation}/>) : null}
+                <MarginArea
+                    marginTop={16}>
+                    <ButtonPrimary
+                        title={'Добавить ребёнка'}
+                        onPress={handleAddChild}
+                        backgroundColor={'#EC662A'}
+                        textColor={'#FFFFFF'}
+                        borderRadius={10}/>
+                    <MagicModalPortal/>
+                </MarginArea>
             </>
             : <EmojiTextFeature
                 imageEmoji={require('../../../5_features/emoji-text-feature/images/angelAmoji.png')}

@@ -1,4 +1,4 @@
-import {Image, Text, View} from 'react-native';
+import {Image, Text} from 'react-native';
 import {ChildCardHeaderProps} from './props';
 import {createStyle} from './style';
 import {PaddingArea} from "../../../../7_shared/ui/styling/padding-area";

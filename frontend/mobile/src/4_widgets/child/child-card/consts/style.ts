@@ -5,7 +5,8 @@ export const createStyle = (props: ChildCardProps) => StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
         borderRadius: 10,
-        marginTop: 8
+        marginTop: 8,
+        // marginHorizontal: 16,
     },
     tagContainer: {
         flexDirection: 'column',
@@ -38,6 +39,24 @@ export const createStyle = (props: ChildCardProps) => StyleSheet.create({
 
         fontWeight: '500',
         fontSize: 14,
-        lineHeight: 16
+        lineHeight: 16,
+    },
+    greyText: {
+        fontWeight: '500',
+        fontSize: 14,
+        lineHeight: 16,
+        color: '#909090',
+    },
+    blueText: {
+        fontWeight: '500',
+        fontSize: 14,
+        lineHeight: 16,
+        color: '#4941C4',
+    },
+    greenText: {
+        fontWeight: '500',
+        fontSize: 14,
+        lineHeight: 16,
+        color: '#51B078',
     }
 });

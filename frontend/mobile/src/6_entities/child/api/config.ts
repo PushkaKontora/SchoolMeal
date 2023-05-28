@@ -7,6 +7,7 @@ import {addAuthHeader} from '../../../7_shared/api';
 import {ChildMealData, ChildMealDataWithId} from '../types/child-meal-data';
 
 export const CHILD_API = createApi({
+
   reducerPath: 'api/children',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_BACKEND_URL + '/children',
@@ -28,6 +29,7 @@ export const CHILD_API = createApi({
       }),
       //  invalidatesTags: [{type: 'UserChildren', id: 'LIST'}]
     }),
+
     getUserChild: build.query<Child[], void>({
       query: () => ({
         url: ''

@@ -4,14 +4,40 @@ import {Provider} from 'react-redux';
 import {AppNavigator} from '../../2_processes/app-navigator';
 import {MagicModalPortal} from 'react-native-magic-modal';
 import {store} from "../../../store/store";
-import {AuthTokenService} from "../../5_features/auth";
+import {ChildInformationPage} from "../../3_pages/child-information-page/ui/child-information-page";
+import {Class} from "../../7_shared/model/class";
+import {CancelMealPeriods} from "../../7_shared/model/cancelMealPeriods";
+import {Child} from "../../6_entities/child/model/child";
 
 export function App() {
-    //AuthTokenService.saveAuthToken({accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwidXNlcl9pZCI6MSwicm9sZSI6InBhcmVudCIsImV4cGlyZXNfaW4iOjE2OTI2MjYzMzB9.sOHBGG9OoHjiP8VLFOfYKKQZ79hODxWfn33q4LtSjMk'})
-
+const moks: Child = {
+    id: '1',
+    lastName: 'Дыков',
+    firstName: 'Лима',
+    certificateBeforeDate: "2023-05-14T04:49:48.862Z",
+    balance: 10000,
+    breakfast: true,
+    lunch: false,
+    dinner: false,
+    schoolClass: {
+        "id": 1,
+        "number": 1,
+        "letter": "a",
+        "hasBreakfast": true,
+        "hasLunch": false,
+        "hasDinner": false,
+        "teachers": [],
+        "school": {
+            "id": 1,
+            "name": 'УрФУ'
+        }
+    },
+    "cancelMealPeriods": []
+}
     return (
         <Provider store={store}>
             <MagicModalPortal/>
+            {/*<ChildInformationPage childInformation={moks}/>*/}
             <AppNavigator/>
         </Provider>
     );

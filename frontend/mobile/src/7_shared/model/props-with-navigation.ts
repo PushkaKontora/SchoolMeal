@@ -1,3 +1,4 @@
 export type PropsWithNavigation = {
-  navigation: any
+    navigation: any,
+    route?: any
 };
