@@ -27,12 +27,12 @@ export function MiniCalendar(props: MiniCalendarProps) {
 
   const onDatePickerLeftPress = () => {
     setDates(findPrev(dates[0], itemNumber));
-    setCheckedIndex(0);
+    onDateButtonChange(0);
   };
 
   const onDatePickerRightPress = () => {
     setDates(findNext(dates[0], itemNumber));
-    setCheckedIndex(0);
+    onDateButtonChange(0);
   };
 
   // === render ===
