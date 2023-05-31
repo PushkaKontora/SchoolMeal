@@ -4,14 +4,14 @@ import {styles} from './styles';
 import {useEffect, useState} from 'react';
 
 export function ToggleButton(props: ToggleButtonProps) {
-  const [turnedOn, setTurnedOn] = useState(props?.defaultState);
+  const [toggledRight, setToggledRight] = useState(props?.defaultState);
 
   useEffect(() => {
-    setTurnedOn(props.defaultState);
+    setToggledRight(props.defaultState);
   }, [props.defaultState]);
 
   const onPress = (state: boolean) => {
-    setTurnedOn(state);
+    setToggledRight(state);
     props.onToggle(state);
   };
 
@@ -20,20 +20,20 @@ export function ToggleButton(props: ToggleButtonProps) {
       <TouchableWithoutFeedback
         onPress={() => onPress(false)}>
         <View
-          style={!turnedOn ? styles.active : styles.inactive}>
+          style={!toggledRight ? styles.active : styles.inactive}>
           <Text
-            style={!turnedOn ? styles.activeText : styles.inactiveText}>
-            {props.turnedOffTitle}
+            style={!toggledRight ? styles.activeText : styles.inactiveText}>
+            {props.leftTitle}
           </Text>
         </View>
       </TouchableWithoutFeedback>
       <TouchableNativeFeedback
         onPress={() => onPress(true)}>
         <View
-          style={turnedOn ? styles.active : styles.inactive}>
+          style={toggledRight ? styles.active : styles.inactive}>
           <Text
-            style={turnedOn ? styles.activeText : styles.inactiveText}>
-            {props.turnedOnTitle}
+            style={toggledRight ? styles.activeText : styles.inactiveText}>
+            {props.rightTitle}
           </Text>
         </View>
       </TouchableNativeFeedback>

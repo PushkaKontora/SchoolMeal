@@ -1,6 +1,6 @@
 export type ToggleButtonProps = {
-  turnedOffTitle: string,
-  turnedOnTitle: string,
-  onToggle: (turnedOn: boolean) => void,
+  leftTitle: string,
+  rightTitle: string,
+  onToggle: (toggledRight: boolean) => void,
   defaultState?: boolean
 };
