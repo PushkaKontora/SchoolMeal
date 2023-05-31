@@ -5,4 +5,7 @@ export type NutritionTogglesFeatureProps = {
   breakfastState?: boolean,
   lunchState?: boolean,
   afternoonSnackState?: boolean,
+  hasBreakfast: boolean,
+  hasLunch: boolean,
+  hasAfternoonSnack: boolean
 }
