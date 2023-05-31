@@ -7,6 +7,7 @@ from app.config import Environment
 from app.container import Container
 from app.meals.app import register_meals_api
 from app.portions.app import register_portions_api
+from app.school_classes.app import register_school_classes_api
 from app.users.app import register_users_api
 from app.utils.error import Error, handle_api_error
 from app.utils.middlewares import RequestSignatureMiddleware
@@ -29,6 +30,7 @@ def create_app() -> FastAPI:
         register_meals_api,
         register_portions_api,
         register_users_api,
+        register_school_classes_api,
     )
     for register in registers:
         register(application)

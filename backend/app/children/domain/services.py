@@ -19,7 +19,7 @@ from app.pupils.db.pupil.joins import WithCancelMealPeriods, WithClass, WithScho
 from app.pupils.db.pupil.model import Pupil
 from app.pupils.domain.entities import PupilOut
 from app.school_classes.db.school_class.model import SchoolClass
-from app.school_classes.domain.entities import ClassOut
+from app.school_classes.domain.entities import ClassWithTeachersOut
 from app.schools.domain.entities import SchoolOut
 from app.users.db.user.filters import ByUserId as UserById
 from app.users.db.user.model import User
@@ -102,7 +102,7 @@ async def change_meal_plan_by_parent_id(
 def _get_child_out(child: Pupil) -> PupilOut:
     school_class: SchoolClass | None = child.school_class
     school_class_out = (
-        ClassOut(
+        ClassWithTeachersOut(
             id=school_class.id,
             number=school_class.number,
             letter=school_class.letter,

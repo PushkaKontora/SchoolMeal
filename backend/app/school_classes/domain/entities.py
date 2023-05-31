@@ -3,6 +3,10 @@ from app.users.domain.entities import ContactOut
 from app.utils.entity import Entity
 
 
+class SchoolClassesGetOptions(Entity):
+    teacher_id: int | None = None
+
+
 class ClassOut(Entity):
     id: int
     number: int
@@ -10,5 +14,8 @@ class ClassOut(Entity):
     has_breakfast: bool
     has_lunch: bool
     has_dinner: bool
-    teachers: list[ContactOut]
     school: SchoolOut
+
+
+class ClassWithTeachersOut(ClassOut):
+    teachers: list[ContactOut]
