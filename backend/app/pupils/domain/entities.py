@@ -14,5 +14,8 @@ class PupilOut(Entity):
     breakfast: bool
     lunch: bool
     dinner: bool
+
+
+class PupilWithClassAndPeriodsOut(PupilOut):
     school_class: ClassWithTeachersOut | None
     cancel_meal_periods: list[PeriodOut]

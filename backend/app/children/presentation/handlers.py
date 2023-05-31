@@ -9,7 +9,7 @@ from app.children.domain.services import (
     get_child_by_id,
     get_children_by_parent_id,
 )
-from app.pupils.domain.entities import PupilOut
+from app.pupils.domain.entities import PupilWithClassAndPeriodsOut
 from app.utils.responses import SuccessResponse
 
 
@@ -19,7 +19,7 @@ async def add_child(schema: ChildIn = Body(), payload: JWTPayload = Depends(JWTA
     return SuccessResponse()
 
 
-async def get_children(payload: JWTPayload = Depends(JWTAuth())) -> list[PupilOut]:
+async def get_children(payload: JWTPayload = Depends(JWTAuth())) -> list[PupilWithClassAndPeriodsOut]:
     return await get_children_by_parent_id(payload.user_id)
 
 
@@ -29,5 +29,5 @@ async def change_meal_plan(
     return await change_meal_plan_by_parent_id(payload.user_id, child_id, plan)
 
 
-async def get_child(child_id: str = Path(), payload: JWTPayload = Depends(JWTAuth())) -> PupilOut:
+async def get_child(child_id: str = Path(), payload: JWTPayload = Depends(JWTAuth())) -> PupilWithClassAndPeriodsOut:
     return await get_child_by_id(payload.user_id, child_id)
