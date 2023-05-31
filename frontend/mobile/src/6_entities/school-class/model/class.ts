@@ -1,6 +1,5 @@
-import {School} from "./school";
-import {Teachers} from "./teachers";
-import {Child} from "../../6_entities/child/model/child";
+import {School} from './school';
+import {Teachers} from '../../../7_shared/model/teachers';
 
 export type Class   = {
     id: number,
