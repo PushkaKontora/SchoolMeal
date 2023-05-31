@@ -5,4 +5,5 @@ export type ModalProps = {
     functionButton: () => {},
     clickExit: () => {},
     disabledButton: boolean,
+    buttonTitle: string
 } & PropsWithChildren;
