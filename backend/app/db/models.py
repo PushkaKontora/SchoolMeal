@@ -2,7 +2,7 @@ from app.auth.db.issued_token.model import IssuedToken
 from app.auth.db.password.model import Password
 from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
 from app.children.db.child.model import Child
-from app.meal_requests.db.declared_pupil.model import DeclaredPupils
+from app.meal_requests.db.declared_pupil.model import DeclaredPupil
 from app.meal_requests.db.meal_request.model import MealRequest
 from app.meals.db.meal.model import Meal
 from app.meals.db.menu.model import Menu
