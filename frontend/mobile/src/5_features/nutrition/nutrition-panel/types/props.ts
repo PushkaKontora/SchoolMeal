@@ -11,3 +11,8 @@ export type NutritionPanelProps = {
   child?: Child,
   refetchChild: () => void
 }
+
+export type ConfirmModalProps = {
+  onConfirm: () => {},
+  onClose: () => {}
+}

@@ -9,6 +9,7 @@ import {PanelPressListeners} from '../types/types';
 import {useCancelMealMutation, useDeleteCanceledMealMutation} from '../../../../6_entities/meal/api/api';
 import {CancelMealPeriods} from '../../../../7_shared/model/cancelMealPeriods';
 import {findPeriodIdByDate} from '../lib/meal-utils';
+import {hideModal, showModal} from '../lib/modal-utils';
 import {dateToISOWithoutTime} from '../../../../6_entities/date/lib/utils';
 
 export function NutritionPanel(props: NutritionPanelProps) {
@@ -17,6 +18,18 @@ export function NutritionPanel(props: NutritionPanelProps) {
 
   const [cancelMeal, {isSuccess: canceledSuccess}] = useCancelMealMutation();
   const [deleteCanceledMeal, {isSuccess: deletedSuccess}] = useDeleteCanceledMealMutation();
+
+  const showModalCustom = () => showModal(
+    async () => {
+      await cancelMeal({
+        pupilId: props?.child?.id,
+        startDate: dateToISOWithoutTime(selectedDate)
+      });
+      hideModal();
+    },
+    () => {
+      hideModal();
+    });
 
   useEffect(() => {
     if (props.child && selectedDate) {
@@ -47,12 +60,7 @@ export function NutritionPanel(props: NutritionPanelProps) {
   }, [deletedSuccess]);
 
   const panelListeners: PanelPressListeners = {
-    onCancel: async () => {
-      await cancelMeal({
-        pupilId: props?.child?.id,
-        startDate: dateToISOWithoutTime(selectedDate)
-      });
-    },
+    onCancel: showModalCustom,
     onSubmit: async () => {
       if (currentCancelMeal) {
         await deleteCanceledMeal(currentCancelMeal.id);
