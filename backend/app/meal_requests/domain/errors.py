@@ -23,3 +23,9 @@ class InvalidPupilsSequenceError(Error):
     @property
     def message(self) -> str:
         return "Pupil ids in body do not match with pupils in the school class"
+
+
+class NotFoundMealRequestError(Error):
+    @property
+    def message(self) -> str:
+        return "Not found meal request with the id"

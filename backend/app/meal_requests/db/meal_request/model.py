@@ -17,3 +17,4 @@ class MealRequest(Base):
     created_at: Mapped[datetime] = mapped_column(server_default=now(), nullable=False)
 
     declared_pupils = relationship("DeclaredPupil", back_populates="meal_request")
+    meal = relationship("Meal")

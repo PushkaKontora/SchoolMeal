@@ -5,7 +5,7 @@ from pydantic import validator
 from app.utils.entity import Entity
 
 
-class DeclaredPupilSchema(Entity):
+class DeclaredPupilIn(Entity):
     id: str
     breakfast: bool
     lunch: bool
@@ -13,12 +13,11 @@ class DeclaredPupilSchema(Entity):
     preferential: bool
 
 
-class MealRequestIn(Entity):
-    meal_id: int
-    pupils: list[DeclaredPupilSchema]
+class DeclaredPupilListIn(Entity):
+    pupils: list[DeclaredPupilIn]
 
     @validator("pupils")
-    def pupil_ids_should_be_unique(cls, value: list[DeclaredPupilSchema]) -> list[DeclaredPupilSchema]:
+    def pupil_ids_should_be_unique(cls, value: list[DeclaredPupilIn]) -> list[DeclaredPupilIn]:
         actual = [pupil.id for pupil in value]
         expected = set(actual)
 
@@ -26,6 +25,14 @@ class MealRequestIn(Entity):
             raise ValueError("Pupil ids should be unique")
 
         return value
+
+
+class MealRequestPutIn(DeclaredPupilListIn):
+    pass
+
+
+class MealRequestIn(DeclaredPupilListIn):
+    meal_id: int
 
 
 class MealRequestOut(Entity):
