@@ -1,0 +1,1 @@
+export const MEAL_AMOUNT_BORDER_TO_SHOW = 2;
