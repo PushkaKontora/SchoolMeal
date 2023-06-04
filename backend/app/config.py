@@ -60,3 +60,10 @@ class RequestSignatureSettings(Settings):
     signature_header: str = Field(env="SIGNATURE_HEADER")
     encoding: str = Field(env="SIGNATURE_ENCODING")
     digest_mod: str = Field(env="SIGNATURE_DIGEST_MOD")
+
+
+class CORSSettings(Settings):
+    origins: list[str] = Field(env="CORS_ALLOW_ORIGINS")
+    allow_credentials: bool = Field(env="CORS_ALLOW_CREDENTIALS")
+    methods: list[str] = Field(env="CORS_ALLOW_METHODS")
+    headers: list[str] = Field(env="CORS_ALLOW_HEADERS")
