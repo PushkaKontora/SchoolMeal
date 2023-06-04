@@ -8,7 +8,14 @@ from app.meal_requests.db.declared_pupil.filters import DeclaredPupilFilters
 from app.meal_requests.db.declared_pupil.model import DeclaredPupil
 from app.meal_requests.db.meal_request.filters import MealRequestFilters
 from app.meal_requests.db.meal_request.model import MealRequest
-from app.meal_requests.domain.entities import DeclaredPupilIn, MealRequestIn, MealRequestOut, MealRequestPutIn
+from app.meal_requests.domain.entities import (
+    DeclaredPupilSchema,
+    ExtendedMealRequestOut,
+    MealRequestIn,
+    MealRequestOut,
+    MealRequestPutIn,
+    MealRequestsGetOptions,
+)
 from app.meal_requests.domain.errors import (
     InvalidPupilsSequenceError,
     MealDoesNotExistError,
@@ -16,14 +23,50 @@ from app.meal_requests.domain.errors import (
     NotFoundCreatorError,
     NotFoundMealRequestError,
 )
-from app.meals.db.meal.filters import ById
-from app.meals.db.meal.joins import WithSchoolClass
+from app.meals.db.meal.filters import ById, BySomeDate, BySomeSchoolId
+from app.meals.db.meal.joins import WithDeclaredPupils, WithRequest, WithSchoolClass
 from app.meals.db.meal.model import Meal
 from app.pupils.db.pupil.filters import ByClassId
 from app.pupils.db.pupil.model import Pupil
 from app.school_classes.db.school_class.model import SchoolClass
+from app.school_classes.domain.entities import ClassOut
 from app.users.db.user.filters import ByUserId
 from app.users.db.user.model import User
+
+
+async def get_requests_by_options(
+    options: MealRequestsGetOptions, uow: UnitOfWork = Provide[Container.unit_of_work]
+) -> list[ExtendedMealRequestOut]:
+    async with uow:
+        meals = await uow.repository(Meal).find(
+            BySomeSchoolId(options.school_id),
+            BySomeDate(options.date),
+            WithSchoolClass(),
+            WithRequest(),
+            WithDeclaredPupils(),
+        )
+
+        return [
+            ExtendedMealRequestOut(
+                id=request.id,
+                creator_id=request.creator_id,
+                meal_id=request.meal_id,
+                date=request.meal.date,
+                created_at=request.created_at,
+                pupils=[
+                    DeclaredPupilSchema(
+                        id=p.pupil_id,
+                        breakfast=p.breakfast,
+                        lunch=p.lunch,
+                        dinner=p.dinner,
+                        preferential=p.preferential,
+                    )
+                    for p in request.declared_pupils
+                ],
+                school_class=ClassOut.from_orm(request.meal.school_class),
+            )
+            for request in (meal.request for meal in meals)
+        ]
 
 
 async def create_request_by_user(
@@ -94,7 +137,7 @@ async def update_request(
 
 
 async def _match_pupils_with_pupils_in_school_class(
-    uow: UnitOfWork, actual: Iterable[DeclaredPupilIn], school_class: SchoolClass
+    uow: UnitOfWork, actual: Iterable[DeclaredPupilSchema], school_class: SchoolClass
 ) -> bool:
     pupils = await uow.repository(Pupil).find(ByClassId(school_class.id))
 

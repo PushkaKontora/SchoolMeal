@@ -14,8 +14,11 @@ class ClassOut(Entity):
     has_breakfast: bool
     has_lunch: bool
     has_dinner: bool
+
+
+class ClassWithSchoolOut(ClassOut):
     school: SchoolOut
 
 
-class ClassWithTeachersOut(ClassOut):
+class ClassWithTeachersOut(ClassWithSchoolOut):
     teachers: list[ContactOut]

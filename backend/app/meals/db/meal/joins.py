@@ -1,6 +1,7 @@
 from sqlalchemy.orm import joinedload, selectinload
 
 from app.db.specifications import Specification, TQuery
+from app.meal_requests.db.meal_request.model import MealRequest
 from app.meals.db.meal.model import Meal
 from app.meals.db.menu.model import Menu
 from app.portions.db.portion.model import Portion
@@ -24,3 +25,13 @@ class WithPortions(Specification):
 class WithFoods(Specification):
     def __call__(self, query: TQuery) -> TQuery:
         return query.options(selectinload(Meal.menus).joinedload(Menu.portion).joinedload(Portion.food))
+
+
+class WithRequest(Specification):
+    def __call__(self, query: TQuery) -> TQuery:
+        return query.options(joinedload(Meal.request))
+
+
+class WithDeclaredPupils(Specification):
+    def __call__(self, query: TQuery) -> TQuery:
+        return query.options(joinedload(Meal.request).selectinload(MealRequest.declared_pupils))
