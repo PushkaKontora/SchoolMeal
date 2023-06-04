@@ -29,3 +29,9 @@ class NotFoundMealRequestError(Error):
     @property
     def message(self) -> str:
         return "Not found meal request with the id"
+
+
+class UpdatingFrozenRequestError(Error):
+    @property
+    def message(self) -> str:
+        return "The request cannot be changed after time expiration"

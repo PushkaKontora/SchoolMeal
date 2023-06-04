@@ -1,5 +1,5 @@
 from abc import ABC
-from datetime import timedelta
+from datetime import time, timedelta, timezone
 from enum import Enum
 from os.path import join
 from pathlib import Path
@@ -8,6 +8,8 @@ from pydantic import BaseSettings, Field, SecretStr
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+TIMEZONE = timezone(timedelta(hours=3), name="Moscow")
 
 
 class Environment(Enum):
@@ -25,6 +27,11 @@ class AppSettings(Settings):
     environment: Environment = Field(env="ENV")
     debug: bool = Field(env="DEBUG")
     docs_url: str = Field(env="DOCS_URL")
+
+
+class MealRequestSettings(Settings):
+    creating_time: time = Field(env="MEAL_REQUEST_CREATING_TIME")
+    last_updating_time: time = Field(env="MEAL_REQUEST_LAST_UPDATING_TIME")
 
 
 class DatabaseSettings(Settings):

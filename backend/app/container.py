@@ -7,6 +7,7 @@ from app.config import (
     CORSSettings,
     DatabaseSettings,
     JWTSettings,
+    MealRequestSettings,
     PasswordSettings,
     RequestSignatureSettings,
 )
@@ -25,6 +26,7 @@ class Container(DeclarativeContainer):
     wiring_config = WiringConfiguration(packages=["app"])
 
     app_settings = Singleton(AppSettings)
+    meal_request_settings = Singleton(MealRequestSettings)
     cors_settings = Singleton(CORSSettings)
     database_settings = Singleton(DatabaseSettings)
     jwt_settings = Singleton(JWTSettings)

@@ -1,7 +1,9 @@
+from datetime import datetime
 from typing import Iterable
 
 from dependency_injector.wiring import Provide
 
+from app.config import MealRequestSettings
 from app.container import Container
 from app.db.unit_of_work import UnitOfWork
 from app.meal_requests.db.declared_pupil.filters import DeclaredPupilFilters
@@ -22,6 +24,7 @@ from app.meal_requests.domain.errors import (
     MealRequestAlreadyExistsError,
     NotFoundCreatorError,
     NotFoundMealRequestError,
+    UpdatingFrozenRequestError,
 )
 from app.meals.db.meal import filters as meal_filters, joins as meal_joins
 from app.meals.db.meal.model import Meal
@@ -31,6 +34,7 @@ from app.school_classes.db.school_class.model import SchoolClass
 from app.school_classes.domain.entities import ClassOut
 from app.users.db.user import filters as user_filters
 from app.users.db.user.model import User
+from app.utils import timezone
 
 
 async def get_requests_by_options(
@@ -103,7 +107,10 @@ async def create_request_by_user(
 
 
 async def update_request(
-    request_id: int, data: MealRequestPutIn, uow: UnitOfWork = Provide[Container.unit_of_work]
+    request_id: int,
+    data: MealRequestPutIn,
+    uow: UnitOfWork = Provide[Container.unit_of_work],
+    settings: MealRequestSettings = Provide[Container.meal_request_settings],
 ) -> MealRequestOut:
     async with uow:
         request = await uow.repository(MealRequest).find_first(meal_request_filters.ById(request_id))
@@ -113,6 +120,9 @@ async def update_request(
         meal = await uow.repository(Meal).get_one(meal_filters.ById(request.meal_id), meal_joins.WithSchoolClass())
         if not await _match_pupils_with_pupils_in_school_class(uow, data.pupils, meal.school_class):
             raise InvalidPupilsSequenceError
+
+        if timezone.now() > timezone.combine(meal.date, settings.last_updating_time):
+            raise UpdatingFrozenRequestError
 
         await uow.repository(DeclaredPupil).delete_many(DeclaredPupilFilters.ByRequestId(request.id))
         updated_pupils = [
