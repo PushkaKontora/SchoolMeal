@@ -7,7 +7,7 @@ from app.db.unit_of_work import UnitOfWork
 
 
 def create_engine(settings: DatabaseSettings) -> AsyncEngine:
-    return create_async_engine(url=settings.dsn, echo=True)
+    return create_async_engine(url=settings.dsn)
 
 
 def create_session(session_maker: async_sessionmaker[AsyncSession]) -> AsyncSession:

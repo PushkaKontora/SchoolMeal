@@ -6,7 +6,7 @@ from app.container import Container
 from app.db.unit_of_work import UnitOfWork
 from app.meal_requests.db.declared_pupil.filters import DeclaredPupilFilters
 from app.meal_requests.db.declared_pupil.model import DeclaredPupil
-from app.meal_requests.db.meal_request.filters import MealRequestFilters
+from app.meal_requests.db.meal_request import filters as meal_request_filters
 from app.meal_requests.db.meal_request.model import MealRequest
 from app.meal_requests.domain.entities import (
     DeclaredPupilSchema,
@@ -23,14 +23,13 @@ from app.meal_requests.domain.errors import (
     NotFoundCreatorError,
     NotFoundMealRequestError,
 )
-from app.meals.db.meal.filters import ById, BySomeDate, BySomeSchoolId
-from app.meals.db.meal.joins import WithDeclaredPupils, WithRequest, WithSchoolClass
+from app.meals.db.meal import filters as meal_filters, joins as meal_joins
 from app.meals.db.meal.model import Meal
-from app.pupils.db.pupil.filters import ByClassId
+from app.pupils.db.pupil import filters as pupil_filters
 from app.pupils.db.pupil.model import Pupil
 from app.school_classes.db.school_class.model import SchoolClass
 from app.school_classes.domain.entities import ClassOut
-from app.users.db.user.filters import ByUserId
+from app.users.db.user import filters as user_filters
 from app.users.db.user.model import User
 
 
@@ -39,11 +38,11 @@ async def get_requests_by_options(
 ) -> list[ExtendedMealRequestOut]:
     async with uow:
         meals = await uow.repository(Meal).find(
-            BySomeSchoolId(options.school_id),
-            BySomeDate(options.date),
-            WithSchoolClass(),
-            WithRequest(),
-            WithDeclaredPupils(),
+            meal_filters.BySomeSchoolId(options.school_id),
+            meal_filters.BySomeDate(options.date),
+            meal_joins.WithSchoolClass(),
+            meal_joins.WithRequest(),
+            meal_joins.WithDeclaredPupils(),
         )
 
         return [
@@ -73,13 +72,13 @@ async def create_request_by_user(
     user_id: int, data: MealRequestIn, uow: UnitOfWork = Provide[Container.unit_of_work]
 ) -> MealRequestOut:
     async with uow:
-        if not await uow.repository(User).exists(ByUserId(user_id)):
+        if not await uow.repository(User).exists(user_filters.ByUserId(user_id)):
             raise NotFoundCreatorError
 
-        if await uow.repository(MealRequest).exists(MealRequestFilters.ByMealId(data.meal_id)):
+        if await uow.repository(MealRequest).exists(meal_request_filters.ByMealId(data.meal_id)):
             raise MealRequestAlreadyExistsError
 
-        meal = await uow.repository(Meal).find_first(ById(data.meal_id), WithSchoolClass())
+        meal = await uow.repository(Meal).find_first(meal_filters.ById(data.meal_id), meal_joins.WithSchoolClass())
         if not meal:
             raise MealDoesNotExistError
 
@@ -107,11 +106,11 @@ async def update_request(
     request_id: int, data: MealRequestPutIn, uow: UnitOfWork = Provide[Container.unit_of_work]
 ) -> MealRequestOut:
     async with uow:
-        request = await uow.repository(MealRequest).find_first(MealRequestFilters.ById(request_id))
+        request = await uow.repository(MealRequest).find_first(meal_request_filters.ById(request_id))
         if not request:
             raise NotFoundMealRequestError
 
-        meal = await uow.repository(Meal).get_one(ById(request.meal_id), WithSchoolClass())
+        meal = await uow.repository(Meal).get_one(meal_filters.ById(request.meal_id), meal_joins.WithSchoolClass())
         if not await _match_pupils_with_pupils_in_school_class(uow, data.pupils, meal.school_class):
             raise InvalidPupilsSequenceError
 
@@ -139,6 +138,6 @@ async def update_request(
 async def _match_pupils_with_pupils_in_school_class(
     uow: UnitOfWork, actual: Iterable[DeclaredPupilSchema], school_class: SchoolClass
 ) -> bool:
-    pupils = await uow.repository(Pupil).find(ByClassId(school_class.id))
+    pupils = await uow.repository(Pupil).find(pupil_filters.ByClassId(school_class.id))
 
     return set(p.id for p in actual) == set(p.id for p in pupils)
