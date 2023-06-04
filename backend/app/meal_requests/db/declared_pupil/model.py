@@ -1,11 +1,11 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 from app.db.constants import CASCADE
 
 
-class DeclaredPupils(Base):
+class DeclaredPupil(Base):
     __tablename__ = "declared_pupils"
 
     request_id: Mapped[int] = mapped_column(ForeignKey("meal_requests.id", ondelete=CASCADE), primary_key=True)
@@ -14,3 +14,5 @@ class DeclaredPupils(Base):
     lunch: Mapped[bool] = mapped_column(nullable=False)
     dinner: Mapped[bool] = mapped_column(nullable=False)
     preferential: Mapped[bool] = mapped_column(nullable=False)
+
+    meal_request = relationship("MealRequest", back_populates="declared_pupils")

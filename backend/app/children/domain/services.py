@@ -17,9 +17,9 @@ from app.db.unit_of_work import UnitOfWork
 from app.pupils.db.pupil.filters import ById as PupilById, ByIds
 from app.pupils.db.pupil.joins import WithCancelMealPeriods, WithClass, WithSchool, WithTeachers
 from app.pupils.db.pupil.model import Pupil
-from app.pupils.domain.entities import PupilOut
+from app.pupils.domain.entities import PupilWithClassAndPeriodsOut
 from app.school_classes.db.school_class.model import SchoolClass
-from app.school_classes.domain.entities import ClassOut
+from app.school_classes.domain.entities import ClassWithTeachersOut
 from app.schools.domain.entities import SchoolOut
 from app.users.db.user.filters import ByUserId as UserById
 from app.users.db.user.model import User
@@ -27,7 +27,9 @@ from app.users.domain.entities import ContactOut
 
 
 @inject
-async def get_child_by_id(parent_id: int, child_id: str, uow: UnitOfWork = Provide[Container.unit_of_work]) -> PupilOut:
+async def get_child_by_id(
+    parent_id: int, child_id: str, uow: UnitOfWork = Provide[Container.unit_of_work]
+) -> PupilWithClassAndPeriodsOut:
     async with uow:
         if not await uow.repository(Child).exists(ByParentId(parent_id) & ByPupilId(child_id)):
             raise UserIsNotParentOfThePupilError
@@ -60,7 +62,7 @@ async def add_pupil_to_children(
 @inject
 async def get_children_by_parent_id(
     parent_id: int, uow: UnitOfWork = Provide[Container.unit_of_work]
-) -> list[PupilOut]:
+) -> list[PupilWithClassAndPeriodsOut]:
     async with uow:
         children = await uow.repository(Child).find(ByParentId(parent_id), OnlyPupilId())
         child_ids = set(child.pupil_id for child in children)
@@ -99,10 +101,10 @@ async def change_meal_plan_by_parent_id(
         )
 
 
-def _get_child_out(child: Pupil) -> PupilOut:
+def _get_child_out(child: Pupil) -> PupilWithClassAndPeriodsOut:
     school_class: SchoolClass | None = child.school_class
     school_class_out = (
-        ClassOut(
+        ClassWithTeachersOut(
             id=school_class.id,
             number=school_class.number,
             letter=school_class.letter,
@@ -116,7 +118,7 @@ def _get_child_out(child: Pupil) -> PupilOut:
         else None
     )
 
-    return PupilOut(
+    return PupilWithClassAndPeriodsOut(
         id=child.id,
         last_name=child.last_name,
         first_name=child.first_name,

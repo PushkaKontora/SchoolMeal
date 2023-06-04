@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Any, Callable, TypeVar
 
-from sqlalchemy import Select, Update, and_, not_, or_
+from sqlalchemy import Delete, Select, Update, and_, not_, or_
 
 
-TQuery = TypeVar("TQuery", Select, Update)
+TQuery = TypeVar("TQuery", Select, Update, Delete)
 
 
 class Specification(ABC):
