@@ -1,4 +1,4 @@
-import {SHORT_WEEKDAYS} from '../config/config';
+import {MONTHS, SHORT_WEEKDAYS} from '../config/config';
 
 export function findDatesFrom(selectedDate: Date, amount: number): Date[] {
   const result = [selectedDate];

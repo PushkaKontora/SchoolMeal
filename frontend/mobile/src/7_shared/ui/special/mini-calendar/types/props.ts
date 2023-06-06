@@ -14,3 +14,8 @@ export type DateButtonProps = {
   selectionColor: string,
   onPress: () => void
 }
+
+export type MonthPickerProps = {
+  date: Date,
+  onMonthChange: (newMonthObject: Date) => void
+}

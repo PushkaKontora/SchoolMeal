@@ -16,7 +16,9 @@ export const monthPicker = StyleSheet.create({
   },
   monthName: {
     fontWeight: '600',
-    fontSize: 14
+    fontSize: 14,
+    width: 70,
+    textAlign: 'center'
   }
 });
 
