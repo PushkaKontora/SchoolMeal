@@ -15,6 +15,14 @@ export const styles = StyleSheet.create({
     color: '#B1B1B1',
     marginTop: 4
   },
+  calendar: {
+    marginTop: 15
+  },
+  monthPicker: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 13
+  },
   emojiContainer: {
     width: '100%'
   }
