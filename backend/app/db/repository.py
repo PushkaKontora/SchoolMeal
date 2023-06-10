@@ -1,10 +1,10 @@
 from typing import Generic, Iterable, TypeVar
 
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.base import Base
-from app.db.specifications import Specification, TQuery
+from app.db.specifications import FilterSpecification, Specification, TQuery
 
 
 TModel = TypeVar("TModel", bound=Base)
@@ -27,6 +27,9 @@ class Repository(Generic[TModel]):
         query = self._apply_specification(update(self.model), specifications)
 
         await self.session.execute(query.values(values).execution_options(synchronize_session=False))
+
+    async def delete_many(self, *specifications: FilterSpecification) -> None:
+        await self.session.execute(self._apply_specification(delete(self.model), specifications))
 
     async def refresh(self, obj: TModel) -> None:
         await self.session.refresh(obj)

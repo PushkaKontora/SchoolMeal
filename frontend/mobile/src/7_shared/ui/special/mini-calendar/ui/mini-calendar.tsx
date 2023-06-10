@@ -1,7 +1,7 @@
 import {View} from 'react-native';
 import {datePicker, styles} from '../consts/styles';
 import {MiniCalendarProps} from '../types/props';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {DEFAULT_DATE, DEFAULT_ITEM_NUMBER} from '../config/config';
 import {findDatesFrom, findNext, findPrev} from '../lib/dates-utils';
 import {ButtonIconed} from '../../../buttons/button-iconed';
@@ -27,13 +27,17 @@ export function MiniCalendar(props: MiniCalendarProps) {
 
   const onDatePickerLeftPress = () => {
     setDates(findPrev(dates[0], itemNumber));
-    onDateButtonChange(0);
   };
 
   const onDatePickerRightPress = () => {
     setDates(findNext(dates[0], itemNumber));
-    onDateButtonChange(0);
   };
+
+  // === useEffects ===
+
+  useEffect(() => {
+    onDateButtonChange(0);
+  }, [dates]);
 
   // === render ===
   return (

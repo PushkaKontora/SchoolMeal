@@ -4,12 +4,14 @@ import {MiniCalendar} from '../../../../7_shared/ui/special/mini-calendar';
 import {DEFAULT_DATE, DEFAULT_ITEM_NUMBER, PANELS, SELECTION_COLOR} from '../config/config';
 import {useEffect, useState} from 'react';
 import {NutritionPanelProps} from '../types/props';
-import {createPanels} from '../lib/panel-utils';
 import {PanelPressListeners} from '../types/types';
 import {CancelMealPeriods} from '../../../../7_shared/model/cancelMealPeriods';
-import {findPeriodIdByDate} from '../lib/meal-utils';
+import {findPeriodIdByDate, isDateExpired} from '../lib/meal-utils';
+import {hideModal, showModal} from '../lib/modal-utils';
 import {dateToISOWithoutTime} from '../../../../6_entities/date/lib/utils';
 import {useDeleteCanceledMealMutation, useCancelMealMutation} from "../../../../6_entities/meal/api/api";
+import {createPanels} from '../lib/create-panels';
+import {MonthPicker} from '../../../../7_shared/ui/special/mini-calendar/ui/month-picker';
 
 export function NutritionPanel(props: NutritionPanelProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(DEFAULT_DATE);
@@ -18,13 +20,33 @@ export function NutritionPanel(props: NutritionPanelProps) {
   const [cancelMeal, {isSuccess: canceledSuccess}] = useCancelMealMutation();
   const [deleteCanceledMeal, {isSuccess: deletedSuccess}] = useDeleteCanceledMealMutation();
 
+  const showModalCustom = () => showModal(
+    async () => {
+      await cancelMeal({
+        pupilId: props?.child?.id,
+        startDate: dateToISOWithoutTime(selectedDate)
+      });
+      hideModal();
+    },
+    () => {
+      hideModal();
+    });
+
   useEffect(() => {
     if (props.child && selectedDate) {
       setCurrentCancelMeal(
         findPeriodIdByDate(props.child.cancelMealPeriods, selectedDate)
       );
     }
-  }, [selectedDate, props.child]);
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (props.child && selectedDate) {
+      setCurrentCancelMeal(
+        findPeriodIdByDate(props.child.cancelMealPeriods, selectedDate)
+      );
+    }
+  }, [props.child]);
 
   useEffect(() => {
     if (canceledSuccess) {
@@ -39,12 +61,7 @@ export function NutritionPanel(props: NutritionPanelProps) {
   }, [deletedSuccess]);
 
   const panelListeners: PanelPressListeners = {
-    onCancel: async () => {
-      await cancelMeal({
-        pupilId: props?.child?.id,
-        startDate: dateToISOWithoutTime(selectedDate)
-      });
-    },
+    onCancel: showModalCustom,
     onSubmit: async () => {
       if (currentCancelMeal) {
         await deleteCanceledMeal(currentCancelMeal.id);
@@ -70,17 +87,27 @@ export function NutritionPanel(props: NutritionPanelProps) {
         style={styles.description}>
         {'Выберите дни, когда ребенка не будет в школе (не будет питаться)'}
       </Text>
-      
-      <MiniCalendar
-        selectionColor={SELECTION_COLOR}
-        itemNumber={DEFAULT_ITEM_NUMBER}
-        currentDate={selectedDate}
-        onDateChange={onDateChange}/>
+
+      <View
+        style={styles.monthPicker}>
+        <MonthPicker
+          date={selectedDate}
+          onMonthChange={onDateChange}/>
+      </View>
+
+      <View
+        style={styles.calendar}>
+        <MiniCalendar
+          selectionColor={SELECTION_COLOR}
+          itemNumber={DEFAULT_ITEM_NUMBER}
+          currentDate={selectedDate}
+          onDateChange={onDateChange}/>
+      </View>
 
       {
         currentCancelMeal
-          ? panels.canceled
-          : panels.submitted
+          ? panels.canceled({visibleButton: !isDateExpired(selectedDate)})
+          : panels.submitted({visibleButton: !isDateExpired(selectedDate)})
       }
 
     </View>

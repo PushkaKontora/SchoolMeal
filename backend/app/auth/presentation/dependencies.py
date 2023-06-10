@@ -12,6 +12,7 @@ from app.auth.presentation.errors import (
 )
 from app.config import JWTSettings
 from app.container import Container
+from app.users.db.user.model import Role
 
 
 @inject
@@ -48,3 +49,8 @@ class JWTAuth(HTTPBearer):
 
     def authorize(self, payload: JWTPayload) -> bool:
         return True
+
+
+class NotParentAuth(JWTAuth):
+    def authorize(self, payload: JWTPayload) -> bool:
+        return payload.role != Role.PARENT

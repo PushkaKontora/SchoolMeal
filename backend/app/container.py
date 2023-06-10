@@ -2,7 +2,15 @@ from dependency_injector.containers import DeclarativeContainer, WiringConfigura
 from dependency_injector.providers import Callable, Factory, Singleton
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
-from app.config import AppSettings, DatabaseSettings, JWTSettings, PasswordSettings, RequestSignatureSettings
+from app.config import (
+    AppSettings,
+    CORSSettings,
+    DatabaseSettings,
+    JWTSettings,
+    MealRequestSettings,
+    PasswordSettings,
+    RequestSignatureSettings,
+)
 from app.db.unit_of_work import UnitOfWork
 
 
@@ -18,6 +26,8 @@ class Container(DeclarativeContainer):
     wiring_config = WiringConfiguration(packages=["app"])
 
     app_settings = Singleton(AppSettings)
+    meal_request_settings = Singleton(MealRequestSettings)
+    cors_settings = Singleton(CORSSettings)
     database_settings = Singleton(DatabaseSettings)
     jwt_settings = Singleton(JWTSettings)
     password_settings = Singleton(PasswordSettings)

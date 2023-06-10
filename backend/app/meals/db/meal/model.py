@@ -17,3 +17,4 @@ class Meal(Base):
 
     menus = relationship("Menu", lazy="raise")
     school_class = relationship("SchoolClass", uselist=False, lazy="raise")
+    request = relationship("MealRequest", back_populates="meal", uselist=False, lazy="raise")

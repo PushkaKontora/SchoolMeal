@@ -19,8 +19,8 @@ export function NutritionHeaderFeature(props: NutritionHeaderFeatureProps) {
 
       <View style={styles.toggleView}>
         <ToggleButton
-          turnedOffTitle={'Не питается'}
-          turnedOnTitle={'Питается'}
+          leftTitle={'Питается'}
+          rightTitle={'Не питается'}
           defaultState={props?.defaultToggleState}
           onToggle={props.onToggle}/>
       </View>

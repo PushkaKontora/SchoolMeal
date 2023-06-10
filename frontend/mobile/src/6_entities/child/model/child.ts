@@ -1,4 +1,4 @@
-import {Class} from '../../../7_shared/model/class';
+import {Class} from '../../school-class/model/class';
 import {CancelMealPeriods} from '../../../7_shared/model/cancelMealPeriods';
 
 export type Child = {

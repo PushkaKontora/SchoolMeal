@@ -8,41 +8,53 @@ export function NutritionTogglesFeature(props: NutritionTogglesFeatureProps) {
     <View
       style={styles.container}>
 
-      <View
-        style={styles.field}>
-        <Text
-          style={styles.label}>
-          {'Завтрак'}
-        </Text>
+      {
+        props.hasBreakfast && (
+          <View
+            style={styles.field}>
+            <Text
+              style={styles.label}>
+              {'Завтрак'}
+            </Text>
 
-        <Switch
-          onToggle={props.onToggleBreakfast}
-          defaultState={props.breakfastState}/>
-      </View>
+            <Switch
+              onToggle={props.onToggleBreakfast}
+              defaultState={props.breakfastState}/>
+          </View>
+        )
+      }
 
-      <View
-        style={styles.field}>
-        <Text
-          style={styles.label}>
-          {'Обед'}
-        </Text>
+      {
+        props.hasLunch && (
+          <View
+            style={styles.field}>
+            <Text
+              style={styles.label}>
+              {'Обед'}
+            </Text>
 
-        <Switch
-          onToggle={props.onToggleLunch}
-          defaultState={props.lunchState}/>
-      </View>
+            <Switch
+              onToggle={props.onToggleLunch}
+              defaultState={props.lunchState}/>
+          </View>
+        )
+      }
 
-      <View
-        style={styles.field}>
-        <Text
-          style={styles.label}>
-          {'Полдник'}
-        </Text>
+      {
+        props.hasAfternoonSnack && (
+          <View
+            style={styles.field}>
+            <Text
+              style={styles.label}>
+              {'Полдник'}
+            </Text>
 
-        <Switch
-          onToggle={props.onToggleAfternoonSnack}
-          defaultState={props.afternoonSnackState}/>
-      </View>
+            <Switch
+              onToggle={props.onToggleAfternoonSnack}
+              defaultState={props.afternoonSnackState}/>
+          </View>
+        )
+      }
 
     </View>
   );

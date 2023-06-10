@@ -1,11 +1,10 @@
 import {View} from 'react-native';
-import {MenuProps} from "../model/props";
-import {createStyle} from "../consts/style";
-import {MenuData} from "../../menu-data/ui/menu-data";
-import {MealUnit} from "../../meal-unit/ui/meal-unit";
-import {Portions} from "../../../../../7_shared/model/portions";
 import {useAppSelector} from "../../../../../../store/hooks";
 import {useEffect} from "react";
+import {MenuProps} from '../model/props';
+import {createStyle} from '../consts/style';
+import {MenuData} from '../../menu-data/ui/menu-data';
+import {MealUnit} from '../../meal-unit/ui/meal-unit';
 import {useGetMealsQuery} from "../../../../../6_entities/meal/api/meal-api/config";
 import {EmojiTextFeature} from "../../../../../5_features/emoji-text-feature/ui/emoji-text-feature";
 
@@ -28,14 +27,14 @@ export function Menu(props: MenuProps) {
                 && <MealUnit title={'Завтрак'}
                              sum={mealsForChild[0]?.menu?.breakfast.price}
                              portions={mealsForChild[0].menu.breakfast.portions}/>}
-            {mealsForChild && mealsForChild[0]?.menu?.lunch
-                && <MealUnit title={'Полдник'}
-                             sum={mealsForChild[0]?.menu?.lunch.price}
-                             portions={mealsForChild[0].menu.lunch.portions}/>}
             {mealsForChild && mealsForChild[0]?.menu?.dinner
-                && <MealUnit title={'Обед'}
+                && <MealUnit title={'Полдник'}
                              sum={mealsForChild[0]?.menu?.dinner.price}
                              portions={mealsForChild[0].menu.dinner.portions}/>}
+            {mealsForChild && mealsForChild[0]?.menu?.lunch
+                && <MealUnit title={'Обед'}
+                             sum={mealsForChild[0]?.menu?.lunch.price}
+                             portions={mealsForChild[0].menu.lunch.portions}/>}
             <EmojiTextFeature
                 imageEmoji={require('../lib/assets/Object.png')}
                 subEmojiTitle={'На этот день меню не было предоставлено'}/>

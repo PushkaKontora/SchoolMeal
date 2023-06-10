@@ -12,7 +12,10 @@ export type PanelPressListeners = {
   onSubmit: () => void
 }
 
+export type PanelListItem =
+  (props: Partial<PanelContentProps>) => ReactElement;
+
 export type PanelList = {
-  canceled: ReactElement,
-  submitted: ReactElement
+  canceled: PanelListItem,
+  submitted: PanelListItem
 }
