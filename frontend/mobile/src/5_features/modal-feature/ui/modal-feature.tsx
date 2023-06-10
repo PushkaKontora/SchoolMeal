@@ -4,30 +4,33 @@ import {PaddingArea} from '../../../7_shared/ui/styling/padding-area';
 import {PADDINGS} from '../config/config';
 import {ModalHeader} from "../../../6_entities/modal/ui/modal-header/modal-header";
 import {ButtonPrimary} from "../../../7_shared/ui/buttons/button-primary";
-import {TouchableOpacity, View} from "react-native";
+import {KeyboardAvoidingView, TouchableOpacity, View} from "react-native";
 import {MarginArea} from "../../../7_shared/ui/styling/margin-area";
 
 export function ModalFeature(props: ModalProps) {
     const styles = createStyle(props);
 
     return (
-        <View style={styles.container}>
-            <PaddingArea
-                {...PADDINGS}>
-                <ModalHeader
-                    headerModalTitle={props.headerModalTitle}
-                    clickExit={props.clickExit}/>
-                {props.children}
-                <MarginArea marginHorizontal={32}>
-                    <ButtonPrimary
-                        title={'Сохранить изменения'}
-                        onPress={props.functionButton}
-                        backgroundColor={'#EC662A'}
-                        disabled={props.disabledButton}
-                        textColor={'#FFFFFF'}
-                        borderRadius={10}/>
-                </MarginArea>
-            </PaddingArea>
-        </View>
+        <KeyboardAvoidingView style={styles.container}
+                              behavior="padding">
+            <View style={styles.containerContent}>
+                <PaddingArea
+                    {...PADDINGS}>
+                    <ModalHeader
+                        headerModalTitle={props.headerModalTitle}
+                        clickExit={props.clickExit}/>
+                    {props.children}
+                    <MarginArea marginHorizontal={32}>
+                        <ButtonPrimary
+                            title={props.titleButton ? props.titleButton : 'Сохранить изменения'}
+                            onPress={props.functionButton}
+                            backgroundColor={'#EC662A'}
+                            disabled={props.disabledButton}
+                            textColor={'#FFFFFF'}
+                            borderRadius={10}/>
+                    </MarginArea>
+                </PaddingArea>
+            </View>
+        </KeyboardAvoidingView>
     );
 }

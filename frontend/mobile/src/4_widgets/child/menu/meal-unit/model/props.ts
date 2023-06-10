@@ -3,6 +3,6 @@ import {Portions} from "../../../../../7_shared/model/portions";
 
 export type MealUnitProps = {
     title: string,
-    sum: string,
+    sum: number,
     portions: Portions[],
 } & PropsWithChildren;

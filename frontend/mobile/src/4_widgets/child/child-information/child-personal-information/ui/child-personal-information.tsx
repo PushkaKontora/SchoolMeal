@@ -5,10 +5,26 @@ import {ChildAccount} from "../../../child-account/ui/child-account";
 import {TagsInformation} from "../../tags-informations/ui/tags-information";
 import {View} from "react-native";
 import {createStyle} from "../consts/style";
+import {useEffect, useState} from "react";
 
 export function ChildPersonalInformation(props: ChildPersonalInformationProps) {
     const styles = createStyle(props);
+    const [status, setStatus] = useState('Питается платно')
     const {navigation} = props;
+
+    useEffect(() => {
+        if (props.childInformation.certificateBeforeDate) {
+            setStatus('Питается льготно')
+        } else {
+            if (!props.childInformation.dinner
+                && !props.childInformation.lunch
+                && !props.childInformation.breakfast) {
+                setStatus('Не питается')
+            } else {
+                setStatus('Питается платно')
+            }
+        }
+    });
 
     const navigateNutritionPage = () => {
         navigation.navigate('Nutrition', {
@@ -23,7 +39,7 @@ export function ChildPersonalInformation(props: ChildPersonalInformationProps) {
             <TagsInformation
                 class={`${props.childInformation.schoolClass.number}${props.childInformation.schoolClass.letter.toUpperCase()}`}
                 school={props.childInformation.schoolClass.school.name}
-                status={'Питается платно'}/>
+                status={status}/>
             <ButtonPrimary
                 title={'Питание'}
                 onPress={navigateNutritionPage}

@@ -3,9 +3,8 @@ import {BASE_BACKEND_URL} from '../../../7_shared/api/config';
 import {AuthTokenService} from '../../../5_features/auth';
 import {CancelMealPeriods} from '../../../7_shared/model/cancelMealPeriods';
 
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import {Meals} from "../../../7_shared/model/meals";
-import {MealsParams} from "./types";
+import {fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+
 export const CANCEL_CONFIG: ConfigSettings = {
   reducerPath: 'api/cancel_meals',
   baseQuery: fetchBaseQuery({
@@ -31,18 +30,6 @@ export const CANCEL_CONFIG: ConfigSettings = {
         url: `/${periodId}`,
         method: 'DELETE'
       })
-    }),
-    getMeals: build.query<Meals[], MealsParams>({
-            query: () => ({
-                url: ''
-            }),
-            // providesTags: (result) =>
-            //     result
-            //         ? [
-            //             ...result.map(({id}) => ({type: 'UserChildren', id} as const)),
-            //             {type: 'Meals', id: 'LIST'},
-            //         ]
-            //         : [{type: 'Meals', id: 'LIST'}],
-        })
+    })
   })
 };

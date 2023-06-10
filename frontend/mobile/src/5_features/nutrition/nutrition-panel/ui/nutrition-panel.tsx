@@ -6,10 +6,10 @@ import {useEffect, useState} from 'react';
 import {NutritionPanelProps} from '../types/props';
 import {createPanels} from '../lib/panel-utils';
 import {PanelPressListeners} from '../types/types';
-import {useCancelMealMutation, useDeleteCanceledMealMutation} from '../../../../6_entities/meal/api/api';
 import {CancelMealPeriods} from '../../../../7_shared/model/cancelMealPeriods';
 import {findPeriodIdByDate} from '../lib/meal-utils';
 import {dateToISOWithoutTime} from '../../../../6_entities/date/lib/utils';
+import {useDeleteCanceledMealMutation, useCancelMealMutation} from "../../../../6_entities/meal/api/api";
 
 export function NutritionPanel(props: NutritionPanelProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(DEFAULT_DATE);

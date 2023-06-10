@@ -2,12 +2,15 @@ import {ModalAddChildProps} from '../model/props';
 import {StyleSheet} from 'react-native';
 
 export const createStyle = (props: ModalAddChildProps) => StyleSheet.create({
+    container: {
+        flex: 1,
+    },
     inputField: {
         backgroundColor: '#FFFFFF',
         borderRadius: 0,
         borderColor: '#E9E9E9',
         borderWidth: 1,
-        color: '#B1B1B1',
+        color: '#212121',
     },
     content: {
         paddingHorizontal: 44,

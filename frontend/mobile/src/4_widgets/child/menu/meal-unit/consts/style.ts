@@ -7,6 +7,7 @@ export const createStyle = (props: MealUnitProps) => StyleSheet.create({
         borderBottomColor: '#E5E5E5',
         paddingBottom: 8,
         marginBottom: 16,
+        marginTop: 14,
     },
     title: {
         flexDirection: 'row',

@@ -7,6 +7,6 @@ export const createStyle = (props: ErrorMessageProps) => StyleSheet.create({
         fontWeight: '400',
         fontSize: 11,
         lineHeight: 13,
-        color: props?.displayErrorMessage == true ? '#FFFFFF' : '#EE6725',
+        color: props.displayErrorMessage == true ? '#FFFFFF' : '#EE6725',
     },
 });

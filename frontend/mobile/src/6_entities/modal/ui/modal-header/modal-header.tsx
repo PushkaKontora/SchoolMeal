@@ -11,13 +11,13 @@ export function ModalHeader(props: ModalHeaderProps) {
         <PaddingArea
             style={styles.headerContent}
             {...PADDINGS_HEADER}>
+            <Text style={styles.headerTitle}>{props.headerModalTitle}</Text>
             <TouchableOpacity
                 style={styles.image}
                 onPress={props?.clickExit}>
                 <Image onAccessibilityTap={props?.clickExit}
                        source={require('../../../../7_shared/assets/images/exit.png')}/>
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>{props.headerModalTitle}</Text>
         </PaddingArea>
     );
 }

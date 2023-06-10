@@ -13,10 +13,10 @@ export const createStyle = (props: ModalHeaderProps) => StyleSheet.create({
         fontWeight: '700',
         fontSize: 16,
         lineHeight: 18,
-        marginRight: 'auto',
+        marginLeft: 'auto',
         color: '#212121',
     },
     image: {
-        marginRight: 'auto',
+        marginLeft: 'auto',
     }
 });

@@ -63,7 +63,9 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
         console.log('error' + ' 1');
         if (isError) {
             console.log('error' + ' 2');
+            console.log(invisibleErrorMessage, true);
             setInvisibleErrorMessage(false);
+            console.log(invisibleErrorMessage, false);
             setDisabled(true);
         }
     }, [isError]);
@@ -74,6 +76,7 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
             headerModalTitle={'Добавить ребёнка'}
             functionButton={handleSubmit(handleAddChildByID)}
             disabledButton={disabled}
+            titleButton={'Добавить ребёнка'}
             clickExit={() => closeModal()}>
             <View style={styles.content}>
                 <Text style={styles.contentTitle}>
@@ -99,34 +102,34 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
     };
 
     return (
-        <>{userChild && userChild.length !== 0
-            ? <>
-                {userChild ? userChild.map(child =>
-                    <ChildCard key={child.id}
-                               child={child}
-                               navigation={props.navigation}/>) : null}
-                <MarginArea
-                    marginTop={16}>
+        <View style={styles.container}>
+            {userChild && userChild.length !== 0
+                ? <>
+                    {userChild ? userChild.map(child =>
+                        <ChildCard key={child.id}
+                                   child={child}
+                                   navigation={props.navigation}/>) : null}
+                    <MarginArea
+                        marginTop={16}>
+                        <ButtonPrimary
+                            title={'Добавить ребёнка'}
+                            onPress={handleAddChild}
+                            backgroundColor={'#EC662A'}
+                            textColor={'#FFFFFF'}
+                            borderRadius={10}/>
+                    </MarginArea>
+                </>
+                : <EmojiTextFeature
+                    imageEmoji={require('../../../5_features/emoji-text-feature/images/angelAmoji.png')}
+                    subEmojiTitle={SUB_EMOJI_TITLE}>
                     <ButtonPrimary
                         title={'Добавить ребёнка'}
                         onPress={handleAddChild}
                         backgroundColor={'#EC662A'}
                         textColor={'#FFFFFF'}
                         borderRadius={10}/>
-                    <MagicModalPortal/>
-                </MarginArea>
-            </>
-            : <EmojiTextFeature
-                imageEmoji={require('../../../5_features/emoji-text-feature/images/angelAmoji.png')}
-                subEmojiTitle={SUB_EMOJI_TITLE}>
-                <ButtonPrimary
-                    title={'Добавить ребёнка'}
-                    onPress={handleAddChild}
-                    backgroundColor={'#EC662A'}
-                    textColor={'#FFFFFF'}
-                    borderRadius={10}/>
-                <MagicModalPortal/>
-            </EmojiTextFeature>}
-        </>
+                </EmojiTextFeature>}
+            <MagicModalPortal/>
+        </View>
     );
 }
