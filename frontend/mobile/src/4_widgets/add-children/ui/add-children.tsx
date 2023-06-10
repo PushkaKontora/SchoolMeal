@@ -18,46 +18,46 @@ import {MarginArea} from '../../../7_shared/ui/styling/margin-area';
 
 
 export function AddChildrenWidget(props: ModalAddChildProps) {
-  const {data: userChild} = useGetUserChildQuery();
-  const [addChildByID, {isError, isSuccess}] = useFindChildOnIDMutation();
-  // const [idChild, setIdChild] = useState('');
-  const [disabled, setDisabled] = useState(false);
-  const [invisibleErrorMessage, setInvisibleErrorMessage] = useState(true);
-  const {
-    handleSubmit,
-    control,
-    reset,
-    formState: {errors}
-  } = useForm<idChildData>({
-    mode: 'onChange'
-  });
+    const {data: userChild} = useGetUserChildQuery();
+    const [addChildByID, {isError, isSuccess}] = useFindChildOnIDMutation();
+    // const [idChild, setIdChild] = useState('');
+    const [disabled, setDisabled] = useState(false);
+    const [invisibleErrorMessage, setInvisibleErrorMessage] = useState(true);
+    const {
+        handleSubmit,
+        control,
+        reset,
+        formState: {errors}
+    } = useForm<idChildData>({
+        mode: 'onChange'
+    });
 
-  const handleAddChildByID = (data: any): any => {
-    if (data) {
-      addChildByID({childId: data.childId}).unwrap();
-    }
-    console.log(data?.childId + ' 1');
-  };
+    const handleAddChildByID = (data: any): any => {
+        if (data) {
+            addChildByID({childId: data.childId}).unwrap();
+        }
+        console.log(data?.childId + ' 1');
+    };
 
-  const closeModal = (): any => {
-    magicModal.hide();
-    setInvisibleErrorMessage(true);
-    setDisabled(false);
-  };
+    const closeModal = (): any => {
+        magicModal.hide();
+        setInvisibleErrorMessage(true);
+        setDisabled(false);
+    };
 
-  const handleChangeText = (): void => {
-    console.log(' !');
-    setInvisibleErrorMessage(true);
-    setDisabled(false);
-  };
+    const handleChangeText = (): void => {
+        console.log(' !');
+        setInvisibleErrorMessage(true);
+        setDisabled(false);
+    };
 
-  useEffect(() => {
-    console.log('isSuccess' + ' 1');
-    if (isSuccess) {
-      closeModal();
-      console.log('isSuccess' + ' 2');
-    }
-  }, [isSuccess]);
+    useEffect(() => {
+        console.log('isSuccess' + ' 1');
+        if (isSuccess) {
+            closeModal();
+            console.log('isSuccess' + ' 2');
+        }
+    }, [isSuccess]);
 
     useEffect(() => {
         console.log('error' + ' 1');
@@ -70,37 +70,36 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
         }
     }, [isError]);
 
-  const styles = createStyle(props);
-  const ConfirmationModal = () => (
-    <ModalFeature
-      headerModalTitle={'Добавить ребёнка'}
-      buttonTitle={'Сохранить изменения'}
-      functionButton={handleSubmit(handleAddChildByID)}
-      disabledButton={disabled}
-      titleButton={'Добавить ребёнка'}
+    const styles = createStyle(props);
+    const ConfirmationModal = () => (
+        <ModalFeature
+            headerModalTitle={'Добавить ребёнка'}
+            buttonTitle={'Добавить ребёнка'}
+            functionButton={handleSubmit(handleAddChildByID)}
+            disabledButton={disabled}
             clickExit={() => closeModal()}>
             <View style={styles.content}>
                 <Text style={styles.contentTitle}>
                     Идентификатор, выданный в школе
-        </Text>
-        <ControlledInputField
-          key={INPUT_DATA.name}
-          control={control}
-          errors={errors}
-          data={INPUT_DATA}
-          style={styles.inputField}
-        />
-        <ErrorMessage
-          displayErrorMessage={invisibleErrorMessage}
-          textMessage={'Индентификатора не существует'}/>
-      </View>
-    </ModalFeature>
-  );
+                </Text>
+                <ControlledInputField
+                    key={INPUT_DATA.name}
+                    control={control}
+                    errors={errors}
+                    data={INPUT_DATA}
+                    style={styles.inputField}
+                />
+                <ErrorMessage
+                    displayErrorMessage={invisibleErrorMessage}
+                    textMessage={'Индентификатора не существует'}/>
+            </View>
+        </ModalFeature>
+    );
 
-  const handleAddChild = () => {
-    reset();
-    return magicModal.show(ConfirmationModal);
-  };
+    const handleAddChild = () => {
+        reset();
+        return magicModal.show(ConfirmationModal);
+    };
 
     return (
         <View style={styles.container}>

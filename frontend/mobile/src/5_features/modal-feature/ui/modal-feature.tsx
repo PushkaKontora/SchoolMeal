@@ -22,7 +22,7 @@ export function ModalFeature(props: ModalProps) {
                     {props.children}
                     <MarginArea marginHorizontal={32}>
                         <ButtonPrimary
-                            title={props.titleButton ? props.titleButton : 'Сохранить изменения'}
+                            title={props.buttonTitle ? props.buttonTitle : 'Сохранить изменения'}
                             onPress={props.functionButton}
                             backgroundColor={'#EC662A'}
                             disabled={props.disabledButton}
