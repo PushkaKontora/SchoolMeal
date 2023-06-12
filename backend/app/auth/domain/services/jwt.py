@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 from dependency_injector.wiring import Provide
 from jwt import PyJWTError, decode, encode
 
+from app.appcontainer import AppContainer
 from app.auth.domain.entities import JWTPayload, JWTTokensOut, TokenType
 from app.auth.domain.errors import InvalidTokenSignatureError, TokenExpirationError
 from app.config import JWTSettings
-from app.container import Container
 from app.users.db.user.model import Role
 
 
@@ -32,7 +32,7 @@ def generate_tokens(user_id: int, role: Role) -> JWTTokensOut:
 
 
 def generate_token(
-    token_type: TokenType, user_id: int, role: Role, settings: JWTSettings = Provide[Container.jwt_settings]
+    token_type: TokenType, user_id: int, role: Role, settings: JWTSettings = Provide[AppContainer.jwt_settings]
 ) -> str:
     ttl = _get_token_ttl(token_type, settings)
 
@@ -43,7 +43,7 @@ def generate_token(
     return encode(payload.dict(), settings.secret.get_secret_value(), settings.algorithm)
 
 
-def try_decode(token: str, settings: JWTSettings = Provide[Container.jwt_settings]) -> JWTPayload | None:
+def try_decode(token: str, settings: JWTSettings = Provide[AppContainer.jwt_settings]) -> JWTPayload | None:
     try:
         payload = decode(token, key=settings.secret.get_secret_value(), algorithms=[settings.algorithm])
     except PyJWTError:
@@ -53,7 +53,7 @@ def try_decode(token: str, settings: JWTSettings = Provide[Container.jwt_setting
 
 
 def is_token_expired(
-    created_at: datetime, token_type: TokenType, settings: JWTSettings = Provide[Container.jwt_settings]
+    created_at: datetime, token_type: TokenType, settings: JWTSettings = Provide[AppContainer.jwt_settings]
 ) -> bool:
     return datetime.utcnow() >= created_at + _get_token_ttl(token_type, settings)
 

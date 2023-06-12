@@ -3,8 +3,8 @@ from typing import Iterable
 
 from dependency_injector.wiring import Provide
 
+from app.appcontainer import AppContainer
 from app.config import MealRequestSettings
-from app.container import Container
 from app.db.unit_of_work import UnitOfWork
 from app.meal_requests.db.declared_pupil.filters import DeclaredPupilFilters
 from app.meal_requests.db.declared_pupil.model import DeclaredPupil
@@ -38,7 +38,7 @@ from app.utils import timezone
 
 
 async def get_requests_by_options(
-    options: MealRequestsGetOptions, uow: UnitOfWork = Provide[Container.unit_of_work]
+    options: MealRequestsGetOptions, uow: UnitOfWork = Provide[AppContainer.unit_of_work]
 ) -> list[ExtendedMealRequestOut]:
     async with uow:
         meals = await uow.repository(Meal).find(
@@ -73,7 +73,7 @@ async def get_requests_by_options(
 
 
 async def create_request_by_user(
-    user_id: int, data: MealRequestIn, uow: UnitOfWork = Provide[Container.unit_of_work]
+    user_id: int, data: MealRequestIn, uow: UnitOfWork = Provide[AppContainer.unit_of_work]
 ) -> MealRequestOut:
     async with uow:
         if not await uow.repository(User).exists(user_filters.ByUserId(user_id)):
@@ -109,8 +109,8 @@ async def create_request_by_user(
 async def update_request(
     request_id: int,
     data: MealRequestPutIn,
-    uow: UnitOfWork = Provide[Container.unit_of_work],
-    settings: MealRequestSettings = Provide[Container.meal_request_settings],
+    uow: UnitOfWork = Provide[AppContainer.unit_of_work],
+    settings: MealRequestSettings = Provide[AppContainer.meal_request_settings],
 ) -> MealRequestOut:
     async with uow:
         request = await uow.repository(MealRequest).find_first(meal_request_filters.ById(request_id))

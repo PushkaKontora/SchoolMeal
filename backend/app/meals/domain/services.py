@@ -2,7 +2,7 @@ from typing import Iterable
 
 from dependency_injector.wiring import Provide, inject
 
-from app.container import Container
+from app.appcontainer import AppContainer
 from app.db.unit_of_work import UnitOfWork
 from app.meals.db.meal.filters import BySomeClassId, BySomeDateFromInclusive, BySomeDateToInclusive
 from app.meals.db.meal.joins import WithFoods, WithMenus, WithPortions, WithSchoolClass
@@ -17,7 +17,7 @@ from app.utils.storages import Storage
 
 @inject
 async def get_meals_by_filters(
-    options: MealsOptions, uow: UnitOfWork = Provide[Container.unit_of_work]
+    options: MealsOptions, uow: UnitOfWork = Provide[AppContainer.unit_of_work]
 ) -> list[MealOut]:
     async with uow:
         spec = (
@@ -52,7 +52,9 @@ async def _get_meal_out(meal: Meal) -> MealOut:
     )
 
 
-async def _get_meal_type_out(portions: Iterable[Portion], storage: Storage = Provide[Container.storage]) -> MealTypeOut:
+async def _get_meal_type_out(
+    portions: Iterable[Portion], storage: Storage = Provide[AppContainer.storage]
+) -> MealTypeOut:
     portions_out = [
         PortionOut(
             id=portion.id,

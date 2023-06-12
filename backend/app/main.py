@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.appcontainer import AppContainer, LocalStorageContainer, S3StorageContainer
 from app.auth.app import register_auth_api
 from app.cancel_meal_periods.app import register_cancel_meal_periods_api
 from app.children.app import register_children_api
 from app.config import Environment
-from app.container import Container
 from app.meal_requests.app import register_meal_requests_api
 from app.meals.app import register_meals_api
 from app.portions.app import register_portions_api
@@ -16,7 +16,9 @@ from app.utils.middlewares import RequestSignatureMiddleware
 
 
 def create_app() -> FastAPI:
-    container = Container()
+    container = AppContainer()
+    _override_file_storage(container)
+
     app_settings = container.app_settings()
 
     application = FastAPI(debug=app_settings.debug, docs_url=app_settings.docs_url if app_settings.debug else None)
@@ -24,6 +26,7 @@ def create_app() -> FastAPI:
 
     _add_middlewares(application, container)
     _register_apis(application)
+    _override_file_storage(container)
 
     return application
 
@@ -43,7 +46,7 @@ def _register_apis(application: FastAPI) -> None:
         register(application)
 
 
-def _add_middlewares(application: FastAPI, container: Container) -> None:
+def _add_middlewares(application: FastAPI, container: AppContainer) -> None:
     app_settings = container.app_settings()
     if app_settings.environment == Environment.PRODUCTION:
         application.add_middleware(RequestSignatureMiddleware, settings=container.request_signature_settings())
@@ -56,6 +59,16 @@ def _add_middlewares(application: FastAPI, container: Container) -> None:
         allow_methods=cors_settings.methods,
         allow_headers=cors_settings.headers,
     )
+
+
+def _override_file_storage(container: AppContainer) -> None:
+    settings = container.app_settings()
+
+    storage_container = S3StorageContainer()
+    if settings.environment == Environment.DEVELOPMENT:
+        storage_container = LocalStorageContainer()
+
+    container.override_providers(storage=storage_container.storage)
 
 
 app = create_app()

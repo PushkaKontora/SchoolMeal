@@ -1,5 +1,5 @@
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
-from dependency_injector.providers import Callable, Configuration, Factory, Singleton
+from dependency_injector.providers import Callable, Configuration, DependenciesContainer, Dependency, Factory, Singleton
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from app.config import (
@@ -13,7 +13,7 @@ from app.config import (
     S3StorageSettings,
 )
 from app.db.unit_of_work import UnitOfWork
-from app.utils.storages import S3Storage
+from app.utils.storages import LocalStorage, S3Storage, Storage
 
 
 def create_engine(settings: DatabaseSettings) -> AsyncEngine:
@@ -24,7 +24,7 @@ def create_session(session_maker: async_sessionmaker[AsyncSession]) -> AsyncSess
     return session_maker()
 
 
-class Container(DeclarativeContainer):
+class AppContainer(DeclarativeContainer):
     wiring_config = WiringConfiguration(packages=["app"])
 
     app_settings = Singleton(AppSettings)
@@ -40,6 +40,10 @@ class Container(DeclarativeContainer):
     session = Callable(create_session, session_maker)
     unit_of_work = Factory(UnitOfWork, session=session)
 
+    storage = Dependency(instance_of=Storage)
+
+
+class S3StorageContainer(DeclarativeContainer):
     storage_settings = Configuration(pydantic_settings=[S3StorageSettings()])
     storage = Singleton(
         S3Storage,
@@ -49,3 +53,7 @@ class Container(DeclarativeContainer):
         bucket_name=storage_settings.bucket_name,
         url_ttl=storage_settings.presigned_url_ttl,
     )
+
+
+class LocalStorageContainer(DeclarativeContainer):
+    storage = Singleton(LocalStorage, endpoint="http://localhost/media")

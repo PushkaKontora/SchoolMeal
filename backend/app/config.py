@@ -13,7 +13,7 @@ TIMEZONE = timezone(timedelta(hours=3), name="Moscow")
 
 
 class Environment(Enum):
-    DEV = "dev"
+    DEVELOPMENT = "dev"
     PRE_PRODUCTION = "pre-prod"
     PRODUCTION = "prod"
 

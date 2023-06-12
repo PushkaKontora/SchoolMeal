@@ -5,6 +5,8 @@ services:
     container_name: postgres
     build: postgres/
     restart: always
+    environment:
+      ENV: "dev"
     env_file:
       - backend/.env
     ports:
@@ -13,9 +15,17 @@ services:
       - postgres_volume:/var/lib/postgresql/data
 
   app:
+    environment:
+      POSTGRES_HOST: postgres
+    volumes:
+      - media_volume:/app/media
     depends_on:
       - postgres
 
+  nginx:
+    volumes:
+      - media_volume:/app/media
 
 volumes:
   postgres_volume:
+  media_volume:

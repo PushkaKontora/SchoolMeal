@@ -6,7 +6,7 @@ from aioboto3 import Session
 
 class Storage(ABC):
     @abstractmethod
-    async def generate_url(self, path: str) -> str:
+    async def generate_url(self, name: str) -> str:
         raise NotImplementedError
 
 
@@ -36,3 +36,11 @@ class S3Storage(Storage):
     @property
     def _connection(self):
         return self._session.client(service_name=self._service_name, endpoint_url=self._endpoint)
+
+
+class LocalStorage(Storage):
+    def __init__(self, endpoint: str):
+        self._endpoint = endpoint
+
+    async def generate_url(self, name: str) -> str:
+        return f"{self._endpoint}/{name}"

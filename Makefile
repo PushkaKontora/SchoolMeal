@@ -14,3 +14,7 @@ push:
 
 pull:
 	docker-compose -f docker-compose.yml -f docker-compose.${ENV}.yml pull
+
+# $c [container name]
+shell:
+	docker-compose -f docker-compose.yml -f docker-compose.${ENV}.yml run ${c} /bin/sh

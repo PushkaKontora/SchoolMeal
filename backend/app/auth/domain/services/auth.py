@@ -1,5 +1,6 @@
 from dependency_injector.wiring import Provide, inject
 
+from app.appcontainer import AppContainer
 from app.auth.db.issued_token.filters import ByUserId as TokenByUserId, ByValue
 from app.auth.db.issued_token.model import IssuedToken
 from app.auth.db.password.filters import ByUserId as PasswordByUserId
@@ -15,14 +16,15 @@ from app.auth.domain.errors import (
 )
 from app.auth.domain.services.jwt import generate_tokens, is_token_expired, try_decode
 from app.auth.domain.services.password import check_password
-from app.container import Container
 from app.db.unit_of_work import UnitOfWork
 from app.users.db.user.filters import ByLogin
 from app.users.db.user.model import Role, User
 
 
 @inject
-async def authenticate(credentials: CredentialsIn, uow: UnitOfWork = Provide[Container.unit_of_work]) -> JWTTokensOut:
+async def authenticate(
+    credentials: CredentialsIn, uow: UnitOfWork = Provide[AppContainer.unit_of_work]
+) -> JWTTokensOut:
     async with uow:
         user = await uow.repository(User).find_first(ByLogin(credentials.login))
         if not user:
@@ -40,7 +42,7 @@ async def authenticate(credentials: CredentialsIn, uow: UnitOfWork = Provide[Con
 
 
 @inject
-async def revoke_refresh_token(token: str, uow: UnitOfWork = Provide[Container.unit_of_work]) -> None:
+async def revoke_refresh_token(token: str, uow: UnitOfWork = Provide[AppContainer.unit_of_work]) -> None:
     if not try_decode(token):
         raise InvalidTokenSignatureError
 
@@ -51,7 +53,7 @@ async def revoke_refresh_token(token: str, uow: UnitOfWork = Provide[Container.u
 
 @inject
 async def update_tokens_using_refresh_token(
-    token: str, uow: UnitOfWork = Provide[Container.unit_of_work]
+    token: str, uow: UnitOfWork = Provide[AppContainer.unit_of_work]
 ) -> JWTTokensOut:
     payload = try_decode(token)
 
