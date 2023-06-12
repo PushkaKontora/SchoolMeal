@@ -1,5 +1,5 @@
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
-from dependency_injector.providers import Callable, Factory, Singleton
+from dependency_injector.providers import Callable, Configuration, Factory, Singleton
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from app.config import (
@@ -10,8 +10,10 @@ from app.config import (
     MealRequestSettings,
     PasswordSettings,
     RequestSignatureSettings,
+    S3StorageSettings,
 )
 from app.db.unit_of_work import UnitOfWork
+from app.utils.storages import S3Storage
 
 
 def create_engine(settings: DatabaseSettings) -> AsyncEngine:
@@ -37,3 +39,13 @@ class Container(DeclarativeContainer):
     session_maker = Singleton(async_sessionmaker[AsyncSession], bind=engine)
     session = Callable(create_session, session_maker)
     unit_of_work = Factory(UnitOfWork, session=session)
+
+    storage_settings = Configuration(pydantic_settings=[S3StorageSettings()])
+    storage = Singleton(
+        S3Storage,
+        access_key=storage_settings.access_key,
+        secret_key=storage_settings.secret_key,
+        endpoint=storage_settings.endpoint,
+        bucket_name=storage_settings.bucket_name,
+        url_ttl=storage_settings.presigned_url_ttl,
+    )

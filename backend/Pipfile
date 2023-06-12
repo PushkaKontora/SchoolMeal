@@ -16,6 +16,7 @@ pydantic = {extras = ["email"], version = "~=1.10.7"}
 gunicorn = "~=20.1.0"
 bcrypt = "~=4.0.1"
 python-dotenv = "~=1.0.0"
+aioboto3 = "~=11.2.0"
 
 [dev-packages]
 pytest = "~=7.2.2"
