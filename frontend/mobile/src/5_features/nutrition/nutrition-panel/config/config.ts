@@ -3,11 +3,6 @@ import {PanelConfig} from '../types/types';
 export const SELECTION_COLOR = '#EE6725';
 export const DEFAULT_ITEM_NUMBER = 5;
 export const DEFAULT_DATE = () => new Date(Date.now());
-export const setHoursTillAbleToCancel = () => {
-  const now = new Date(Date.now());
-  now.setHours(10, 0, 0, 0);
-  return now;
-};
 
 export const PANELS: PanelConfig = {
   submitted: {
