@@ -1,0 +1,20 @@
+.className {
+  font-family: 'Graphik LCG';
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 16px;
+  padding: 8px 16px;
+
+  letter-spacing: 0.05em;
+
+  color: #B4B4B4;
+
+  background: #F3F6F9;
+  border-radius: 10px;
+
+  &__active {
+    background: #58BCBB;
+
+    color: #FFFFFF;
+  }
+}

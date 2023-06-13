@@ -1,0 +1,111 @@
+.containerTable {
+  margin-top: 12px;
+}
+
+.custom-checkbox {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
+.custom-checkbox + label {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+}
+
+.custom-checkbox + label::before {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  flex-grow: 0;
+  margin-right: 8px;
+  background-size: 50% 50%;
+
+  background: rgba(255, 255, 255, 0.24);
+  border: 0.8px solid #333333;
+  border-radius: 3.2px;
+}
+
+.custom-checkbox:checked + label::before {
+  background: #353636;
+  background-origin: content-box;
+  background-position: center;
+  background-image: url("../../../../7_shared/assets/images/Group.png");
+}
+
+label {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 18px;
+  letter-spacing: 0.03em;
+
+  color: #464E5F;
+}
+
+.nameCol {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 18px;
+  letter-spacing: 0.03em;
+
+  color: #464E5F;
+}
+
+.price {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: #58BCBB;
+}
+
+
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #F3F6F9;
+  border-radius: 6px;
+  padding: 16px 32px;
+}
+
+thead th:nth-child(1) {
+  width: 48%;
+  text-align: start;
+  padding-left: 32px;
+}
+
+thead th:nth-child(2) {
+  width: 12%;
+}
+
+thead th:nth-child(3) {
+  width: 12%;
+}
+
+thead th:nth-child(4) {
+  width: 12%;
+}
+
+thead th:nth-child(5) {
+  padding-right: 32px;
+}
+
+tbody {
+  tr {
+    th:nth-child(1) {
+      text-align: start;
+      padding-left: 32px;
+    }
+
+    th:nth-child(5) {
+      text-align: start;
+      padding-right: 32px;
+    }
+  }
+}

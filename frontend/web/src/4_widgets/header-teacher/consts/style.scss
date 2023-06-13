@@ -1,0 +1,63 @@
+.containerHeaderTeacher {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 26px 0;
+
+  .navigations {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+
+    &__left {
+      gap: 64px;
+    }
+
+    .navigateItems {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+
+      .item {
+        padding: 8px 16px;
+
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 18px;
+        letter-spacing: 0.05em;
+
+        color: #272727;
+
+        &__active {
+          background: #F3F6F9;
+          border-radius: 10px;
+        }
+      }
+    }
+
+    .name {
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 18px;
+      letter-spacing: 0.05em;
+
+      color: #58BCBB;
+    }
+
+    .buttonExit {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 22px;
+      letter-spacing: 0.05em;
+
+      color: #313131;
+
+      padding: 12px 24px;
+
+      background: #F3F6F9;
+      border: 2px solid #F3F6F9;
+      border-radius: 10px;
+    }
+  }
+}
