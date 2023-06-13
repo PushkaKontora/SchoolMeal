@@ -9,7 +9,6 @@ export const STYLES = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-
   headerText: {
     fontWeight: '600',
     fontSize: 19

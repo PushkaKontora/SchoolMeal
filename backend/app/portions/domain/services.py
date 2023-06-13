@@ -1,6 +1,6 @@
 from dependency_injector.wiring import Provide, inject
 
-from app.container import Container
+from app.appcontainer import AppContainer
 from app.db.unit_of_work import UnitOfWork
 from app.portions.db.portion.filters import ByPortionId
 from app.portions.db.portion.joins import WithFood
@@ -10,7 +10,7 @@ from app.portions.domain.errors import NotFoundPortionError
 
 
 @inject
-async def get_portion_by_id(portion_id: int, uow: UnitOfWork = Provide[Container.unit_of_work]) -> PortionOut:
+async def get_portion_by_id(portion_id: int, uow: UnitOfWork = Provide[AppContainer.unit_of_work]) -> PortionOut:
     async with uow:
         portion = await uow.repository(Portion).find_first(ByPortionId(portion_id), WithFood())
 

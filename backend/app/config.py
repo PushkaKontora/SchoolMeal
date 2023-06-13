@@ -4,7 +4,7 @@ from enum import Enum
 from os.path import join
 from pathlib import Path
 
-from pydantic import BaseSettings, Field, SecretStr
+from pydantic import AnyHttpUrl, BaseSettings, Field, SecretStr
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,7 +13,7 @@ TIMEZONE = timezone(timedelta(hours=3), name="Moscow")
 
 
 class Environment(Enum):
-    DEV = "dev"
+    DEVELOPMENT = "dev"
     PRE_PRODUCTION = "pre-prod"
     PRODUCTION = "prod"
 
@@ -74,3 +74,11 @@ class CORSSettings(Settings):
     allow_credentials: bool = Field(env="CORS_ALLOW_CREDENTIALS")
     methods: list[str] = Field(env="CORS_ALLOW_METHODS")
     headers: list[str] = Field(env="CORS_ALLOW_HEADERS")
+
+
+class S3StorageSettings(Settings):
+    access_key: str = Field(env="AWS_ACCESS_KEY")
+    secret_key: str = Field(env="AWS_SECRET_KEY")
+    endpoint: AnyHttpUrl = Field(env="AWS_ENDPOINT_URL")
+    bucket_name: str = Field(env="AWS_BUCKET_NAME")
+    presigned_url_ttl: timedelta = Field(env="AWS_PRESIGNED_URL_TTL")

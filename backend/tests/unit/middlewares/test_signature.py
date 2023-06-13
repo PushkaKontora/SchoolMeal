@@ -7,8 +7,8 @@ from dependency_injector.containers import DeclarativeContainer, override
 from dependency_injector.providers import Object
 from pydantic import SecretStr
 
+from app.appcontainer import AppContainer
 from app.config import AppSettings, RequestSignatureSettings
-from app.container import Container
 from app.utils.middlewares import RequestSignatureMiddleware
 
 
@@ -84,6 +84,6 @@ def app_settings() -> AppSettings:
 
 @pytest.fixture(scope="module", autouse=True)
 def prepare_container(app_settings: AppSettings) -> None:
-    @override(Container)
+    @override(AppContainer)
     class TestContainer(DeclarativeContainer):
         app_settings = Object(app_settings)

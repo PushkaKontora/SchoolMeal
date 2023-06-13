@@ -1,5 +1,4 @@
 import {CancelMealPeriods} from '../../../../7_shared/model/cancelMealPeriods';
-import {setHoursTillAbleToCancel} from '../config/config';
 
 export function equalsDates(d1: Date, d2: Date) {
   return d1.getFullYear() === d2.getFullYear() &&
@@ -16,4 +15,10 @@ export function findPeriodIdByDate(periods: CancelMealPeriods[], date: Date)
 export function isDateExpired(d: Date) {
   const expDate = setHoursTillAbleToCancel();
   return d.valueOf() < expDate.valueOf();
+}
+
+export function setHoursTillAbleToCancel() {
+  const now = new Date(Date.now());
+  now.setHours(10, 0, 0, 0);
+  return now;
 }

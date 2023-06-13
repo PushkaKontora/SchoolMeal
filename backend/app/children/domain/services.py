@@ -1,5 +1,6 @@
 from dependency_injector.wiring import Provide, inject
 
+from app.appcontainer import AppContainer
 from app.cancel_meal_periods.domain.entities import PeriodOut
 from app.children.db.child.filters import ByParentId, ByPupilId
 from app.children.db.child.model import Child
@@ -11,7 +12,6 @@ from app.children.domain.errors import (
     NotUniqueChildError,
     UserIsNotParentOfThePupilError,
 )
-from app.container import Container
 from app.db.specifications import ForUpdate
 from app.db.unit_of_work import UnitOfWork
 from app.pupils.db.pupil.filters import ById as PupilById, ByIds
@@ -28,7 +28,7 @@ from app.users.domain.entities import ContactOut
 
 @inject
 async def get_child_by_id(
-    parent_id: int, child_id: str, uow: UnitOfWork = Provide[Container.unit_of_work]
+    parent_id: int, child_id: str, uow: UnitOfWork = Provide[AppContainer.unit_of_work]
 ) -> PupilWithClassAndPeriodsOut:
     async with uow:
         if not await uow.repository(Child).exists(ByParentId(parent_id) & ByPupilId(child_id)):
@@ -43,7 +43,7 @@ async def get_child_by_id(
 
 @inject
 async def add_pupil_to_children(
-    parent_id: int, child: ChildIn, uow: UnitOfWork = Provide[Container.unit_of_work]
+    parent_id: int, child: ChildIn, uow: UnitOfWork = Provide[AppContainer.unit_of_work]
 ) -> None:
     async with uow:
         if not await uow.repository(User).exists(UserById(parent_id)):
@@ -61,7 +61,7 @@ async def add_pupil_to_children(
 
 @inject
 async def get_children_by_parent_id(
-    parent_id: int, uow: UnitOfWork = Provide[Container.unit_of_work]
+    parent_id: int, uow: UnitOfWork = Provide[AppContainer.unit_of_work]
 ) -> list[PupilWithClassAndPeriodsOut]:
     async with uow:
         children = await uow.repository(Child).find(ByParentId(parent_id), OnlyPupilId())
@@ -79,7 +79,7 @@ async def change_meal_plan_by_parent_id(
     parent_id: int,
     child_id: str,
     plan: PlanIn,
-    uow: UnitOfWork = Provide[Container.unit_of_work],
+    uow: UnitOfWork = Provide[AppContainer.unit_of_work],
 ) -> PlanOut:
     async with uow:
         if not await uow.repository(Child).exists(ByParentId(parent_id) & ByPupilId(child_id)):

@@ -3,6 +3,7 @@ from fastapi import Depends, Request
 from fastapi.security import HTTPBearer
 from fastapi.security.utils import get_authorization_scheme_param
 
+from app.appcontainer import AppContainer
 from app.auth.domain.entities import JWTPayload
 from app.auth.domain.services.jwt import decode_access_token
 from app.auth.presentation.errors import (
@@ -11,13 +12,12 @@ from app.auth.presentation.errors import (
     UnauthorizedError,
 )
 from app.config import JWTSettings
-from app.container import Container
 from app.users.db.user.model import Role
 
 
 @inject
 def get_refresh_token_from_cookies(
-    request: Request, settings: JWTSettings = Depends(Provide[Container.jwt_settings])
+    request: Request, settings: JWTSettings = Depends(Provide[AppContainer.jwt_settings])
 ) -> str:
     refresh_token = request.cookies.get(settings.refresh_token_cookie)
 
