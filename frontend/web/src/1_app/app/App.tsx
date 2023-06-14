@@ -8,7 +8,8 @@ function App() {
 
   return (
     <Provider store={store}>
-      <AppNavigator/>
+        <TeacherMainPage/>
+      {/*<AppNavigator/>*/}
     </Provider>
   )
 }

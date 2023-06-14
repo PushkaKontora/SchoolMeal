@@ -1,3 +1,54 @@
 .containerTeacherApplication {
   margin-top: 24px;
+  position: relative;
+
+  .btnSendAppl {
+    margin-left: auto;
+    margin-top: 24px;
+    width: 296px;
+
+    .btn {
+      padding: 14px;
+      background-color: #EC662A;
+      color: #FFFFFF;
+      font-size: 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-family: 'Ubuntu', serif;
+
+      width: 100%;
+      border-width: 0;
+
+      &:hover {
+        background-color: #e57645;
+        transition: 0.3s linear;
+      }
+
+      &:active {
+        background-color: #d5551c;
+        transition: 0.3s linear;
+      }
+    }
+
+  }
+}
+
+.modalText{
+  padding: 20px 28px;
+  font-family: 'Graphik LCG', serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+  letter-spacing: 0.05em;
+
+  color: #313131;
+
+  background-color: #BBE4E3;
+  border-radius: 6px;
+  position: absolute;
+
+  white-space: nowrap;
+  top: -220px;
+  left: -50px;
 }

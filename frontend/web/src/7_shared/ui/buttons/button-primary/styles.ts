@@ -10,6 +10,17 @@ export const ButtonContainer = styled.button<ButtonPrimaryStyles>`
   border-radius: ${DEFAULT_STYLES.borderRadius};
   font-weight: ${DEFAULT_STYLES.fontWeight};
   font-family: ${DEFAULT_STYLES.fontFamily};
-  
+
   width: 100%;
+  border-width: 0;
+
+  &:hover {
+    background-color: #e57645;
+    transition: 0.3s linear;
+  }
+
+  &:active {
+    background-color: #d5551c;
+    transition: 0.3s linear;
+  }
 `;

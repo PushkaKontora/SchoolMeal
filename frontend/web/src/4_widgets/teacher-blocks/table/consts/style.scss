@@ -1,5 +1,92 @@
 .containerTable {
   margin-top: 12px;
+  display: flex;
+  flex-wrap: nowrap;
+  border-spacing: 0 8px;
+
+  .checkChild {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 16px;
+    color: #58BCBB;
+
+    padding: 4px 8px;
+    background: #EFF2F5;
+    border-radius: 5px;
+
+    &__name {
+      margin-right: 8px;
+    }
+  }
+
+  .nameChild {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.03em;
+
+    color: #464E5F;
+  }
+
+  .nameCol {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 18px;
+    letter-spacing: 0.03em;
+
+    color: #464E5F;
+  }
+
+  .price {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 16px;
+    color: #58BCBB;
+  }
+
+  .table {
+    border-spacing: 0 8px;
+    border-bottom: 1px solid #F3F6F9;
+
+    &__t1 {
+      width: 48%;
+
+      tr td {
+        text-align: start;
+        padding-left: 32px;
+      }
+    }
+
+    &__t2,
+    &__t3,
+    &__t4, {
+      width: 12%;
+
+      tr td {
+        text-align: center;
+      }
+    }
+
+    &__t5 {
+      width: 16%;
+
+      tr td {
+        text-align: center;
+      }
+
+      tbody {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    thead {
+      background: #F3F6F9;
+      border-radius: 6px;
+      padding: 16px 32px;
+      height: 50px;
+    }
+  }
 }
 
 .custom-checkbox {
@@ -21,12 +108,15 @@
   height: 1em;
   flex-shrink: 0;
   flex-grow: 0;
-  margin-right: 8px;
   background-size: 50% 50%;
 
   background: rgba(255, 255, 255, 0.24);
   border: 0.8px solid #333333;
   border-radius: 3.2px;
+}
+
+.custom-checkbox__firstCol + label::before {
+  margin-right: 8px;
 }
 
 .custom-checkbox:checked + label::before {
@@ -43,69 +133,4 @@ label {
   letter-spacing: 0.03em;
 
   color: #464E5F;
-}
-
-.nameCol {
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 18px;
-  letter-spacing: 0.03em;
-
-  color: #464E5F;
-}
-
-.price {
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 16px;
-  color: #58BCBB;
-}
-
-
-table {
-  table-layout: fixed;
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  background: #F3F6F9;
-  border-radius: 6px;
-  padding: 16px 32px;
-}
-
-thead th:nth-child(1) {
-  width: 48%;
-  text-align: start;
-  padding-left: 32px;
-}
-
-thead th:nth-child(2) {
-  width: 12%;
-}
-
-thead th:nth-child(3) {
-  width: 12%;
-}
-
-thead th:nth-child(4) {
-  width: 12%;
-}
-
-thead th:nth-child(5) {
-  padding-right: 32px;
-}
-
-tbody {
-  tr {
-    th:nth-child(1) {
-      text-align: start;
-      padding-left: 32px;
-    }
-
-    th:nth-child(5) {
-      text-align: start;
-      padding-right: 32px;
-    }
-  }
 }
