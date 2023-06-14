@@ -35,15 +35,15 @@ export function Menu(props: MenuProps) {
                 && <MealUnit title={'Обед'}
                              sum={mealsForChild[0]?.menu?.lunch.price}
                              portions={mealsForChild[0].menu.lunch.portions}/>}
-            <EmojiTextFeature
-                imageEmoji={require('../lib/assets/Object.png')}
-                subEmojiTitle={'На этот день меню не было предоставлено'}/>
+             <EmojiTextFeature
+                    imageEmoji={require('../lib/assets/Object.png')}
+                    subEmojiTitle={'На этот день меню не было предоставлено'}/>
             {/*<ButtonPrimary*/}
             {/*    title={'Оставить отзыв'}*/}
             {/*    onPress={handleLeaveFeedback}*/}
             {/*    backgroundColor={'#EC662A'}*/}
-            {/*    textColor={'#FFFFFF'}*/}
-            {/*    borderRadius={100}/>*/}
+            {/*    borderRadius={100}/>*/}            {/*    textColor={'#FFFFFF'}*/}
+
         </View>
     );
 }

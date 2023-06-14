@@ -7,5 +7,7 @@ export const createStyle = (props: ChildPersonalInformationProps) => StyleSheet.
         borderRadius: 10,
         paddingVertical: 16,
         paddingHorizontal: 16,
+        marginHorizontal: 16,
+        marginTop: 18,
     },
 });
