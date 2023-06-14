@@ -20,6 +20,7 @@ export const createStyle = (props: PortionsPartProps) => StyleSheet.create({
     image: {
         height: 32,
         width: 32,
+        borderRadius: 100,
     },
     textContainer: {
         flexDirection: 'column',

@@ -1,11 +1,11 @@
-import {addAuthHeader, ConfigSettings, UniversalResponse} from '../../../../7_shared/api';
+import {addAuthHeader} from '../../../../7_shared/api';
 import {BASE_BACKEND_URL} from '../../../../7_shared/api/config';
 import {AuthTokenService} from '../../../../5_features/auth';
 
 import {fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {Meals} from "../../../../7_shared/model/meals";
 import {MealsParams} from "./types";
-import {createApi} from "@reduxjs/toolkit/dist/query/react";
+import {createApi} from "@reduxjs/toolkit/query/react";
 
 export const MEAL_API = createApi({
     reducerPath: 'api/meals',
@@ -21,8 +21,9 @@ export const MEAL_API = createApi({
     }),
     endpoints: build => ({
         getMeals: build.query<Meals[], MealsParams>({
-            query: () => ({
-                url: '/'
+            query: (data) => ({
+                url: '/',
+                params: data,
             }),
             // providesTags: (result) =>
             //     result

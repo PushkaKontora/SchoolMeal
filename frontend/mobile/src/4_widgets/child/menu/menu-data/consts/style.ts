@@ -18,5 +18,12 @@ export const createStyle = (props: MenuDataProps) => StyleSheet.create({
         // },
         // second: {
         //     marginBottom: 'auto'
+    },
+
+    menuTitle: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     }
 });

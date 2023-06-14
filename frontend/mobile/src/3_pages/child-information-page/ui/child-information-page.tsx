@@ -4,7 +4,6 @@ import {
 } from '../../../4_widgets/child/child-information/child-personal-information/ui/child-personal-information';
 import {Menu} from '../../../4_widgets/child/menu/menu/ui/menu';
 import {ScrollView} from 'react-native';
-import {EmojiTextFeature} from "../../../5_features/emoji-text-feature/ui/emoji-text-feature";
 
 export function ChildInformationPage({route, navigation}: ChildInformationProps) {
 

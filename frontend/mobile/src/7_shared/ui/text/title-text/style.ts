@@ -10,8 +10,9 @@ export const createStyle = (props: TitleTextProps) => StyleSheet.create({
     },
     container: {
         paddingBottom: props.paddingBottom || 12,
-       //width: '100%',
+        //width: '100%',
         marginLeft: props.marginLeft || 0,
         alignItems: props.alignItems || 'flex-start',
+        paddingVertical: 'auto',
     }
 });

@@ -19,8 +19,9 @@ export function MealUnit(props: MealUnitProps) {
             </View>
             {props?.portions.map(por =>
                 <PortionsPart key={por.id}
-                              imagePath={require('../../../../../7_shared/assets/images/bell.png')}
-                    // imagePath={por.food.photoPath}
+                              //imagePath={require('../../../../../7_shared/assets/images/Rectangle.png')}
+                              //imagePath={por.food.photoPath}
+                              imagePath={por.food.photoPath}
                               portions={por}/>)}
         </View>
     );

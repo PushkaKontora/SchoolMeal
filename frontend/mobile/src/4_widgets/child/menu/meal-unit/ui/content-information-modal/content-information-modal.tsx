@@ -1,4 +1,4 @@
-import {Image, Text, View} from 'react-native';
+import {Image, ImageBackground, Text, View} from 'react-native';
 import {ContentInformationModalProps} from './props';
 import {createStyle} from './style';
 import {TitleText} from "../../../../../../7_shared/ui/text/title-text/title.text";
@@ -10,8 +10,12 @@ export function ContentInformationModal(props: ContentInformationModalProps) {
         <View style={styles.container}>
             <View style={styles.containerMainInfo}>
                 <View style={styles.containerImage}>
-                    <Image style={styles.image}
-                           source={props.imagePath}/>
+                    <ImageBackground source={require('../../../../../../7_shared/assets/images/Rectangle.png')}
+                                     style={{width: '100%', height: '100%'}}>
+                        <Image style={styles.image}
+                               source={{uri: props.imagePath}}
+                        />
+                    </ImageBackground>
                 </View>
                 <View style={styles.containerMainText}>
                     <Text style={styles.priceText}>

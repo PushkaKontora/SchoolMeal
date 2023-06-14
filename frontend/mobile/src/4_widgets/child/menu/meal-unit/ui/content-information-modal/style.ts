@@ -21,6 +21,7 @@ export const createStyle = (props: ContentInformationModalProps) => StyleSheet.c
     image: {
         width: 80,
         height: 80,
+        borderRadius: 100,
     },
     containerMainText: {
         flexDirection: 'row',
