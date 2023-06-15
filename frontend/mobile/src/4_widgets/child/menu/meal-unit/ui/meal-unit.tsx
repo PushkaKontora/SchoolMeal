@@ -3,6 +3,7 @@ import {MealUnitProps} from "../model/props";
 import {createStyle} from "../consts/style";
 import {TitleText} from "../../../../../7_shared/ui/text/title-text/title.text";
 import {PortionsPart} from "./portions-part/portions-part";
+import {useEffect} from "react";
 
 export function MealUnit(props: MealUnitProps) {
     const styles = createStyle(props);
@@ -21,11 +22,10 @@ export function MealUnit(props: MealUnitProps) {
                 <PortionsPart key={por.id}
                               //imagePath={require('../../../../../7_shared/assets/images/Rectangle.png')}
                               //imagePath={por.food.photoPath}
-                              imagePath={por.food.photoPath}
+                              imagePath={{
+                                  'uri': por.food?.photoPath
+                              }}
                               portions={por}/>)}
         </View>
     );
 }
-
-
-//todo: 21-23 строки поменять на бек

@@ -1,5 +1,6 @@
 import '../consts/style.scss';
 import {TableProps} from "../model/props.ts";
+import {CHILDRENS_NAME} from "../../../../3_pages/teacher-main-page/consts/moks.ts";
 
 export default function TableWidget(props: TableProps) {
 
@@ -19,19 +20,21 @@ export default function TableWidget(props: TableProps) {
                 </tr>
                 </thead>
                 <tbody>
-                <tr className='tr'>
-                    <td scope="row">
-                        <input type="checkbox"
-                               className="custom-checkbox custom-checkbox__firstCol"
-                               id="1"
-                               name="1"
-                               value="yes"/>
-                        <label htmlFor="1">
-                            <div className='checkChild checkChild__name'>1222₽</div>
-                            <div className='nameChild'>Ковешникова Татьяна Анатольевна</div>
-                        </label>
-                    </td>
-                </tr>
+                {CHILDRENS_NAME.map((item) => (
+                    <tr className='tr' key={item.id}>
+                        <td scope="row">
+                            <input type="checkbox"
+                                   className="custom-checkbox custom-checkbox__firstCol"
+                                   id={item.id}
+                                   name={item.id}
+                                   value="yes"/>
+                            <label htmlFor={item.id}>
+                                <div className='checkChild checkChild__name'>{item.price}₽</div>
+                                <div className='nameChild'>{item.name}</div>
+                            </label>
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
             <table className='table table__t2'>
@@ -41,19 +44,22 @@ export default function TableWidget(props: TableProps) {
                         <div className="nameCol">Завтрак</div>
                         <div className="price">81₽</div>
                     </td>
+
                 </tr>
                 </thead>
                 <tbody>
-                <tr className='tr'>
-                    <td scope="row">
-                        <input type="checkbox"
-                               className="custom-checkbox"
-                               id="2"
-                               name="2"
-                               value="yes"/>
-                        <label htmlFor="2"/>
-                    </td>
-                </tr>
+                {CHILDRENS_NAME.map((item) => (
+                    <tr className='tr' key={item.id + 100}>
+                        <td scope="row">
+                            <input type="checkbox"
+                                   className="custom-checkbox"
+                                   id={item.id + 100}
+                                   name={item.id + 100}
+                                   value="yes"/>
+                            <label htmlFor={item.id + 100}/>
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
             <table className='table table__t3'>
@@ -61,21 +67,23 @@ export default function TableWidget(props: TableProps) {
                 <tr>
                     <td scope="col">
                         <div className="nameCol">Обед</div>
-                        <div className="price">121₽</div>
+                        <div className="price">147₽</div>
                     </td>
                 </tr>
                 </thead>
                 <tbody>
-                <tr className='tr'>
-                    <td scope="row">
-                        <input type="checkbox"
-                               className="custom-checkbox"
-                               id="3"
-                               name="3"
-                               value="yes"/>
-                        <label htmlFor="3"/>
-                    </td>
-                </tr>
+                {CHILDRENS_NAME.map((item) => (
+                    <tr className='tr' key={item.id + 200}>
+                        <td scope="row">
+                            <input type="checkbox"
+                                   className="custom-checkbox"
+                                   id={item.id + 200}
+                                   name={item.id + 200}
+                                   value="yes"/>
+                            <label htmlFor={item.id + 200}/>
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
             <table className='table table__t4'>
@@ -88,16 +96,18 @@ export default function TableWidget(props: TableProps) {
                 </tr>
                 </thead>
                 <tbody>
-                <tr className='tr'>
-                    <td scope="row">
-                        <input type="checkbox"
-                               className="custom-checkbox"
-                               id="5"
-                               name="5"
-                               value="yes"/>
-                        <label htmlFor="5"/>
-                    </td>
-                </tr>
+                {CHILDRENS_NAME.map((item) => (
+                    <tr className='tr' key={item.id + 300}>
+                        <td scope="row">
+                            <input type="checkbox"
+                                   className="custom-checkbox"
+                                   id={item.id + 300}
+                                   name={item.id + 300}
+                                   value="yes"/>
+                            <label htmlFor={item.id + 300}/>
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
             <table className='table table__t5'>
@@ -109,11 +119,13 @@ export default function TableWidget(props: TableProps) {
                 </tr>
                 </thead>
                 <tbody>
-                <tr className='tr'>
-                    <td scope="row">
-                        <div className='checkChild'>121₽</div>
-                    </td>
-                </tr>
+                {CHILDRENS_NAME.map((item) => (
+                    <tr className='tr' key={item.id + 400}>
+                        <td scope="row">
+                            <div className='checkChild'>{item.total}₽</div>
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
         </div>

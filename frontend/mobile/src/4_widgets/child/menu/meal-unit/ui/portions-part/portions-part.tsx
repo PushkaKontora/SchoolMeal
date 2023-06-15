@@ -32,7 +32,7 @@ export function PortionsPart(props: PortionsPartProps) {
                 <View style={styles.imageContainer}>
                     <ImageBackground source={require('../../../../../../7_shared/assets/images/Rectangle.png')}
                                      style={{width: '100%', height: '100%'}}>
-                        <Image source={{uri: props.imagePath}} style={styles.image}/>
+                        <Image source={props.imagePath} style={styles.image}/>
                     </ImageBackground>
                 </View>
                 <View style={styles.textContainer}>

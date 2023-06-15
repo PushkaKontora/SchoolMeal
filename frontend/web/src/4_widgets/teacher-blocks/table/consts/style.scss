@@ -46,6 +46,7 @@
 
   .table {
     border-spacing: 0 8px;
+
     border-bottom: 1px solid #F3F6F9;
 
     &__t1 {
@@ -77,6 +78,8 @@
       tbody {
         display: flex;
         justify-content: center;
+        align-items: center;
+        flex-direction: column;
       }
     }
 
