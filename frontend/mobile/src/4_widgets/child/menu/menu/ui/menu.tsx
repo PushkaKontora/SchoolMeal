@@ -14,10 +14,9 @@ export function Menu(props: MenuProps) {
     const {data: mealsForChild, refetch} = useGetMealsQuery({classId: props.classId, dateFrom: date, dateTo: date})
 
     useEffect(() => {
-        refetch;
-        if (mealsForChild) {
-            console.log(mealsForChild[0], 55)
-        }
+        (async () => {
+            await refetch();
+        })();
     }, [date])
 
     return (
@@ -35,9 +34,16 @@ export function Menu(props: MenuProps) {
                 && <MealUnit title={'Обед'}
                              sum={mealsForChild[0]?.menu?.lunch.price}
                              portions={mealsForChild[0].menu.lunch.portions}/>}
-            <EmojiTextFeature
-                imageEmoji={require('../lib/assets/Object.png')}
-                subEmojiTitle={'На этот день меню не было предоставлено'}/>
+            {mealsForChild && !mealsForChild[0]?.menu?.lunch
+                && !mealsForChild[0]?.menu?.dinner
+                && !mealsForChild[0]?.menu?.breakfast
+                && <EmojiTextFeature
+                    imageEmoji={require('../lib/assets/Object.png')}
+                    subEmojiTitle={'На этот день меню не было предоставлено'}/>}
+
+            {/*<EmojiTextFeature*/}
+            {/*    imageEmoji={require('../lib/assets/Object.png')}*/}
+            {/*    subEmojiTitle={'На этот день меню не было предоставлено'}/>*/}
             {/*<ButtonPrimary*/}
             {/*    title={'Оставить отзыв'}*/}
             {/*    onPress={handleLeaveFeedback}*/}

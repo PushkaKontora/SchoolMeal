@@ -1,0 +1,1 @@
+export {featuresMiddlewares} from './middlewares';

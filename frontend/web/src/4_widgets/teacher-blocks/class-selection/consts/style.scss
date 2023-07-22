@@ -1,0 +1,23 @@
+.containerClassSelection {
+  .headerTable {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .containerClassItems {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+    }
+
+    .date {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .text {
+        white-space: nowrap;
+      }
+    }
+  }
+}

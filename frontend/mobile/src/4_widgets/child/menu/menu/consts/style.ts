@@ -8,5 +8,6 @@ export const createStyle = (props: MenuProps) => StyleSheet.create({
         paddingVertical: 16,
         paddingHorizontal: 16,
         marginTop: 8,
+        marginHorizontal: 16,
     },
 });

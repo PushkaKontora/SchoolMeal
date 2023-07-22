@@ -1,4 +1,4 @@
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image, ImageBackground, Text, TouchableOpacity, View} from 'react-native';
 import {PortionsPartProps} from './props';
 import {createStyle} from './style';
 import {magicModal} from "react-native-magic-modal";
@@ -30,7 +30,10 @@ export function PortionsPart(props: PortionsPartProps) {
                           style={styles.container}>
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
-                    <Image source={props.imagePath} style={styles.image}/>
+                    <ImageBackground source={require('../../../../../../7_shared/assets/images/Rectangle.png')}
+                                     style={{width: '100%', height: '100%'}}>
+                        <Image source={props.imagePath} style={styles.image}/>
+                    </ImageBackground>
                 </View>
                 <View style={styles.textContainer}>
                     <Text style={styles.textPart}>{props.portions.food.name}</Text>

@@ -34,7 +34,6 @@ export function App() {
   return (
     <Provider store={store}>
       <MagicModalPortal/>
-      {/*<ChildInformationPage childInformation={moks}/>*/}
       <AppNavigator/>
     </Provider>
   );
