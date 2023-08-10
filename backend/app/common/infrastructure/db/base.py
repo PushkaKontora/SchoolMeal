@@ -12,4 +12,4 @@ POSTGRES_INDEXES_NAMING_CONVENTION = {
 
 
 class Base(DeclarativeBase):
-    metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)
+    metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)  # type: ignore

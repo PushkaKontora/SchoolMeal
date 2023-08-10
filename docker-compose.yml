@@ -1,17 +1,32 @@
 version: "3.4"
 
 services:
+  postgres-server:
+    container_name: school_meal_postgres
+    build: postgres
+    env_file:
+      - backend/.env
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+
   app:
-    container_name: app
-    build: backend/
-    command: make migrate run
-    restart: always
+    container_name: school_meal_app
+    build: backend
+    environment:
+      ENV: "prod"
+      POSTGRES_HOST: postgres-server
+    depends_on:
+      - postgres-server
 
   nginx:
-    container_name: nginx
-    build: nginx/
-    restart: always
+    container_name: school_meal_nginx
+    build: nginx
     ports:
       - "80:80"
     depends_on:
       - app
+
+volumes:
+  postgres_volume:

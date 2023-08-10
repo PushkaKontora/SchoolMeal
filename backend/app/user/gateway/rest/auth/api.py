@@ -37,7 +37,7 @@ router = APIRouter()
     summary="Аутентификация пользователя по логину и паролю",
     status_code=status.HTTP_200_OK,
     response_model=AccessTokenOut,
-    responses=response_401 | response_404 | response_422,
+    responses=response_401 | response_404 | response_422,  # type: ignore
 )
 async def authenticate(
     response: Response,
@@ -67,7 +67,7 @@ async def authenticate(
     summary="Обновление пары токенов с помощью рефреш-токена",
     status_code=status.HTTP_200_OK,
     response_model=AccessTokenOut,
-    responses=response_400 | response_422,
+    responses=response_400 | response_422,  # type: ignore
 )
 async def reissue_tokens(
     response: Response,

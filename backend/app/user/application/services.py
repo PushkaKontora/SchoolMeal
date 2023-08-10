@@ -64,7 +64,6 @@ class UserService:
             first_name=FirstName(first_name),
             last_name=LastName(last_name),
             email=Email(email),
-            photo=Photo(None),
         )
 
         await self.user_repository.save(user)

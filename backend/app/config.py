@@ -55,7 +55,7 @@ class DatabaseSettings(Settings):
 
 
 class JWTSettings(Settings):
-    secret: SecretStr = Field(env="JWT_SECRET")
+    secret: str = Field(env="JWT_SECRET")
     algorithm: str = Field(env="JWT_ALGORITHM")
 
     access_token_ttl: timedelta = Field(env="ACCESS_TOKEN_TTL")

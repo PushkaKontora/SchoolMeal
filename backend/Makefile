@@ -1,28 +1,25 @@
-dev:
-	uvicorn app.main:app --reload
-
-run:
-	gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000
-
-lint:
-	isort . & \
-	flake8 --config=setup.cfg & \
-	black . --config=pyproject.toml
-
-pshell:
+venv:
 	PIPENV_DONT_LOAD_ENV=1 pipenv shell
 
+format:
+	isort . & \
+	flake8 --config setup.cfg & \
+	black . --config pyproject.toml
+
+lint:
+	isort --check --diff .
+	flake8 --config setup.cfg
+	black --check --config pyproject.toml .
+	mypy --cache-dir=/dev/null --config-file=setup.cfg app
+
 migration:
-	alembic revision --autogenerate -m "${n}"
+	read -p "Введите имя миграции: " MIGRATION_NAME; \
+	alembic revision --autogenerate -m "$$MIGRATION_NAME"
 
 migrate:
+	@echo "Для применения миграций должна быть запущена БД локально ( docker-compose up -d postgres-server )"; \
 	alembic upgrade head
 
 test:
+	@echo "Для выполнения тестов должна быть запущена БД локально ( docker-compose up -d postgres-server )"; \
 	pytest tests -v
-
-unit:
-	pytest tests -v -m unit
-
-integration:
-	pytest tests -v -m integration

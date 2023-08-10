@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from enum import Enum
 from ipaddress import IPv4Address
-from typing import NamedTuple, TypeVar
+from typing import Any, NamedTuple, TypeVar
 from uuid import UUID, uuid4
 
 import bcrypt
@@ -75,10 +75,10 @@ class HashedPassword:
 
 @dataclass
 class Phone:
-    value: str | None
+    value: str
 
-    def __init__(self, value: str | None) -> None:
-        if value and not re.match(r"^\+[1-9][0-9]{11}$", value):
+    def __init__(self, value: str) -> None:
+        if not re.match(r"^\+[1-9][0-9]{11}$", value):
             raise InvalidPhoneFormatError
 
         self.value = value
@@ -108,10 +108,10 @@ class LastName:
 
 @dataclass
 class Email:
-    value: str | None
+    value: str
 
-    def __init__(self, value: str | None) -> None:
-        if value and not ("@" in value and re.match(r"^\S+@\S+\.\S+$", value)):
+    def __init__(self, value: str) -> None:
+        if not ("@" in value and re.match(r"^\S+@\S+\.\S+$", value)):
             raise InvalidEmailFormatError
 
         self.value = value
@@ -119,10 +119,10 @@ class Email:
 
 @dataclass
 class Photo:
-    url: str | None
+    url: str
 
-    def __init__(self, url: str | None) -> None:
-        if url and not re.match(
+    def __init__(self, url: str) -> None:
+        if not re.match(
             "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$",
             url,
         ):
@@ -150,7 +150,7 @@ class Token(ABC):
 
         return int(dt.timestamp())
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "token": self._get_name(),
             "user_id": self.user_id,
@@ -234,9 +234,9 @@ class User:
 
     first_name: FirstName
     last_name: LastName
-    email: Email
-    phone: Phone
-    photo: Photo
+    email: Email | None
+    phone: Phone | None
+    photo: Photo | None
 
     authenticated_ips: dict[IPv4Address, RefreshToken] = Field(default_factory=dict)
 
@@ -256,7 +256,7 @@ class User:
         :raise TokenExpirationError: токен протух
         """
 
-        if ip in self.authenticated_ips and refresh_token != self.authenticated_ips[ip].refresh_token:
+        if ip in self.authenticated_ips and refresh_token != self.authenticated_ips[ip]:
             self.authenticated_ips.clear()
             raise RevokedTokenError
 
@@ -278,7 +278,6 @@ class User:
         first_name: FirstName,
         last_name: LastName,
         email: Email,
-        photo: Photo,
     ) -> "User":
         return User(
             id=UserID(uuid4()),
@@ -289,5 +288,5 @@ class User:
             email=email,
             phone=phone,
             role=UserRole.PARENT,
-            photo=photo,
+            photo=None,
         )

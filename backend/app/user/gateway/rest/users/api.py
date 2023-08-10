@@ -32,7 +32,7 @@ router = APIRouter()
     summary="Зарегистрировать родителя",
     status_code=status.HTTP_201_CREATED,
     response_model=OKModel,
-    responses=response_400 | response_422,
+    responses=response_400 | response_422,  # type: ignore
 )
 async def register_parent(
     form: RegistrationParentForm = Body(), user_service: UserService = Depends(get_user_service)

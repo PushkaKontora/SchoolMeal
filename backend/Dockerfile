@@ -2,12 +2,13 @@ FROM python:3.10-alpine3.17
 
 WORKDIR /app
 
-RUN apk update && \
-    apk add make
+COPY Pipfile ./
 
-COPY Pipfile* ./
-
-RUN pip install pipenv && \
-    pipenv install --system --deploy --ignore-pipfile
+ARG PIPENV_OPTIONS=""
+RUN apk add make && \
+    pip install pipenv && \
+    pipenv install --system --skip-lock $PIPENV_OPTIONS
 
 COPY . .
+
+CMD make migrate && gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000

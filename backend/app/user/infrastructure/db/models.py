@@ -1,3 +1,4 @@
+from ipaddress import IPv4Address
 from uuid import UUID
 
 from sqlalchemy import JSON, String
@@ -67,11 +68,12 @@ class UserDB(Base):
             hashed_password=HashedPassword(self.hashed_password),
             first_name=FirstName(self.first_name),
             last_name=LastName(self.last_name),
-            email=Email(self.email),
-            phone=Phone(self.phone),
-            photo=Photo(self.photo_url),
+            email=Email(self.email) if self.email is not None else None,
+            phone=Phone(self.phone) if self.phone is not None else None,
+            photo=Photo(self.photo_url) if self.photo_url is not None else None,
             authenticated_ips={
-                ip: RefreshToken.decode(refresh_token) for ip, refresh_token in self.authenticated_ips.items()
+                IPv4Address(ip): RefreshToken.decode(refresh_token)
+                for ip, refresh_token in self.authenticated_ips.items()
             },
         )
 
@@ -84,8 +86,8 @@ class UserDB(Base):
             first_name=user.first_name.value,
             last_name=user.last_name.value,
             role=user.role.value,
-            email=user.email.value,
-            phone=user.phone.value,
-            photo_url=user.photo.url,
+            email=user.email.value if user.email is not None else None,
+            phone=user.phone.value if user.phone is not None else None,
+            photo_url=user.photo.url if user.photo is not None else None,
             authenticated_ips={str(ip): str(refresh_token) for ip, refresh_token in user.authenticated_ips.items()},
         )

@@ -1,31 +1,15 @@
 version: "3.4"
 
 services:
-  postgres:
-    container_name: postgres
-    build: postgres/
-    restart: always
-    environment:
-      ENV: "dev"
-    env_file:
-      - backend/.env
-    ports:
-      - "5434:5432"
-    volumes:
-      - postgres_volume:/var/lib/postgresql/data
-
   app:
     environment:
-      POSTGRES_HOST: postgres
+      ENV: "dev"
     volumes:
       - media_volume:/app/media
-    depends_on:
-      - postgres
 
   nginx:
     volumes:
       - media_volume:/app/media
 
 volumes:
-  postgres_volume:
   media_volume:
