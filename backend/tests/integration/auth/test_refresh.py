@@ -7,9 +7,9 @@ from httpx import AsyncClient, Cookies, Response
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.db.issued_token.model import IssuedToken
 from app.config import JWTSettings
-from app.users.db.user.model import User
+from app.legacy.auth.db.issued_token.model import IssuedToken
+from app.legacy.users.db.user.model import User
 from tests.integration.auth.conftest import (
     AUTH_PREFIX,
     TokenType,

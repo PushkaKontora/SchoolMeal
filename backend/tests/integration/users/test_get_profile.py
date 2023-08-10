@@ -1,7 +1,7 @@
 from httpx import AsyncClient, Response
 
 from app.config import JWTSettings
-from app.users.db.user.model import Role, User
+from app.legacy.users.db.user.model import Role, User
 from tests.integration.auth.conftest import create_access_token
 from tests.integration.conftest import BearerAuth
 from tests.integration.responses import error

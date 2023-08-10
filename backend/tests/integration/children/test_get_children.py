@@ -4,14 +4,14 @@ import pytest
 from httpx import AsyncClient, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
-from app.children.db.child.model import Child
 from app.config import JWTSettings
-from app.pupils.db.pupil.model import Pupil
-from app.school_classes.db.school_class.model import SchoolClass
-from app.school_classes.db.teacher.model import Teacher
-from app.schools.db.school.model import School
-from app.users.db.user.model import User
+from app.legacy.cancel_meal_periods import CancelMealPeriod
+from app.legacy.children.db.child.model import Child
+from app.legacy.pupils.db.pupil.model import Pupil
+from app.legacy.school_classes.db import Teacher
+from app.legacy.school_classes.db.school_class import SchoolClass
+from app.legacy.schools.db.school import School
+from app.legacy.users.db.user.model import User
 from tests.integration.auth.conftest import create_access_token
 from tests.integration.children.conftest import CHILDREN_PREFIX
 from tests.integration.conftest import BearerAuth

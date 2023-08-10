@@ -7,9 +7,9 @@ from dependency_injector.containers import DeclarativeContainer, override
 from dependency_injector.providers import Object
 from pydantic import SecretStr
 
-from app.appcontainer import AppContainer
 from app.config import AppSettings, RequestSignatureSettings
-from app.utils.middlewares import RequestSignatureMiddleware
+from app.legacy.container import AppContainer
+from app.legacy.utils import RequestSignatureMiddleware
 
 
 pytestmark = [pytest.mark.unit]

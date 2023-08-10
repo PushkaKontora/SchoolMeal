@@ -3,7 +3,7 @@ import pytest
 from httpx import AsyncClient
 
 from app.config import JWTSettings
-from app.users.db.user.model import User
+from app.legacy.users.db.user.model import User
 from tests.integration.auth.conftest import (
     ACTUAL_PASSWORD,
     AUTH_PREFIX,

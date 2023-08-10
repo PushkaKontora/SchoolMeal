@@ -5,8 +5,8 @@ from httpx import AsyncClient, Response
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.db.password.model import Password
-from app.users.db.user.model import Role, User
+from app.legacy.auth.db.password.model import Password
+from app.legacy.users.db.user.model import Role, User
 from tests.integration.responses import error
 from tests.integration.users.conftest import USERS_PREFIX
 from tests.integration.utils import datetime_to_str

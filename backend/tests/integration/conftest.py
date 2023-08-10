@@ -5,12 +5,12 @@ from httpx import AsyncClient, Auth, Request
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 
-from app.appcontainer import AppContainer
 from app.config import DatabaseSettings, JWTSettings
-from app.db.base import Base
+from app.legacy.container import AppContainer
+from app.legacy.db.base import Base
+from app.legacy.pupils.db.pupil.model import Pupil
+from app.legacy.users.db.user.model import Role, User
 from app.main import create_app
-from app.pupils.db.pupil.model import Pupil
-from app.users.db.user.model import Role, User
 from tests.integration.auth.conftest import create_access_token
 
 

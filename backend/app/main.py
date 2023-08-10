@@ -1,18 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.appcontainer import AppContainer, LocalStorageContainer, S3StorageContainer
-from app.auth.app import register_auth_api
-from app.cancel_meal_periods.app import register_cancel_meal_periods_api
-from app.children.app import register_children_api
 from app.config import Environment
-from app.meal_requests.app import register_meal_requests_api
-from app.meals.app import register_meals_api
-from app.portions.app import register_portions_api
-from app.school_classes.app import register_school_classes_api
-from app.users.app import register_users_api
-from app.utils.error import Error, handle_api_error
-from app.utils.middlewares import RequestSignatureMiddleware
+from app.legacy.auth.app import register_auth_api
+from app.legacy.cancel_meal_periods.app import register_cancel_meal_periods_api
+from app.legacy.children.app import register_children_api
+from app.legacy.container import AppContainer, LocalStorageContainer, S3StorageContainer
+from app.legacy.meal_requests.app import register_meal_requests_api
+from app.legacy.meals.app import register_meals_api
+from app.legacy.portions.app import register_portions_api
+from app.legacy.school_classes.app import register_school_classes_api
+from app.legacy.users.app import register_users_api
+from app.legacy.utils.error import Error, handle_api_error
+from app.legacy.utils.middlewares import RequestSignatureMiddleware
 
 
 def create_app() -> FastAPI:

@@ -1,20 +1,18 @@
 from abc import ABC
-from datetime import time, timedelta, timezone
+from datetime import time, timedelta
 from enum import Enum
 from os.path import join
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from pydantic import AnyHttpUrl, BaseSettings, Field, SecretStr
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-TIMEZONE = timezone(timedelta(hours=3), name="Moscow")
-
 
 class Environment(Enum):
     DEVELOPMENT = "dev"
-    PRE_PRODUCTION = "pre-prod"
     PRODUCTION = "prod"
 
 
@@ -29,6 +27,14 @@ class AppSettings(Settings):
     docs_url: str = Field(env="DOCS_URL")
 
 
+class DatetimeSettings(Settings):
+    timezone_name: str = Field(env="TZ")
+
+    @property
+    def timezone(self) -> ZoneInfo:
+        return ZoneInfo(self.timezone_name)
+
+
 class MealRequestSettings(Settings):
     creating_time: time = Field(env="MEAL_REQUEST_CREATING_TIME")
     last_updating_time: time = Field(env="MEAL_REQUEST_LAST_UPDATING_TIME")
@@ -41,6 +47,7 @@ class DatabaseSettings(Settings):
     host: str = Field(env="POSTGRES_HOST")
     port: int = Field(env="POSTGRES_PORT")
     database: str = Field(env="POSTGRES_DB")
+    pool_size: int = Field(env="POSTGRES_POOL_SIZE")
 
     @property
     def dsn(self) -> str:
@@ -82,3 +89,10 @@ class S3StorageSettings(Settings):
     endpoint: AnyHttpUrl = Field(env="AWS_ENDPOINT_URL")
     bucket_name: str = Field(env="AWS_BUCKET_NAME")
     presigned_url_ttl: timedelta = Field(env="AWS_PRESIGNED_URL_TTL")
+
+
+app = AppSettings()
+cors = CORSSettings()
+datetime = DatetimeSettings()
+database = DatabaseSettings()
+jwt = JWTSettings()

@@ -3,8 +3,8 @@ from datetime import date
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
-from app.pupils.db.pupil.model import Pupil
+from app.legacy.cancel_meal_periods import CancelMealPeriod
+from app.legacy.pupils.db.pupil.model import Pupil
 
 
 PERIODS_PREFIX = "/cancel-meal-periods"

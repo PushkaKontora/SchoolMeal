@@ -5,11 +5,11 @@ from httpx import AsyncClient, Response
 from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.cancel_meal_periods.db.cancel_meal_period.model import CancelMealPeriod
-from app.children.db.child.model import Child
 from app.config import JWTSettings
-from app.pupils.db.pupil.model import Pupil
-from app.users.db.user.model import User
+from app.legacy.cancel_meal_periods import CancelMealPeriod
+from app.legacy.children.db.child.model import Child
+from app.legacy.pupils.db.pupil.model import Pupil
+from app.legacy.users.db.user.model import User
 from tests.integration.auth.conftest import create_access_token
 from tests.integration.cancel_meal_periods.conftest import period_prefix
 from tests.integration.conftest import BearerAuth
