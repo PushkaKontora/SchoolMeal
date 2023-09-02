@@ -19,7 +19,7 @@ from app.legacy.users.db.user.model import Role
 def get_refresh_token_from_cookies(
     request: Request, settings: JWTSettings = Depends(Provide[AppContainer.jwt_settings])
 ) -> str:
-    refresh_token = request.cookies.get(settings.refresh_token_cookie)
+    refresh_token = request.cookies.get(settings.refresh_cookie)
 
     if not refresh_token:
         raise NotFoundRefreshTokenInCookiesError

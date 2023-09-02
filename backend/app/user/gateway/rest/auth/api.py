@@ -5,8 +5,8 @@ from fastapi import APIRouter, Body, Depends
 from starlette import status
 from starlette.responses import Response
 
+from app import config
 from app.common.gateway.responses import response_400, response_401, response_404, response_422
-from app.config import jwt
 from app.user.application.services import UserService
 from app.user.domain.errors import (
     EmptyLoginError,
@@ -88,8 +88,8 @@ async def reissue_tokens(
 
 def _set_refresh_token_cookie_to_cookies(response: Response, token: RefreshToken) -> None:
     response.set_cookie(
-        key=jwt.refresh_token_cookie,
+        key=config.jwt.refresh_cookie,
         value=str(token),
         httponly=True,
-        expires=datetime.now(timezone.utc) + jwt.refresh_token_ttl,
+        expires=datetime.now(timezone.utc) + config.jwt.refresh_lifetime,
     )

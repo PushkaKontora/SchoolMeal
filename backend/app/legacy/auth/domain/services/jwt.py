@@ -65,10 +65,10 @@ def is_token_expired_in(timestamp: float) -> bool:
 def _get_token_ttl(token_type: TokenType, settings: JWTSettings) -> timedelta:
     match token_type:
         case TokenType.ACCESS:
-            return settings.access_token_ttl
+            return settings.access_lifetime
 
         case TokenType.REFRESH:
-            return settings.refresh_token_ttl
+            return settings.refresh_lifetime
 
     raise UnknownTokenTypeException
 

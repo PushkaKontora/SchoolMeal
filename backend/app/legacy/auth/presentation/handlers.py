@@ -32,7 +32,7 @@ async def logout(
 ) -> SuccessResponse:
     await revoke_refresh_token(token)
 
-    response.delete_cookie(settings.refresh_token_cookie)
+    response.delete_cookie(settings.refresh_cookie)
 
     return SuccessResponse()
 
@@ -52,8 +52,8 @@ async def refresh_tokens(
 
 def _set_auth_cookies(response: Response, tokens: JWTTokensOut, settings: JWTSettings) -> None:
     response.set_cookie(
-        key=settings.refresh_token_cookie,
+        key=settings.refresh_cookie,
         value=tokens.refresh_token,
         httponly=True,
-        expires=datetime.now(timezone.utc) + settings.refresh_token_ttl,
+        expires=datetime.now(timezone.utc) + settings.refresh_lifetime,
     )

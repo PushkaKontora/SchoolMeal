@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from ipaddress import IPv4Address
 
 from app.user.application.repositories import IUserRepository
-from app.user.domain.model import Email, FirstName, LastName, Login, Password, Phone, Photo, RefreshToken, Tokens, User
+from app.user.domain.model import Email, FirstName, LastName, Login, Password, Phone, RefreshToken, Tokens, User
 
 
 @dataclass

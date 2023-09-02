@@ -207,7 +207,7 @@ class AccessToken(Token):
 
     @classmethod
     def _get_exp(cls) -> timedelta:
-        return config.jwt.access_token_ttl
+        return config.jwt.access_lifetime
 
 
 class RefreshToken(Token):
@@ -217,7 +217,7 @@ class RefreshToken(Token):
 
     @classmethod
     def _get_exp(cls) -> timedelta:
-        return config.jwt.refresh_token_ttl
+        return config.jwt.refresh_lifetime
 
 
 class Tokens(NamedTuple):

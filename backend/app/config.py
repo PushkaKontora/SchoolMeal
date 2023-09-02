@@ -1,11 +1,11 @@
 from abc import ABC
-from datetime import time, timedelta
+from datetime import timedelta
 from enum import Enum
 from os.path import join
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from pydantic import AnyHttpUrl, BaseSettings, Field, SecretStr
+from pydantic import AnyHttpUrl, BaseSettings, Field
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,27 +23,22 @@ class Settings(BaseSettings, ABC):
 
 class AppSettings(Settings):
     environment: Environment = Field(env="ENV")
-    debug: bool = Field(env="DEBUG")
-    docs_url: str = Field(env="DOCS_URL")
-
-
-class DatetimeSettings(Settings):
     timezone_name: str = Field(env="TZ")
+    docs_url: str = "/docs"
 
     @property
     def timezone(self) -> ZoneInfo:
         return ZoneInfo(self.timezone_name)
 
 
-class MealRequestSettings(Settings):
-    creating_time: time = Field(env="MEAL_REQUEST_CREATING_TIME")
-    last_updating_time: time = Field(env="MEAL_REQUEST_LAST_UPDATING_TIME")
+class HeadersSettings(Settings):
+    real_ip_header: str = "X-Real-IP"
 
 
 class DatabaseSettings(Settings):
     driver: str = Field(env="POSTGRES_DRIVER")
     user: str = Field(env="POSTGRES_USER")
-    password: SecretStr = Field(env="POSTGRES_PASSWORD")
+    password: str = Field(env="POSTGRES_PASSWORD")
     host: str = Field(env="POSTGRES_HOST")
     port: int = Field(env="POSTGRES_PORT")
     database: str = Field(env="POSTGRES_DB")
@@ -51,36 +46,27 @@ class DatabaseSettings(Settings):
 
     @property
     def dsn(self) -> str:
-        return f"{self.driver}://{self.user}:{self.password.get_secret_value()}@{self.host}:{self.port}/{self.database}"
+        return f"{self.driver}://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
 
 
 class JWTSettings(Settings):
+    algorithm: str = "HS256"
     secret: str = Field(env="JWT_SECRET")
-    algorithm: str = Field(env="JWT_ALGORITHM")
-
-    access_token_ttl: timedelta = Field(env="ACCESS_TOKEN_TTL")
-    refresh_token_ttl: timedelta = Field(env="REFRESH_TOKEN_TTL")
-
-    refresh_token_cookie: str = Field(env="REFRESH_TOKEN_COOKIE")
+    access_lifetime: timedelta = Field(env="JWT_ACCESS_LIFETIME")
+    refresh_lifetime: timedelta = Field(env="JWT_REFRESH_LIFETIME")
+    refresh_cookie: str = "rf_tk"
 
 
 class PasswordSettings(Settings):
-    encoding: str = Field(env="PASSWORD_ENCODING")
-    rounds: int = Field(env="PASSWORD_SALT_ROUNDS")
-
-
-class RequestSignatureSettings(Settings):
-    secret: SecretStr = Field(env="SIGNATURE_SECRET")
-    signature_header: str = Field(env="SIGNATURE_HEADER")
-    encoding: str = Field(env="SIGNATURE_ENCODING")
-    digest_mod: str = Field(env="SIGNATURE_DIGEST_MOD")
+    encoding: str = "utf-8"
+    rounds: int = 12
 
 
 class CORSSettings(Settings):
-    origins: list[str] = Field(env="CORS_ALLOW_ORIGINS")
-    allow_credentials: bool = Field(env="CORS_ALLOW_CREDENTIALS")
-    methods: list[str] = Field(env="CORS_ALLOW_METHODS")
-    headers: list[str] = Field(env="CORS_ALLOW_HEADERS")
+    origins: tuple[str] = ("*",)
+    allow_credentials: bool = True
+    methods: tuple[str] = ("*",)
+    headers: tuple[str] = ("*",)
 
 
 class S3StorageSettings(Settings):
@@ -88,11 +74,11 @@ class S3StorageSettings(Settings):
     secret_key: str = Field(env="AWS_SECRET_KEY")
     endpoint: AnyHttpUrl = Field(env="AWS_ENDPOINT_URL")
     bucket_name: str = Field(env="AWS_BUCKET_NAME")
-    presigned_url_ttl: timedelta = Field(env="AWS_PRESIGNED_URL_TTL")
+    resource_url_lifetime: timedelta = Field(env="AWS_RESOURCE_URL_LIFETIME")
 
 
-app = AppSettings()
+base = AppSettings()
+headers = HeadersSettings()
 cors = CORSSettings()
-datetime = DatetimeSettings()
 database = DatabaseSettings()
 jwt = JWTSettings()

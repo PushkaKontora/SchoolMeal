@@ -1,8 +1,8 @@
+from datetime import time
 from typing import Iterable
 
 from dependency_injector.wiring import Provide
 
-from app.config import MealRequestSettings
 from app.legacy.container import AppContainer
 from app.legacy.db.unit_of_work import UnitOfWork
 from app.legacy.meal_requests.db.declared_pupil.filters import DeclaredPupilFilters
@@ -109,7 +109,6 @@ async def update_request(
     request_id: int,
     data: MealRequestPutIn,
     uow: UnitOfWork = Provide[AppContainer.unit_of_work],
-    settings: MealRequestSettings = Provide[AppContainer.meal_request_settings],
 ) -> MealRequestOut:
     async with uow:
         request = await uow.repository(MealRequest).find_first(meal_request_filters.ById(request_id))
@@ -120,7 +119,7 @@ async def update_request(
         if not await _match_pupils_with_pupils_in_school_class(uow, data.pupils, meal.school_class):
             raise InvalidPupilsSequenceError
 
-        if timezone.now() > timezone.combine(meal.date, settings.last_updating_time):
+        if timezone.now() > timezone.combine(meal.date, time(hour=10)):
             raise UpdatingFrozenRequestError
 
         await uow.repository(DeclaredPupil).delete_many(DeclaredPupilFilters.ByRequestId(request.id))

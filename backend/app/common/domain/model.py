@@ -4,4 +4,4 @@ from app import config
 
 
 def now() -> datetime:
-    return datetime.now(config.datetime.timezone)
+    return datetime.now(config.base.timezone)

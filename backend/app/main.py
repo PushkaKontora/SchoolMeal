@@ -12,7 +12,6 @@ from app.legacy.portions.app import register_portions_api
 from app.legacy.school_classes.app import register_school_classes_api
 from app.legacy.users.app import register_users_api
 from app.legacy.utils.error import Error, handle_api_error
-from app.legacy.utils.middlewares import RequestSignatureMiddleware
 
 
 def create_app() -> FastAPI:
@@ -21,7 +20,8 @@ def create_app() -> FastAPI:
 
     app_settings = container.app_settings()
 
-    application = FastAPI(debug=app_settings.debug, docs_url=app_settings.docs_url if app_settings.debug else None)
+    is_development = app_settings.environment == Environment.DEVELOPMENT
+    application = FastAPI(debug=is_development, docs_url=app_settings.docs_url if is_development else None)
     application.add_exception_handler(Error, handle_api_error)
 
     _add_middlewares(application, container)
@@ -47,10 +47,6 @@ def _register_apis(application: FastAPI) -> None:
 
 
 def _add_middlewares(application: FastAPI, container: AppContainer) -> None:
-    app_settings = container.app_settings()
-    if app_settings.environment == Environment.PRODUCTION:
-        application.add_middleware(RequestSignatureMiddleware, settings=container.request_signature_settings())
-
     cors_settings = container.cors_settings()
     application.add_middleware(
         CORSMiddleware,
@@ -64,9 +60,9 @@ def _add_middlewares(application: FastAPI, container: AppContainer) -> None:
 def _override_file_storage(container: AppContainer) -> None:
     settings = container.app_settings()
 
-    storage_container = S3StorageContainer()
-    if settings.environment == Environment.DEVELOPMENT:
-        storage_container = LocalStorageContainer()
+    storage_container = LocalStorageContainer()
+    if settings.environment == Environment.PRODUCTION:
+        storage_container = S3StorageContainer()
 
     container.override_providers(storage=storage_container.storage)
 

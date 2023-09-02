@@ -2,8 +2,6 @@ version: "3.4"
 
 services:
   app:
-    environment:
-      ENV: "dev"
     volumes:
       - media_volume:/app/media
 

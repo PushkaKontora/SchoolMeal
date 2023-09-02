@@ -14,9 +14,6 @@ services:
   app:
     container_name: school_meal_app
     build: backend
-    environment:
-      ENV: "prod"
-      POSTGRES_HOST: postgres-server
     depends_on:
       - postgres-server
 

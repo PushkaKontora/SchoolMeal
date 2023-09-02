@@ -4,8 +4,8 @@ from app import config
 
 
 def now() -> datetime:
-    return datetime.now(tz=config.datetime.timezone)
+    return datetime.now(tz=config.base.timezone)
 
 
 def combine(date: datetype, time: timetype) -> datetime:
-    return datetime.combine(date, time, config.datetime.timezone)
+    return datetime.combine(date, time, config.base.timezone)
