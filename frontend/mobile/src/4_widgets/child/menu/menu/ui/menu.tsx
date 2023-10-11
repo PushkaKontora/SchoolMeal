@@ -26,14 +26,14 @@ export function Menu(props: MenuProps) {
                 && <MealUnit title={'Завтрак'}
                              sum={mealsForChild[0]?.menu?.breakfast.price}
                              portions={mealsForChild[0].menu.breakfast.portions}/>}
-            {mealsForChild && mealsForChild[0]?.menu?.dinner
-                && <MealUnit title={'Полдник'}
-                             sum={mealsForChild[0]?.menu?.dinner.price}
-                             portions={mealsForChild[0].menu.dinner.portions}/>}
             {mealsForChild && mealsForChild[0]?.menu?.lunch
                 && <MealUnit title={'Обед'}
                              sum={mealsForChild[0]?.menu?.lunch.price}
                              portions={mealsForChild[0].menu.lunch.portions}/>}
+            {mealsForChild && mealsForChild[0]?.menu?.dinner
+              && <MealUnit title={'Полдник'}
+                           sum={mealsForChild[0]?.menu?.dinner.price}
+                           portions={mealsForChild[0].menu.dinner.portions}/>}
             {mealsForChild && !mealsForChild[0]?.menu?.lunch
                 && !mealsForChild[0]?.menu?.dinner
                 && !mealsForChild[0]?.menu?.breakfast
