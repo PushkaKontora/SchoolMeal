@@ -14,7 +14,6 @@ export const createStyle = (props: PortionsPartProps) => StyleSheet.create({
     imageContainer: {
         height: 32,
         width: 32,
-        backgroundColor: '#D9D9D9',
         borderRadius: 100,
     },
     image: {
