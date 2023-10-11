@@ -4,7 +4,7 @@ export const TextContainer = styled.tr`
   display: flex;
   
   width: 100%;
-  height: 45px;
+  height: 40px;
   
   border-bottom: 1px solid #F3F6F9;
   box-sizing: border-box;
