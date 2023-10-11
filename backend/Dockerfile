@@ -1,14 +1,22 @@
-FROM python:3.10-alpine3.17
+FROM python:3.10.10-slim-bullseye
 
-WORKDIR /app
+ENV POETRY_HOME=/opt/poetry
+ENV POETRY_VERSION=1.6.1
+ENV PATH=$POETRY_HOME/bin:$PATH
 
-COPY Pipfile ./
+WORKDIR /school_meal
 
-ARG PIPENV_OPTIONS=""
-RUN apk add make && \
-    pip install pipenv && \
-    pipenv install --system --skip-lock $PIPENV_OPTIONS
+RUN apt update && \
+    apt install make && \
+    pip install -U pip && \
+    pip install pip install poetry==$POETRY_VERSION
+
+COPY pyproject.toml .
+COPY poetry.lock .
+
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi
 
 COPY . .
 
-CMD make migrate && gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000
+ENTRYPOINT ["sh", "docker-entrypoint.sh"]
