@@ -1,4 +1,4 @@
-import {ScrollView, View} from 'react-native';
+import {Image, ScrollView, View} from 'react-native';
 import {styles} from '../consts/styles';
 import {NutritionHeaderFeature} from '../../../5_features/nutrition/nutrition-header-feature';
 import {NutritionCertFeature} from '../../../5_features/nutrition/nutrition-cert-feature';
@@ -85,6 +85,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
 
   return (
     <ScrollView>
+
       <View
         style={styles.background}>
         <View
@@ -92,8 +93,8 @@ export function NutritionWidget(props: NutritionWidgetProps) {
 
           <NutritionHeaderFeature
             child={child}
-            onToggle={(toggledRight: boolean) => onHeaderCheckChange(!toggledRight)}
-            defaultToggleState={!feeding}/>
+            onToggle={(toggledRight: boolean) => onHeaderCheckChange(toggledRight)}
+            defaultToggleState={feeding}/>
 
           <NutritionCertFeature
             child={child}/>
