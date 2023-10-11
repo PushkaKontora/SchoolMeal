@@ -10,4 +10,11 @@ export const ButtonContainer = styled.button<ButtonSecondaryStyles>`
   border-radius: ${DEFAULT_STYLES.borderRadius};
   font-weight: ${DEFAULT_STYLES.fontWeight};
   font-family: ${DEFAULT_STYLES.fontFamily};
+
+  border: 0;
+  
+  &:disabled {
+    background-color: #F3F6F9;
+    color: #B4B4B4;
+  }
 `;
