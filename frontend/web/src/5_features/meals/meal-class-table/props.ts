@@ -3,5 +3,5 @@ export type MealClassTableStyles = {
 }
 
 export type MealClassTableProps = {
-
+  classNames: string[]
 } & MealClassTableStyles;
