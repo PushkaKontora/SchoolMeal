@@ -70,11 +70,11 @@ class CORSSettings(Settings):
 
 
 class S3StorageSettings(Settings):
-    access_key: str = Field(env="AWS_ACCESS_KEY")
-    secret_key: str = Field(env="AWS_SECRET_KEY")
-    endpoint: AnyHttpUrl = Field(env="AWS_ENDPOINT_URL")
-    bucket_name: str = Field(env="AWS_BUCKET_NAME")
-    resource_url_lifetime: timedelta = Field(env="AWS_RESOURCE_URL_LIFETIME")
+    access_key: str = ""
+    secret_key: str = ""
+    endpoint: str = ""
+    bucket_name: str = ""
+    resource_url_lifetime: timedelta = timedelta(days=1)
 
 
 base = AppSettings()
