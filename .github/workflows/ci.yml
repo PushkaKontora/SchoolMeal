@@ -12,12 +12,16 @@ jobs:
 
     runs-on: ubuntu-20.04
     strategy:
+      fail-fast: false
       matrix:
-        image: [app]
+        image: [app, web]
         include:
           - image: app
             context: backend
             test_stage: test
+          - image: web
+            context: frontend/web
+            test_stage: build
 
     steps:
       - name: Получение изменений
@@ -36,7 +40,7 @@ jobs:
         id: meta
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" | sed "s#/#-#g" >> $GITHUB_OUTPUT
 
-      - name: Запуск юнит-тестов
+      - name: Запуск линтеров и юнит-тестов
         if: ${{ matrix.test_stage }}
         uses: docker/build-push-action@v5
         with:

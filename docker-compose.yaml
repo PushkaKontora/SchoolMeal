@@ -46,14 +46,16 @@ services:
       <<: [*information, *database, *jwt]
     <<: *common
 
-  nginx:
-    container_name: school_meal_nginx
-    build: nginx
+  web:
+    container_name: school_meal_web
+    build: frontend/web
     ports:
       - "80:80"
     depends_on:
       app:
         condition: service_started
+    volumes:
+      - ./env/nginx/certs:/etc/ssl/nginx:ro
     <<: *common
 
 volumes:

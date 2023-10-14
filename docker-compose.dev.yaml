@@ -5,7 +5,7 @@ services:
     volumes:
       - media_volume:/app/media
 
-  nginx:
+  web:
     volumes:
       - media_volume:/app/media
 
