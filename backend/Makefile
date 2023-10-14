@@ -20,8 +20,7 @@ lint:
 	$(BIN_DIR)/isort --check --diff $(ALL)
 	$(BIN_DIR)/flake8 --config setup.cfg $(ALL)
 	$(BIN_DIR)/black --check --config pyproject.toml $(ALL)
-	$(BIN_DIR)/mypy --cache-dir=/dev/null --config-file=setup.cfg $(SOURCE)
-	mypy
+	make mypy
 
 mypy:
 	$(BIN_DIR)/mypy --cache-dir=/dev/null --config-file=setup.cfg $(SOURCE)
@@ -36,3 +35,5 @@ migrate:
 
 test:
 	$(BIN_DIR)/pytest tests -v
+
+ci: lint test
