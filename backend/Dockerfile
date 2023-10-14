@@ -34,9 +34,9 @@ COPY Makefile $APP_DIR
 COPY setup.cfg $APP_DIR
 COPY tests $APP_DIR/tests
 
-RUN poetry isntall --no-interaction --no-ansi
+RUN poetry install --no-interaction --no-ansi
 
-RUN make BIN_DIR=/usr/local/bin ci
+CMD make BIN_DIR=/usr/local/bin ci
 
 
 FROM base as final
