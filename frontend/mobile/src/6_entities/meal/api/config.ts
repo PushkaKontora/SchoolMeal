@@ -3,7 +3,7 @@ import {BASE_BACKEND_URL} from '../../../7_shared/api/config';
 import {AuthTokenService} from '../../../5_features/auth';
 import {CancelMealPeriods} from '../../../7_shared/model/cancelMealPeriods';
 
-import {fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
 export const CANCEL_CONFIG: ConfigSettings = {
   reducerPath: 'api/cancel_meals',

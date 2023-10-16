@@ -4,13 +4,13 @@ import {createStyle} from './style';
 
 export function TitleText(props: TitleTextProps) {
 
-    const styles = createStyle(props);
+  const styles = createStyle(props);
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.default}>
-                {props.title}
-            </Text>
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <Text style={styles.default}>
+        {props.title}
+      </Text>
+    </View>
+  );
 }

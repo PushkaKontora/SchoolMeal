@@ -1,14 +1,14 @@
-import {TextInput, View} from "react-native";
-import {TextFormProps} from "./props";
-import {createStyle} from "./style";
+import {TextInput, View} from 'react-native';
+import {TextFormProps} from './props';
+import {createStyle} from './style';
 
 export function TextForm(props: TextFormProps) {
-    const styles = createStyle(props);
+  const styles = createStyle(props);
 
-    return (
-        <View>
-            <TextInput style={styles.input}
-            onChangeText={props.functionChangeText}></TextInput>
-        </View>
-    );
+  return (
+    <View>
+      <TextInput style={styles.input}
+        onChangeText={props.functionChangeText}></TextInput>
+    </View>
+  );
 }

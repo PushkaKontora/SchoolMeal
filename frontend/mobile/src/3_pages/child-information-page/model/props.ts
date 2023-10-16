@@ -1,3 +1,3 @@
-import {PropsWithNavigation} from "../../../7_shared/model/props-with-navigation";
+import {PropsWithNavigation} from '../../../7_shared/model/props-with-navigation';
 
 export type ChildInformationProps = PropsWithNavigation;

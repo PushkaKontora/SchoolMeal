@@ -34,12 +34,12 @@ export const CHILD_API = createApi({
         url: ''
       }),
       providesTags: (result) =>
-          result
-              ? [
-                  ...result.map(({ id }) => ({ type: 'UserChildren' as const, id })),
-                  { type: 'UserChildren', id: 'LIST' },
-              ]
-              : [{ type: 'UserChildren', id: 'LIST' }],
+        result
+          ? [
+            ...result.map(({ id }) => ({ type: 'UserChildren' as const, id })),
+            { type: 'UserChildren', id: 'LIST' },
+          ]
+          : [{ type: 'UserChildren', id: 'LIST' }],
     }),
     changeMealPlan: build.mutation<ChildMealData, ChildMealDataWithId>({
       query: ({childId, ...body}) => ({
