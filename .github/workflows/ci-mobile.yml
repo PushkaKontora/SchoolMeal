@@ -1,0 +1,42 @@
+name: CI mobile
+
+on:
+  push:
+    branches:
+      - '**'
+      - '!master'
+
+jobs:
+  build:
+    name: Cборка mobile
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: frontend/mobile
+    steps:
+      - name: Получение изменений
+        uses: actions/checkout@v3
+
+      - name: Настройка Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.20.*
+          cache: npm
+
+      - name: Настройка Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Установка зависимостей
+        run: npm ci
+
+      - name: Запуск линтеров и тестов
+        run: npm run lint
+
+      - name: Конфигурация Expo-проекта
+        run: eas init --id=${{ secrets.EXPO_REPOSITORY_ID }} --non-interactive
+
+      - name: Сборка
+        run: eas update --auto --platform=android --json --non-interactive
