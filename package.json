@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "crypto-js": "^4.1.1",
-    "react-native": "0.71.8"
-  }
-}
