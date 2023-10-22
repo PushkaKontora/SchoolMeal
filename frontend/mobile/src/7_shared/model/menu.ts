@@ -1,6 +1,6 @@
-import {Portions} from "./portions";
+import {Portions} from './portions';
 
 export type Menu = {
-    "price": number,
-    "portions": Portions[],
+    'price': number,
+    'portions': Portions[],
 }

@@ -1,13 +1,13 @@
-import {Text} from "react-native";
-import {ErrorMessageProps} from "./props";
-import {createStyle} from "./style";
+import {Text} from 'react-native';
+import {ErrorMessageProps} from './props';
+import {createStyle} from './style';
 
 export function ErrorMessage(props: ErrorMessageProps) {
-    const styles = createStyle(props);
+  const styles = createStyle(props);
 
-    return (
-        <Text style={styles.errorMessage}>
-            {props.textMessage}
-        </Text>
-    );
+  return (
+    <Text style={styles.errorMessage}>
+      {props.textMessage}
+    </Text>
+  );
 }

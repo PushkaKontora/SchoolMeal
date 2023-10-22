@@ -1,11 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import Environment
 from app.legacy.auth.app import register_auth_api
 from app.legacy.cancel_meal_periods.app import register_cancel_meal_periods_api
 from app.legacy.children.app import register_children_api
-from app.legacy.container import AppContainer, LocalStorageContainer, S3StorageContainer
+from app.legacy.container import AppContainer
 from app.legacy.meal_requests.app import register_meal_requests_api
 from app.legacy.meals.app import register_meals_api
 from app.legacy.portions.app import register_portions_api
@@ -16,17 +15,14 @@ from app.legacy.utils.error import Error, handle_api_error
 
 def create_app() -> FastAPI:
     container = AppContainer()
-    _override_file_storage(container)
 
     app_settings = container.app_settings()
 
-    is_development = app_settings.environment == Environment.DEVELOPMENT
-    application = FastAPI(debug=is_development, docs_url=app_settings.docs_url if is_development else None)
+    application = FastAPI(docs_url=app_settings.docs_url)
     application.add_exception_handler(Error, handle_api_error)
 
     _add_middlewares(application, container)
     _register_apis(application)
-    _override_file_storage(container)
 
     return application
 
@@ -55,16 +51,6 @@ def _add_middlewares(application: FastAPI, container: AppContainer) -> None:
         allow_methods=cors_settings.methods,
         allow_headers=cors_settings.headers,
     )
-
-
-def _override_file_storage(container: AppContainer) -> None:
-    settings = container.app_settings()
-
-    storage_container = LocalStorageContainer()
-    if settings.environment == Environment.PRODUCTION:
-        storage_container = S3StorageContainer()
-
-    container.override_providers(storage=storage_container.storage)
 
 
 app = create_app()

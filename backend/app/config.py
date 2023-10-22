@@ -1,19 +1,13 @@
 from abc import ABC
 from datetime import timedelta
-from enum import Enum
 from os.path import join
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from pydantic import AnyHttpUrl, BaseSettings, Field
+from pydantic import BaseSettings, Field
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-class Environment(Enum):
-    DEVELOPMENT = "dev"
-    PRODUCTION = "prod"
 
 
 class Settings(BaseSettings, ABC):
@@ -22,7 +16,6 @@ class Settings(BaseSettings, ABC):
 
 
 class AppSettings(Settings):
-    environment: Environment = Field(env="ENV")
     timezone_name: str = Field(env="TZ")
     docs_url: str = "/docs"
 
@@ -36,13 +29,13 @@ class HeadersSettings(Settings):
 
 
 class DatabaseSettings(Settings):
-    driver: str = Field(env="POSTGRES_DRIVER")
+    driver: str = "postgresql+asyncpg"
     user: str = Field(env="POSTGRES_USER")
     password: str = Field(env="POSTGRES_PASSWORD")
     host: str = Field(env="POSTGRES_HOST")
     port: int = Field(env="POSTGRES_PORT")
     database: str = Field(env="POSTGRES_DB")
-    pool_size: int = Field(env="POSTGRES_POOL_SIZE")
+    pool_size: int = 10
 
     @property
     def dsn(self) -> str:
@@ -70,11 +63,11 @@ class CORSSettings(Settings):
 
 
 class S3StorageSettings(Settings):
-    access_key: str = Field(env="AWS_ACCESS_KEY")
-    secret_key: str = Field(env="AWS_SECRET_KEY")
-    endpoint: AnyHttpUrl = Field(env="AWS_ENDPOINT_URL")
-    bucket_name: str = Field(env="AWS_BUCKET_NAME")
-    resource_url_lifetime: timedelta = Field(env="AWS_RESOURCE_URL_LIFETIME")
+    access_key: str = ""
+    secret_key: str = ""
+    endpoint: str = ""
+    bucket_name: str = ""
+    resource_url_lifetime: timedelta = timedelta(days=1)
 
 
 base = AppSettings()

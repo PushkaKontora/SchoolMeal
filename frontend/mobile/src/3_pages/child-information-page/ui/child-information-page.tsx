@@ -7,13 +7,13 @@ import {ScrollView} from 'react-native';
 
 export function ChildInformationPage({route, navigation}: ChildInformationProps) {
 
-    return (
-        <ScrollView>
-            <ChildPersonalInformation childInformation={route.params.childInformation}
-                                      navigation={navigation}/>
-            <Menu classId={route.params.childInformation.schoolClass.id}/>
-        </ScrollView>
-    );
+  return (
+    <ScrollView>
+      <ChildPersonalInformation childInformation={route.params.childInformation}
+        navigation={navigation}/>
+      <Menu classId={route.params.childInformation.schoolClass.id}/>
+    </ScrollView>
+  );
 }
 
 const meals = {

@@ -1,25 +1,39 @@
+SOURCE = app
+TESTS = tests
+ALL = $(SOURCE) $(TESTS)
+
+VENV = .venv
+BIN_DIR = $(VENV)/bin
+
 venv:
-	PIPENV_DONT_LOAD_ENV=1 pipenv shell
+	python3.10 -m venv $(VENV)
+	$(BIN_DIR)/python -m pip install --upgrade pip
+	$(BIN_DIR)/python -m pip install poetry~=1.6.0
+	$(BIN_DIR)/python -m poetry install
 
 format:
-	isort . & \
-	flake8 --config setup.cfg & \
-	black . --config pyproject.toml
+	$(BIN_DIR)/isort $(ALL)
+	$(BIN_DIR)/flake8 --config setup.cfg $(ALL)
+	$(BIN_DIR)/black . --config pyproject.toml $(ALL)
 
 lint:
-	isort --check --diff .
-	flake8 --config setup.cfg
-	black --check --config pyproject.toml .
-	mypy --cache-dir=/dev/null --config-file=setup.cfg app
+	$(BIN_DIR)/isort --check --diff $(ALL)
+	$(BIN_DIR)/flake8 --config setup.cfg $(ALL)
+	$(BIN_DIR)/black --check --config pyproject.toml $(ALL)
+	make mypy
+
+mypy:
+	$(BIN_DIR)/mypy --cache-dir=/dev/null --config-file=setup.cfg $(SOURCE)
 
 migration:
 	read -p "Введите имя миграции: " MIGRATION_NAME; \
-	alembic revision --autogenerate -m "$$MIGRATION_NAME"
+	$(BIN_DIR)/alembic revision --autogenerate -m "$$MIGRATION_NAME"
 
 migrate:
 	@echo "Для применения миграций должна быть запущена БД локально ( docker-compose up -d postgres-server )"; \
-	alembic upgrade head
+	$(BIN_DIR)/alembic upgrade head
 
 test:
-	@echo "Для выполнения тестов должна быть запущена БД локально ( docker-compose up -d postgres-server )"; \
-	pytest tests -v
+	$(BIN_DIR)/pytest tests -v
+
+ci: lint test

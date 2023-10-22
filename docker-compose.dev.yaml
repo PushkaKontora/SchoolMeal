@@ -1,11 +1,11 @@
-version: "3.4"
+version: "3.9"
 
 services:
   app:
     volumes:
       - media_volume:/app/media
 
-  nginx:
+  web:
     volumes:
       - media_volume:/app/media
 

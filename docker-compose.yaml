@@ -1,0 +1,70 @@
+version: "3.9"
+
+x-information: &information
+  TZ: ${TZ}
+
+x-database: &database
+  POSTGRES_DRIVER: ${POSTGRES_DRIVER:-postgresql+asyncpg}
+  POSTGRES_HOST: ${POSTGRES_HOST:-postgres-server}
+  POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+  POSTGRES_DB: ${POSTGRES_DB:-school_meal}
+  POSTGRES_USER: ${POSTGRES_USER:-postgres}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+  POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-10}
+
+x-jwt: &jwt
+  JWT_SECRET: ${JWT_SECRET}
+  JWT_ACCESS_LIFETIME: ${JWT_ACCESS_LIFETIME}
+  JWT_REFRESH_LIFETIME: ${JWT_REFRESH_LIFETIME}
+
+x-common: &common
+  networks:
+    - school_meal_nw
+
+services:
+  postgres-server:
+    container_name: school_meal_postgres
+    build: postgres
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_PASSWORD}
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    environment:
+      *database
+    <<: *common
+
+  app:
+    container_name: school_meal_app
+    build: backend
+    depends_on:
+      postgres-server:
+        condition: service_healthy
+    environment:
+      <<: [*information, *database, *jwt]
+    <<: *common
+
+  web:
+    container_name: school_meal_web
+    build: frontend/web
+    ports:
+      - "80:80"
+    depends_on:
+      app:
+        condition: service_started
+    volumes:
+      - ./env/nginx/certs:/etc/ssl/nginx:ro
+    <<: *common
+
+volumes:
+  postgres_volume:
+
+networks:
+  school_meal_nw:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.15.0.0/24
+          gateway: 172.15.0.1

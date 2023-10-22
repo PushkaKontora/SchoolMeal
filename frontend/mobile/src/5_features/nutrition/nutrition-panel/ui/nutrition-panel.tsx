@@ -9,7 +9,7 @@ import {CancelMealPeriods} from '../../../../7_shared/model/cancelMealPeriods';
 import {findPeriodIdByDate, isDateExpired} from '../lib/meal-utils';
 import {hideModal, showModal} from '../lib/modal-utils';
 import {dateToISOWithoutTime} from '../../../../6_entities/date/lib/utils';
-import {useDeleteCanceledMealMutation, useCancelMealMutation} from "../../../../6_entities/meal/api/api";
+import {useDeleteCanceledMealMutation, useCancelMealMutation} from '../../../../6_entities/meal/api/api';
 import {createPanels} from '../lib/create-panels';
 import {MonthPicker} from '../../../../7_shared/ui/special/mini-calendar/ui/month-picker';
 

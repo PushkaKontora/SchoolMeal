@@ -1,3 +1,3 @@
 export const PADDINGS = {
-    paddingBottom: 21,
+  paddingBottom: 21,
 };
