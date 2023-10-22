@@ -17,5 +17,5 @@ export type DateButtonProps = {
 
 export type MonthPickerProps = {
   date: Date,
-  onMonthChange: (newMonthObject: Date) => void
+  onMonthChange: (newDate: Date) => void
 }

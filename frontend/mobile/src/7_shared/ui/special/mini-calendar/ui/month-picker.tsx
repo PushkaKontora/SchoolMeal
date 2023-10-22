@@ -3,30 +3,24 @@ import {ButtonIconed} from '../../../buttons/button-iconed';
 import {monthPicker} from '../consts/styles';
 import {MonthPickerProps} from '../types/props';
 import {useEffect, useState} from 'react';
-import {createDateFromMonthIndex, findNext, findPrev, getMonthName} from '../lib/month-utils';
+import {changeMonth, createDateFromMonthIndex, findNextMonth, findPrevMonth, getMonthName} from '../lib/month-utils';
 
 export function MonthPicker(props: MonthPickerProps) {
   const [monthObject, setMonthObject] = useState(createDateFromMonthIndex(props.date));
 
-  useEffect(() => {
-    setMonthObject(createDateFromMonthIndex(props.date));
-  }, [props.date]);
-
   const onPrevButtonClick = () => {
-    setMonthObject(prev => {
-      const newDate = findPrev(prev);
-      props.onMonthChange(newDate);
-      return newDate;
-    });
+    const month = findPrevMonth(monthObject);
+    props.onMonthChange(month);
   };
 
   const onNextButtonClick = () => {
-    setMonthObject(prev => {
-      const newDate = findNext(prev);
-      props.onMonthChange(newDate);
-      return newDate;
-    });
+    const month = findNextMonth(monthObject);
+    props.onMonthChange(month);
   };
+
+  useEffect(() => {
+    setMonthObject(createDateFromMonthIndex(props.date));
+  }, [props.date]);
 
   return (
     <View

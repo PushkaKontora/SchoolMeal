@@ -1,7 +1,7 @@
 import {Text, View} from 'react-native';
 import {styles} from '../consts/styles';
 import {MiniCalendar} from '../../../../7_shared/ui/special/mini-calendar';
-import {DEFAULT_DATE, DEFAULT_ITEM_NUMBER, PANELS, SELECTION_COLOR} from '../config/config';
+import {DEFAULT_ITEM_NUMBER, PANELS, SELECTION_COLOR} from '../config/config';
 import {useEffect, useState} from 'react';
 import {NutritionPanelProps} from '../types/props';
 import {PanelPressListeners} from '../types/types';
@@ -12,9 +12,12 @@ import {dateToISOWithoutTime} from '../../../../6_entities/date/lib/utils';
 import {useDeleteCanceledMealMutation, useCancelMealMutation} from '../../../../6_entities/meal/api/api';
 import {createPanels} from '../lib/create-panels';
 import {MonthPicker} from '../../../../7_shared/ui/special/mini-calendar/ui/month-picker';
+import {findFirstFullWeek} from '../../../../7_shared/ui/special/mini-calendar/lib/dates-utils';
+import {DEFAULT_DATE} from '../../../../7_shared/consts/default_date';
 
 export function NutritionPanel(props: NutritionPanelProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(DEFAULT_DATE);
+  const [monthDate, setMonthDate] = useState<Date>(DEFAULT_DATE);
   const [currentCancelMeal, setCurrentCancelMeal] = useState<CancelMealPeriods | undefined>(undefined);
 
   const [cancelMeal, {isSuccess: canceledSuccess}] = useCancelMealMutation();
@@ -38,6 +41,8 @@ export function NutritionPanel(props: NutritionPanelProps) {
         findPeriodIdByDate(props.child.cancelMealPeriods, selectedDate)
       );
     }
+
+    console.log('[%s]: %s %s', NutritionPanel.name, 'selected date =', selectedDate.toString());
   }, [selectedDate]);
 
   useEffect(() => {
@@ -73,6 +78,12 @@ export function NutritionPanel(props: NutritionPanelProps) {
 
   const onDateChange = (date: Date) => {
     setSelectedDate(date);
+    setMonthDate(date);
+  };
+
+  const onMonthChange = (date: Date) => {
+    setMonthDate(date);
+    setSelectedDate(findFirstFullWeek(date));
   };
 
   return (
@@ -91,8 +102,8 @@ export function NutritionPanel(props: NutritionPanelProps) {
       <View
         style={styles.monthPicker}>
         <MonthPicker
-          date={selectedDate}
-          onMonthChange={onDateChange}/>
+          date={monthDate}
+          onMonthChange={onMonthChange}/>
       </View>
 
       <View

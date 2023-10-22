@@ -1,9 +1,9 @@
 import {View} from 'react-native';
 import {datePicker, styles} from '../consts/styles';
 import {MiniCalendarProps} from '../types/props';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {DEFAULT_DATE, DEFAULT_ITEM_NUMBER} from '../config/config';
-import {findDatesFrom, findNext, findPrev} from '../lib/dates-utils';
+import {findDatesFrom, findNext, findPrev, isEqualDates} from '../lib/dates-utils';
 import {ButtonIconed} from '../../../buttons/button-iconed';
 import {DateButton} from './date-button';
 import {PaddingArea} from '../../../styling/padding-area';
@@ -11,17 +11,19 @@ import {DEFAULT_VERTICAL_PADDING} from '../consts/consts';
 
 export function MiniCalendar(props: MiniCalendarProps) {
   // === states ===
-  const [itemNumber, setItemNumber] = useState(props.itemNumber || DEFAULT_ITEM_NUMBER);
+  const [itemNumber] = useState(props.itemNumber || DEFAULT_ITEM_NUMBER);
 
   const [dates, setDates] = useState<Date[]>(
     findDatesFrom(props.currentDate || DEFAULT_DATE(), itemNumber));
 
-  const [checkedIndex, setCheckedIndex] = useState(0);
+  //const [checkedIndex, setCheckedIndex] = useState(0);
+  const checkedIndexRef = useRef(0);
 
-  // === functions ===
+  // === callbacks ===
 
   const onDateButtonChange = (index: number) => {
-    setCheckedIndex(index);
+    //setCheckedIndex(index);
+    checkedIndexRef.current = index;
     props.onDateChange(dates[index]);
   };
 
@@ -39,6 +41,14 @@ export function MiniCalendar(props: MiniCalendarProps) {
     onDateButtonChange(0);
   }, [dates]);
 
+  useEffect(() => {
+    if (props.currentDate) {
+      if (!isEqualDates(props.currentDate, dates[checkedIndexRef.current])) {
+        setDates(findDatesFrom(props.currentDate, itemNumber));
+      }
+    }
+  }, [props.currentDate]);
+
   // === render ===
   return (
     <PaddingArea
@@ -53,12 +63,12 @@ export function MiniCalendar(props: MiniCalendarProps) {
           <ButtonIconed
             size={20}
             onPress={onDatePickerLeftPress}
-            resource={require('../../../../../../assets/arrow-big-gray-left.png')}/>
+            resource={require('../../../../../../assets/arrow-small-black-left.png')}/>
 
           {
             dates.map((item, idx) =>
               <DateButton key={idx}
-                checked={checkedIndex === idx}
+                checked={checkedIndexRef.current === idx}
                 date={item}
                 selectionColor={props.selectionColor}
                 onPress={() => {
@@ -69,7 +79,7 @@ export function MiniCalendar(props: MiniCalendarProps) {
           <ButtonIconed
             size={20}
             onPress={onDatePickerRightPress}
-            resource={require('../../../../../../assets/arrow-big-gray-right.png')}/>
+            resource={require('../../../../../../assets/arrow-small-black-right.png')}/>
 
         </View>
 

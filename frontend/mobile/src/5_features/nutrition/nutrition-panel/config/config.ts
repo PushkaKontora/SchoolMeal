@@ -2,7 +2,6 @@ import {PanelConfig} from '../types/types';
 
 export const SELECTION_COLOR = '#EE6725';
 export const DEFAULT_ITEM_NUMBER = 5;
-export const DEFAULT_DATE = () => new Date(Date.now());
 
 export const PANELS: PanelConfig = {
   submitted: {

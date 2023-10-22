@@ -2,6 +2,7 @@ import {NutritionTogglesFeatureProps} from './props';
 import {Text, View} from 'react-native';
 import {styles} from './styles';
 import {Switch} from '../../../7_shared/ui/buttons/switch/switch';
+import {MEAL_NAMES} from './strings';
 
 export function NutritionTogglesFeature(props: NutritionTogglesFeatureProps) {
   return (
@@ -14,7 +15,7 @@ export function NutritionTogglesFeature(props: NutritionTogglesFeatureProps) {
             style={styles.field}>
             <Text
               style={styles.label}>
-              {'Завтрак'}
+              {MEAL_NAMES.breakfast}
             </Text>
 
             <Switch
@@ -30,7 +31,7 @@ export function NutritionTogglesFeature(props: NutritionTogglesFeatureProps) {
             style={styles.field}>
             <Text
               style={styles.label}>
-              {'Обед'}
+              {MEAL_NAMES.lunch}
             </Text>
 
             <Switch
@@ -46,7 +47,7 @@ export function NutritionTogglesFeature(props: NutritionTogglesFeatureProps) {
             style={styles.field}>
             <Text
               style={styles.label}>
-              {'Полдник'}
+              {MEAL_NAMES.dinner}
             </Text>
 
             <Switch

@@ -41,7 +41,7 @@ export function ChildPersonalInformation(props: ChildPersonalInformationProps) {
         school={props.childInformation.schoolClass.school.name}
         status={status}/>
       <ButtonPrimary
-        title={'Питание'}
+        title={'Поставить на питание'}
         onPress={navigateNutritionPage}
         backgroundColor={'#EC662A'}
         textColor={'#FFFFFF'}
