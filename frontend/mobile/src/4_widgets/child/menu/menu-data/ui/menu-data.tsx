@@ -4,22 +4,31 @@ import {createStyle} from '../consts/style';
 import {TitleText} from '../../../../../7_shared/ui/text/title-text/title.text';
 import {MiniCalendar} from '../../../../../7_shared/ui/special/mini-calendar';
 import {setDataMenu} from '../../menu/model/menu-slice/menu-slice';
-import {useAppDispatch, useAppSelector} from '../../../../../../store/hooks';
+import {useAppDispatch} from '../../../../../../store/hooks';
 import {dateToISOWithoutTime} from '../../../../../6_entities/date/lib/utils';
 import {MonthPicker} from '../../../../../7_shared/ui/special/mini-calendar/ui/month-picker';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
+import {DEFAULT_DATE} from '../../../../../7_shared/consts/default_date';
+import {findFirstFullWeek} from '../../../../../7_shared/ui/special/mini-calendar/lib/dates-utils';
 
 export function MenuData(props: MenuDataProps) {
   const styles = createStyle(props);
   const dispatch = useAppDispatch();
-  const now = new Date();
 
-  const handlerClickDate = (date: any) => {
-    dispatch(setDataMenu(dateToISOWithoutTime(date)));
-    console.log(dateToISOWithoutTime(date), 'MenuData');
+  const [selectedDate, setSelectedDate] = useState<Date>(DEFAULT_DATE);
+  const [monthDate, setMonthDate] = useState<Date>(DEFAULT_DATE);
+
+  useEffect(() => {
+    dispatch(setDataMenu(dateToISOWithoutTime(selectedDate)));
+  }, [selectedDate]);
+
+  const handleDate = (date: Date) => {
+    setSelectedDate(date);
   };
 
-  const handlerMonth = () => {
+  const handleMonth = (date: Date) => {
+    setMonthDate(date);
+    setSelectedDate(findFirstFullWeek(date));
   };
 
   return (
@@ -27,10 +36,11 @@ export function MenuData(props: MenuDataProps) {
       <View style={styles.menuTitle}>
         <TitleText title={'Меню'}
           paddingBottom={0}/>
-        <MonthPicker date={now} onMonthChange={handlerMonth}/>
+        <MonthPicker date={monthDate} onMonthChange={handleMonth}/>
       </View>
       <MiniCalendar selectionColor={'#E9632C'}
-        onDateChange={handlerClickDate}/>
+        currentDate={selectedDate}
+        onDateChange={handleDate}/>
     </View>
   );
 }

@@ -23,7 +23,8 @@ export function isDateExpired(d: Date) {
   const expDate = setHoursTillAbleToCancel();
 
   if (isTodayDate(d)) {
-    return d.valueOf() > expDate.valueOf();
+    const now = new Date(Date.now());
+    return now.valueOf() >= expDate.valueOf();
   }
 
   return d.valueOf() < expDate.valueOf();

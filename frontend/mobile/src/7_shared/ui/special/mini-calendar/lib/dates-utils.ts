@@ -1,4 +1,4 @@
-import {MONTHS, SHORT_WEEKDAYS} from '../config/config';
+import {SHORT_WEEKDAYS} from '../config/config';
 
 export function findDatesFrom(selectedDate: Date, amount: number): Date[] {
   const result = [selectedDate];
@@ -12,22 +12,10 @@ export function findDatesFrom(selectedDate: Date, amount: number): Date[] {
   return result;
 }
 
-export function getPreferredMonth(dates: Date[]) {
-  const months: {[index: string]: number} = {};
-
-  for (const date of dates) {
-    const month = date.getMonth();
-    months[month] = months[month] || 0;
-
-    months[month] += 1;
-  }
-
-  const preferredMonth = Object
-    .entries(months)
-    .reduce((prev, curr) => {
-      return prev[1] > curr[1] ? prev : curr;
-    })[0];
-  return preferredMonth;
+export function isEqualDates(date1: Date, date2: Date) {
+  return date1.getFullYear() == date2.getFullYear() &&
+    date1.getMonth() == date2.getMonth() &&
+    date1.getDate() == date2.getDate();
 }
 
 export function findNext(currentLeftDate: Date, amount: number) {
@@ -48,4 +36,29 @@ export function findPrev(currentLeftDate: Date, amount: number) {
 
 export function getShortDayName(date: Date) {
   return SHORT_WEEKDAYS[date.getDay()];
+}
+
+export function findMondayOnWeek(date: Date) {
+  const result = new Date(date);
+  const day = date.getDay();
+  const dateShift = day == 0 ? -6 : - day + 1;
+  result.setDate(result.getDate() + dateShift);
+
+  return result;
+}
+
+export function findFirstFullWeek(month: Date) {
+  const result = new Date(month);
+  const day = month.getDay();
+  let dateShift = 7 - day + 1;
+
+  if (day == 1) {
+    dateShift = 0;
+  } else if (day == 0) {
+    dateShift = 1;
+  }
+
+  result.setDate(month.getDate() + dateShift);
+
+  return result;
 }
