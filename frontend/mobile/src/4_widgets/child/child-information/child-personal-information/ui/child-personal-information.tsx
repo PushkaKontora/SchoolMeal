@@ -8,7 +8,7 @@ import {createStyle} from '../consts/style';
 import {useEffect, useState} from 'react';
 
 export function ChildPersonalInformation(props: ChildPersonalInformationProps) {
-  const styles = createStyle(props);
+  const styles = createStyle();
   const [status, setStatus] = useState('Питается платно');
   const {navigation} = props;
 

@@ -1,4 +1,3 @@
 import {PropsWithChildren} from 'react';
 
-export type MenuDataProps = {
-} & PropsWithChildren;
+export type MenuDataProps = PropsWithChildren;

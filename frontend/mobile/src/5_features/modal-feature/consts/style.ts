@@ -1,7 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {ModalProps} from '../model/props';
 
-export const createStyle = (props: ModalProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   containerContent: {
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,

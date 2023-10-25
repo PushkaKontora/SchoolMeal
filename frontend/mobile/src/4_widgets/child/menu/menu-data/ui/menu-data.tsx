@@ -1,4 +1,3 @@
-import {MenuDataProps} from '../model/props';
 import {View} from 'react-native';
 import {createStyle} from '../consts/style';
 import {TitleText} from '../../../../../7_shared/ui/text/title-text/title.text';
@@ -11,8 +10,8 @@ import {useEffect, useState} from 'react';
 import {DEFAULT_DATE} from '../../../../../7_shared/consts/default_date';
 import {findFirstFullWeek} from '../../../../../7_shared/ui/special/mini-calendar/lib/dates-utils';
 
-export function MenuData(props: MenuDataProps) {
-  const styles = createStyle(props);
+export function MenuData() {
+  const styles = createStyle();
   const dispatch = useAppDispatch();
 
   const [selectedDate, setSelectedDate] = useState<Date>(DEFAULT_DATE);

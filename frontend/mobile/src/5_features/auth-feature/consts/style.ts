@@ -1,7 +1,6 @@
-import {AuthFeatureProps} from '../model/props';
 import {StyleSheet} from 'react-native';
 
-export const createStyle = (props: AuthFeatureProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   container: {
   },
   titles: {

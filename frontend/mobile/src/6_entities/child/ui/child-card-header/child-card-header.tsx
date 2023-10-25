@@ -5,7 +5,7 @@ import {PaddingArea} from '../../../../7_shared/ui/styling/padding-area';
 import {PADDINGS_HEADER} from './config';
 
 export function ChildCardHeader(props: ChildCardHeaderProps) {
-  const styles = createStyle(props);
+  const styles = createStyle();
 
   return (
     <PaddingArea

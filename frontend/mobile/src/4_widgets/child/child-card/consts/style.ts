@@ -1,7 +1,6 @@
-import {ChildCardProps} from '../model/props';
 import {StyleSheet} from 'react-native';
 
-export const createStyle = (props: ChildCardProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
     borderRadius: 10,

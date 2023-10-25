@@ -1,7 +1,6 @@
-import {EmojiTextProps} from '../model/props';
 import {StyleSheet} from 'react-native';
 
-export const createStyle = (props: EmojiTextProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   container: {
   },
   titles: {

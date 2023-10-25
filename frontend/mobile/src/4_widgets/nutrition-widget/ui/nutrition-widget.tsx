@@ -1,4 +1,4 @@
-import {Image, ScrollView, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {styles} from '../consts/styles';
 import {NutritionHeaderFeature} from '../../../5_features/nutrition/nutrition-header-feature';
 import {NutritionCertFeature} from '../../../5_features/nutrition/nutrition-cert-feature';
@@ -24,7 +24,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
 
   // === variables ===
 
-  const [changeMeal, {isSuccess: isChangingMealSuccess}] = useChangeMealPlanMutation();
+  const [changeMeal] = useChangeMealPlanMutation();
 
   const {data: child, isSuccess: childSuccess, refetch: refetchChild} = useGetChildByIdQuery(props.childId);
 

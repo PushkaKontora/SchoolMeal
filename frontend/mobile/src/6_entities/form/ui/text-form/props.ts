@@ -1,5 +1,5 @@
 import {PropsWithChildren} from 'react';
 
 export type TextFormProps = {
-    functionChangeText: () => {},
+    functionChangeText: () => void,
 } & PropsWithChildren;

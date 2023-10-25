@@ -1,7 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {ChildCardHeaderProps} from './props';
 
-export const createStyle = (props: ChildCardHeaderProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   headerContent: {
     flexDirection: 'row',
 

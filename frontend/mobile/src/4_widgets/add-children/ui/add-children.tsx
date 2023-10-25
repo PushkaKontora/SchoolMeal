@@ -36,7 +36,6 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
     if (data) {
       addChildByID({childId: data.childId}).unwrap();
     }
-    console.log(data?.childId + ' 1');
   };
 
   const closeModal = (): any => {
@@ -45,32 +44,20 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
     setDisabled(false);
   };
 
-  const handleChangeText = (): void => {
-    console.log(' !');
-    setInvisibleErrorMessage(true);
-    setDisabled(false);
-  };
-
   useEffect(() => {
-    console.log('isSuccess' + ' 1');
     if (isSuccess) {
       closeModal();
-      console.log('isSuccess' + ' 2');
     }
   }, [isSuccess]);
 
   useEffect(() => {
-    console.log('error' + ' 1');
     if (isError) {
-      console.log('error' + ' 2');
-      console.log(invisibleErrorMessage, true);
       setInvisibleErrorMessage(false);
-      console.log(invisibleErrorMessage, false);
       setDisabled(true);
     }
   }, [isError]);
 
-  const styles = createStyle(props);
+  const styles = createStyle();
   const ConfirmationModal = () => (
     <ModalFeature
       headerModalTitle={'Добавить ребёнка'}

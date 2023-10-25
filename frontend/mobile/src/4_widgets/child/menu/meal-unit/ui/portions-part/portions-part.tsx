@@ -2,28 +2,22 @@ import {Image, ImageBackground, Text, TouchableOpacity, View} from 'react-native
 import {PortionsPartProps} from './props';
 import {createStyle} from './style';
 import {magicModal} from 'react-native-magic-modal';
-import {ModalHeader} from '../../../../../../6_entities/modal/ui/modal-header/modal-header';
-import {ContentInformationModal} from '../content-information-modal/content-information-modal';
+import {InformationModal} from './infomation-modal';
 
 export function PortionsPart(props: PortionsPartProps) {
-  const styles = createStyle(props);
+  const styles = createStyle();
+
+  const createInfoModal = () => {
+    return (<InformationModal styles={styles} onExit={clickExit} {...props}/>);
+  };
 
   const openInformationPortions = () => {
-    return magicModal.show(InformationModal);
+    return magicModal.show(createInfoModal);
   };
 
-  const clickExit = (): any => {
+  const clickExit = (): void => {
     magicModal.hide();
   };
-
-  const InformationModal = () => (
-    <View style={styles.containerModal}>
-      <ModalHeader
-        headerModalTitle={props.portions.food.name}
-        clickExit={clickExit}/>
-      <ContentInformationModal imagePath={props.imagePath} portions={props.portions}/>
-    </View>
-  );
 
   return (
     <TouchableOpacity onPress={openInformationPortions}

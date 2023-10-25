@@ -3,7 +3,6 @@ import {TitleTextProps} from './props';
 import {createStyle} from './style';
 
 export function TitleText(props: TitleTextProps) {
-
   const styles = createStyle(props);
 
   return (

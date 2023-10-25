@@ -21,7 +21,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16.20.*
-          cache: npm
 
       - name: Настройка Expo
         uses: expo/expo-github-action@v8

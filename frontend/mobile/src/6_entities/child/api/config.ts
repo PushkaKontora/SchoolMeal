@@ -10,7 +10,7 @@ export const CHILD_API = createApi({
   reducerPath: 'api/children',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_BACKEND_URL + '/children',
-    prepareHeaders: async (headers, {getState}) => {
+    prepareHeaders: async (headers) => {
       const token = await AuthTokenService.getToken();
       if (token) {
         return addAuthHeader(headers, token);

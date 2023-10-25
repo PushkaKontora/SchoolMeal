@@ -1,7 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {ModalHeaderProps} from './props';
 
-export const createStyle = (props: ModalHeaderProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   headerContent:{
     flexDirection: 'row',
     marginBottom: 16,

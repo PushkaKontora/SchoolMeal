@@ -15,24 +15,17 @@ export function LoginWidget({navigation}: LoginPageProps) {
     navigation.navigate('SignUp');
   };
 
-  const [signIn, {error}] = AUTH_API.useSignInMutation();
+  const [signIn] = AUTH_API.useSignInMutation();
   const dispatch = useAppDispatch();
 
   const saveToken = async (currentData: LoginFormData) => {
     const response: {data: TokenResponse} = await signIn(currentData);
     await AuthTokenService.saveAuthToken(response.data);
     dispatch(setAuthorized(true));
-
-    console.log(response.data);
   };
 
   const onSubmit = (currentData: LoginFormData) => {
     saveToken(currentData);
-  };
-
-  const onError = (error: any) => {
-    console.log('Error:');
-    console.log(error);
   };
 
   return (
@@ -44,8 +37,7 @@ export function LoginWidget({navigation}: LoginPageProps) {
         marginBottom={16}>
 
         <LoginForm
-          onSubmit={onSubmit}
-          onError={onError}/>
+          onSubmit={onSubmit}/>
 
       </MarginArea>
 

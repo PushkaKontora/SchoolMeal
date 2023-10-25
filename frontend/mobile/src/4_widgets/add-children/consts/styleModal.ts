@@ -1,7 +1,6 @@
-import {ModalAddChildProps} from '../model/props';
 import {StyleSheet} from 'react-native';
 
-export const createStyle = (props: ModalAddChildProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 16,

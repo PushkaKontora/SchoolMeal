@@ -1,7 +1,6 @@
-import {TagsInformationProps} from '../model/props';
 import {StyleSheet} from 'react-native';
 
-export const createStyle = (props: TagsInformationProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   container: {
     flexDirection: 'column',
     gap: 4,
