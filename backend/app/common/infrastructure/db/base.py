@@ -1,5 +1,7 @@
+from typing import Any
+
 from sqlalchemy import MetaData
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import declarative_base
 
 
 POSTGRES_INDEXES_NAMING_CONVENTION = {
@@ -11,5 +13,10 @@ POSTGRES_INDEXES_NAMING_CONVENTION = {
 }
 
 
-class Base(DeclarativeBase):
-    metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)  # type: ignore
+class _Base:
+    def dict(self) -> dict[str, Any]:
+        excl = ("_sa_adapter", "_sa_instance_state")
+        return {k: v for k, v in vars(self).items() if not k.startswith("_") and not any(hasattr(v, a) for a in excl)}
+
+
+Base = declarative_base(cls=_Base, metadata=MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION))
