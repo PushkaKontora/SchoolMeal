@@ -24,7 +24,6 @@ RUN poetry config virtualenvs.create false && \
 
 COPY docker-entrypoint.sh $APP_DIR
 COPY alembic.ini $APP_DIR
-COPY alembic $APP_DIR/alembic
 COPY app $APP_DIR/app
 
 
@@ -36,7 +35,7 @@ COPY tests $APP_DIR/tests
 
 RUN poetry install --no-interaction --no-ansi
 
-CMD make BIN_DIR=/usr/local/bin ci
+RUN make BIN_DIR=/usr/local/bin ci
 
 
 FROM base as final
@@ -44,4 +43,4 @@ FROM base as final
 EXPOSE 8000
 USER $USER
 
-ENTRYPOINT ["sh", "./docker-entrypoint.sh"]
+CMD ["sh", "./docker-entrypoint.sh"]

@@ -22,37 +22,48 @@ echo "--------------------------------------------------"
 echo "Для выбора дефолтного значения нажмите Enter"
 echo "--------------------------------------------------"
 
+echo "IMAGE_TAG=master" >> "$ENV_FILE"
+
 read -r -p "Какие композы использовать[docker-compose.yaml:docker-compose.stand.yaml:docker-compose.dev.yaml]: "
 echo "COMPOSE_FILE=${REPLY:-docker-compose.yaml:docker-compose.stand.yaml:docker-compose.dev.yaml}" >> "$ENV_FILE"
 
-read -r -p "Введите тайм-зону[Asia/Ekaterinburg]: "
-echo "TZ=${REPLY:-Asia/Ekaterinburg}" >> "$ENV_FILE"
+echo "" >> "$ENV_FILE"
+echo "#---------Сервис------------" >> "$ENV_FILE"
+
+read -p "Указать отображение Swagger UI? (Y/n)" -n 1 -s -r yn; echo
+  if [[ "$yn" =~ ^([yY])$ ]] || [[ $yn = "" ]]
+  then
+    read -e -p "Значение по умолчанию [false]: "
+    if [[ $REPLY = "" ]]
+    then
+      echo "SHOW_SWAGGER_UI=false" >> $ENV_FILE ; echo
+    else
+      echo "SHOW_SWAGGER_UI=$REPLY" >> $ENV_FILE ; echo
+    fi
+  else
+    # оставить все по умолчанию и закомментированным
+    echo "SHOW_SWAGGER_UI=false" >> $ENV_FILE ; echo
+  fi
 
 echo "" >> "$ENV_FILE"
-echo "#---------DATABASE------------" >> "$ENV_FILE"
+echo "#---------СУБД------------" >> "$ENV_FILE"
 
 read -r -p "Введите адрес СУБД[postgres-server]: "
-echo "POSTGRES_HOST=${REPLY:-postgres-server}" >> "$ENV_FILE"
+echo "DB_HOST=${REPLY:-postgres-server}" >> "$ENV_FILE"
 
 read -r -p "Введите порт СУБД[5432]: "
-echo "POSTGRES_PORT=${REPLY:-5432}" >> "$ENV_FILE"
+echo "DB_PORT=${REPLY:-5432}" >> "$ENV_FILE"
 
 read -r -p "Введите имя базы данных[school_meal]: "
-echo "POSTGRES_DB=${REPLY:-school_meal}" >> "$ENV_FILE"
+echo "DB_DB=${REPLY:-school_meal}" >> "$ENV_FILE"
 
 read -r -p "Введите имя пользователя СУБД[postgres]: "
-echo "POSTGRES_USER=${REPLY:-postgres}" >> "$ENV_FILE"
+echo "DB_USER=${REPLY:-postgres}" >> "$ENV_FILE"
 
 read -r -p "Введите пароль пользователя СУБД[postgres]: "
-echo "POSTGRES_PASSWORD=${REPLY:-postgres}" >> "$ENV_FILE"
+echo "DB_PASSWORD=${REPLY:-postgres}" >> "$ENV_FILE"
 
 echo "" >> "$ENV_FILE"
 echo "#-----------JWT------------" >> "$ENV_FILE"
 
 add_secret "JWT_SECRET"
-
-read -r -p "Введите время жизни JWT доступа[P0DT0H30M0S]: "
-echo "JWT_ACCESS_LIFETIME=${REPLY:-P0DT0H30M0S}" >> "$ENV_FILE"
-
-read -r -p "Введите время жизни JWT обновления[P30DT0H0M0S]: "
-echo "JWT_REFRESH_LIFETIME=${REPLY:-P30DT0H0M0S}" >> "$ENV_FILE"
