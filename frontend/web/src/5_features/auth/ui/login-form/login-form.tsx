@@ -21,8 +21,6 @@ export function LoginForm(props: LoginFormProps) {
   const onSubmit = (data: LoginFormData) => {
     setDisabled(true);
     props.onSubmit(data);
-
-    console.log(data);
   };
 
   return (

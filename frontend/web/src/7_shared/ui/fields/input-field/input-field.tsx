@@ -13,6 +13,6 @@ export function InputField<FormData>(props: InputFieldProps<FormData>) {
       defaultValue={data.defaultValue}
       onChange={props.onChangeText}
       value={props.value}
-      />
+    />
   );
 }

@@ -7,5 +7,5 @@ export function NoAuthRouter() {
     <Route
       path={NO_AUTH_ROUTES.login}
       element={<LoginPage/>}/>
-  )
+  );
 }

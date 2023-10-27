@@ -19,5 +19,5 @@ export function EmployeeRouter() {
         }/>
 
     </Route>
-  )
+  );
 }

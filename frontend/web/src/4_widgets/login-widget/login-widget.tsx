@@ -6,7 +6,7 @@ import {setAuthorized} from '../../5_features/auth/model/auth-slice/auth-slice';
 import {useAppDispatch} from '../../../store/hooks';
 
 export function LoginWidget() {
-  const [signIn, signInInfo] = useSignInMutation();
+  const [signIn] = useSignInMutation();
   const dispatch = useAppDispatch();
 
   const onSubmit = async (data: LoginFormData) => {

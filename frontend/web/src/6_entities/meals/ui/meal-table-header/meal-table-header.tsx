@@ -10,5 +10,5 @@ export function MealTableHeader(props: MealTableHeaderProps) {
         {props.title}
       </td>
     </Title>
-  )
+  );
 }
