@@ -13,10 +13,12 @@ export function ControlledInputField<FormData>
       rules={data.options}
       render={({field: {onChange, value}}) => (
         <InputField
-          style={props.style}
           data={data}
           value={value}
           onChangeText={onChange}
+          style={props.style}
+          inputRef={props.inputRef}
+          autoFocus={props.autoFocus}
           errors={props.errors}/>
       )}>
 

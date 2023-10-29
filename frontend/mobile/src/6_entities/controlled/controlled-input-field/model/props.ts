@@ -1,7 +1,6 @@
 import {InputFieldProps} from '../../../../7_shared/ui/fields/input-field';
-import {Control, FieldErrors} from 'react-hook-form';
+import {FormControl} from '../../../../7_shared/model/forms/form-types';
 
 export type ControlledInputFieldProps<FormData> = {
-  control: Control<any, any>,
-  errors: FieldErrors,
+  control: FormControl
 } & InputFieldProps<FormData>
