@@ -6,7 +6,7 @@ import {Navigate, useLocation} from 'react-router-dom';
 import {DEFAULT_REDIRECT} from './config';
 
 export function PrivateRoute(props: PrivateRouteProps) {
-  const {data: currentUser, refetch: refetchCurrentUser} = useCurrentUserQuery();
+  const {data: currentUser} = useCurrentUserQuery();
 
   const location = useLocation();
 
@@ -14,7 +14,7 @@ export function PrivateRoute(props: PrivateRouteProps) {
 
   useEffect(() => {
     setRoleMatched(isRoleMatching(props.requiredRole, currentUser));
-  }, [currentUser]);
+  }, [props.requiredRole, currentUser]);
 
   if (roleMatched) {
     return (props.children);

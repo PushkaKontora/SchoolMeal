@@ -1,10 +1,10 @@
 import {TagsInformationProps} from '../model/props';
-import {Image, Text, View} from 'react-native';
+import {View} from 'react-native';
 import {createStyle} from '../consts/style';
 import {TagInformation} from '../../../child-card/ui/tag-information/tag-information';
 
 export function TagsInformation(props: TagsInformationProps) {
-  const styles = createStyle(props);
+  const styles = createStyle();
 
   return (
     <View style={styles.container}>

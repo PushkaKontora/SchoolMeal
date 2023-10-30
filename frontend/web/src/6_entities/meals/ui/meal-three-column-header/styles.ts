@@ -20,7 +20,7 @@ export const Title = styled.tr`
     
     padding-top: 10px;
   }
-`
+`;
 
 export const SubTitles = styled.tr`
   width: 100%;
@@ -51,4 +51,4 @@ export const SubTitles = styled.tr`
   td:last-child {
     color: #58BCBB;
   }
-`
+`;

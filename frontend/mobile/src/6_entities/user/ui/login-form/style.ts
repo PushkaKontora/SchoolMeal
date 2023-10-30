@@ -1,7 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {LoginFormProps} from './props';
 
-export const createStyle = (props: LoginFormProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   container: {
 
   },

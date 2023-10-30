@@ -1,7 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {PortionsPartProps} from './props';
 
-export const createStyle = (props: PortionsPartProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: '#F7F7F7',

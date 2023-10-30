@@ -41,8 +41,6 @@ export function NutritionPanel(props: NutritionPanelProps) {
         findPeriodIdByDate(props.child.cancelMealPeriods, selectedDate)
       );
     }
-
-    console.log('[%s]: %s %s', NutritionPanel.name, 'selected date =', selectedDate.toString());
   }, [selectedDate]);
 
   useEffect(() => {

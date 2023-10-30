@@ -3,10 +3,9 @@ import {MealUnitProps} from '../model/props';
 import {createStyle} from '../consts/style';
 import {TitleText} from '../../../../../7_shared/ui/text/title-text/title.text';
 import {PortionsPart} from './portions-part/portions-part';
-import {useEffect} from 'react';
 
 export function MealUnit(props: MealUnitProps) {
-  const styles = createStyle(props);
+  const styles = createStyle();
 
   return (
     <View style={styles.container}>

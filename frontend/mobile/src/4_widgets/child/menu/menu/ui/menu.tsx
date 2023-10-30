@@ -10,7 +10,7 @@ import {EmojiTextFeature} from '../../../../../5_features/emoji-text-feature/ui/
 
 export function Menu(props: MenuProps) {
   const date = useAppSelector((state) => state.menu.dateMeal);
-  const styles = createStyle(props);
+  const styles = createStyle();
   const {data: mealsForChild, refetch} = useGetMealsQuery({classId: props.classId, dateFrom: date, dateTo: date});
 
   useEffect(() => {

@@ -10,7 +10,7 @@ export function ChildCard(props: ChildCardProps) {
     navigation.navigate('ProfileChild', {childInformation: props.child});
   };
 
-  const styles = createStyle(props);
+  const styles = createStyle();
 
   return (
     <TouchableOpacity

@@ -3,7 +3,7 @@ import {ButtonIconed} from '../../../buttons/button-iconed';
 import {monthPicker} from '../consts/styles';
 import {MonthPickerProps} from '../types/props';
 import {useEffect, useState} from 'react';
-import {changeMonth, createDateFromMonthIndex, findNextMonth, findPrevMonth, getMonthName} from '../lib/month-utils';
+import {createDateFromMonthIndex, findNextMonth, findPrevMonth, getMonthName} from '../lib/month-utils';
 
 export function MonthPicker(props: MonthPickerProps) {
   const [monthObject, setMonthObject] = useState(createDateFromMonthIndex(props.date));

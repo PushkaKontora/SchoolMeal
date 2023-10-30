@@ -1,7 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {ContentInformationModalProps} from './props';
 
-export const createStyle = (props: ContentInformationModalProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   container: {
     flexDirection: 'column',
     gap: 14,

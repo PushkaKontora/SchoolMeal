@@ -1,12 +1,9 @@
 import {Image, ImageBackground, Text, View} from 'react-native';
 import {ContentInformationModalProps} from './props';
 import {createStyle} from './style';
-import {TitleText} from '../../../../../../7_shared/ui/text/title-text/title.text';
-import {useEffect} from 'react';
 
 export function ContentInformationModal(props: ContentInformationModalProps) {
-  const styles = createStyle(props);
-
+  const styles = createStyle();
 
   return (
     <View style={styles.container}>

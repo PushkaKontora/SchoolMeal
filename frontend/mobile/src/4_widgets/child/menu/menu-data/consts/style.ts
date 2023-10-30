@@ -1,7 +1,6 @@
-import {MenuDataProps} from '../model/props';
 import {StyleSheet} from 'react-native';
 
-export const createStyle = (props: MenuDataProps) => StyleSheet.create({
+export const createStyle = () => StyleSheet.create({
   container: {
     borderBottomColor: '#E5E5E5',
     borderBottomWidth: 1,

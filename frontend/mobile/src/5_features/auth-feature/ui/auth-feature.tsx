@@ -5,7 +5,7 @@ import {PaddingArea} from '../../../7_shared/ui/styling/padding-area';
 import {PADDINGS} from '../config/config';
 
 export function AuthFeature(props: AuthFeatureProps) {
-  const styles = createStyle(props);
+  const styles = createStyle();
 
   return (
     <PaddingArea

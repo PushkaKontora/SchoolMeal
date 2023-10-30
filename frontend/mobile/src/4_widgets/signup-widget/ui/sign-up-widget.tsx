@@ -15,14 +15,19 @@ export function SignUpWidget({navigation}: SignUpProps) {
     navigation.goBack();
   };
 
-  const [signIn, signInInfo] = AUTH_API.useSignInMutation();
-  const [register, registerInfo] = USER_API.useRegisterMutation();
+  const [signIn] = AUTH_API.useSignInMutation();
+  const [register] = USER_API.useRegisterMutation();
 
   const dispatch = useAppDispatch();
 
   const asyncRegister = async (currentData: SignUpFormData) => {
     try {
       const {confirmPassword, ...data} = currentData;
+
+      if (confirmPassword == data.password) {
+        // check are passwords equal
+      }
+
       const loginData = {login: data.phone, password: data.password};
 
       await register(data);
@@ -30,20 +35,13 @@ export function SignUpWidget({navigation}: SignUpProps) {
       const response: {data: TokenResponse} = await signIn(loginData);
       await AuthTokenService.saveAuthToken(response.data);
       dispatch(setAuthorized(true));
-
-      console.log(response.data);
     } catch (error) {
-      console.log('Cannot register: ');
-      console.log(error);
+      // empty
     }
   };
 
   const onSubmit = (data: SignUpFormData) => {
     asyncRegister(data);
-  };
-
-  const onError = (error: any) => {
-    console.log('Register error: ' + JSON.stringify(error));
   };
 
   return (
@@ -55,8 +53,7 @@ export function SignUpWidget({navigation}: SignUpProps) {
         marginBottom={16}>
 
         <SignUpForm
-          onSubmit={onSubmit}
-          onError={onError}/>
+          onSubmit={onSubmit}/>
 
       </MarginArea>
 

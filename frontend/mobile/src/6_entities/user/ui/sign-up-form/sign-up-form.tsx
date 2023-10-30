@@ -24,8 +24,6 @@ export function SignUpForm(props: SignUpFormProps) {
   const onSubmit = (data: SignUpFormData) => {
     setDisabled(true);
     props.onSubmit(data);
-
-    console.log(data);
   };
 
   return (

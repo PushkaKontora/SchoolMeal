@@ -4,7 +4,7 @@ import {useState} from 'react';
 import {createStyle} from './style';
 
 export function ButtonSecondary(props: ButtonSecondaryProps) {
-  const [disabled, setDisabled] = useState(Boolean(props.disabled));
+  const [disabled] = useState(Boolean(props.disabled));
 
   const styles = createStyle(props);
 

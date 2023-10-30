@@ -14,6 +14,6 @@ export type NutritionPanelProps = {
 }
 
 export type ConfirmModalProps = {
-  onConfirm: () => {},
-  onClose: () => {}
+  onConfirm: () => void,
+  onClose: () => void
 }

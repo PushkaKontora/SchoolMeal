@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import {Text, View} from 'react-native';
 import {ButtonPrimary} from '../../../7_shared/ui/buttons/button-primary';
 import {AuthTokenService} from '../../../5_features/auth';

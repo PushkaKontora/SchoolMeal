@@ -10,7 +10,6 @@ import {sortMealsOfDate} from '../lib/utils';
 import {BREAKFAST_TITLE, DINNER_TITLE, LUNCH_TITLE} from '../consts/titles';
 import HeaderTeacherWidget from '../../header-teacher/ui/header-teacher';
 import {CLASS_TITLES, TITLE} from '../config/config';
-import {ButtonPrimary} from '../../../7_shared/ui/buttons/button-primary';
 import {ButtonSecondary} from '../../../7_shared/ui/buttons/button-secondary';
 
 export function MealApplicationWidget() {
@@ -27,14 +26,6 @@ export function MealApplicationWidget() {
       setMealRowData(sortMealsOfDate(mealRequests));
     }
   }, [mealRequests]);
-
-  /*
-  useEffect(() => {
-    if (mealRowData) {
-      setTotalMealRowData(createTotalRowData(mealRowData));
-    }
-  }, [mealRowData]);
-   */
 
   return (
     <div>
