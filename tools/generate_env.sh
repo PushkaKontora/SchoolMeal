@@ -22,8 +22,8 @@ echo "--------------------------------------------------"
 echo "Для выбора дефолтного значения нажмите Enter"
 echo "--------------------------------------------------"
 
-read -r -p "Какие композы использовать[docker-compose.yaml:docker-compose.dev.yaml]: "
-echo "COMPOSE_FILE=${REPLY:-docker-compose.yaml:docker-compose.dev.yaml}" >> "$ENV_FILE"
+read -r -p "Какие композы использовать[docker-compose.yaml:docker-compose.stand.yaml:docker-compose.dev.yaml]: "
+echo "COMPOSE_FILE=${REPLY:-docker-compose.yaml:docker-compose.stand.yaml:docker-compose.dev.yaml}" >> "$ENV_FILE"
 
 read -r -p "Введите тайм-зону[Asia/Ekaterinburg]: "
 echo "TZ=${REPLY:-Asia/Ekaterinburg}" >> "$ENV_FILE"
