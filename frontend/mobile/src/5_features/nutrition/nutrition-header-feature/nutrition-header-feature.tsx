@@ -3,6 +3,7 @@ import {ToggleButton} from '../../../7_shared/ui/buttons/toggle-button';
 import {styles} from './styles';
 import {NutritionHeaderFeatureProps} from './props';
 import {getFullName} from '../../../6_entities/child/lib/child-utils';
+import {PreferentialBadge} from '../../../7_shared/ui/special/preferential-badge';
 
 export function NutritionHeaderFeature(props: NutritionHeaderFeatureProps) {
   return (
@@ -18,11 +19,18 @@ export function NutritionHeaderFeature(props: NutritionHeaderFeatureProps) {
       }
 
       <View style={styles.toggleView}>
-        <ToggleButton
-          leftTitle={'Не питается'}
-          rightTitle={'Питается'}
-          defaultState={props?.defaultToggleState}
-          onToggle={props.onToggle}/>
+        {
+          props.child?.certificateBeforeDate ? (
+            <PreferentialBadge title={'Льготное питание'}/>
+          ) :
+            (
+              <ToggleButton
+                leftTitle={'Не питается'}
+                rightTitle={'Питается'}
+                defaultState={props?.defaultToggleState}
+                onToggle={props.onToggle}/>
+            )
+        }
       </View>
     </View>
   );

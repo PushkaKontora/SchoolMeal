@@ -1,6 +1,6 @@
 export type ButtonPrimaryProps = {
     title: string,
-    onPress: () => void,
+    onPress?: () => void,
     borderRadius?: number,
     backgroundColor?: string
     textColor?: string,

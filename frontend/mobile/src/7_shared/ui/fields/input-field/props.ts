@@ -1,5 +1,10 @@
-import {RefObject} from 'react';
-import {InputField} from './input-field';
+import {
+  FormDataOptions,
+  FormErrors,
+  FormInputRef,
+  FormOnChangeText,
+  FormRegister
+} from '../../../model/forms/form-types';
 
 export type InputStyle = {
   width?: string,
@@ -14,7 +19,7 @@ export type InputStyle = {
 };
 
 export type InputData<FormData> = {
-  options: any,
+  options: FormDataOptions,
   label: string,
   name: keyof FormData,
   type?: string,
@@ -25,9 +30,10 @@ export type InputData<FormData> = {
 export type InputFieldProps<FormData> = {
   style?: InputStyle,
   data: InputData<FormData>,
-  errors: any,
-  register?: any,
-  onChangeText?: any,
+  errors: FormErrors,
+  register?: FormRegister,
+  onChangeText?: FormOnChangeText,
   value?: any,
-  inputRef?: RefObject<typeof InputField>
+  autoFocus?: boolean,
+  inputRef?: FormInputRef
 };

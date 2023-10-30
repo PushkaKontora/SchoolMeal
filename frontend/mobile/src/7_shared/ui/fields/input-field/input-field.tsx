@@ -18,6 +18,8 @@ export function InputField<FormData>(props: InputFieldProps<FormData>) {
 
       onChangeText={props.onChangeText}
       value={props.value}
+      ref={props.inputRef}
+      autoFocus={props.autoFocus}
     />
   );
 }

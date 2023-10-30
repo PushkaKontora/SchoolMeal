@@ -22,6 +22,7 @@ export function MenuData() {
   }, [selectedDate]);
 
   const handleDate = (date: Date) => {
+    setMonthDate(date);
     setSelectedDate(date);
   };
 
