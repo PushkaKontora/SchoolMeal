@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  postgres-server:
+    ports:
+      - ${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}
+
+  app:
+    ports:
+      - 8000:8000

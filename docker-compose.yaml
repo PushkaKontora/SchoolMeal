@@ -37,8 +37,8 @@ services:
     <<: *common
 
   app:
+    image: peroovy/school_meal:app-master
     container_name: school_meal_app
-    build: backend
     depends_on:
       postgres-server:
         condition: service_healthy
@@ -51,6 +51,7 @@ services:
     build: frontend/web
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       app:
         condition: service_started
