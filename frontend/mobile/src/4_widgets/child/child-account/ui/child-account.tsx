@@ -6,10 +6,6 @@ import {ButtonPrimary} from '../../../../7_shared/ui/buttons/button-primary';
 export function ChildAccount(props: ChildAccountProps) {
   const styles = createStyle();
 
-  const handleReplenishBalance = () => {
-    // in progress
-  };
-
   return (
     <View style={styles.container}>
       <View>
@@ -22,7 +18,6 @@ export function ChildAccount(props: ChildAccountProps) {
       <View style={styles.containerButton}>
         <ButtonPrimary
           title={'Пополнить'}
-          onPress={handleReplenishBalance}
           backgroundColor={'#EC662A'}
           textColor={'#FFFFFF'}
           borderRadius={100}

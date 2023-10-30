@@ -21,23 +21,16 @@ export function SignUpWidget({navigation}: SignUpProps) {
   const dispatch = useAppDispatch();
 
   const asyncRegister = async (currentData: SignUpFormData) => {
-    try {
-      const {confirmPassword, ...data} = currentData;
+    //eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const {confirmPassword, ...data} = currentData;
 
-      if (confirmPassword == data.password) {
-        // check are passwords equal
-      }
+    const loginData = {login: data.phone, password: data.password};
 
-      const loginData = {login: data.phone, password: data.password};
+    await register(data);
 
-      await register(data);
-
-      const response: {data: TokenResponse} = await signIn(loginData);
-      await AuthTokenService.saveAuthToken(response.data);
-      dispatch(setAuthorized(true));
-    } catch (error) {
-      // empty
-    }
+    const response: {data: TokenResponse} = await signIn(loginData);
+    await AuthTokenService.saveAuthToken(response.data);
+    dispatch(setAuthorized(true));
   };
 
   const onSubmit = (data: SignUpFormData) => {
