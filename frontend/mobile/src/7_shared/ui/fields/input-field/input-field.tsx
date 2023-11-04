@@ -17,9 +17,13 @@ export function InputField<FormData>(props: InputFieldProps<FormData>) {
       defaultValue={data.defaultValue}
 
       onChangeText={props.onChangeText}
+      onFocus={props.onFocus}
+      onBlur={props.onBlur}
       value={props.value}
       ref={props.inputRef}
       autoFocus={props.autoFocus}
+      maxLength={props.maxLength}
+      numberOfLines={props.numberOfLines}
     />
   );
 }

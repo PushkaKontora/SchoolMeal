@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "fix": "eslint --fix ."
+    "fix": "eslint --fix .",
+    "ts-check": "tsc --noEmit"
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",

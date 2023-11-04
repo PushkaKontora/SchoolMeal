@@ -33,7 +33,11 @@ export type InputFieldProps<FormData> = {
   errors: FormErrors,
   register?: FormRegister,
   onChangeText?: FormOnChangeText,
+  onFocus?: () => void,
+  onBlur?: () => void,
   value?: any,
   autoFocus?: boolean,
-  inputRef?: FormInputRef
+  inputRef?: FormInputRef,
+  maxLength?: number,
+  numberOfLines?: number
 };

@@ -1,5 +1,5 @@
 import {Text, View } from 'react-native';
-import {ControlledInputField} from '../../../6_entities/controlled/controlled-input-field';
+import {ControlledInputField} from '../../../7_shared/ui/controlled/controlled-input-field';
 import {INPUT_DATA} from '../consts/input-data';
 import {ErrorMessage} from '../../../6_entities/modal/ui/error-message/error-message';
 import {ModalFeature} from '../../../5_features/modal-feature/ui/modal-feature';

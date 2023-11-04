@@ -1,6 +1,6 @@
 import {Controller} from 'react-hook-form';
 import {ControlledInputFieldProps} from '../model/props';
-import {InputData, InputField} from '../../../../7_shared/ui/fields/input-field';
+import {InputData, InputField} from '../../../fields/input-field';
 
 export function ControlledInputField<FormData>
 (props: ControlledInputFieldProps<FormData>) {
@@ -16,7 +16,11 @@ export function ControlledInputField<FormData>
           data={data}
           value={value}
           onChangeText={onChange}
+          onFocus={props.onFocus}
+          onBlur={props.onBlur}
           style={props.style}
+          maxLength={props.maxLength}
+          numberOfLines={props.numberOfLines}
           inputRef={props.inputRef}
           autoFocus={props.autoFocus}
           errors={props.errors}/>
