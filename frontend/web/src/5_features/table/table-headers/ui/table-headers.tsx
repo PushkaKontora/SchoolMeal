@@ -8,7 +8,7 @@ export default function TableHeaders(props: TableHeadersProps) {
   return (
     <tr>
       <td scope='col' className='col_name'>
-        <BasicCheckbox />
+        <BasicCheckbox isDisable={false} />
         <span className='spanName'>ФИО</span>
       </td>
       <td scope='col'>
@@ -20,7 +20,7 @@ export default function TableHeaders(props: TableHeadersProps) {
         {price && <div className='price'>{price[1]} ₽</div>}
       </td>
       <td scope='col'>
-        <div className='nameCol'>Ужин</div>
+        <div className='nameCol'>Полдник</div>
         {price && <div className='price'>{price[2]} ₽</div>}
       </td>
       <td scope='col'>

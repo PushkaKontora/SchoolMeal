@@ -1,9 +1,11 @@
 import { useState } from 'react';
 
 import '../consts/style.scss';
+import { BasicCheckboxProps } from '../model/props';
 
-export default function BasicCheckbox() {
-  const [isChecked, setIsChecked] = useState(false);
+export default function BasicCheckbox(props: BasicCheckboxProps) {
+  const { isDisable, isCheck } = props;
+  const [isChecked, setIsChecked] = useState(isCheck);
 
   return (
     <label>
@@ -14,7 +16,9 @@ export default function BasicCheckbox() {
         }}
       />
       <svg
-        className={`checkbox ${isChecked ? 'checkbox--active' : ''}`}
+        className={`checkbox ${
+          isDisable ? 'checkbox--disabled' : isChecked ? 'checkbox--active' : ''
+        }`}
         // This element is purely decorative so
         // we hide it for screen readers
         aria-hidden='true'

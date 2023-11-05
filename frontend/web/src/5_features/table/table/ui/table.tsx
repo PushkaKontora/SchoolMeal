@@ -17,6 +17,9 @@ export default function Table() {
               balance={item.price.toString()}
               total={item?.total}
               key={item.id}
+              breakfast={item.breakfast}
+              lunch={item.lunch}
+              snack={item.snack}
             />
           ))}
         </tbody>

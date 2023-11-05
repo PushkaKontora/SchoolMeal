@@ -1,5 +1,5 @@
 label {
- width: 18px;
+  width: 18px;
 }
 
 input[type='checkbox'] {
@@ -19,12 +19,18 @@ input[type='checkbox'] {
   background: #fff;
   border: 0.8px #333333 solid;
   border-radius: 3.2px;
+  cursor: pointer;
   // margin-right: 4px;
 }
 
 .checkbox--active {
   border-color: #353636;
   background: #353636;
+  cursor: pointer;
+}
+
+.checkbox--disabled {
+  border: 0.8px #dbdbdb solid;
 }
 
 // .custom-checkbox {
