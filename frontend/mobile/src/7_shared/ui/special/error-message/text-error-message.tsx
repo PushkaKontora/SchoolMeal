@@ -2,7 +2,7 @@ import {Text} from 'react-native';
 import {ErrorMessageProps} from './props';
 import {createStyle} from './style';
 
-export function ErrorMessage(props: ErrorMessageProps) {
+export function TextErrorMessage(props: ErrorMessageProps) {
   const styles = createStyle(props);
 
   return (

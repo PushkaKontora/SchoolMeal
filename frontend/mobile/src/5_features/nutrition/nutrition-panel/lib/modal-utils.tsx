@@ -1,9 +1,9 @@
 import {magicModal} from 'react-native-magic-modal';
-import {ConfirmModal} from '../ui/confirm-modal';
+import {ConfirmationModal} from '../ui/confirmation-modal';
 
 export function showModal(onConfirm: () => void, onClose: () => void) {
   magicModal.show(() => (
-    <ConfirmModal
+    <ConfirmationModal
       onConfirm={onConfirm}
       onClose={onClose}/>
   ));

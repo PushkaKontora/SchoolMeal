@@ -15,12 +15,16 @@ export function ControlledInputField<FormData>
         <InputField
           data={data}
           value={value}
-          onChangeText={onChange}
+          onChangeText={(text: string) => {
+            onChange();
+            props?.onChangeText?.(text);
+          }}
           onFocus={props.onFocus}
           onBlur={props.onBlur}
           style={props.style}
           maxLength={props.maxLength}
           numberOfLines={props.numberOfLines}
+          multiline={props.multiline}
           inputRef={props.inputRef}
           autoFocus={props.autoFocus}
           errors={props.errors}/>

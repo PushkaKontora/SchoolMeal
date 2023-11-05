@@ -3,9 +3,10 @@ import {InputFieldLimitedProps} from '../model/props';
 import {createStyle} from '../const/main-styles';
 import {View} from 'react-native';
 import {SymbolCounter} from '../../symbol-counter';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {FormOnChangeText} from '../../../../../model/forms/form-types';
 import {applyViewStyle, composeStyles} from '../lib/lib';
+import {DEFAULT_MAX_LENGTH} from '../const/config';
 
 export function InputFieldLimited<FormData>
 (props: InputFieldLimitedProps<FormData>) {
@@ -30,10 +31,11 @@ export function InputFieldLimited<FormData>
         onChangeText={onChangeText}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        maxLength={props.symbolLimit}
+        maxLength={props.maxLength || DEFAULT_MAX_LENGTH}
         numberOfLines={props.numberOfLines}
+        multiline={true}
       />
-      <SymbolCounter limit={props.symbolLimit} currentSymbols={currentSymbols}/>
+      <SymbolCounter limit={props.maxLength || DEFAULT_MAX_LENGTH} currentSymbols={currentSymbols}/>
     </View>
   );
 }

@@ -1,17 +1,15 @@
 import {Text, View } from 'react-native';
 import {ControlledInputField} from '../../../7_shared/ui/controlled/controlled-input-field';
 import {INPUT_DATA} from '../consts/input-data';
-import {ErrorMessage} from '../../../6_entities/modal/ui/error-message/error-message';
-import {ModalFeature} from '../../../5_features/modal-feature/ui/modal-feature';
+import {TextErrorMessage} from '../../../7_shared/ui/special/error-message/text-error-message';
 import {ConfirmationModalProps} from '../model/props';
+import {ButtonPrimary} from '../../../7_shared/ui/buttons/button-primary';
+import {ModalWindow} from '../../../7_shared/ui/modal/modal-window/ui/modal-window';
 
 export function ConfirmationModal(props: ConfirmationModalProps) {
   return (
-    <ModalFeature
+    <ModalWindow
       headerModalTitle={'Добавить ребёнка'}
-      buttonTitle={'Добавить ребёнка'}
-      functionButton={props.onConfirm}
-      disabledButton={props.confirmDisabled}
       clickExit={props.onClose}>
       <View style={props.styles.content}>
         <Text style={props.styles.contentTitle}>
@@ -25,10 +23,17 @@ export function ConfirmationModal(props: ConfirmationModalProps) {
           style={props.styles.inputField}
           autoFocus={true}
         />
-        <ErrorMessage
+        <TextErrorMessage
           displayErrorMessage={props.displayError}
-          textMessage={'Индентификатора не существует'}/>
+          textMessage={'Идентификатора не существует'}/>
       </View>
-    </ModalFeature>
+      <ButtonPrimary
+        title={'Добавить ребёнка'}
+        onPress={props.onConfirm}
+        backgroundColor={'#EC662A'}
+        disabled={props.confirmDisabled}
+        textColor={'#FFFFFF'}
+        borderRadius={10}/>
+    </ModalWindow>
   );
 }

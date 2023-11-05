@@ -30,13 +30,10 @@ export const styles = StyleSheet.create({
 
 export const modalStyles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignContent: 'center'
+    alignContent: 'center',
+    gap: 32
   },
   title: {
-    marginTop: 24,
-    marginBottom: 32,
-    marginHorizontal: 48,
     fontSize: 16,
     fontWeight: '500',
     textAlign: 'center'

@@ -24,6 +24,7 @@ export function InputField<FormData>(props: InputFieldProps<FormData>) {
       autoFocus={props.autoFocus}
       maxLength={props.maxLength}
       numberOfLines={props.numberOfLines}
+      multiline={props.multiline}
     />
   );
 }

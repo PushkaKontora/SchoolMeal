@@ -1,7 +1,7 @@
 import {Image, Text, TouchableOpacity} from 'react-native';
 import {ModalHeaderProps} from './props';
 import {createStyle} from './style';
-import {PaddingArea} from '../../../../7_shared/ui/styling/padding-area';
+import {PaddingArea} from '../../styling/padding-area';
 import {PADDINGS_HEADER} from './config';
 
 export function ModalHeader(props: ModalHeaderProps) {

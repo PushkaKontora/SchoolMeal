@@ -16,7 +16,7 @@ export const createStyle = (props: ButtonPrimaryProps) => StyleSheet.create({
   },
   title: {
     color: props.textColor || '#FFFFFF',
-    fontWeight: '600',
+    fontWeight: props.fontWeight || '600',
     fontSize: props.fontSize || 16
   }
 });

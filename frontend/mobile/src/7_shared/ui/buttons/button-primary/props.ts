@@ -1,3 +1,5 @@
+import {TextStyle} from 'react-native';
+
 export type ButtonPrimaryProps = {
     title: string,
     onPress?: () => void,
@@ -6,6 +8,7 @@ export type ButtonPrimaryProps = {
     textColor?: string,
     disabled?: boolean,
     fontSize?: number,
+    fontWeight?: TextStyle['fontWeight'],
     paddingVertical?: number,
     paddingHorizontal?: number,
 };

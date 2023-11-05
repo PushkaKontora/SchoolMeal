@@ -5,6 +5,12 @@ export const createStyle = (props: InputStyle | undefined) => StyleSheet.create(
   internalField: {
     borderWidth: 0,
     width: '100%',
+    backgroundColor: '#00000000',
+    fontWeight: '500',
+    fontSize: 12,
+    textAlignVertical: 'top',
+    paddingVertical: 0,
+    paddingHorizontal: 0,
     color: props?.color || '#151515'
   },
   container: {
@@ -17,7 +23,7 @@ export const createStyle = (props: InputStyle | undefined) => StyleSheet.create(
     borderWidth: props?.borderWidth || 1,
     flexDirection: 'column',
     gap: 10,
-    alignContent: 'flex-end'
+    alignItems: 'flex-end'
   },
   containerActive: {
     borderColor: props?.borderColor || '#FFC9B1'

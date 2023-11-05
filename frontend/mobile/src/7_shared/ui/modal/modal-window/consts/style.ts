@@ -10,12 +10,5 @@ export const createStyle = () => StyleSheet.create({
   },
   container: {
     flex: 1,
-  },
-  titles: {
-    // flexDirection: 'column',
-    // gap: 6,
-    // alignItems: 'center',
-    // marginBottom: 21,
-    // marginHorizontal: 'auto',
-  },
+  }
 });
