@@ -15,7 +15,6 @@ export const CHILDRENS_NAME = [
     id: 12,
     price: 533,
     name: 'Няшина Кристина Юрьевна',
-    total: 0,
   },
   {
     id: 13,

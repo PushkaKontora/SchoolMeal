@@ -1,0 +1,9 @@
+.date {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .text {
+    white-space: nowrap;
+  }
+}
