@@ -4,5 +4,7 @@ export type TableRowProps = {
   name: string;
   balance: string;
   total?: string | number;
-  //price?: string | number
+  breakfast: true,
+  lunch: false,
+  snack: false,
 } & PropsWithChildren;
