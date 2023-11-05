@@ -1,4 +1,111 @@
 .containerTeacherMain {
   width: 80%;
   margin: 0 auto;
+
+  .containerTeacherApplyApplication {
+    margin-top: 34px;
+
+    .title {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+
+      .titleText {
+        font-weight: 500;
+        font-size: 32px;
+        line-height: 32px;
+        letter-spacing: 0.05em;
+
+        color: #313131;
+      }
+
+      .status {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 14px;
+        color: #313131;
+        padding: 4px 12px;
+        margin-top: 3px;
+
+        background: #ffdbc3;
+        border-radius: 5px;
+
+        &__done {
+          background: #bbe4e3;
+        }
+      }
+    }
+
+    .message {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 21px;
+      color: #757575;
+      margin-top: 13px;
+    }
+
+    .containerTeacherApplication {
+      margin-top: 24px;
+      position: relative;
+
+      .btnSendAppl {
+        margin-left: auto;
+        margin-top: 24px;
+        width: 296px;
+
+        .btn {
+          padding: 14px;
+          background-color: #ec662a;
+          color: #ffffff;
+          font-size: 14px;
+          border-radius: 10px;
+          font-weight: 700;
+          font-family: 'Ubuntu', serif;
+
+          width: 100%;
+          border-width: 0;
+
+          &:hover {
+            background-color: #e57645;
+            transition: 0.3s linear;
+          }
+
+          &:active {
+            background-color: #d5551c;
+            transition: 0.3s linear;
+          }
+        }
+      }
+    }
+
+    .modalText {
+      padding: 20px 28px;
+      font-family: 'Graphik LCG', serif;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 16px;
+      letter-spacing: 0.05em;
+
+      color: #313131;
+
+      background-color: #bbe4e3;
+      border-radius: 6px;
+
+      white-space: nowrap;
+
+      position: fixed;
+      right: 10%;
+      top: 10%; /* в левый-верхний угол */
+    }
+
+    .containerClassSelection {
+      .headerTable {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+  }
 }
