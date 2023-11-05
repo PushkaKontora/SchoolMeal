@@ -19,6 +19,10 @@ class NotUniqueLoginError(Exception):
     pass
 
 
+class NotFoundUserError(Exception):
+    pass
+
+
 class ICredentialsRepository(ABC):
     @abstractmethod
     async def get_by_login(self, login: Login) -> Credential:
@@ -61,6 +65,14 @@ class IUsersRepository(ABC):
     async def save(self, user: User) -> None:
         """
         :raise NotUniqueLoginError: неуникальный логин
+        """
+
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_by_credential_id(self, credential_id: UUID) -> User:
+        """
+        :raise NotFoundUserError: не найден пользователь
         """
 
         raise NotImplementedError

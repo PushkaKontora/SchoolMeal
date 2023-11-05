@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.account.api.dependencies import UsersRepositoryDep
+from app.account.api.dependencies.repositories import UsersRepositoryDep
 from app.account.api.registration.schemas import IncorrectRegistrationFormError, ParentRegistrationForm
 from app.account.application.use_cases.registration import AlreadyRegisteredPhoneError, register_parent
 from app.common.api.dependencies import SessionDep

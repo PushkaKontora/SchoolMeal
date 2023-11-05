@@ -10,6 +10,7 @@ from app.account.application.repositories import (
     IUsersRepository,
     NotFoundCredentialError,
     NotFoundSessionError,
+    NotFoundUserError,
     NotUniqueLoginError,
 )
 from app.account.domain.credential import Credential
@@ -92,3 +93,13 @@ class UsersRepository(IUsersRepository):
 
         except IntegrityError as error:
             raise NotUniqueLoginError from error
+
+    async def get_by_credential_id(self, credential_id: UUID) -> User:
+        try:
+            query = select(UserDB).where(UserDB.credential_id == credential_id)
+            user_db: UserDB = (await self._session.scalars(query)).one()
+
+        except NoResultFound as error:
+            raise NotFoundUserError from error
+
+        return user_db.to_model()

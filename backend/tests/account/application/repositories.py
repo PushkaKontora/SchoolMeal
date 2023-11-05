@@ -6,6 +6,7 @@ from app.account.application.repositories import (
     IUsersRepository,
     NotFoundCredentialError,
     NotFoundSessionError,
+    NotFoundUserError,
     NotUniqueLoginError,
 )
 from app.account.domain.credential import Credential
@@ -67,3 +68,9 @@ class LocalUsersRepository(IUsersRepository):
             raise NotUniqueLoginError
 
         self._users += [user]
+
+    async def get_by_credential_id(self, credential_id: UUID) -> User:
+        try:
+            return next(user for user in self._users if user.credential.id == credential_id)
+        except StopIteration as error:
+            raise NotFoundUserError from error

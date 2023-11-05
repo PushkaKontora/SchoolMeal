@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response
 
-from app.account.api.dependencies import CredentialsRepositoryDep, SessionsRepositoryDep
-from app.account.api.jwt.dependencies import (
+from app.account.api.dependencies.repositories import CredentialsRepositoryDep, SessionsRepositoryDep
+from app.account.api.dependencies.tokens import (
     AccessTokenDep,
     RefreshTokenDep,
     add_refresh_in_cookies,
