@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.common.api.dependencies import SessionDep
+from app.common.api.dependencies.db import SessionDep
 from app.common.api.errors import LogicError, ValidationModelError
 from app.common.api.schemas import HTTPError, OKSchema
 from app.users.api.dependencies.repositories import UsersRepositoryDep

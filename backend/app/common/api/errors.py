@@ -21,6 +21,16 @@ class ValidationModelError(HTTPException):
         super().__init__(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=detail)
 
 
+class UnprocessableEntity(HTTPException):
+    def __init__(self, detail: str) -> None:
+        super().__init__(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=detail)
+
+
+class BadRequest(HTTPException):
+    def __init__(self, detail: str) -> None:
+        super().__init__(status_code=status.HTTP_400_BAD_REQUEST, detail=detail)
+
+
 class AuthenticateError(HTTPException):
     def __init__(self, detail: str = "Ошибка аутентификации") -> None:
         super().__init__(status_code=status.HTTP_401_UNAUTHORIZED, detail=detail)
@@ -55,6 +65,13 @@ async def logic_error_handler(request: Request, exception: LogicError) -> JSONRe
 
 
 async def validation_model_error_handler(request: Request, exception: ValidationModelError) -> JSONResponse:
+    logger.error(request.url)
+    logger.error(exception.detail)
+
+    return JSONResponse(status_code=exception.status_code, content={"detail": exception.detail})
+
+
+async def logging_http_error_handler(request: Request, exception: HTTPException) -> JSONResponse:
     logger.error(request.url)
     logger.error(exception.detail)
 

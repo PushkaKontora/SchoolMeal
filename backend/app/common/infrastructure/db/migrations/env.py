@@ -5,6 +5,7 @@ from alembic.config import Config
 from sqlalchemy import engine_from_config, pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.future import Engine
 
 from app.common.infrastructure.db.base import Base
 from app.common.infrastructure.db.utils import create_database, exists_database, wait_connect
@@ -12,6 +13,7 @@ from app.common.infrastructure.settings import database
 
 
 from app.users.infrastructure.db.models import SessionDB, UserDB  # isort: skip
+from app.feedbacks.infrastructure.db.models import FeedbackDB, CanteenDB  # isort: skip
 
 
 config: Config = context.config
@@ -40,15 +42,13 @@ def do_run_migrations(connection: Connection) -> None:
 
 
 async def run_migrations_online() -> None:
-    configuration = config.get_section(config.config_ini_section)
-
-    connectable = AsyncEngine(
-        engine_from_config(
-            configuration,
-            poolclass=pool.NullPool,
-            future=True,
-        )
+    engine: Engine = engine_from_config(  # type: ignore
+        config.get_section(config.config_ini_section),
+        poolclass=pool.NullPool,
+        future=True,
     )
+
+    connectable = AsyncEngine(engine)
 
     await wait_connect(database)
 
