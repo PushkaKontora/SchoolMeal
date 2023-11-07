@@ -3,7 +3,7 @@ version: "3.9"
 x-database: &database
   DB_HOST: ${DB_HOST:-postgres-server}
   DB_PORT: ${DB_PORT:-5432}
-  DB_DB: ${DB_DB:-school_meal}
+  DB_NAME: ${DB_NAME:-school_meal}
   DB_USER: ${DB_USER:-postgres}
   DB_PASSWORD: ${DB_PASSWORD:-postgres}
 

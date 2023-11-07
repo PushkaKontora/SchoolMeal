@@ -22,7 +22,7 @@ echo "--------------------------------------------------"
 echo "Для выбора дефолтного значения нажмите Enter"
 echo "--------------------------------------------------"
 
-echo "IMAGE_TAG=master" >> "$ENV_FILE"
+echo "BRANCH_TAG=master" >> "$ENV_FILE"
 
 read -r -p "Какие композы использовать[docker-compose.yaml:docker-compose.stand.yaml:docker-compose.dev.yaml]: "
 echo "COMPOSE_FILE=${REPLY:-docker-compose.yaml:docker-compose.stand.yaml:docker-compose.dev.yaml}" >> "$ENV_FILE"
@@ -55,7 +55,7 @@ read -r -p "Введите порт СУБД[5432]: "
 echo "DB_PORT=${REPLY:-5432}" >> "$ENV_FILE"
 
 read -r -p "Введите имя базы данных[school_meal]: "
-echo "DB_DB=${REPLY:-school_meal}" >> "$ENV_FILE"
+echo "DB_NAME=${REPLY:-school_meal}" >> "$ENV_FILE"
 
 read -r -p "Введите имя пользователя СУБД[postgres]: "
 echo "DB_USER=${REPLY:-postgres}" >> "$ENV_FILE"

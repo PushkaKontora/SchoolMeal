@@ -1,4 +1,4 @@
-env:
+new_env:
 	tools/generate_env.sh
 
 certs:
