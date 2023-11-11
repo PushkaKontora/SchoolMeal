@@ -36,7 +36,13 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
+    context.configure(
+        connection=connection,
+        compare_type=True,
+        target_metadata=target_metadata,
+        version_table_schema=target_metadata.schema,
+        include_schemas=True,
+    )
 
     with context.begin_transaction():
         context.run_migrations()
