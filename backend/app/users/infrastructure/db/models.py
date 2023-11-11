@@ -16,7 +16,11 @@ from app.users.domain.session import Session
 from app.users.domain.user import User
 
 
-class SessionDB(Base):
+class UsersSchemaMixin:
+    __table_args__ = {"schema": "users"}
+
+
+class SessionDB(Base, UsersSchemaMixin):
     __tablename__ = "session"
 
     id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
@@ -48,7 +52,7 @@ class SessionDB(Base):
         )
 
 
-class UserDB(Base):
+class UserDB(Base, UsersSchemaMixin):
     __tablename__ = "user"
 
     id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)

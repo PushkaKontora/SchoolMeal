@@ -10,8 +10,12 @@ from app.feedbacks.domain.feedback import Feedback
 from app.feedbacks.domain.text import FeedbackText
 
 
-class CanteenDB(Base):
-    __tablename__ = "feedback_canteen"
+class FeedbacksSchemaMixin:
+    __table_args__ = {"schema": "feedbacks"}
+
+
+class CanteenDB(Base, FeedbacksSchemaMixin):
+    __tablename__ = "canteen"
 
     id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
 
@@ -23,7 +27,7 @@ class CanteenDB(Base):
         return cls(id=canteen.id)
 
 
-class FeedbackDB(Base):
+class FeedbackDB(Base, FeedbacksSchemaMixin):
     __tablename__ = "feedback"
 
     id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
