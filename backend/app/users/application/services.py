@@ -106,6 +106,16 @@ class UserService:
 
         return parent
 
+    async def authorize(self, access_token: str) -> User:
+        """
+        :raise SignatureIsBroken: токен повреждён
+        :raise TokenHasExpired: время жизни токена истекло
+        :raise NotFoundUser: не был найден пользователь, для которого был выпущен токен
+        """
+
+        # TODO: переписать временную заглушку https://miro.com/app/board/uXjVMqgVYdU=/?moveToWidget=3458764569629152407&cot=14
+        return await self.get_user_by_access_token(access_token)
+
 
 @dataclass
 class SessionService:

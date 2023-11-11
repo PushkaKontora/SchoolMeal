@@ -7,3 +7,9 @@ services:
       SHOW_SWAGGER_UI: 'true'
     volumes:
       - ./backend/app:/school_meal/app
+
+  nginx:
+    build:
+      target: proxy
+    volumes:
+      - ./frontend/web/nginx:/etc/nginx/conf.d

@@ -2,8 +2,8 @@ from fastapi import APIRouter, Response, status
 
 from app.common.api import responses
 from app.common.api.dependencies import SessionDep
-from app.common.api.errors import BadRequestError, NotFoundError, UnprocessableEntityError
-from app.common.api.schemas import OKSchema
+from app.common.api.errors import AuthorizationError, BadRequestError, NotFoundError, UnprocessableEntityError
+from app.common.api.schemas import AuthorizedUserOut, OKSchema
 from app.users.api.dependencies.services import SessionServiceDep, UserServiceDep
 from app.users.api.dependencies.settings import JWTSettingsDep
 from app.users.api.dependencies.tokens import (
@@ -23,6 +23,25 @@ from app.users.domain.tokens import SignatureIsBroken, TokenHasExpired
 
 
 router = APIRouter()
+
+
+@router.get(
+    "/authorize",
+    summary="Авторизация для обращения к эндпоинтам",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses=responses.FORBIDDEN,
+)
+async def authorize(access_token: AccessTokenDep, user_service: UserServiceDep) -> Response:
+    try:
+        user = await user_service.authorize(access_token)
+    except Exception as error:
+        raise AuthorizationError from error
+
+    user_out = AuthorizedUserOut(
+        id=user.id,
+        role=user.role.value,
+    )
+    return Response(status_code=status.HTTP_204_NO_CONTENT, headers={"X-User": user_out.json()})
 
 
 @router.post(

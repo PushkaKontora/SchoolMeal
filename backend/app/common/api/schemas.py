@@ -1,20 +1,14 @@
-from functools import partial
+from enum import Enum
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-
-DatetimeField = partial(Field, example="2023-04-19T21:58:30.912109")
-
-
-def _camelize_snakecase(string: str) -> str:
-    parts = string.split("_")
-
-    return parts[0].lower() + "".join(part.title() for part in parts[1:]) if len(parts) > 1 else string
+from app.common.api.utils import camelize_snakecase
 
 
 class FrontendModel(BaseModel):
     class Config:
-        alias_generator = _camelize_snakecase
+        alias_generator = camelize_snakecase
         allow_population_by_field_name = True
 
 
@@ -24,3 +18,15 @@ class OKSchema(FrontendModel):
 
 class HTTPError(BaseModel):
     detail: str = Field(example="Сообщение ошибки")
+
+
+class RoleOut(str, Enum):
+    PARENT = "parent"
+    TEACHER = "teacher"
+    MEAL_ORGANIZER = "meal_organizer"
+    CANTEEN_STAFF = "canteen_staff"
+
+
+class AuthorizedUserOut(BaseModel):
+    id: UUID
+    role: RoleOut

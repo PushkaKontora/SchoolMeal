@@ -24,7 +24,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       PG_DATA: /data/postgres
     volumes:
-      - postgres_volume:/data/postgres
+      - postgres_volume:/var/lib/postgresql/data
     networks:
       - school_meal_nw
 
@@ -39,15 +39,17 @@ services:
     networks:
       - school_meal_nw
 
-  web:
-    container_name: school_meal_web
-    build: frontend/web
+  nginx:
+    container_name: school_meal_nginx
+    build:
+      context: frontend/web
+      dockerfile: Dockerfile
+      target: web
     ports:
       - "80:80"
       - "443:443"
     depends_on:
-      app:
-        condition: service_started
+      - app
     volumes:
       - ./env/nginx/certs:/etc/ssl/nginx:ro
     networks:
