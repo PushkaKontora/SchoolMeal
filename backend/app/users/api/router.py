@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, status
 
 from app.common.api import responses
-from app.common.api.dependencies import SessionDep
+from app.common.api.dependencies.db import SessionDep
 from app.common.api.errors import AuthorizationError, BadRequestError, NotFoundError, UnprocessableEntityError
 from app.common.api.schemas import AuthorizedUserOut, OKSchema
 from app.users.api.dependencies.services import SessionServiceDep, UserServiceDep
@@ -22,7 +22,7 @@ from app.users.domain.session import CantRevokeAlreadyRevokedSession
 from app.users.domain.tokens import SignatureIsBroken, TokenHasExpired
 
 
-router = APIRouter()
+router = APIRouter(prefix="/users", tags=["Модуль пользователей"])
 
 
 @router.get(
