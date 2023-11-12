@@ -2,12 +2,14 @@ version: "3.9"
 
 services:
   app:
+    build: backend
+    environment:
+      SHOW_SWAGGER_UI: 'true'
     volumes:
-      - media_volume:/app/media
+      - ./backend/app:/school_meal/app
 
-  web:
+  nginx:
+    build:
+      target: proxy
     volumes:
-      - media_volume:/app/media
-
-volumes:
-  media_volume:
+      - ./frontend/web/nginx:/etc/nginx/conf.d

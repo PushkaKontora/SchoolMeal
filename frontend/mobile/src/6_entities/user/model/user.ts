@@ -1,12 +1,11 @@
+import {Role} from '../../../7_shared/model/role';
 
 export type User = {
-  id: number,
+  id: string,
   lastName: string,
   firstName: string,
   login: string,
-  // role: Role,
+  role: Role,
   phone: string,
-  email: string,
-  photoPath: string,
-  createdAt: Date
+  email: string
 }

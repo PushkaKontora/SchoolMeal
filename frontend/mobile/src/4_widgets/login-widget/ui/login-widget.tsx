@@ -1,6 +1,6 @@
 import {MarginArea} from '../../../7_shared/ui/styling/margin-area';
 import {HorizontalLine} from '../../../7_shared/ui/styling/horizontal-line';
-import {AuthFeature} from '../../../5_features/auth-feature/ui/auth-feature';
+import {AuthFeature} from '../../../5_features/auth';
 import {HEADER_TITLE, SUBHEADER_TITLE} from '../consts/consts';
 import {LoginForm, LoginFormData} from '../../../6_entities/user';
 import {LoginPageProps} from '../../../3_pages/login-page/model/props';

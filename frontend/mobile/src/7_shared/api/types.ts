@@ -14,7 +14,9 @@ export type ConfigSettings = {
 };
 
 export type UniversalResponse = {
-  msg?: string
+  detail: string
 }
 
-
+export type UniversalError = {
+  detail: string
+}

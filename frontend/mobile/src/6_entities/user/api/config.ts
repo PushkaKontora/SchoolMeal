@@ -25,7 +25,7 @@ export const CONFIG: ConfigSettings = {
   endpoints: build => ({
     register: build.mutation<User, RegisterBody>({
       query: (body) => ({
-        url: '',
+        url: 'register-parent',
         method: 'POST',
         body: body,
       }),

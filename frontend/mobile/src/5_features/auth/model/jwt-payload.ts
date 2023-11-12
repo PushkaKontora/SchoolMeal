@@ -1,8 +1,10 @@
-import {Role} from '../../../7_shared/model/role';
+import {UUID} from './uuid';
 
 export type JwtPayload = {
-  type: string,
-  user_id: number,
-  role: Role,
-  expires_in: number
+  jti: UUID,
+  token: string,
+  user_id: UUID,
+  device_id: UUID,
+  iat: number,
+  exp: number
 }

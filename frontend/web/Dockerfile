@@ -21,13 +21,18 @@ RUN npm run lint
 
 RUN npm run build
 
-FROM nginx:1.23.4-alpine3.17 as final
+
+FROM nginx:1.23.4-alpine3.17 as proxy
 
 ARG CONFIG_DIR=/etc/nginx/conf.d
 
 COPY nginx/default.conf $CONFIG_DIR
 COPY nginx/upstream.conf $CONFIG_DIR
-COPY --from=build /web/build /usr/share/nginx/html
 
 EXPOSE 80
 USER $USER
+
+
+FROM proxy as web
+
+COPY --from=build /web/build /usr/share/nginx/html

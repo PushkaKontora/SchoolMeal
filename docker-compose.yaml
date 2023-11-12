@@ -1,69 +1,66 @@
 version: "3.9"
 
-x-information: &information
-  TZ: ${TZ}
-
 x-database: &database
-  POSTGRES_DRIVER: ${POSTGRES_DRIVER:-postgresql+asyncpg}
-  POSTGRES_HOST: ${POSTGRES_HOST:-postgres-server}
-  POSTGRES_PORT: ${POSTGRES_PORT:-5432}
-  POSTGRES_DB: ${POSTGRES_DB:-school_meal}
-  POSTGRES_USER: ${POSTGRES_USER:-postgres}
-  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-  POSTGRES_POOL_SIZE: ${POSTGRES_POOL_SIZE:-10}
+  DB_HOST: ${DB_HOST:-postgres-server}
+  DB_PORT: ${DB_PORT:-5432}
+  DB_NAME: ${DB_NAME:-school_meal}
+  DB_USER: ${DB_USER:-postgres}
+  DB_PASSWORD: ${DB_PASSWORD:-postgres}
 
 x-jwt: &jwt
   JWT_SECRET: ${JWT_SECRET}
-  JWT_ACCESS_LIFETIME: ${JWT_ACCESS_LIFETIME}
-  JWT_REFRESH_LIFETIME: ${JWT_REFRESH_LIFETIME}
-
-x-common: &common
-  networks:
-    - school_meal_nw
 
 services:
   postgres-server:
     container_name: school_meal_postgres
     build: postgres
     healthcheck:
-      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_PASSWORD}
+      test: pg_isready -U ${DB_USER} -d ${DB_PASSWORD}
       interval: 10s
       timeout: 5s
       retries: 5
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PG_DATA: /data/postgres
     volumes:
       - postgres_volume:/var/lib/postgresql/data
-    environment:
-      *database
-    <<: *common
+    networks:
+      - school_meal_nw
 
   app:
-    image: peroovy/school_meal:app-master
+    image: peroovy/school_meal:app-${BRANCH_TAG:-master}
     container_name: school_meal_app
     depends_on:
       postgres-server:
         condition: service_healthy
     environment:
-      <<: [*information, *database, *jwt]
-    <<: *common
+      <<: [*database, *jwt]
+    networks:
+      - school_meal_nw
 
-  web:
-    container_name: school_meal_web
-    build: frontend/web
+  nginx:
+    container_name: school_meal_nginx
+    build:
+      context: frontend/web
+      dockerfile: Dockerfile
+      target: web
     ports:
       - "80:80"
       - "443:443"
     depends_on:
-      app:
-        condition: service_started
+      - app
     volumes:
       - ./env/nginx/certs:/etc/ssl/nginx:ro
-    <<: *common
+    networks:
+      - school_meal_nw
 
 volumes:
   postgres_volume:
 
 networks:
   school_meal_nw:
+    name: school_meal_network
     driver: bridge
     ipam:
       config:
