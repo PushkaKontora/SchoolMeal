@@ -1,5 +1,5 @@
 import {SignUpProps} from '../../../3_pages/sign-up-page/model/props';
-import {AuthFeature} from '../../../5_features/auth-feature/ui/auth-feature';
+import {AuthFeature} from '../../../5_features/auth';
 import {HEADER_TITLE, SUBHEADER_TITLE} from '../consts/consts';
 import {MarginArea} from '../../../7_shared/ui/styling/margin-area';
 import {HorizontalLine} from '../../../7_shared/ui/styling/horizontal-line';
