@@ -11,7 +11,6 @@ import {ButtonPrimary} from '../../../../../7_shared/ui/buttons/button-primary';
 import {magicModal} from 'react-native-magic-modal';
 import {FeedbackModal} from '../../../../../5_features/modal-feedback/ui/feedback-modal';
 import {FEEDBACK_MODAL_CONFIG} from '../consts/config';
-import {LimitedFieldData} from '../../../../../5_features/modal-feedback/types/limited-field-data';
 
 export function Menu(props: MenuProps) {
   const date = useAppSelector((state) => state.menu.dateMeal);
@@ -20,11 +19,7 @@ export function Menu(props: MenuProps) {
 
   const [isSuccessful, setIsSuccessful] = useState(false);
 
-  useEffect(() => {
-    console.log(`isSuccessful: ${isSuccessful}`);
-  }, [isSuccessful]);
-
-  const onSendFeedback = (currentData: LimitedFieldData) => {
+  const onSendFeedback = (/* currentData: LimitedFieldData */) => {
     setIsSuccessful(true);
   };
 

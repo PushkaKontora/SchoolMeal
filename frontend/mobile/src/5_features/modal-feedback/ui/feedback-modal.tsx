@@ -30,7 +30,7 @@ export function FeedbackModal(props: FeedbackModalProps) {
           <ModalLimitedField
             symbolLimit={props.symbolLimit}
             buttonTitle={props.buttonTitle}
-            onSubmit={() => console.log('clicked')}/>
+            onSubmit={props.onSubmit}/>
         )
       }
     </ModalWindow>

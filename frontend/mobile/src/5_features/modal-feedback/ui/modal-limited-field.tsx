@@ -37,5 +37,5 @@ export function ModalLimitedField(props: ModalLimitedFieldProps) {
         backgroundColor={'#EC662A'}
         onPress={handleSubmit(props.onSubmit)}/>
     </View>
-  )
+  );
 }
