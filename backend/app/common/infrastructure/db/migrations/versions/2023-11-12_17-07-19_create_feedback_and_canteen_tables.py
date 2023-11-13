@@ -43,4 +43,4 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.drop_table("feedback", schema="feedbacks")
     op.drop_table("canteen", schema="feedbacks")
-    op.execute("DROP SCHEME feedbacks;")
+    op.execute("DROP SCHEMA feedbacks;")

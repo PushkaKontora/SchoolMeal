@@ -2,7 +2,7 @@ from uuid import uuid4
 
 import pytest
 
-from app.common.api.schemas import AuthorizedUserOut, RoleOut
+from app.common.api.schemas import AuthorizedUser, RoleOut
 from app.feedbacks.application.repositories import ICanteenRepository, IFeedbackRepository
 from app.feedbacks.application.services import CanteenService, FeedbackService
 from app.feedbacks.domain.canteen import Canteen
@@ -15,8 +15,8 @@ def canteen() -> Canteen:
 
 
 @pytest.fixture
-def authorized_user() -> AuthorizedUserOut:
-    return AuthorizedUserOut(id=uuid4(), role=RoleOut.PARENT)
+def authorized_user() -> AuthorizedUser:
+    return AuthorizedUser(id=uuid4(), role=RoleOut.PARENT)
 
 
 @pytest.fixture

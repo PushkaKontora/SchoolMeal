@@ -2,13 +2,13 @@ from uuid import uuid4
 
 import pytest
 
-from app.common.api.schemas import AuthorizedUserOut
+from app.common.api.schemas import AuthorizedUser
 from app.feedbacks.application.services import CantLeaveFeedbackOnUnregisteredCanteen, FeedbackService
 from app.feedbacks.domain.canteen import Canteen
 
 
 async def test_leave_feedback_on_canteen(
-    canteen: Canteen, authorized_user: AuthorizedUserOut, feedback_service: FeedbackService
+    canteen: Canteen, authorized_user: AuthorizedUser, feedback_service: FeedbackService
 ):
     text = "Очень полезный отзыв"
 
@@ -22,7 +22,7 @@ async def test_leave_feedback_on_canteen(
 
 
 async def test_leave_feedback_on_unregistered_canteen(
-    authorized_user: AuthorizedUserOut, feedback_service: FeedbackService
+    authorized_user: AuthorizedUser, feedback_service: FeedbackService
 ):
     with pytest.raises(CantLeaveFeedbackOnUnregisteredCanteen):
         await feedback_service.leave_feedback_about_canteen(

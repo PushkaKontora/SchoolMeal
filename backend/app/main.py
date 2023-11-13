@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.children.api.router import router as pupils_router
 from app.common.api import responses
 from app.common.api.errors import default_handler
 from app.common.infrastructure.settings import ServiceSettings
@@ -28,3 +29,4 @@ app.add_exception_handler(Exception, default_handler)
 
 app.include_router(users_router)
 app.include_router(feedbacks_router)
+app.include_router(pupils_router)

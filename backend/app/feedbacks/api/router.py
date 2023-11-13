@@ -4,7 +4,7 @@ from fastapi import APIRouter, status
 
 from app.common.api import responses
 from app.common.api.dependencies.db import SessionDep
-from app.common.api.dependencies.headers import AuthenticatedUserDep
+from app.common.api.dependencies.headers import AuthorizedUserDep
 from app.common.api.errors import NotFoundError, UnprocessableEntityError
 from app.common.api.schemas import OKSchema
 from app.feedbacks.api.dependencies import FeedbackServiceDep
@@ -26,13 +26,13 @@ async def leave_feedback_about_canteen(
     canteen_id: UUID,
     feedback: FeedbackIn,
     session: SessionDep,
-    authenticated_user: AuthenticatedUserDep,
+    authorized_user: AuthorizedUserDep,
     feedback_service: FeedbackServiceDep,
 ) -> OKSchema:
     try:
         async with session.begin():
             await feedback_service.leave_feedback_about_canteen(
-                canteen_id=canteen_id, user_id=authenticated_user.id, text=feedback.text
+                canteen_id=canteen_id, user_id=authorized_user.id, text=feedback.text
             )
 
     except InsufficientMinLengthFeedbackText as error:

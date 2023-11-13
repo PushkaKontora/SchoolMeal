@@ -29,6 +29,7 @@ mypy = "^1.6.0"
 unify = "^0.5"
 autoflake = "^2.2.1"
 freezegun = "^1.2.2"
+sqlalchemy2-stubs = "^0.0.2a36"
 
 [build-system]
 requires = ["poetry-core"]
