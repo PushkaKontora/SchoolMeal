@@ -11,8 +11,10 @@ import {MEAL_CANCEL_API} from '../src/6_entities/meal/api/api';
 import {MEAL_API} from '../src/6_entities/meal/api/meal-api/config';
 import {FEEDBACK_API} from '../src/6_entities/feedback';
 import {NUTRITION_API} from '../src/5_features/nutrition/api';
+import middlewares from '../src/1_app/lib/middlewares/error-handler';
 
 const middleware = [
+  ...middlewares,
   ...featuresMiddlewares,
   ...entitiesMiddlewares
 ];
