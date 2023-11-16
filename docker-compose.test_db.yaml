@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  test_db:
+    image: peroovy/school_meal:test_db-0.0.1
+    build:
+      context: tools/test_db
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: ${DB_HOST:-postgres-server}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME:-school_meal}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+    networks:
+      - school_meal_nw
+
+networks:
+  school_meal_nw:
+    name: school_meal_network
+    external: true
