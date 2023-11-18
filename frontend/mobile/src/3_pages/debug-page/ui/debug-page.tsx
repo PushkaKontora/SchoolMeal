@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import {Text, View} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 import {ButtonPrimary} from '../../../7_shared/ui/buttons/button-primary';
 import {AUTH_API, AuthTokenService} from '../../../5_features/auth';
 import {useAppDispatch} from '../../../../store/hooks';
@@ -9,6 +9,8 @@ import {PropsWithNavigation} from '../../../7_shared/model/props-with-navigation
 import {USER_API} from '../../../6_entities/user';
 import {useGetChildrenQuery} from '../../../6_entities/child/api/api';
 import {useEffect} from 'react';
+import {magicModal} from 'react-native-magic-modal';
+import {ModalMealPeriod} from '../../../5_features/modal-meal-period';
 
 export function DebugPage({navigation}: PropsWithNavigation) {
   const {data: currentUser, refetch: refetchUser} = USER_API.useCurrentUserQuery();
@@ -60,16 +62,24 @@ export function DebugPage({navigation}: PropsWithNavigation) {
     }
   };
 
+  const showCalendar = () => {
+    magicModal.show(() => <ModalMealPeriod/>);
+  };
+
   return (
-    <View style={{display: 'flex', gap: 16, padding: 16}}>
-      <Text>Пользователь</Text>
-      <ButtonPrimary title={'Выйти из аккаунта'} onPress={logout}/>
-      <ButtonPrimary title={'Токен в консоль'} onPress={showToken}/>
-      <ButtonPrimary title={'Вызвать refresh-tokens'} onPress={handleTokenRefresh}/>
-      <ButtonPrimary title={'Данные пользователя в консоль'} onPress={getUserData}/>
-      <Text>Экраны</Text>
-      <ButtonPrimary title={'На главную'} onPress={toMain}/>
-      <ButtonPrimary title={'Питание'} onPress={toNutrition}/>
-    </View>
+    <ScrollView>
+      <View style={{display: 'flex', rowGap: 16, padding: 16}}>
+        <Text>Пользователь</Text>
+        <ButtonPrimary title={'Выйти из аккаунта'} onPress={logout}/>
+        <ButtonPrimary title={'Токен в консоль'} onPress={showToken}/>
+        <ButtonPrimary title={'Вызвать refresh-tokens'} onPress={handleTokenRefresh}/>
+        <ButtonPrimary title={'Данные пользователя в консоль'} onPress={getUserData}/>
+        <Text>Экраны</Text>
+        <ButtonPrimary title={'На главную'} onPress={toMain}/>
+        <ButtonPrimary title={'Питание'} onPress={toNutrition}/>
+        <Text>Модальные окна</Text>
+        <ButtonPrimary title={'Снять с питания (Календарь)'} onPress={showCalendar}/>
+      </View>
+    </ScrollView>
   );
 }
