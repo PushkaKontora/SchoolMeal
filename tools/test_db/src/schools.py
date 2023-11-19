@@ -1,7 +1,8 @@
+import itertools
 import secrets
 import time
+from datetime import date, datetime, timedelta, timezone
 from enum import Enum
-from itertools import cycle
 from uuid import uuid4
 
 import names
@@ -15,7 +16,13 @@ class MealStatus(str, Enum):
 
 
 class MealPlan(BaseModel):
-    status: MealStatus
+    has_breakfast: bool
+    has_dinner: bool
+    has_snacks: bool
+
+
+class PreferentialCertificate(BaseModel):
+    ends_at: date
 
 
 class Pupil(BaseModel):
@@ -23,6 +30,8 @@ class Pupil(BaseModel):
     last_name: str
     first_name: str
     meal_plan: MealPlan
+    preferential_certificate: PreferentialCertificate | None
+    meal_status: MealStatus
 
 
 class SchoolClass(BaseModel):
@@ -45,7 +54,7 @@ def generate_schools(amount: int = 3) -> list[School]:
             name=f"school #{time.time()}",
             school_classes=_generate_school_classes(),
         )
-        for i in range(amount)
+        for _ in range(amount)
     ]
 
 
@@ -54,14 +63,25 @@ def _generate_school_classes() -> list[SchoolClass]:
 
 
 def _generate_pupils(amount: int = 30) -> list[Pupil]:
-    statuses = cycle(MealStatus)
+    statuses = itertools.cycle(MealStatus)
+    meal_plans = itertools.cycle(
+        MealPlan(has_breakfast=b, has_dinner=d, has_snacks=s) for b, d, s in itertools.product([False, True], repeat=3)
+    )
+
+    now = datetime.now(timezone.utc).now()
+    past, future = now - timedelta(days=30), now + timedelta(days=30)
+    certificates = itertools.cycle(
+        [PreferentialCertificate(ends_at=past), PreferentialCertificate(ends_at=future), None]
+    )
 
     return [
         Pupil(
             id=secrets.token_hex(10),
             last_name=names.get_last_name(),
             first_name=names.get_first_name(),
-            meal_plan=MealPlan(status=next(statuses)),
+            meal_plan=next(meal_plans),
+            meal_status=next(statuses),
+            preferential_certificate=next(certificates),
         )
         for _ in range(amount)
     ]

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import date
 from typing import Any, Generic, TypeVar
 
 from loguru import logger
@@ -80,6 +81,28 @@ class Integer(DBObject):
         return f"{self.value}"
 
 
+@dataclass(eq=True, frozen=True)
+class Bool(DBObject):
+    value: bool
+
+    def __str__(self) -> str:
+        return "true" if self.value else "false"
+
+
+@dataclass(eq=True, frozen=True)
+class Date(DBObject):
+    value: date
+
+    def __str__(self) -> str:
+        return f"'{self.value.isoformat()}'"
+
+
+@dataclass(eq=True, frozen=True)
+class Null(DBObject):
+    def __str__(self) -> str:
+        return "null"
+
+
 T = TypeVar("T", bound=DBObject)
 
 
@@ -95,9 +118,9 @@ class Array(DBObject, Generic[T]):
 
 @dataclass(eq=True, frozen=True, repr=False)
 class Dict(DBObject):
-    value: dict[DBObject, DBObject]
+    value: dict[str, DBObject]
 
     def __str__(self) -> str:
-        _values = str(self.value).replace("'", '"')
+        _values = ",".join(f"{String(k)}: {v}" for k, v in self.value.items()).replace("'", '"')
 
-        return f"'{_values}'"
+        return "'{" + _values + "}'"
