@@ -14,3 +14,7 @@ class IPupilsRepository(ABC):
         :raise NotFoundPupil:
         """
         raise NotImplementedError
+
+    @abstractmethod
+    async def update(self, pupil: Pupil) -> None:
+        raise NotImplementedError

@@ -8,5 +8,5 @@ class PreferentialCertificate:
     ends_at: date
 
     @property
-    def is_ended(self) -> bool:
+    def is_expired(self) -> bool:
         return datetime.now(timezone.utc).date() > self.ends_at

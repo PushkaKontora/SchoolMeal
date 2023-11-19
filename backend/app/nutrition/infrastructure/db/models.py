@@ -1,4 +1,5 @@
 from dataclasses import asdict
+from datetime import date
 from typing import Any
 
 from sqlalchemy import JSON, Column, String
@@ -29,7 +30,9 @@ class PupilDB(Base, NutritionSchemaMixin):
             last_name=LastName(self.last_name),
             first_name=FirstName(self.first_name),
             meal_plan=MealPlan(**self.meal_plan),
-            preferential_certificate=PreferentialCertificate(**self.preferential_certificate)
+            preferential_certificate=PreferentialCertificate(
+                ends_at=date.fromisoformat(self.preferential_certificate["ends_at"])
+            )
             if self.preferential_certificate
             else None,
         )
@@ -41,5 +44,9 @@ class PupilDB(Base, NutritionSchemaMixin):
             last_name=pupil.last_name.value,
             first_name=pupil.first_name.value,
             meal_plan=asdict(pupil.meal_plan),
-            preferential_certificate=asdict(pupil.preferential_certificate) if pupil.preferential_certificate else None,
+            preferential_certificate={
+                "ends_at": pupil.preferential_certificate.ends_at.isoformat(),
+            }
+            if pupil.preferential_certificate
+            else None,
         )

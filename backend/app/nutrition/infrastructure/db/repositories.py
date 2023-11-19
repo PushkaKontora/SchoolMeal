@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,3 +19,9 @@ class PupilsRepository(IPupilsRepository):
             raise NotFoundPupil from error
 
         return pupil_db.to_model()
+
+    async def update(self, pupil: Pupil) -> None:
+        pupil_db = PupilDB.from_model(pupil)
+
+        query = update(PupilDB).values(pupil_db.dict()).where(PupilDB.id == pupil_db.id)
+        await self._session.execute(query)

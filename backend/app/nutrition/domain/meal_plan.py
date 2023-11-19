@@ -7,5 +7,6 @@ class MealPlan:
     has_dinner: bool
     has_snacks: bool
 
-    def as_tuple(self) -> tuple[bool, bool, bool]:
-        return self.has_breakfast, self.has_dinner, self.has_snacks
+    @property
+    def is_feeding(self) -> bool:
+        return any([self.has_breakfast, self.has_dinner, self.has_snacks])

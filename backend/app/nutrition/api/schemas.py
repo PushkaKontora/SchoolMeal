@@ -7,15 +7,17 @@ from app.nutrition.domain.meal_plan import MealPlan
 from app.nutrition.domain.pupil import MealStatus, Pupil
 
 
-class MealPlanOut(FrontendModel):
+class MealPlanIn(FrontendModel):
     has_breakfast: bool
     has_dinner: bool
     has_snacks: bool
 
+
+class MealPlanOut(MealPlanIn):
     @classmethod
     def from_model(cls, plan: MealPlan) -> "MealPlanOut":
         return cls(
-            has_breakfast=plan.has_snacks,
+            has_breakfast=plan.has_breakfast,
             has_dinner=plan.has_dinner,
             has_snacks=plan.has_snacks,
         )
