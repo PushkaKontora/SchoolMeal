@@ -4,6 +4,7 @@ from enum import Enum
 from app.common.api.schemas import FrontendModel
 from app.nutrition.domain.certificate import PreferentialCertificate
 from app.nutrition.domain.meal_plan import MealPlan
+from app.nutrition.domain.periods import CancellationPeriod
 from app.nutrition.domain.pupil import MealStatus, Pupil
 
 
@@ -33,6 +34,26 @@ class PreferentialCertificateOut(FrontendModel):
         )
 
 
+class CancellationPeriodIn(FrontendModel):
+    starts_at: date
+    ends_at: date
+    reason: str | None
+
+
+class CancellationPeriodOut(FrontendModel):
+    starts_at: date
+    ends_at: date
+    reasons: list[str]
+
+    @classmethod
+    def from_model(cls, period: CancellationPeriod) -> "CancellationPeriodOut":
+        return cls(
+            starts_at=period.starts_at,
+            ends_at=period.ends_at,
+            reasons=[reason.value for reason in period.reasons],
+        )
+
+
 class MealStatusOut(str, Enum):
     PREFERENTIAL = "Льготное питание"
     PAID = "Платное питание"
@@ -50,6 +71,7 @@ class NutritionOut(FrontendModel):
     first_name: str
     meal_plan: MealPlanOut
     preferential_certificate: PreferentialCertificateOut | None
+    cancellation_periods: list[CancellationPeriodOut]
     status: MealStatusOut
 
     @classmethod
@@ -62,5 +84,6 @@ class NutritionOut(FrontendModel):
             preferential_certificate=PreferentialCertificateOut.from_model(pupil.preferential_certificate)
             if pupil.preferential_certificate
             else None,
+            cancellation_periods=[CancellationPeriodOut.from_model(period) for period in pupil.cancellation_periods],
             status=MealStatusOut.from_model(pupil.status),
         )

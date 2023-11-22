@@ -5,6 +5,7 @@ from pydantic.dataclasses import dataclass
 
 from app.nutrition.domain.certificate import PreferentialCertificate
 from app.nutrition.domain.meal_plan import MealPlan
+from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence
 
 
 class CantAttachExpiredPreferentialCertificate(Exception):
@@ -38,6 +39,7 @@ class Pupil(BaseModel):
     first_name: FirstName
     meal_plan: MealPlan
     preferential_certificate: PreferentialCertificate | None
+    cancellation_periods: CancellationPeriodSequence
 
     @property
     def status(self) -> MealStatus:
@@ -49,11 +51,10 @@ class Pupil(BaseModel):
 
         return MealStatus.PAID
 
-    def update_meal_plan(self, plan: MealPlan) -> "Pupil":
+    def update_meal_plan(self, plan: MealPlan) -> None:
         self.meal_plan = plan
-        return self
 
-    def attach_preferential_certificate(self, certificate: PreferentialCertificate) -> "Pupil":
+    def attach_preferential_certificate(self, certificate: PreferentialCertificate) -> None:
         """
         :raise CantAddExpiredPreferentialCertificate: сертификат просрочен
         """
@@ -62,8 +63,9 @@ class Pupil(BaseModel):
             raise CantAttachExpiredPreferentialCertificate
 
         self.preferential_certificate = certificate
-        return self
 
-    def detach_preferential_certificate(self) -> "Pupil":
+    def detach_preferential_certificate(self) -> None:
         self.preferential_certificate = None
-        return self
+
+    def cancel_nutrition(self, period: CancellationPeriod) -> None:
+        self.cancellation_periods = self.cancellation_periods.insert(period)

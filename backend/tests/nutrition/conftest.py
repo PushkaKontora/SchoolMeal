@@ -3,6 +3,7 @@ import secrets
 import pytest
 
 from app.nutrition.domain.meal_plan import MealPlan
+from app.nutrition.domain.periods import CancellationPeriodSequence
 from app.nutrition.domain.pupil import FirstName, LastName, Pupil, PupilID
 
 
@@ -14,6 +15,7 @@ def pupil(meal_plan: MealPlan) -> Pupil:
         first_name=FirstName("Иван"),
         meal_plan=meal_plan,
         preferential_certificate=None,
+        cancellation_periods=CancellationPeriodSequence(periods=tuple()),
     )
 
 

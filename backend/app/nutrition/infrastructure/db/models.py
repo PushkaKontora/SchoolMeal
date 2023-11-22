@@ -8,6 +8,7 @@ from sqlalchemy.orm import Mapped
 from app.common.infrastructure.db.base import Base
 from app.nutrition.domain.certificate import PreferentialCertificate
 from app.nutrition.domain.meal_plan import MealPlan
+from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, SpecifiedReason
 from app.nutrition.domain.pupil import FirstName, LastName, Pupil, PupilID
 
 
@@ -23,6 +24,7 @@ class PupilDB(Base, NutritionSchemaMixin):
     first_name: Mapped[str] = Column(String, nullable=False)
     meal_plan: Mapped[dict[str, bool]] = Column(JSON, nullable=False)
     preferential_certificate: Mapped[dict[str, Any] | None] = Column(JSON, nullable=True)
+    cancellation_periods: Mapped[list[dict[str, Any]]] = Column(JSON, nullable=False, server_default="[]")
 
     def to_model(self) -> Pupil:
         return Pupil(
@@ -35,6 +37,16 @@ class PupilDB(Base, NutritionSchemaMixin):
             )
             if self.preferential_certificate
             else None,
+            cancellation_periods=CancellationPeriodSequence(
+                periods=tuple(
+                    CancellationPeriod(
+                        starts_at=date.fromisoformat(period["starts_at"]),
+                        ends_at=date.fromisoformat(period["ends_at"]),
+                        reasons=frozenset(map(SpecifiedReason, period["reasons"])),
+                    )
+                    for period in self.cancellation_periods
+                )
+            ),
         )
 
     @classmethod
@@ -49,4 +61,12 @@ class PupilDB(Base, NutritionSchemaMixin):
             }
             if pupil.preferential_certificate
             else None,
+            cancellation_periods=[
+                {
+                    "starts_at": period.starts_at.isoformat(),
+                    "ends_at": period.ends_at.isoformat(),
+                    "reasons": [reason.value for reason in period.reasons],
+                }
+                for period in pupil.cancellation_periods
+            ],
         )
