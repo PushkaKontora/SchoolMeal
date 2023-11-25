@@ -7,12 +7,12 @@ import {useAppDispatch} from '../../../../store/hooks';
 import {setAuthorized} from '../../../5_features/auth/model/auth-slice/auth-slice';
 import {PropsWithNavigation} from '../../../7_shared/model/props-with-navigation';
 import {USER_API} from '../../../6_entities/user';
-import {CHILD_API} from '../../../6_entities/child/api/config';
+import {useGetChildrenQuery} from '../../../6_entities/child/api/api';
 import {useEffect} from 'react';
 
 export function DebugPage({navigation}: PropsWithNavigation) {
   const {data: currentUser, refetch: refetchUser} = USER_API.useCurrentUserQuery();
-  const {data: children, refetch: refetchChildren} = CHILD_API.useGetUserChildQuery();
+  const {data: children, refetch: refetchChildren} = useGetChildrenQuery();
   const [refreshToken] = AUTH_API.useRefreshTokensMutation();
   const dispatch = useAppDispatch();
 

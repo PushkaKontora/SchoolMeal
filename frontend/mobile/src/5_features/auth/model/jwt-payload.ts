@@ -1,4 +1,4 @@
-import {UUID} from './uuid';
+import {UUID} from '../../../7_shared/model/uuid';
 
 export type JwtPayload = {
   jti: UUID,

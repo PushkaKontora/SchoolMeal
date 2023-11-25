@@ -1,12 +1,16 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import {addAuthHeader, ConfigSettings, UniversalResponse} from '../../../7_shared/api';
+import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {BASE_BACKEND_URL} from '../../../7_shared/api/config';
-import {Child} from '../model/child';
-import {FindChildBody} from './types';
 import {AuthTokenService} from '../../../5_features/auth';
-import {addAuthHeader} from '../../../7_shared/api';
-import {ChildMealData, ChildMealDataWithId} from '../types/child-meal-data';
+import {Child} from '../model/child';
+import {ChildMealData, ChildMealDataWithId} from '../model/child-meal-data';
+import {MealPlanStatus} from '../model/meal-plan';
 
-export const CHILD_API = createApi({
+export const TAGS = {
+  ChildList: 'ChildList'
+};
+
+export const CONFIG: ConfigSettings = {
   reducerPath: 'api/children',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_BACKEND_URL + '/children',
@@ -18,45 +22,49 @@ export const CHILD_API = createApi({
       return headers;
     }
   }),
-  tagTypes: ['UserChildren'],
+  tagTypes: Object.values(TAGS),
   endpoints: build => ({
-    findChildOnID: build.mutation<Child, FindChildBody>({
-      query: (body) => ({
-        url: '',
-        method: 'POST',
-        body: body,
-      }),
-      invalidatesTags: [{type: 'UserChildren', id: 'LIST'}]
-    }),
-
-    getUserChild: build.query<Child[], void>({
+    getChildren: build.query<Child[], void>({
       query: () => ({
-        url: ''
+        url: '',
+        method: 'GET'
       }),
-      providesTags: (result) =>
-        result
-          ? [
-            ...result.map(({ id }) => ({ type: 'UserChildren' as const, id })),
-            { type: 'UserChildren', id: 'LIST' },
-          ]
-          : [{ type: 'UserChildren', id: 'LIST' }],
+      providesTags: [TAGS.ChildList]
     }),
-    changeMealPlan: build.mutation<ChildMealData, ChildMealDataWithId>({
-      query: ({childId, ...body}) => ({
+    addChild: build.mutation<UniversalResponse, string>({
+      query: (childId) => ({
         url: `/${childId}`,
-        method: 'PATCH',
-        body: body
-      })
+        method: 'POST'
+      }),
+      invalidatesTags: [TAGS.ChildList]
+    }),
+    // роуты-заглушки, будут заменены
+    changeMealPlan: build.mutation<ChildMealData, ChildMealDataWithId>({
+      queryFn: async (inputData) => {
+        return {data: {...inputData }};
+      }
     }),
     getChildById: build.query<Child, string>({
-      query: (childId) => ({
-        url: `/${childId}`
-      })/*,
-      transformResponse(response: Child): Child {
-        return transformChild(response);
-      }*/
+      queryFn: async () => {
+        return {data: {
+          id: 'filler_id',
+          firstName: 'Олег',
+          lastName: 'Филлеров',
+          schoolClass: {
+            id: 1,
+            school: {
+              id: 'filler_school_id',
+              name: 'Лучшая школа филлеров'
+            },
+            number: 12,
+            literal: 'АБВ'
+          },
+          mealPlan: {
+            status: MealPlanStatus.Paid
+          }
+        }
+        };
+      }
     })
   })
-});
-
-export const {useGetUserChildQuery, useFindChildOnIDMutation, useChangeMealPlanMutation, useGetChildByIdQuery} = CHILD_API;
+};

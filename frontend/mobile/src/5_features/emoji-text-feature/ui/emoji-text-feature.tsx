@@ -5,14 +5,15 @@ import {PaddingArea} from '../../../7_shared/ui/styling/padding-area';
 import {PADDINGS} from '../config/config';
 
 export function EmojiTextFeature(props: EmojiTextProps) {
-  const styles = createStyle();
+  const styles = createStyle(props);
 
   return (
     <PaddingArea
-      style={styles.container}
-      {...PADDINGS}>
+      {...PADDINGS}
+      {...props.paddings}>
       <View style={styles.titles}>
-        <Image source={props.imageEmoji}/>
+        {props.imageEmoji && <Image style={styles.image} source={props.imageEmoji}/>}
+        {!props.imageEmoji && props.svgComponent}
         <Text style={styles.subEmoji}>{props.subEmojiTitle}</Text>
       </View>
       {props.children}

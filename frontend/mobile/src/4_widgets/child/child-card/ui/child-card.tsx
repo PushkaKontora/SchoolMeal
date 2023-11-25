@@ -10,7 +10,7 @@ export function ChildCard(props: ChildCardProps) {
     navigation.navigate('ProfileChild', {childInformation: props.child});
   };
 
-  const styles = createStyle();
+  const styles = createStyle(props);
 
   return (
     <TouchableOpacity
@@ -25,17 +25,13 @@ export function ChildCard(props: ChildCardProps) {
             textTag={props.child.schoolClass.school.name}/>
           <TagInformation
             imageTag={require('../../../../7_shared/assets/images/bell.png')}
-            textTag={`${props.child.schoolClass.number} ${props.child.schoolClass.letter} класс`}/>
+            textTag={`${props.child.schoolClass.number} ${props.child.schoolClass.literal} класс`}/>
         </View>
         <View style={styles.statusMeal}>
-          {props.child.certificateBeforeDate
-                        && <Text style={styles.blueText}>Питается льготно</Text>}
-          {!props.child.certificateBeforeDate
-                        && (!props.child.dinner
-                        && !props.child.lunch
-                        && !props.child.breakfast
-                          ? <Text style={styles.greyText}>Не питается</Text>
-                          : <Text style={styles.greenText}>Питается платно</Text>)}
+          <Text
+            style={styles.mealStatus}>
+            {props.child.mealPlan.status}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>

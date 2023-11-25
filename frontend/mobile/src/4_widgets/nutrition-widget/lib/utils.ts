@@ -1,4 +1,4 @@
-import {ChildMealData} from '../../../6_entities/child/types/child-meal-data';
+import {ChildMealData} from '../../../6_entities/child/model/child-meal-data';
 import {MEAL_AMOUNT_BORDER_TO_SHOW} from '../config/config';
 
 export function checkItem(array: boolean[], index: number, value: boolean) {

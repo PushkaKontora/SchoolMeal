@@ -7,16 +7,16 @@ import {createStyle} from '../consts/style-modal';
 import {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {useForm} from 'react-hook-form';
-import {useGetUserChildQuery, useFindChildOnIDMutation} from '../../../6_entities/child/api/config';
-import {idChildData} from '../types';
+import {AddChildData} from '../types';
 import {ChildCard} from '../../child/child-card/ui/child-card';
 import {MarginArea} from '../../../7_shared/ui/styling/margin-area';
 import {ConfirmationModal} from './confirmation-modal';
-
+import {useAddChildMutation, useGetChildrenQuery} from '../../../6_entities/child';
+import {Child} from '../../../6_entities/child';
 
 export function AddChildrenWidget(props: ModalAddChildProps) {
-  const {data: userChild} = useGetUserChildQuery();
-  const [addChildByID, {isError, isSuccess}] = useFindChildOnIDMutation();
+  const {data: children} = useGetChildrenQuery();
+  const [addChildByID, {isError, isSuccess}] = useAddChildMutation();
   // const [idChild, setIdChild] = useState('');
   const [disabled, setDisabled] = useState(false);
   const [invisibleErrorMessage, setInvisibleErrorMessage] = useState(true);
@@ -25,13 +25,13 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
     control,
     reset,
     formState: {errors}
-  } = useForm<idChildData>({
+  } = useForm<AddChildData>({
     mode: 'onChange'
   });
 
-  const handleAddChildByID = (data: any): any => {
+  const handleAddChildByID = (data: AddChildData) => {
     if (data) {
-      addChildByID({childId: data.childId}).unwrap();
+      addChildByID(data.childId).unwrap();
     }
   };
 
@@ -72,9 +72,9 @@ export function AddChildrenWidget(props: ModalAddChildProps) {
 
   return (
     <View style={styles.container}>
-      {userChild && userChild.length !== 0
+      {children && (children as Child[]).length !== 0
         ? <>
-          {userChild ? userChild.map(child =>
+          {children ? (children as Child[]).map(child =>
             <ChildCard key={child.id}
               child={child}
               navigation={props.navigation}/>) : null}

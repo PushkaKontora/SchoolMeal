@@ -1,6 +1,6 @@
 import {View} from 'react-native';
 import {useAppSelector} from '../../../../../../store/hooks';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {MenuProps} from '../model/props';
 import {createStyle} from '../consts/style';
 import {MenuData} from '../../menu-data/ui/menu-data';
@@ -9,28 +9,21 @@ import {useGetMealsQuery} from '../../../../../6_entities/meal/api/meal-api/conf
 import {EmojiTextFeature} from '../../../../../5_features/emoji-text-feature/ui/emoji-text-feature';
 import {ButtonPrimary} from '../../../../../7_shared/ui/buttons/button-primary';
 import {magicModal} from 'react-native-magic-modal';
-import {FeedbackModal} from '../../../../../5_features/modal-feedback/ui/feedback-modal';
-import {FEEDBACK_MODAL_CONFIG} from '../consts/config';
+import {MenuFeedbackModal} from './menu-feedback-modal';
 
 export function Menu(props: MenuProps) {
   const date = useAppSelector((state) => state.menu.dateMeal);
+
+  const {data: mealsForChild, refetch} = useGetMealsQuery({
+    classId: props.schoolId,
+    dateFrom: date,
+    dateTo: date});
+
   const styles = createStyle();
-  const {data: mealsForChild, refetch} = useGetMealsQuery({classId: props.classId, dateFrom: date, dateTo: date});
-
-  const [isSuccessful, setIsSuccessful] = useState(false);
-
-  const onSendFeedback = (/* currentData: LimitedFieldData */) => {
-    setIsSuccessful(true);
-  };
 
   const openFeedbackModal = () => {
-    setIsSuccessful(false);
     magicModal.show(() => (
-      <FeedbackModal
-        symbolLimit={FEEDBACK_MODAL_CONFIG.symbolLimit}
-        buttonTitle={'Отправить отзыв'}
-        onSubmit={onSendFeedback}
-        successfulSubmission={isSuccessful}/>
+      <MenuFeedbackModal canteenId={props.schoolId}/>
     ));
   };
 
@@ -39,6 +32,7 @@ export function Menu(props: MenuProps) {
       await refetch();
     })();
   }, [date]);
+
 
   return (
     <View style={styles.container}>

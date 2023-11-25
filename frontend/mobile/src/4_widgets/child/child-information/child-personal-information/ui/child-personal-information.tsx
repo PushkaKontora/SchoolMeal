@@ -37,7 +37,7 @@ export function ChildPersonalInformation(props: ChildPersonalInformationProps) {
       <TitleText title={`${props.childInformation.firstName} ${props.childInformation.lastName}`}/>
       <ChildAccount balance={props.childInformation.balance}/>
       <TagsInformation
-        class={`${props.childInformation.schoolClass.number}${props.childInformation.schoolClass.letter.toUpperCase()}`}
+        class={`${props.childInformation.schoolClass.number}${props.childInformation.schoolClass.literal.toUpperCase()}`}
         school={props.childInformation.schoolClass.school.name}
         status={status}/>
       <ButtonPrimary

@@ -16,7 +16,7 @@ export function ControlledInputField<FormData>
           data={data}
           value={value}
           onChangeText={(text: string) => {
-            onChange();
+            onChange(text);
             props?.onChangeText?.(text);
           }}
           onFocus={props.onFocus}

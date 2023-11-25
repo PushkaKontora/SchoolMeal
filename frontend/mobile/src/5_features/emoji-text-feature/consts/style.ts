@@ -1,20 +1,22 @@
 import {StyleSheet} from 'react-native';
+import {EmojiTextProps} from '../model/props';
+import {DEFAULT_GAP} from '../config/config';
 
-export const createStyle = () => StyleSheet.create({
-  container: {
-  },
+export const createStyle = (props: EmojiTextProps) => StyleSheet.create({
   titles: {
     flexDirection: 'column',
-    gap: 6,
     alignItems: 'center',
-    marginBottom: 21,
-    marginHorizontal: 'auto',
+    gap: props.gap || DEFAULT_GAP
   },
   subEmoji: {
-    fontWeight: '400',
-    fontSize: 12,
+    fontWeight: '500',
+    fontSize: 16,
     color: '#B1B1B1',
-    maxWidth: 190,
+    lineHeight: 22.4,
     textAlign: 'center',
+  },
+  image: {
+    width: 54,
+    height: 54
   }
 });
