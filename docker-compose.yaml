@@ -15,7 +15,7 @@ services:
     container_name: school_meal_postgres
     build: postgres
     healthcheck:
-      test: pg_isready -U ${DB_USER} -d ${DB_PASSWORD}
+      test: pg_isready -U ${DB_USER} -d ${DB_PASSWORD} -p ${DB_PORT}
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,6 +23,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       PG_DATA: /data/postgres
+    command: -p ${DB_PORT}
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     networks:
