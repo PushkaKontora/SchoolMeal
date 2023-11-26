@@ -7,5 +7,5 @@ export type FormDataOptions = any;
 export type FormControl = Control<any, any>;
 export type FormErrors = FieldErrors;
 export type FormRegister = any;
-export type FormOnChangeText = any;
+export type FormOnChangeText = (text: string) => void;
 export type FormInputRef = LegacyRef<TextInput>

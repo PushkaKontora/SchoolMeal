@@ -5,6 +5,7 @@ import {
   FormOnChangeText,
   FormRegister
 } from '../../../model/forms/form-types';
+import {TextStyle} from 'react-native';
 
 export type InputStyle = {
   width?: string,
@@ -15,7 +16,8 @@ export type InputStyle = {
   borderRadius?: number,
   borderColor?: string,
   borderWidth?: number,
-  color?: string
+  color?: string,
+  textAlignVertical?: TextStyle['textAlignVertical']
 };
 
 export type InputData<FormData> = {
@@ -33,7 +35,12 @@ export type InputFieldProps<FormData> = {
   errors: FormErrors,
   register?: FormRegister,
   onChangeText?: FormOnChangeText,
+  onFocus?: () => void,
+  onBlur?: () => void,
   value?: any,
   autoFocus?: boolean,
-  inputRef?: FormInputRef
+  inputRef?: FormInputRef,
+  maxLength?: number,
+  numberOfLines?: number,
+  multiline?: boolean
 };

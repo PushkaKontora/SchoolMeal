@@ -27,6 +27,6 @@ class RoleOut(str, Enum):
     CANTEEN_STAFF = "canteen_staff"
 
 
-class AuthorizedUserOut(BaseModel):
+class AuthorizedUser(BaseModel):
     id: UUID
     role: RoleOut

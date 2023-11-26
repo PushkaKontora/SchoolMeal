@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Response, status
 
 from app.common.api import responses
-from app.common.api.dependencies import SessionDep
+from app.common.api.dependencies.db import SessionDep
 from app.common.api.errors import AuthorizationError, BadRequestError, NotFoundError, UnprocessableEntityError
-from app.common.api.schemas import AuthorizedUserOut, OKSchema
+from app.common.api.schemas import AuthorizedUser, OKSchema
 from app.users.api.dependencies.services import SessionServiceDep, UserServiceDep
 from app.users.api.dependencies.settings import JWTSettingsDep
 from app.users.api.dependencies.tokens import (
@@ -22,7 +22,7 @@ from app.users.domain.session import CantRevokeAlreadyRevokedSession
 from app.users.domain.tokens import SignatureIsBroken, TokenHasExpired
 
 
-router = APIRouter()
+router = APIRouter(prefix="/users", tags=["Модуль пользователей"])
 
 
 @router.get(
@@ -37,7 +37,7 @@ async def authorize(access_token: AccessTokenDep, user_service: UserServiceDep) 
     except Exception as error:
         raise AuthorizationError from error
 
-    user_out = AuthorizedUserOut(
+    user_out = AuthorizedUser(
         id=user.id,
         role=user.role.value,
     )

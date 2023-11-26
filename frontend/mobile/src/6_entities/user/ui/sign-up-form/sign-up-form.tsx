@@ -4,7 +4,7 @@ import {SignUpFormData} from './types';
 import {createStyle} from './style';
 import {View} from 'react-native';
 import {ButtonPrimary} from '../../../../7_shared/ui/buttons/button-primary';
-import {ControlledInputField} from '../../../controlled/controlled-input-field';
+import {ControlledInputField} from '../../../../7_shared/ui/controlled/controlled-input-field';
 import {INPUT_DATA} from './input-data';
 import {SignUpFormProps} from './props';
 

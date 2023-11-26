@@ -14,8 +14,8 @@ export const createStyle = () => StyleSheet.create({
     color: '#212121',
   },
   content: {
-    paddingHorizontal: 44,
-    paddingVertical: 14,
+    paddingHorizontal: 12,
+    paddingBottom: 16,
     width: '100%',
   },
   contentTitle: {

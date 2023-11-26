@@ -12,6 +12,8 @@ from app.common.infrastructure.settings import DatabaseSettings
 
 
 from app.users.infrastructure.db.models import SessionDB, UserDB  # isort: skip
+from app.feedbacks.infrastructure.db.models import FeedbackDB, CanteenDB  # isort: skip
+from app.children.infrastructure.db.models import ParentDB, ChildDB  # isort: skip
 
 
 database = DatabaseSettings()
@@ -56,7 +58,7 @@ async def run_migrations_online() -> None:
             configuration,
             poolclass=pool.NullPool,
             future=True,
-        )
+        )  # type: ignore
     )
 
     await wait_connect(database)

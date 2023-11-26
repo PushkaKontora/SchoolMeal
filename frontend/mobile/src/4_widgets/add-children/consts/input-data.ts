@@ -1,7 +1,7 @@
 import {InputData} from '../../../7_shared/ui/fields/input-field';
-import {idChildData} from '../types';
+import {AddChildData} from '../types';
 
-export const INPUT_DATA: InputData<idChildData> = {
+export const INPUT_DATA: InputData<AddChildData> = {
   name: 'childId',
   label: 'id',
   type: '',

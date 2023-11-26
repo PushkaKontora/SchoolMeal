@@ -1,3 +1,3 @@
-export type idChildData = {
+export type AddChildData = {
     childId: string,
 }

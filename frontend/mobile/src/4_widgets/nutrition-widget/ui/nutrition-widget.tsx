@@ -6,9 +6,9 @@ import {NutritionTogglesFeature} from '../../../5_features/nutrition/nutrition-t
 import {NutritionPanel} from '../../../5_features/nutrition/nutrition-panel';
 import {NutritionWidgetProps} from '../types/props';
 import {useEffect, useState} from 'react';
-import {useChangeMealPlanMutation, useGetChildByIdQuery} from '../../../6_entities/child/api/config';
+import {useChangeMealPlanMutation, useGetChildByIdQuery} from '../../../6_entities/child/api/api';
 import {isEnoughMealAmountToShow, isFeeding} from '../lib/utils';
-import {ChildMealData} from '../../../6_entities/child/types/child-meal-data';
+import {ChildMealData} from '../../../6_entities/child';
 import {getMealAmount} from '../../../6_entities/school-class/lib/class-utils';
 
 export function NutritionWidget(props: NutritionWidgetProps) {

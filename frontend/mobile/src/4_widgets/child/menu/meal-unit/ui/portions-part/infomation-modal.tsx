@@ -1,7 +1,7 @@
-import {ModalHeader} from '../../../../../../6_entities/modal/ui/modal-header/modal-header';
 import {ContentInformationModal} from '../content-information-modal/content-information-modal';
 import {View} from 'react-native';
 import {InformationModalProps} from './props';
+import {ModalHeader} from '../../../../../../7_shared/ui/modal/modal-header/modal-header';
 
 export function InformationModal(props: InformationModalProps) {
   return (

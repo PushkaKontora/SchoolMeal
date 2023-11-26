@@ -1,4 +1,6 @@
+import {UUID} from 'crypto';
+
 export type School = {
-    id: number,
+    id: UUID,
     name: string,
 }

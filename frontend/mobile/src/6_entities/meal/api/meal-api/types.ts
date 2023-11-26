@@ -1,5 +1,5 @@
 export type MealsParams = {
-    classId: number,
+    classId: string,
     dateFrom: string,
     dateTo: string,
 }
