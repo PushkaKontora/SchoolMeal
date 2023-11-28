@@ -15,7 +15,7 @@ from app.nutrition.domain.periods import (
 )
 
 
-router = APIRouter(prefix="/nutrition/{pupil_id}", tags=["Модуль питания"])
+router = APIRouter(prefix="/nutrition/{pupil_id}", tags=["Питание"])
 
 
 @router.get(
