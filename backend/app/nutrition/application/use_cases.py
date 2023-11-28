@@ -2,7 +2,7 @@ from datetime import date
 
 from app.nutrition.application.repositories import IPupilsRepository
 from app.nutrition.domain.meal_plan import MealPlan
-from app.nutrition.domain.periods import CancellationPeriod, SpecifiedReason
+from app.nutrition.domain.periods import CancellationPeriod, Day, SpecifiedReason
 from app.nutrition.domain.pupil import Pupil, PupilID
 
 
@@ -41,7 +41,22 @@ async def cancel_pupil_nutrition_for_period(
     reasons = {SpecifiedReason(reason)} if reason is not None else {}
     period = CancellationPeriod(starts_at=starts_at, ends_at=ends_at, reasons=frozenset(reasons))
 
-    pupil.cancel_nutrition(period=period)
+    updated_periods = pupil.cancel_nutrition(period=period)
     await pupils_repository.update(pupil)
 
-    return list(pupil.cancellation_periods)
+    return list(updated_periods)
+
+
+async def resume_pupil_nutrition_on_day(
+    pupil_id: str, date_: date, pupils_repository: IPupilsRepository
+) -> list[CancellationPeriod]:
+    """
+    :raise NotFoundPupil: не найден ученик
+    """
+
+    pupil = await pupils_repository.get_by_id(pupil_id=PupilID(pupil_id))
+
+    updated_periods = pupil.resume_nutrition(day=Day(date_))
+    await pupils_repository.update(pupil)
+
+    return list(updated_periods)

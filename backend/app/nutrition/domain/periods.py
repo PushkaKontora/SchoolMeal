@@ -48,6 +48,12 @@ class Period:
 
 
 @dataclass(eq=True, frozen=True)
+class Day(Period):
+    def __init__(self, date_: date) -> None:
+        super().__init__(starts_at=date_, ends_at=date_)
+
+
+@dataclass(eq=True, frozen=True)
 class CancellationPeriod(Period):
     reasons: frozenset[SpecifiedReason]
 
@@ -83,6 +89,32 @@ class CancellationPeriod(Period):
 
         return result
 
+    def exclude(self, period: Period) -> list["CancellationPeriod"]:
+        if not (intersection := self.intersect(period)):
+            return [self]
+
+        result: list[CancellationPeriod] = []
+
+        if intersection.starts_at > self.starts_at:
+            result.append(
+                CancellationPeriod(
+                    starts_at=self.starts_at,
+                    ends_at=intersection.starts_at - timedelta(days=1),
+                    reasons=self.reasons,
+                )
+            )
+
+        if intersection.ends_at < self.ends_at:
+            result.append(
+                CancellationPeriod(
+                    starts_at=intersection.ends_at + timedelta(days=1),
+                    ends_at=self.ends_at,
+                    reasons=self.reasons,
+                )
+            )
+
+        return result
+
 
 @dataclass(eq=True, frozen=True)
 class CancellationPeriodSequence(Iterable[CancellationPeriod]):
@@ -113,6 +145,23 @@ class CancellationPeriodSequence(Iterable[CancellationPeriod]):
                 )
             )
         )
+
+    def remove(self, period: Period) -> "CancellationPeriodSequence":
+        start = self._search_insert_index(period)
+        end = start
+
+        new_periods: deque[CancellationPeriod] = deque()
+
+        while end < len(self.periods):
+            cancellation: CancellationPeriod = self.periods[end]
+
+            if not cancellation.intersect(period):
+                break
+
+            new_periods.extend(cancellation.exclude(period))
+            end += 1
+
+        return CancellationPeriodSequence(periods=tuple(chain(self.periods[:start], new_periods, self.periods[end:])))
 
     def _search_insert_index(self, period: Period) -> int:
         left, right = 0, len(self.periods)

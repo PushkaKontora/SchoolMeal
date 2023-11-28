@@ -1,4 +1,7 @@
-from fastapi import APIRouter, status
+from datetime import date
+from typing import Annotated
+
+from fastapi import APIRouter, Body, status
 
 from app.common.api import responses
 from app.common.api.dependencies.db import SessionDep
@@ -91,5 +94,33 @@ async def cancel_pupil_nutrition_for_period(
 
     except EndCannotBeGreaterThanStart as error:
         raise BadRequestError("Дата начала периода больше, чем конечная дата") from error
+
+    return [CancellationPeriodOut.from_model(period) for period in periods]
+
+
+@router.post(
+    "/resume",
+    summary="Поставить ребёнка на питание в дату",
+    status_code=status.HTTP_200_OK,
+    responses=responses.NOT_FOUND | responses.BAD_REQUEST,
+)
+async def resume_pupil_nutrition_on_day(
+    pupil_id: str,
+    date_in: Annotated[date, Body(embed=True, alias="date")],
+    session: SessionDep,
+    pupils_repository: PupilsRepositoryDep,
+) -> list[CancellationPeriodOut]:
+    try:
+        async with session.begin():
+            periods = await use_cases.resume_pupil_nutrition_on_day(
+                pupil_id=pupil_id,
+                date_=date_in,
+                pupils_repository=pupils_repository,
+            )
+
+            await session.commit()
+
+    except NotFoundPupil as error:
+        raise NotFoundError("Ученик не найден") from error
 
     return [CancellationPeriodOut.from_model(period) for period in periods]

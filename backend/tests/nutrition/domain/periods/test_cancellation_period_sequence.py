@@ -1,54 +1,7 @@
-from contextlib import nullcontext
-from datetime import date
-
 import pytest
 
-from app.nutrition.domain.periods import (
-    CancellationPeriod,
-    CancellationPeriodSequence,
-    EndCannotBeGreaterThanStart,
-    Period,
-    SpecifiedReason,
-)
-
-
-RowDates = tuple[int, int]
-RowPeriod = tuple[int, int, set[str]]
-
-
-@pytest.mark.parametrize(
-    ["start_day", "end_day", "error"],
-    [
-        [2, 2, None],
-        [2, 3, None],
-        [2, 1, EndCannotBeGreaterThanStart],
-    ],
-)
-def test_creating_period(start_day: int, end_day: int, error: type[Exception] | None):
-    ctx = nullcontext() if error is None else pytest.raises(error)
-
-    with ctx:
-        CancellationPeriod(starts_at=_create_date(start_day), ends_at=_create_date(end_day), reasons=frozenset())
-
-
-@pytest.mark.parametrize(
-    ["a", "b", "expected"],
-    [
-        [(1, 10), (10, 12), (10, 10)],
-        [(1, 2), (1, 2), (1, 2)],
-        [(1, 1), (1, 1), (1, 1)],
-        [(1, 10), (5, 6), (5, 6)],
-        [(1, 6), (4, 10), (4, 6)],
-        [(1, 1), (2, 2), None],
-        [(1, 5), (6, 6), None],
-        [(1, 3), (4, 5), None],
-    ],
-)
-def test_intersection_periods(a: RowDates, b: RowDates, expected: RowDates | None):
-    a_period, b_period = _create_period(*a), _create_period(*b)
-
-    assert _to_row_period(a_period.intersect(b_period)) == expected
-    assert _to_row_period(b_period.intersect(a_period)) == expected
+from app.nutrition.domain.periods import CancellationPeriodSequence
+from tests.nutrition.domain.periods.utils import RowPeriod, create_cancellation, create_period, to_row_cancellation
 
 
 @pytest.mark.parametrize(
@@ -220,37 +173,71 @@ def test_inserting_period_to_sequence(items: list[RowPeriod], expected: list[Row
     sequence = CancellationPeriodSequence()
 
     for start, end, reasons in items:
-        sequence = sequence.insert(_create_cancellation(start, end, reasons))
+        sequence = sequence.insert(create_cancellation(start, end, reasons))
 
-    assert [_to_row_cancellation(period) for period in sequence] == expected
-
-
-def _create_period(start_day: int, end_day: int) -> Period:
-    return Period(
-        starts_at=_create_date(start_day),
-        ends_at=_create_date(end_day),
-    )
+    assert [to_row_cancellation(period) for period in sequence] == expected
 
 
-def _to_row_period(period: Period | None) -> tuple[int, int] | None:
-    return (_date_as_number(period.starts_at), _date_as_number(period.ends_at)) if period else None
+@pytest.mark.parametrize(
+    ["items", "period", "expected"],
+    [
+        [
+            [(3, 5, {"a"}), (10, 15, {"b"})],
+            (2, 2),
+            [(3, 5, {"a"}), (10, 15, {"b"})],
+        ],
+        [
+            [(3, 5, {"a"}), (10, 15, {"b"})],
+            (1, 2),
+            [(3, 5, {"a"}), (10, 15, {"b"})],
+        ],
+        [
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+            (8, 8),
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+        ],
+        [
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+            (6, 9),
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+        ],
+        [
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+            (16, 16),
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+        ],
+        [
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+            (16, 20),
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+        ],
+        [
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+            (5, 10),
+            [(1, 4, {"a"}), (11, 15, {"b"})],
+        ],
+        [
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+            (3, 14),
+            [(1, 2, {"a"}), (15, 15, {"b"})],
+        ],
+        [
+            [(1, 5, {"a"}), (10, 15, {"b"})],
+            (1, 15),
+            [],
+        ],
+        [
+            [(2, 5, {"a"}), (10, 15, {"b"})],
+            (1, 16),
+            [],
+        ],
+    ],
+)
+def test_removing_period_from_sequence(items: list[RowPeriod], period: RowPeriod, expected: list[RowPeriod]):
+    sequence = CancellationPeriodSequence()
 
+    for start, end, reasons in items:
+        sequence = sequence.insert(create_cancellation(start, end, reasons))
 
-def _create_cancellation(start_day: int, end_day: int, reasons: set[str]) -> CancellationPeriod:
-    return CancellationPeriod(
-        starts_at=_create_date(start_day),
-        ends_at=_create_date(end_day),
-        reasons=frozenset(map(SpecifiedReason, reasons)),
-    )
-
-
-def _to_row_cancellation(period: CancellationPeriod | None) -> tuple[int, int, set[str]] | None:
-    return _to_row_period(period) + ({reason.value for reason in period.reasons},) if period else None
-
-
-def _create_date(number: int) -> date:
-    return date(year=2023, month=10, day=number)
-
-
-def _date_as_number(date_: date) -> int:
-    return date_.day
+    sequence = sequence.remove(create_period(*period))
+    assert list(map(to_row_cancellation, sequence)) == expected
