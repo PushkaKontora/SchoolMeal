@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Response, status
 
-from app.common.api import responses
-from app.common.api.dependencies.db import SessionDep
-from app.common.api.errors import AuthorizationError, BadRequestError, NotFoundError, UnprocessableEntityError
-from app.common.api.schemas import AuthorizedUser, OKSchema
+from app.shared.fastapi import responses
+from app.shared.fastapi.dependencies.db import SessionDep
+from app.shared.fastapi.errors import AuthorizationError, BadRequestError, NotFoundError, UnprocessableEntityError
+from app.shared.fastapi.schemas import AuthorizedUser, OKSchema
 from app.users.api.dependencies.services import SessionServiceDep, UserServiceDep
 from app.users.api.dependencies.settings import JWTSettingsDep
 from app.users.api.dependencies.tokens import (

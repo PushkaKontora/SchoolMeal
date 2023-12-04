@@ -5,11 +5,11 @@ from typing import Any
 from sqlalchemy import JSON, Column, String
 from sqlalchemy.orm import Mapped
 
-from app.common.infrastructure.db.base import Base
 from app.nutrition.domain.certificate import PreferentialCertificate
 from app.nutrition.domain.meal_plan import MealPlan
 from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, SpecifiedReason
 from app.nutrition.domain.pupil import FirstName, LastName, Pupil, PupilID
+from app.shared.db.base import Base
 
 
 class NutritionSchemaMixin:

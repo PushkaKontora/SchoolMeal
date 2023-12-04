@@ -2,15 +2,15 @@ from uuid import UUID
 
 from fastapi import APIRouter, status
 
-from app.common.api import responses
-from app.common.api.dependencies.db import SessionDep
-from app.common.api.dependencies.headers import AuthorizedUserDep
-from app.common.api.errors import NotFoundError, UnprocessableEntityError
-from app.common.api.schemas import OKSchema
 from app.feedbacks.api.dependencies import FeedbackServiceDep
 from app.feedbacks.api.schemas import FeedbackIn
 from app.feedbacks.application.services import CantLeaveFeedbackOnUnregisteredCanteen
 from app.feedbacks.domain.text import ExceededMaxLengthFeedbackText, InsufficientMinLengthFeedbackText
+from app.shared.fastapi import responses
+from app.shared.fastapi.dependencies.db import SessionDep
+from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
+from app.shared.fastapi.errors import NotFoundError, UnprocessableEntityError
+from app.shared.fastapi.schemas import OKSchema
 
 
 router = APIRouter(prefix="/canteens/{canteen_id}", tags=["Отзывы столовой"])

@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from app.common.api.utils import camelize_snakecase
+from app.shared.fastapi.utils import camelize_snakecase
 
 
 class FrontendModel(BaseModel):

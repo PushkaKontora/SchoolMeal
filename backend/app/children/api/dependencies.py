@@ -4,7 +4,7 @@ from fastapi import Depends
 
 from app.children.application.repositories import IChildrenRepository, IParentsRepository
 from app.children.infrastructure.db.repositories import ChildrenRepository, ParentsRepository
-from app.common.api.dependencies.db import SessionDep
+from app.shared.fastapi.dependencies.db import SessionDep
 
 
 def _get_parents_repository(session: SessionDep) -> IParentsRepository:

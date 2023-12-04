@@ -2,10 +2,10 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.common.api.dependencies.db import SessionDep
 from app.feedbacks.application.repositories import ICanteenRepository, IFeedbackRepository
 from app.feedbacks.application.services import CanteenService, FeedbackService
 from app.feedbacks.infrastructure.db.repositories import CanteenRepository, FeedbackRepository
+from app.shared.fastapi.dependencies.db import SessionDep
 
 
 def _get_feedback_repository(session: SessionDep) -> IFeedbackRepository:

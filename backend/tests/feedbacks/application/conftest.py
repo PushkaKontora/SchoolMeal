@@ -2,10 +2,10 @@ from uuid import uuid4
 
 import pytest
 
-from app.common.api.schemas import AuthorizedUser, RoleOut
 from app.feedbacks.application.repositories import ICanteenRepository, IFeedbackRepository
 from app.feedbacks.application.services import CanteenService, FeedbackService
 from app.feedbacks.domain.canteen import Canteen
+from app.shared.fastapi.schemas import AuthorizedUser, RoleOut
 from tests.feedbacks.application.repositories import LocalCanteenRepository, LocalFeedbackRepository
 
 

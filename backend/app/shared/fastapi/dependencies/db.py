@@ -3,8 +3,8 @@ from typing import Annotated, AsyncIterator
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.common.infrastructure.db.session import get_session_cls
-from app.common.infrastructure.settings import DatabaseSettings
+from app.shared.db.session import get_session_cls
+from app.shared.db.settings import DatabaseSettings
 
 
 def _get_database_settings() -> DatabaseSettings:

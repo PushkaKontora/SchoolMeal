@@ -3,10 +3,6 @@ from typing import Annotated
 
 from fastapi import APIRouter, Body, status
 
-from app.common.api import responses
-from app.common.api.dependencies.db import SessionDep
-from app.common.api.errors import BadRequestError, NotFoundError
-from app.common.api.schemas import OKSchema
 from app.nutrition.api.dependencies import NutritionServiceDep
 from app.nutrition.api.schemas import CancellationPeriodIn, CancellationPeriodOut, MealPlanIn, NutritionOut
 from app.nutrition.application.repositories import NotFoundPupil
@@ -15,6 +11,10 @@ from app.nutrition.domain.periods import (
     ExceededMaxLengthReason,
     SpecifiedReasonCannotBeEmpty,
 )
+from app.shared.fastapi import responses
+from app.shared.fastapi.dependencies.db import SessionDep
+from app.shared.fastapi.errors import BadRequestError, NotFoundError
+from app.shared.fastapi.schemas import OKSchema
 
 
 router = APIRouter(prefix="/nutrition/{pupil_id}", tags=["Питание"])

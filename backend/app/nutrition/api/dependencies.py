@@ -2,10 +2,10 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.common.api.dependencies.db import SessionDep
 from app.nutrition.application.repositories import IPupilsRepository
 from app.nutrition.application.services import NutritionService
 from app.nutrition.infrastructure.db.repositories import PupilsRepository
+from app.shared.fastapi.dependencies.db import SessionDep
 
 
 def _get_pupils_repository(session: SessionDep) -> IPupilsRepository:

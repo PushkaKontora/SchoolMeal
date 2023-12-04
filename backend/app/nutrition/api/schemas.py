@@ -1,11 +1,11 @@
 from datetime import date
 from enum import Enum
 
-from app.common.api.schemas import FrontendModel
 from app.nutrition.domain.certificate import PreferentialCertificate
 from app.nutrition.domain.meal_plan import MealPlan
 from app.nutrition.domain.periods import CancellationPeriod
 from app.nutrition.domain.pupil import MealStatus, Pupil
+from app.shared.fastapi.schemas import FrontendModel
 
 
 class MealPlanIn(FrontendModel):

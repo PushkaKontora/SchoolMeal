@@ -1,4 +1,4 @@
-from app.common.api.schemas import FrontendModel
+from app.shared.fastapi.schemas import FrontendModel
 
 
 class FeedbackIn(FrontendModel):

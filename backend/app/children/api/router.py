@@ -5,11 +5,11 @@ from app.children.api.schemas import ChildOut
 from app.children.application import use_cases
 from app.children.application.repositories import NotFoundChild, NotFoundParent
 from app.children.domain.parent import ChildIsAlreadyAssignedToParent
-from app.common.api import responses
-from app.common.api.dependencies.db import SessionDep
-from app.common.api.dependencies.headers import AuthorizedUserDep
-from app.common.api.errors import BadRequestError, NotFoundError
-from app.common.api.schemas import OKSchema
+from app.shared.fastapi import responses
+from app.shared.fastapi.dependencies.db import SessionDep
+from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
+from app.shared.fastapi.errors import BadRequestError, NotFoundError
+from app.shared.fastapi.schemas import OKSchema
 
 
 router = APIRouter(tags=["Родители и дети"])

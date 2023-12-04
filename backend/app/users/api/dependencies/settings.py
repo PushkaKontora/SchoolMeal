@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.common.infrastructure.settings import JWTSettings
+from app.users.infrastructure.settings import JWTSettings
 
 
 def _get_jwt_settings() -> JWTSettings:

@@ -2,7 +2,7 @@ from typing import Any
 
 from fastapi import status
 
-from app.common.api.schemas import HTTPError
+from app.shared.fastapi.schemas import HTTPError
 
 
 Response = dict[int | str, dict[str, Any]]

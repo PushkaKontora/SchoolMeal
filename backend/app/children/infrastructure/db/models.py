@@ -10,7 +10,7 @@ from app.children.domain.meal_plan import MealPlan
 from app.children.domain.parent import Parent
 from app.children.domain.school import School, SchoolName
 from app.children.domain.school_class import ClassLiteral, ClassNumber, SchoolClass
-from app.common.infrastructure.db.base import Base
+from app.shared.db.base import Base
 
 
 class ChildrenSchemaMixin:

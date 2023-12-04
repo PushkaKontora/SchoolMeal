@@ -2,9 +2,9 @@ from uuid import uuid4
 
 import pytest
 
-from app.common.api.schemas import AuthorizedUser
 from app.feedbacks.application.services import CantLeaveFeedbackOnUnregisteredCanteen, FeedbackService
 from app.feedbacks.domain.canteen import Canteen
+from app.shared.fastapi.schemas import AuthorizedUser
 
 
 async def test_leave_feedback_on_canteen(

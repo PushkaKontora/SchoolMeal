@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.common.api.dependencies.db import SessionDep
+from app.shared.fastapi.dependencies.db import SessionDep
 from app.users.application.repositories import ISessionsRepository, IUsersRepository
 from app.users.infrastructure.db.repositories import SessionsRepository, UsersRepository
 

@@ -6,15 +6,9 @@ from sqlalchemy import engine_from_config, pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from app.common.infrastructure.db.base import Base
-from app.common.infrastructure.db.utils import create_database, exists_database, wait_connect
-from app.common.infrastructure.settings import DatabaseSettings
-
-
-from app.users.infrastructure.db.models import SessionDB, UserDB  # isort: skip
-from app.feedbacks.infrastructure.db.models import FeedbackDB, CanteenDB  # isort: skip
-from app.children.infrastructure.db.models import ParentDB, ChildDB  # isort: skip
-from app.nutrition.infrastructure.db.models import PupilDB  # isort: skip
+from app.shared.db.base import Base
+from app.shared.db.settings import DatabaseSettings
+from app.shared.db.utils import create_database, exists_database, wait_connect
 
 
 database = DatabaseSettings()

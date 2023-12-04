@@ -4,7 +4,7 @@ from app.children.domain.child import Child
 from app.children.domain.meal_plan import MealPlan, MealStatus
 from app.children.domain.school import School
 from app.children.domain.school_class import SchoolClass
-from app.common.api.schemas import FrontendModel
+from app.shared.fastapi.schemas import FrontendModel
 
 
 class SchoolOut(FrontendModel):

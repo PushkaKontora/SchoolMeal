@@ -1,6 +1,6 @@
 from enum import Enum
 
-from app.common.api.schemas import FrontendModel
+from app.shared.fastapi.schemas import FrontendModel
 from app.users.domain.role import Role
 from app.users.domain.tokens import AccessToken
 from app.users.domain.user import User

@@ -1,8 +1,4 @@
-from pydantic import BaseSettings, Field, SecretStr
-
-
-class ServiceSettings(BaseSettings):
-    show_swagger_ui: bool = Field(default=False, env="SHOW_SWAGGER_UI")
+from pydantic import BaseSettings, Field
 
 
 class DatabaseSettings(BaseSettings):
@@ -17,7 +13,3 @@ class DatabaseSettings(BaseSettings):
     @property
     def url(self) -> str:
         return f"{self.driver}://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
-
-
-class JWTSettings(BaseSettings):
-    secret: SecretStr = Field(env="JWT_SECRET")
