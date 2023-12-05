@@ -1,15 +1,15 @@
 import pytest
 from freezegun import freeze_time
 
-from app.users.application.services import IncorrectLoginOrPassword, UserService
+from app.users.application.services import IncorrectLoginOrPassword, UsersService
 from app.users.domain.passwords import Password
 from app.users.domain.user import User
 from tests.users.application.tokens import validate_tokens
 
 
 @freeze_time()
-async def test_authentication(parent: User, password: Password, user_service: UserService):
-    access, refresh = await user_service.authenticate(parent.login.value, password.value)
+async def test_authentication(parent: User, password: Password, users_service: UsersService):
+    access, refresh = await users_service.authenticate(parent.login.value, password.value)
 
     validate_tokens(access, refresh, expected_user_id=parent.id)
 
@@ -25,7 +25,7 @@ async def test_authentication(parent: User, password: Password, user_service: Us
 async def test_authentication_using_incorrect_credentials(
     login_: str,
     password_: str,
-    user_service: UserService,
+    users_service: UsersService,
 ):
     with pytest.raises(IncorrectLoginOrPassword):
-        await user_service.authenticate(login_, password_)
+        await users_service.authenticate(login_, password_)

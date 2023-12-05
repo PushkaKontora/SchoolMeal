@@ -1,19 +1,25 @@
-from dataclasses import dataclass
 from uuid import UUID, uuid4
 
-from app.feedbacks.application.repositories import ICanteenRepository, IFeedbackRepository
+from app.feedbacks.application.repositories import ICanteensRepository, IFeedbacksRepository
 from app.feedbacks.domain.feedback import Feedback
 from app.feedbacks.domain.text import FeedbackText
+from app.shared.unit_of_work import UnitOfWork
 
 
 class CantLeaveFeedbackOnUnregisteredCanteen(Exception):
     pass
 
 
-@dataclass
-class FeedbackService:
-    repository: IFeedbackRepository
-    canteen_service: "CanteenService"
+class FeedbacksService:
+    def __init__(
+        self,
+        unit_of_work: UnitOfWork,
+        feedbacks_repository: IFeedbacksRepository,
+        canteens_repository: ICanteensRepository,
+    ) -> None:
+        self._unit_of_work = unit_of_work
+        self._feedbacks = feedbacks_repository
+        self._canteens = canteens_repository
 
     async def leave_feedback_about_canteen(self, canteen_id: UUID, user_id: UUID, text: str) -> Feedback:
         """
@@ -22,24 +28,19 @@ class FeedbackService:
         :raise ExceededMaxLengthFeedbackText: превышена максимальная длина отзыва
         """
 
-        if not await self.canteen_service.is_canteen_registered(canteen_id):
-            raise CantLeaveFeedbackOnUnregisteredCanteen
+        async with self._unit_of_work as session:
+            if not await self._canteens.exists_by_id(canteen_id):
+                raise CantLeaveFeedbackOnUnregisteredCanteen
 
-        feedback_text = FeedbackText(text)
-        feedback = Feedback(
-            id=uuid4(),
-            canteen_id=canteen_id,
-            user_id=user_id,
-            text=feedback_text,
-        )
-        await self.repository.save(feedback)
+            feedback_text = FeedbackText(text)
+            feedback = Feedback(
+                id=uuid4(),
+                canteen_id=canteen_id,
+                user_id=user_id,
+                text=feedback_text,
+            )
+            await self._feedbacks.save(feedback)
+
+            await session.commit()
 
         return feedback
-
-
-@dataclass
-class CanteenService:
-    repository: ICanteenRepository
-
-    async def is_canteen_registered(self, canteen_id: UUID) -> bool:
-        return await self.repository.exists_by_id(canteen_id)

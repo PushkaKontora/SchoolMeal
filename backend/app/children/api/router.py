@@ -1,12 +1,10 @@
 from fastapi import APIRouter, status
 
-from app.children.api.dependencies import ChildrenRepositoryDep, ParentsRepositoryDep
+from app.children.api.dependencies import ChildrenServiceDep
 from app.children.api.schemas import ChildOut
-from app.children.application import use_cases
 from app.children.application.repositories import NotFoundChild, NotFoundParent
 from app.children.domain.parent import ChildIsAlreadyAssignedToParent
 from app.shared.fastapi import responses
-from app.shared.fastapi.dependencies.db import SessionDep
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.errors import BadRequestError, NotFoundError
 from app.shared.fastapi.schemas import OKSchema
@@ -21,22 +19,11 @@ router = APIRouter(tags=["Родители и дети"])
     status_code=status.HTTP_200_OK,
     responses=responses.NOT_FOUND | responses.BAD_REQUEST,
 )
-async def assign_pupil_to_parent(
-    child_id: str,
-    user: AuthorizedUserDep,
-    session: SessionDep,
-    parents_repository: ParentsRepositoryDep,
-    children_repository: ChildrenRepositoryDep,
+async def attach_child_to_parent(
+    child_id: str, user: AuthorizedUserDep, children_service: ChildrenServiceDep
 ) -> OKSchema:
     try:
-        async with session.begin():
-            await use_cases.add_child_to_parent(
-                parent_id=user.id,
-                child_id=child_id,
-                parents_repository=parents_repository,
-                children_repository=children_repository,
-            )
-            await session.commit()
+        await children_service.attach_child_to_parent(parent_id=user.id, child_id=child_id)
 
     except NotFoundParent as error:
         raise BadRequestError("Родитель не зарегистрирован") from error
@@ -55,13 +42,9 @@ async def assign_pupil_to_parent(
     summary="Получить список детей",
     status_code=status.HTTP_200_OK,
 )
-async def get_children(
-    user: AuthorizedUserDep, parents_repository: ParentsRepositoryDep, children_repository: ChildrenRepositoryDep
-) -> list[ChildOut]:
+async def get_children(user: AuthorizedUserDep, children_service: ChildrenServiceDep) -> list[ChildOut]:
     try:
-        children = await use_cases.get_children(
-            parent_id=user.id, parents_repository=parents_repository, children_repository=children_repository
-        )
+        children = await children_service.get_children(parent_id=user.id)
 
     except NotFoundParent as error:
         raise BadRequestError("Родитель не зарегистрирован") from error

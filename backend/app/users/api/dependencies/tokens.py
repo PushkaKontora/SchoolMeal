@@ -5,6 +5,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from starlette.responses import Response
 
 from app.users.domain.tokens import RefreshToken
+from app.users.infrastructure.settings import JWTSettings
 
 
 REFRESH_COOKIE = "refresh"
@@ -18,10 +19,10 @@ def _get_access_token(authorization: Annotated[HTTPAuthorizationCredentials, Dep
     return authorization.credentials
 
 
-def set_refresh_in_cookies(response: Response, refresh_token: RefreshToken, secret: str) -> Response:
+def set_refresh_in_cookies(response: Response, refresh_token: RefreshToken, settings: JWTSettings) -> Response:
     response.set_cookie(
         key=REFRESH_COOKIE,
-        value=refresh_token.encode(secret),
+        value=refresh_token.encode(settings.secret.get_secret_value()),
         expires=int(refresh_token.exp.timestamp()),
         httponly=True,
     )

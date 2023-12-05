@@ -12,7 +12,6 @@ from app.nutrition.domain.periods import (
     SpecifiedReasonCannotBeEmpty,
 )
 from app.shared.fastapi import responses
-from app.shared.fastapi.dependencies.db import SessionDep
 from app.shared.fastapi.errors import BadRequestError, NotFoundError
 from app.shared.fastapi.schemas import OKSchema
 
@@ -42,17 +41,15 @@ async def get_pupil_nutrition(pupil_id: str, nutrition_service: NutritionService
     responses=responses.NOT_FOUND,
 )
 async def change_meal_plan_for_pupil(
-    pupil_id: str, plan: MealPlanIn, session: SessionDep, nutrition_service: NutritionServiceDep
+    pupil_id: str, plan: MealPlanIn, nutrition_service: NutritionServiceDep
 ) -> OKSchema:
     try:
-        async with session.begin():
-            await nutrition_service.change_meal_plan_for_pupil(
-                pupil_id=pupil_id,
-                has_breakfast=plan.has_breakfast,
-                has_dinner=plan.has_dinner,
-                has_snacks=plan.has_snacks,
-            )
-            await session.commit()
+        await nutrition_service.change_meal_plan_for_pupil(
+            pupil_id=pupil_id,
+            has_breakfast=plan.has_breakfast,
+            has_dinner=plan.has_dinner,
+            has_snacks=plan.has_snacks,
+        )
 
     except NotFoundPupil as error:
         raise NotFoundError("Ученик не найден") from error
@@ -67,18 +64,15 @@ async def change_meal_plan_for_pupil(
     responses=responses.NOT_FOUND | responses.BAD_REQUEST,
 )
 async def cancel_pupil_nutrition_for_period(
-    pupil_id: str, period_in: CancellationPeriodIn, session: SessionDep, nutrition_service: NutritionServiceDep
+    pupil_id: str, period_in: CancellationPeriodIn, nutrition_service: NutritionServiceDep
 ) -> list[CancellationPeriodOut]:
     try:
-        async with session.begin():
-            periods = await nutrition_service.cancel_pupil_nutrition_for_period(
-                pupil_id=pupil_id,
-                starts_at=period_in.starts_at,
-                ends_at=period_in.ends_at,
-                reason=period_in.reason,
-            )
-
-            await session.commit()
+        periods = await nutrition_service.cancel_pupil_nutrition_for_period(
+            pupil_id=pupil_id,
+            starts_at=period_in.starts_at,
+            ends_at=period_in.ends_at,
+            reason=period_in.reason,
+        )
 
     except NotFoundPupil as error:
         raise NotFoundError("Ученик не найден") from error
@@ -104,14 +98,10 @@ async def cancel_pupil_nutrition_for_period(
 async def resume_pupil_nutrition_on_day(
     pupil_id: str,
     date_in: Annotated[date, Body(embed=True, alias="date")],
-    session: SessionDep,
     nutrition_service: NutritionServiceDep,
 ) -> list[CancellationPeriodOut]:
     try:
-        async with session.begin():
-            periods = await nutrition_service.resume_pupil_nutrition_on_day(pupil_id=pupil_id, date_=date_in)
-
-            await session.commit()
+        periods = await nutrition_service.resume_pupil_nutrition_on_day(pupil_id=pupil_id, date_=date_in)
 
     except NotFoundPupil as error:
         raise NotFoundError("Ученик не найден") from error

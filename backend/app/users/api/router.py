@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Response, status
 
 from app.shared.fastapi import responses
-from app.shared.fastapi.dependencies.db import SessionDep
 from app.shared.fastapi.errors import AuthorizationError, BadRequestError, NotFoundError, UnprocessableEntityError
 from app.shared.fastapi.schemas import AuthorizedUser, OKSchema
-from app.users.api.dependencies.services import SessionServiceDep, UserServiceDep
+from app.users.api.dependencies.services import SessionsServiceDep, UsersServiceDep
 from app.users.api.dependencies.settings import JWTSettingsDep
 from app.users.api.dependencies.tokens import (
     AccessTokenDep,
@@ -31,9 +30,9 @@ router = APIRouter(prefix="/users", tags=["Аутентификация и по�
     status_code=status.HTTP_204_NO_CONTENT,
     responses=responses.FORBIDDEN,
 )
-async def authorize(access_token: AccessTokenDep, user_service: UserServiceDep) -> Response:
+async def authorize(access_token: AccessTokenDep, users_service: UsersServiceDep) -> Response:
     try:
-        user = await user_service.authorize(access_token)
+        user = await users_service.authorize(access_token)
     except Exception as error:
         raise AuthorizationError from error
 
@@ -53,24 +52,21 @@ async def authorize(access_token: AccessTokenDep, user_service: UserServiceDep) 
 async def authenticate(
     response: Response,
     credential: CredentialIn,
-    session: SessionDep,
-    user_service: UserServiceDep,
+    user_service: UsersServiceDep,
     jwt_settings: JWTSettingsDep,
 ) -> AccessTokenOut:
     try:
-        async with session.begin():
-            access_token, refresh_token = await user_service.authenticate(
-                login=credential.login,
-                password=credential.password,
-            )
-            await session.commit()
+        access_token, refresh_token = await user_service.authenticate(
+            login=credential.login,
+            password=credential.password,
+        )
 
     except IncorrectLoginOrPassword as error:
         raise BadRequestError("Неверный логин или пароль") from error
 
-    set_refresh_in_cookies(response, refresh_token, secret=jwt_settings.secret.get_secret_value())
+    set_refresh_in_cookies(response, refresh_token, settings=jwt_settings)
 
-    return AccessTokenOut.from_model(access_token, secret=jwt_settings.secret.get_secret_value())
+    return AccessTokenOut.from_model(access_token, settings=jwt_settings)
 
 
 @router.post(
@@ -78,14 +74,11 @@ async def authenticate(
 )
 async def logout(
     response: Response,
-    session: SessionDep,
     access_token: AccessTokenDep,
-    user_service: UserServiceDep,
+    users_service: UsersServiceDep,
 ) -> OKSchema:
     try:
-        async with session.begin():
-            await user_service.logout(access_token)
-            await session.commit()
+        await users_service.logout(access_token)
 
     except SignatureIsBroken as error:
         raise UnprocessableEntityError("Сигнатура токена повреждена") from error
@@ -106,20 +99,15 @@ async def logout(
 )
 async def refresh_tokens(
     response: Response,
-    session: SessionDep,
     refresh_token: RefreshTokenDep,
-    session_service: SessionServiceDep,
+    sessions_service: SessionsServiceDep,
     jwt_settings: JWTSettingsDep,
 ) -> AccessTokenOut:
     try:
-        async with session.begin():
-            try:
-                access, refresh = await session_service.refresh_session(refresh_token)
-                await session.commit()
+        access, refresh = await sessions_service.refresh_session(refresh_token)
 
-            except CantRevokeAlreadyRevokedSession as error:
-                await session.commit()
-                raise BadRequestError("Сессия уже была отозвана") from error
+    except CantRevokeAlreadyRevokedSession as error:
+        raise BadRequestError("Сессия уже была отозвана") from error
 
     except SignatureIsBroken as error:
         raise UnprocessableEntityError("Сигнатура токена повреждена") from error
@@ -127,9 +115,9 @@ async def refresh_tokens(
     except TokenHasExpired as error:
         raise UnprocessableEntityError("Время жизни токена истекло") from error
 
-    set_refresh_in_cookies(response, refresh, secret=jwt_settings.secret.get_secret_value())
+    set_refresh_in_cookies(response, refresh, settings=jwt_settings)
 
-    return AccessTokenOut.from_model(access, secret=jwt_settings.secret.get_secret_value())
+    return AccessTokenOut.from_model(access, settings=jwt_settings)
 
 
 @router.post(
@@ -138,17 +126,15 @@ async def refresh_tokens(
     status_code=status.HTTP_201_CREATED,
     responses=responses.BAD_REQUEST,
 )
-async def register_parent(session: SessionDep, form: ParentRegistrationForm, user_service: UserServiceDep) -> OKSchema:
+async def register_parent(form: ParentRegistrationForm, users_service: UsersServiceDep) -> OKSchema:
     try:
-        async with session.begin():
-            await user_service.register_parent(
-                first_name=form.first_name,
-                last_name=form.last_name,
-                phone=form.phone,
-                email=form.email,
-                password=form.password,
-            )
-            await session.commit()
+        await users_service.register_parent(
+            first_name=form.first_name,
+            last_name=form.last_name,
+            phone=form.phone,
+            email=form.email,
+            password=form.password,
+        )
 
     except FirstNameContainsNotCyrillicCharacters as error:
         raise BadRequestError("Имя должно содержать только символы кириллицы") from error
@@ -201,9 +187,9 @@ async def register_parent(session: SessionDep, form: ParentRegistrationForm, use
     status_code=status.HTTP_200_OK,
     responses=responses.NOT_FOUND | responses.UNPROCESSABLE_ENTITY,
 )
-async def get_user_by_access_token(access_token: AccessTokenDep, user_service: UserServiceDep) -> UserOut:
+async def get_user_by_access_token(access_token: AccessTokenDep, users_service: UsersServiceDep) -> UserOut:
     try:
-        user = await user_service.get_user_by_access_token(access_token)
+        user = await users_service.get_user_by_access_token(access_token)
 
     except SignatureIsBroken as error:
         raise UnprocessableEntityError("Сигнатура токена повреждена") from error

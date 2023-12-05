@@ -19,8 +19,8 @@ class LocalSessionsRepository(ISessionsRepository):
     async def save(self, *sessions: Session) -> None:
         self._sessions |= {session.id: session for session in sessions}
 
-    async def update(self, *sessions: Session) -> None:
-        await self.save(*sessions)
+    async def update(self, session: Session) -> None:
+        await self.save(session)
 
     async def get_by_jti(self, jti: UUID) -> Session:
         try:

@@ -4,6 +4,7 @@ from app.shared.fastapi.schemas import FrontendModel
 from app.users.domain.role import Role
 from app.users.domain.tokens import AccessToken
 from app.users.domain.user import User
+from app.users.infrastructure.settings import JWTSettings
 
 
 class CredentialIn(FrontendModel):
@@ -15,8 +16,8 @@ class AccessTokenOut(FrontendModel):
     access_token: str
 
     @classmethod
-    def from_model(cls, access_token: AccessToken, secret: str) -> "AccessTokenOut":
-        return cls(access_token=access_token.encode(secret))
+    def from_model(cls, access_token: AccessToken, settings: JWTSettings) -> "AccessTokenOut":
+        return cls(access_token=access_token.encode(settings.secret.get_secret_value()))
 
 
 class RoleOut(str, Enum):

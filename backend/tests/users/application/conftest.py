@@ -1,7 +1,8 @@
+from unittest.mock import AsyncMock
+
 import pytest
 
-from app.users.application.repositories import ISessionsRepository, IUsersRepository
-from app.users.application.services import SessionService, UserService
+from app.users.application.services import SessionsService, UsersService
 from app.users.domain.email import Email
 from app.users.domain.names import FirstName, LastName
 from app.users.domain.passwords import Password
@@ -27,23 +28,22 @@ def password() -> Password:
 
 
 @pytest.fixture
-def users_repository(parent: User) -> IUsersRepository:
-    return LocalUsersRepository(users=[parent])
+def sessions_service(secret: str) -> SessionsService:
+    return SessionsService(
+        unit_of_work=AsyncMock(),
+        sessions_repository=LocalSessionsRepository(),
+        secret=secret,
+    )
 
 
 @pytest.fixture
-def sessions_repository() -> ISessionsRepository:
-    return LocalSessionsRepository()
-
-
-@pytest.fixture
-def session_service(sessions_repository: ISessionsRepository, secret: str) -> SessionService:
-    return SessionService(repository=sessions_repository, secret=secret)
-
-
-@pytest.fixture
-def user_service(users_repository: IUsersRepository, session_service: SessionService, secret: str) -> UserService:
-    return UserService(repository=users_repository, session_service=session_service, secret=secret)
+def users_service(parent: User, sessions_service: SessionsService, secret: str) -> UsersService:
+    return UsersService(
+        unit_of_work=AsyncMock(),
+        users_repository=LocalUsersRepository(users=[parent]),
+        sessions_service=sessions_service,
+        secret=secret,
+    )
 
 
 @pytest.fixture

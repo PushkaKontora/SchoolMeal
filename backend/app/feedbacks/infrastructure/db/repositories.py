@@ -3,12 +3,12 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.feedbacks.application.repositories import ICanteenRepository, IFeedbackRepository
+from app.feedbacks.application.repositories import ICanteensRepository, IFeedbacksRepository
 from app.feedbacks.domain.feedback import Feedback
 from app.feedbacks.infrastructure.db.models import CanteenDB, FeedbackDB
 
 
-class FeedbackRepository(IFeedbackRepository):
+class FeedbacksRepository(IFeedbacksRepository):
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
@@ -19,7 +19,7 @@ class FeedbackRepository(IFeedbackRepository):
         await self._session.flush([feedback_db])
 
 
-class CanteenRepository(ICanteenRepository):
+class CanteensRepository(ICanteensRepository):
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 

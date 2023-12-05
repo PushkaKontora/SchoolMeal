@@ -2,12 +2,11 @@ from uuid import UUID
 
 from fastapi import APIRouter, status
 
-from app.feedbacks.api.dependencies import FeedbackServiceDep
+from app.feedbacks.api.dependencies import FeedbacksServiceDep
 from app.feedbacks.api.schemas import FeedbackIn
 from app.feedbacks.application.services import CantLeaveFeedbackOnUnregisteredCanteen
 from app.feedbacks.domain.text import ExceededMaxLengthFeedbackText, InsufficientMinLengthFeedbackText
 from app.shared.fastapi import responses
-from app.shared.fastapi.dependencies.db import SessionDep
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.errors import NotFoundError, UnprocessableEntityError
 from app.shared.fastapi.schemas import OKSchema
@@ -25,15 +24,13 @@ router = APIRouter(prefix="/canteens/{canteen_id}", tags=["Отзывы стол
 async def leave_feedback_about_canteen(
     canteen_id: UUID,
     feedback: FeedbackIn,
-    session: SessionDep,
     authorized_user: AuthorizedUserDep,
-    feedback_service: FeedbackServiceDep,
+    feedbacks_service: FeedbacksServiceDep,
 ) -> OKSchema:
     try:
-        async with session.begin():
-            await feedback_service.leave_feedback_about_canteen(
-                canteen_id=canteen_id, user_id=authorized_user.id, text=feedback.text
-            )
+        await feedbacks_service.leave_feedback_about_canteen(
+            canteen_id=canteen_id, user_id=authorized_user.id, text=feedback.text
+        )
 
     except InsufficientMinLengthFeedbackText as error:
         raise UnprocessableEntityError("Отзыв не может быть пустым") from error

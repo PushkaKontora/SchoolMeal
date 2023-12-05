@@ -1,18 +1,14 @@
 import pytest
 
-from app.users.application.services import PhoneBelongsToAnotherParent, UserService
+from app.users.application.services import PhoneBelongsToAnotherParent, UsersService
 from app.users.domain.passwords import Password
 from app.users.domain.phone import Phone
 from app.users.domain.user import User
 
 
-async def test_registration_parent(
-    parent: User,
-    password: Password,
-    user_service: UserService,
-):
+async def test_registration_parent(parent: User, password: Password, users_service: UsersService):
     phone = Phone("+7 (000) 000-00-00")
-    user = await user_service.register_parent(
+    user = await users_service.register_parent(
         parent.first_name.value, parent.last_name.value, phone.value, parent.email.value, password.value
     )
 
@@ -24,12 +20,10 @@ async def test_registration_parent(
 
 
 async def test_registration_parent_using_not_unique_phone(
-    parent: User,
-    password: Password,
-    user_service: UserService,
+    parent: User, password: Password, users_service: UsersService
 ):
     with pytest.raises(PhoneBelongsToAnotherParent):
-        await user_service.register_parent(
+        await users_service.register_parent(
             first_name=parent.first_name.value,
             last_name=parent.last_name.value,
             phone=parent.phone.value,

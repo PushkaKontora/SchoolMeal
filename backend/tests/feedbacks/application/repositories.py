@@ -1,11 +1,11 @@
 from uuid import UUID
 
-from app.feedbacks.application.repositories import ICanteenRepository, IFeedbackRepository
+from app.feedbacks.application.repositories import ICanteensRepository, IFeedbacksRepository
 from app.feedbacks.domain.canteen import Canteen
 from app.feedbacks.domain.feedback import Feedback
 
 
-class LocalFeedbackRepository(IFeedbackRepository):
+class LocalFeedbacksRepository(IFeedbacksRepository):
     def __init__(self) -> None:
         self._feedbacks: list[Feedback] = []
 
@@ -13,7 +13,7 @@ class LocalFeedbackRepository(IFeedbackRepository):
         self._feedbacks += feedback
 
 
-class LocalCanteenRepository(ICanteenRepository):
+class LocalCanteensRepository(ICanteensRepository):
     def __init__(self, canteens: list[Canteen] | None = None) -> None:
         self._canteens: list[Canteen] = canteens or []
 
