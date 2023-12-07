@@ -1,5 +1,5 @@
-export {PeriodDateBadge} from './ui/period-date-badge';
-export {CalendarHeader} from './ui/calendar-header';
-export {Calendar} from './ui/calendar';
+export {PeriodDateBadge} from './calendar';
+export {CalendarHeader} from './calendar';
+export {Calendar} from './calendar';
 
-export {CalendarProps, CalendarHeaderProps, PeriodDateBadgeProps} from './model/props';
+export {CalendarProps, CalendarHeaderProps, PeriodDateBadgeProps} from './calendar';

@@ -1,7 +1,7 @@
 import {View, Text} from 'react-native';
 import {NutritionCertFeatureProps} from './props';
 import {styles} from './styles';
-import {formatDate} from '../../../6_entities/date';
+import {formatDate} from '../../../7_shared/lib/date';
 
 export function NutritionCertFeature(props: NutritionCertFeatureProps) {
   return (

@@ -8,12 +8,12 @@ import {PanelPressListeners} from '../types/types';
 import {CancelMealPeriods} from '../../../../7_shared/model/cancelMealPeriods';
 import {findPeriodIdByDate, isDateExpired} from '../lib/meal-utils';
 import {hideModal, showModal} from '../lib/modal-utils';
-import {dateToISOWithoutTime} from '../../../../6_entities/date/lib/utils';
 import {useDeleteCanceledMealMutation, useCancelMealMutation} from '../../../../6_entities/meal/api/api';
 import {createPanels} from '../lib/create-panels';
 import {MonthPicker} from '../../../../7_shared/ui/special/mini-calendar/ui/month-picker';
 import {findFirstFullWeek} from '../../../../7_shared/ui/special/mini-calendar/lib/dates-utils';
 import {DEFAULT_DATE} from '../../../../7_shared/consts/default_date';
+import {dateToISOWithoutTime} from '../../../../7_shared/lib/date';
 
 export function NutritionPanel(props: NutritionPanelProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(DEFAULT_DATE);

@@ -4,11 +4,11 @@ import {TitleText} from '../../../../../7_shared/ui/text/title-text/title.text';
 import {MiniCalendar} from '../../../../../7_shared/ui/special/mini-calendar';
 import {setDataMenu} from '../../menu/model/menu-slice/menu-slice';
 import {useAppDispatch} from '../../../../../../store/hooks';
-import {dateToISOWithoutTime} from '../../../../../6_entities/date/lib/utils';
 import {MonthPicker} from '../../../../../7_shared/ui/special/mini-calendar/ui/month-picker';
 import {useEffect, useState} from 'react';
 import {DEFAULT_DATE} from '../../../../../7_shared/consts/default_date';
 import {findFirstFullWeek} from '../../../../../7_shared/ui/special/mini-calendar/lib/dates-utils';
+import {dateToISOWithoutTime} from '../../../../../7_shared/lib/date';
 
 export function MenuData() {
   const styles = createStyle();

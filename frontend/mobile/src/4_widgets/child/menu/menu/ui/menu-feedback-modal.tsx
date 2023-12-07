@@ -6,7 +6,7 @@ import {SuccessFeedback} from './success-feedback';
 export function MenuFeedbackModal(props: MenuFeedbackModalProps) {
   const [createFeedback, {isSuccess}] = useCreateFeedbackMutation();
 
-  const onSendFeedback = async (currentData: FeedbackFormData) => {
+  const sendFeedback = async (currentData: FeedbackFormData) => {
     await createFeedback({
       canteenId: props.canteenId,
       ...currentData
@@ -17,7 +17,7 @@ export function MenuFeedbackModal(props: MenuFeedbackModalProps) {
     <ModalWithLimitedField
       title={'Отзыв о столовой'}
       buttonTitle={'Отправить отзыв'}
-      onSubmit={onSendFeedback}
+      onSubmit={sendFeedback}
       successfulSubmission={isSuccess}
       successComponent={<SuccessFeedback/>}
       canteenId={props.canteenId}/>
