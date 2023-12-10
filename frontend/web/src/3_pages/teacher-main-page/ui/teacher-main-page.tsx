@@ -12,7 +12,7 @@ export function TeacherMainPage() {
 
   const statusName = 'Не подана';
 
-  function handleSendApplication() {
+  function handlerSendApplication() {
     setOpen(true);
 
     setTimeout(() => {
@@ -46,7 +46,7 @@ export function TeacherMainPage() {
           </div>
           <Table/>
           <div className='btnSendAppl'>
-            <button className='btn' onClick={handleSendApplication}>
+            <button className='btn' onClick={handlerSendApplication}>
               Отправить заявку
             </button>
             <Popup nested modal open={open}>

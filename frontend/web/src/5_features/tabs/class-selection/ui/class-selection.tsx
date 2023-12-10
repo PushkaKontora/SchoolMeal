@@ -1,12 +1,13 @@
 import '../consts/style.scss';
 import ClassItemWidget from '../../../../4_widgets/teacher-blocks/class-item/ui/class-item';
+import { useAppSelector } from '../../../../../store/hooks';
 
 export default function ClassSelection() {
-  const classArray = ['1А', '2Б'];
+  const classList = useAppSelector((state) => state.classTabs.classList);
 
   return (
     <div className='containerClassItems'>
-      {classArray.map((item) => (
+      {classList.map((item) => (
         <ClassItemWidget key={item} className={item} />
       ))}
     </div>
