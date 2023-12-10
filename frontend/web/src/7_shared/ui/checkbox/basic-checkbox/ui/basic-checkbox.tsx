@@ -1,20 +1,41 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import '../consts/style.scss';
 import { BasicCheckboxProps } from '../model/props';
+import { useAppSelector, useAppDispatch } from '../../../../../../store/hooks';
+import { changeStateCheckbox } from '../../../../../5_features/table/model/checkbox-slice.ts/checkbox-slice';
 
 export default function BasicCheckbox(props: BasicCheckboxProps) {
-  const { isDisable, isCheck } = props;
+  const { isDisable, isCheck, type, isHeader } = props;
   const [isChecked, setIsChecked] = useState(isCheck);
+  const valueHeader = useAppSelector((state) => state.checkbox.isAction);
+  const typeChangeHeaders = useAppSelector((state) => state.checkbox.type);
+  const valueChangeHeaders = useAppSelector((state) => state.checkbox.lastValue);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    setIsChecked(isCheck);
+  }, [isCheck]);
+
+  useEffect(() => {
+    if(isHeader == false) {
+      if(type === typeChangeHeaders){
+        setIsChecked(!valueChangeHeaders);
+      }
+    }
+  }, [valueHeader]);
+
+  const onCheck = () => {
+    setIsChecked(!isChecked);
+
+    if (isHeader == true) {
+      dispatch(changeStateCheckbox({type: type, value: isChecked}));
+    }
+  };
 
   return (
     <label>
-      <input
-        type='checkbox'
-        onChange={() => {
-          setIsChecked(!isChecked);
-        }}
-      />
+      <input type='checkbox' onChange={onCheck} />
       <svg
         className={`checkbox ${
           isDisable ? 'checkbox--disabled' : isChecked ? 'checkbox--active' : ''

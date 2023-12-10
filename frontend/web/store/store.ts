@@ -6,6 +6,7 @@ import authSlice from '../src/5_features/auth/model/auth-slice/auth-slice';
 import {AUTH_API} from '../src/5_features/auth';
 import {USER_API} from '../src/6_entities/user';
 import {MEAL_REQUESTS_API} from '../src/6_entities/meals/api/api';
+import checkboxSlice from '../src/5_features/table/model/checkbox-slice.ts/checkbox-slice';
 
 const middleware = [
   ...featuresMiddlewares,
@@ -15,9 +16,10 @@ const middleware = [
 export const store = configureStore({
   reducer: {
     auth: authSlice,
+    checkbox: checkboxSlice,
     [AUTH_API.reducerPath]: AUTH_API.reducer,
     [USER_API.reducerPath]: USER_API.reducer,
-    [MEAL_REQUESTS_API.reducerPath]: MEAL_REQUESTS_API.reducer
+    [MEAL_REQUESTS_API.reducerPath]: MEAL_REQUESTS_API.reducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()
