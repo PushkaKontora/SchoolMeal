@@ -10,6 +10,7 @@ export const createStyle = (props: ButtonSecondaryProps) => StyleSheet.create({
     paddingVertical: 11,
     width: '100%',
     alignItems: 'center',
+    flex: props.flex
   },
   disabled: {
     opacity: 0.75

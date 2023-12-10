@@ -1,1 +1,1 @@
-export {formatDate, dateToISOWithoutTime} from './lib/utils';
+export {formatDateToCasual, dateToISOWithoutTime} from './lib/utils';

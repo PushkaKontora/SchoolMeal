@@ -9,7 +9,7 @@ export const createStyle = (props: ButtonPrimaryProps) => StyleSheet.create({
     paddingHorizontal: props.paddingHorizontal || 0,
     width: '100%',
     alignItems: 'center',
-
+    flex: props.flex
   },
   disabled: {
     opacity: 0.75

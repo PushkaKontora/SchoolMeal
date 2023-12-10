@@ -1,7 +1,7 @@
 import {View, Text} from 'react-native';
 import {NutritionCertFeatureProps} from './props';
 import {styles} from './styles';
-import {formatDate} from '../../../7_shared/lib/date';
+import {formatDateToCasual} from '../../../7_shared/lib/date';
 
 export function NutritionCertFeature(props: NutritionCertFeatureProps) {
   return (
@@ -17,7 +17,7 @@ export function NutritionCertFeature(props: NutritionCertFeatureProps) {
 
           <Text
             style={styles.dateBadge}>
-            {formatDate(new Date(props.child.certificateBeforeDate))}
+            {formatDateToCasual(new Date(props.child.certificateBeforeDate))}
           </Text>
         </View>
       }

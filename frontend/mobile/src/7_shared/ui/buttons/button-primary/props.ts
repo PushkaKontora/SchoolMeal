@@ -11,4 +11,5 @@ export type ButtonPrimaryProps = {
     fontWeight?: TextStyle['fontWeight'],
     paddingVertical?: number,
     paddingHorizontal?: number,
+    flex?: number
 };

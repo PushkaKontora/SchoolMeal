@@ -25,5 +25,10 @@ export const createDayStyle = (props: DayComponentProps) => StyleSheet.create({
     fontSize: 17.6,
     fontWeight: isBorderDay(props) ? '600' : '400',
     color: isBorderDay(props) ? '#FFFFFF' : '#000000'
+  },
+  pastDateText: {
+    fontSize: 17.6,
+    fontWeight: '400',
+    color: '#C4C4C7'
   }
 });

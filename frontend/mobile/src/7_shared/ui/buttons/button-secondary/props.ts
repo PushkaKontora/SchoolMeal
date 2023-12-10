@@ -1,8 +1,9 @@
 export type ButtonSecondaryProps = {
   title: string,
-  onPress: () => void,
+  onPress?: () => void,
   borderRadius?: number,
   borderColor?: string
   textColor?: string,
-  disabled?: boolean
+  disabled?: boolean,
+  flex?: number
 };

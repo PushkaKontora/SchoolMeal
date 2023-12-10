@@ -3,12 +3,20 @@ import {Calendar as ExternalCalendar, DateData} from 'react-native-calendars';
 import {Text} from 'react-native';
 import {useEffect, useState} from 'react';
 import {DayComponent} from './day-component';
-import {generatePeriod} from '../lib/lib';
 import {LocaleConfig} from 'react-native-calendars/src';
+import {generatePeriod} from '../lib/period';
+import {dateToISOWithoutTime} from '../../../../../lib/date';
+import {DEFAULT_DATE} from '../config/calendar-config';
 
 export function Calendar(props: CalendarProps) {
+  const initPeriod = () => {
+    return generatePeriod(
+      dateToISOWithoutTime(props.initialDate || DEFAULT_DATE()),
+      dateToISOWithoutTime(props.initialDate || DEFAULT_DATE()));
+  };
+
   const [markedDates, setMarkedDates]
-    = useState(generatePeriod('2023-11-17', '2023-11-17'));
+    = useState(initPeriod());
   const [selectPeriod, setSelectPeriod] = useState(true);
 
   useEffect(() => {
@@ -29,11 +37,19 @@ export function Calendar(props: CalendarProps) {
       ],
       monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
       dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
-      today: "Aujourd'hui",
+      today: 'Aujourd\'hui',
       dayNamesShort: ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
     };
     LocaleConfig.defaultLocale = 'ru';
   }, []);
+
+  useEffect(() => {
+    const dates = Object.keys(markedDates);
+    const datesAmount = dates.length;
+
+    props.onPeriodChange(new Date(dates[0]),
+      new Date(dates[datesAmount - 1]));
+  }, [markedDates]);
 
   const onDayPress = (date: DateData) => {
     if (selectPeriod) {
@@ -52,7 +68,7 @@ export function Calendar(props: CalendarProps) {
 
   return (
     <ExternalCalendar
-      initialDate={'2023-11-01'}
+      initialDate={dateToISOWithoutTime(props.initialDate || DEFAULT_DATE())}
       markingType={'period'}
       hideArrows={true}
       hideExtraDays={true}
