@@ -22,7 +22,7 @@ from app.users.domain.session import CantRevokeAlreadyRevokedSession
 from app.users.domain.tokens import SignatureIsBroken, TokenHasExpired
 
 
-router = APIRouter(prefix="/users", tags=["Модуль пользователей"])
+router = APIRouter(prefix="/users", tags=["Аутентификация и пользователи"])
 
 
 @router.get(

@@ -13,7 +13,7 @@ from app.feedbacks.application.services import CantLeaveFeedbackOnUnregisteredCa
 from app.feedbacks.domain.text import ExceededMaxLengthFeedbackText, InsufficientMinLengthFeedbackText
 
 
-router = APIRouter(prefix="/canteens/{canteen_id}", tags=["Модуль отзывов"])
+router = APIRouter(prefix="/canteens/{canteen_id}", tags=["Отзывы столовой"])
 
 
 @router.post(

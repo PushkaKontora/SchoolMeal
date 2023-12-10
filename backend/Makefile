@@ -31,7 +31,7 @@ mypy:
 migration:
 	@echo "Для выполнения автогенерации должна быть запущена БД локально с дефолтными значениями ( docker-compose up -d postgres-server )"; \
 	read -p "Введите имя миграции: " MIGRATION_NAME; \
-	$(ENV_VARIABLES) $(BIN_DIR)/alembic downgrade base && $(ENV_VARIABLES) $(BIN_DIR)/alembic upgrade head && $(ENV_VARIABLES) $(BIN_DIR)/alembic revision --autogenerate -m "$$MIGRATION_NAME"
+	$(ENV_VARIABLES) $(BIN_DIR)/alembic revision --autogenerate -m "$$MIGRATION_NAME"
 
 migrate:
 	$(ENV_VARIABLES) $(BIN_DIR)/alembic upgrade head

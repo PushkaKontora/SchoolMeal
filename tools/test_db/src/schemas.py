@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.db import Database, Dict, Integer, String
+from src.db import Bool, Database, Date, Dict, Integer, Null, String
 from src.schools import School
 
 
@@ -60,7 +60,7 @@ class ChildrenSchemaInitializer(SchemaInitializer):
                             "last_name": String(pupil.last_name),
                             "first_name": String(pupil.first_name),
                             "school_class_id": String(school_class.id),
-                            "meal_plan": Dict({String("status"): String(pupil.meal_plan.status.value)}),
+                            "meal_plan": Dict({"status": String(pupil.meal_status.value)}),
                         },
                     )
 
@@ -77,3 +77,39 @@ class FeedbacksSchemaInitializer(SchemaInitializer):
     def push(self, schools: list[School]) -> None:
         for school in schools:
             self._database.insert(self.schema, "canteen", data={"id": String(school.id)})
+
+
+class NutritionSchemaInitializer(SchemaInitializer):
+    @property
+    def schema(self) -> str:
+        return "nutrition"
+
+    def clear(self) -> None:
+        for table in ["pupil"]:
+            self._database.truncate(self.schema, table)
+
+    def push(self, schools: list[School]) -> None:
+        for school in schools:
+            for school_class in school.school_classes:
+                for pupil in school_class.pupils:
+                    meal_plan, certificate = pupil.meal_plan, pupil.preferential_certificate
+
+                    self._database.insert(
+                        self.schema,
+                        "pupil",
+                        data={
+                            "id": String(pupil.id),
+                            "last_name": String(pupil.last_name),
+                            "first_name": String(pupil.first_name),
+                            "meal_plan": Dict(
+                                {
+                                    "has_breakfast": Bool(meal_plan.has_breakfast),
+                                    "has_dinner": Bool(meal_plan.has_dinner),
+                                    "has_snacks": Bool(meal_plan.has_snacks),
+                                }
+                            ),
+                            "preferential_certificate": Dict({"ends_at": Date(certificate.ends_at)})
+                            if certificate
+                            else Null(),
+                        },
+                    )

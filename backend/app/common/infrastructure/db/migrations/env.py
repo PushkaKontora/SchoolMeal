@@ -14,6 +14,7 @@ from app.common.infrastructure.settings import DatabaseSettings
 from app.users.infrastructure.db.models import SessionDB, UserDB  # isort: skip
 from app.feedbacks.infrastructure.db.models import FeedbackDB, CanteenDB  # isort: skip
 from app.children.infrastructure.db.models import ParentDB, ChildDB  # isort: skip
+from app.nutrition.infrastructure.db.models import PupilDB  # isort: skip
 
 
 database = DatabaseSettings()

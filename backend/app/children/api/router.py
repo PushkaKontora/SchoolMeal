@@ -12,7 +12,7 @@ from app.common.api.errors import BadRequestError, NotFoundError
 from app.common.api.schemas import OKSchema
 
 
-router = APIRouter(tags=["Модуль родителей и их детей"])
+router = APIRouter(tags=["Родители и дети"])
 
 
 @router.post(
