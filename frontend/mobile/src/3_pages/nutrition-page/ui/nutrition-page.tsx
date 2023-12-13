@@ -7,6 +7,6 @@ export function NutritionPage() {
   const {childId} = route.params;
 
   return (
-    <NutritionWidget childId={childId}/>
+    <NutritionWidget pupilId={childId}/>
   );
 }

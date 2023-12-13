@@ -10,6 +10,7 @@ import menuSlice from '../src/4_widgets/child/menu/menu/model/menu-slice/menu-sl
 import {MEAL_CANCEL_API} from '../src/6_entities/meal/api/api';
 import {MEAL_API} from '../src/6_entities/meal/api/meal-api/config';
 import {FEEDBACK_API} from '../src/6_entities/feedback';
+import {NUTRITION_API} from '../src/5_features/nutrition/api';
 
 const middleware = [
   ...featuresMiddlewares,
@@ -25,7 +26,8 @@ export const store = configureStore({
     [CHILD_API.reducerPath]: CHILD_API.reducer,
     [MEAL_API.reducerPath]: MEAL_API.reducer,
     [MEAL_CANCEL_API.reducerPath]: MEAL_CANCEL_API.reducer,
-    [FEEDBACK_API.reducerPath]: FEEDBACK_API.reducer
+    [FEEDBACK_API.reducerPath]: FEEDBACK_API.reducer,
+    [NUTRITION_API.reducerPath]: NUTRITION_API.reducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()

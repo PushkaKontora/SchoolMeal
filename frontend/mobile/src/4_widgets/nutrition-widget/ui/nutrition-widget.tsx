@@ -6,67 +6,69 @@ import {NutritionTogglesFeature} from '../../../5_features/nutrition/nutrition-t
 import {NutritionPanel} from '../../../5_features/nutrition/nutrition-panel';
 import {NutritionWidgetProps} from '../types/props';
 import {useEffect, useState} from 'react';
-import {useChangeMealPlanMutation, useGetChildByIdQuery} from '../../../6_entities/child/api/api';
 import {isEnoughMealAmountToShow, isFeeding} from '../lib/utils';
-import {ChildMealData} from '../../../6_entities/child';
-import {getMealAmount} from '../../../6_entities/school-class/lib/class-utils';
+import {useChangeNutritionPlanMutation, useGetPupilNutritionQuery} from '../../../5_features/nutrition/api';
+import {NutritionPlan} from '../../../7_shared/model/nutrition';
 
 export function NutritionWidget(props: NutritionWidgetProps) {
   // === states ===
-  const [mealAmount, setMealAmount] = useState(3);
+  const [showToogles, setShowToogles] = useState(true);
 
-  const [mealData, setMealData] = useState<ChildMealData>({
-    breakfast: false,
-    lunch: false,
-    dinner: false
+  const [mealData, setMealData] = useState<NutritionPlan>({
+    hasBreakfast: false,
+    hasDinner: false,
+    hasSnacks: false
   });
   const [feeding, setFeeding] = useState(isFeeding(mealData));
 
   // === variables ===
 
-  const [changeMeal] = useChangeMealPlanMutation();
-
-  const {data: child, isSuccess: childSuccess, refetch: refetchChild} = useGetChildByIdQuery(props.childId);
+  const [changeMeal] = useChangeNutritionPlanMutation();
+  const {data: nutritionInfo, refetch: refetchNutritionInfo, isSuccess: isNutritionSuccess}
+    = useGetPupilNutritionQuery(props.pupilId);
 
   // === useEffects ===
 
   useEffect(() => {
-    refetchChild();
-  }, []);
+    refetchNutritionInfo();
+  }, [props.pupilId]);
 
   useEffect(() => {
     init();
-  }, [child]);
+  }, [nutritionInfo]);
 
   useEffect(() => {
     setFeeding(isFeeding(mealData));
   }, [mealData]);
 
+  useEffect(() => {
+    setShowToogles(feeding && isEnoughMealAmountToShow(mealData));
+  }, [feeding, mealData]);
+
   // === functions ===
 
   const init = () => {
-    if (childSuccess) {
+    if (isNutritionSuccess) {
       const newMealData = {
-        breakfast: child.breakfast,
-        lunch: child.lunch,
-        dinner: child.dinner
+        hasBreakfast: nutritionInfo.mealPlan.hasBreakfast,
+        hasDinner: nutritionInfo.mealPlan.hasDinner,
+        hasSnacks: nutritionInfo.mealPlan.hasSnacks
       };
 
       setMealData(newMealData);
-      setMealAmount(getMealAmount(child.schoolClass));
     }
   };
 
-  const onCheckChange = async (changedProperties: Partial<ChildMealData>) => {
-    if (child) {
+  const onCheckChange = async (changedProperties: Partial<NutritionPlan>) => {
+    if (nutritionInfo) {
       const newMealData = {
         ...mealData,
         ...changedProperties
       };
 
       await changeMeal({
-        childId: child.id,
-        ...newMealData
+        pupilId: props.pupilId,
+        body: newMealData
       });
 
       setMealData(newMealData);
@@ -75,9 +77,9 @@ export function NutritionWidget(props: NutritionWidgetProps) {
 
   const onHeaderCheckChange = async (turnedOn: boolean) => {
     await onCheckChange({
-      breakfast: turnedOn,
-      lunch: turnedOn,
-      dinner: turnedOn
+      hasBreakfast: turnedOn,
+      hasDinner: turnedOn,
+      hasSnacks: turnedOn
     });
   };
 
@@ -85,46 +87,45 @@ export function NutritionWidget(props: NutritionWidgetProps) {
 
   return (
     <ScrollView>
-
       <View
         style={styles.background}>
         <View
           style={styles.card}>
 
           <NutritionHeaderFeature
-            child={child}
+            nutritionInfo={nutritionInfo}
             onToggle={(toggledRight: boolean) => onHeaderCheckChange(toggledRight)}
             defaultToggleState={feeding}/>
 
           <NutritionCertFeature
-            child={child}/>
+            nutritionInfo={nutritionInfo}/>
 
           {
-            feeding &&
-            isEnoughMealAmountToShow(mealAmount) &&
+            showToogles &&
             <NutritionTogglesFeature
               onToggleBreakfast={(turnedOn: boolean) => {
-                onCheckChange({breakfast: turnedOn});
+                onCheckChange({hasBreakfast: turnedOn});
               }}
               onToggleLunch={(turnedOn: boolean) => {
-                onCheckChange({lunch: turnedOn});
+                onCheckChange({hasDinner: turnedOn});
               }}
               onToggleAfternoonSnack={(turnedOn: boolean) => {
-                onCheckChange({dinner: turnedOn});
+                onCheckChange({hasSnacks: turnedOn});
               }}
-              breakfastState={mealData?.breakfast}
-              lunchState={mealData?.lunch}
-              afternoonSnackState={mealData?.dinner}
-              hasBreakfast={child?.schoolClass.hasBreakfast || false}
-              hasLunch={child?.schoolClass.hasLunch || false}
-              hasAfternoonSnack={child?.schoolClass.hasDinner || false}/>
-          }   
+              breakfastState={mealData?.hasBreakfast}
+              lunchState={mealData?.hasDinner}
+              afternoonSnackState={mealData?.hasSnacks}
+              hasBreakfast={true}
+              hasLunch={true}
+              hasAfternoonSnack={true}/>
+          }
 
           {
             feeding &&
             <NutritionPanel
-              child={child}
-              refetchChild={refetchChild}/>
+              refetchNutritionInfo={refetchNutritionInfo}
+              nutritionInfo={nutritionInfo}
+              pupilId={props.pupilId}/>
           }
 
         </View>

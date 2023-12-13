@@ -7,7 +7,7 @@ import {useAppDispatch} from '../../../../store/hooks';
 import {setAuthorized} from '../../../5_features/auth/model/auth-slice/auth-slice';
 import {PropsWithNavigation} from '../../../7_shared/model/props-with-navigation';
 import {USER_API} from '../../../6_entities/user';
-import {useGetChildrenQuery} from '../../../6_entities/child/api/api';
+import {useGetChildrenQuery} from '../../../6_entities/child';
 import {useEffect} from 'react';
 import {magicModal} from 'react-native-magic-modal';
 import {ModalMealPeriod} from '../../../5_features/modal-meal-period';

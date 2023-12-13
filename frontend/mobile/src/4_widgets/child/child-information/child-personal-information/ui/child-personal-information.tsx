@@ -9,22 +9,13 @@ import {useEffect, useState} from 'react';
 
 export function ChildPersonalInformation(props: ChildPersonalInformationProps) {
   const styles = createStyle();
-  const [status, setStatus] = useState('Питается платно');
+  const [status, setStatus]
+    = useState(props.childInformation.mealPlan.status);
   const {navigation} = props;
 
   useEffect(() => {
-    if (props.childInformation.certificateBeforeDate) {
-      setStatus('Питается льготно');
-    } else {
-      if (!props.childInformation.dinner
-                && !props.childInformation.lunch
-                && !props.childInformation.breakfast) {
-        setStatus('Не питается');
-      } else {
-        setStatus('Питается платно');
-      }
-    }
-  });
+    setStatus(props.childInformation.mealPlan.status);
+  }, [props.childInformation]);
 
   const navigateNutritionPage = () => {
     navigation.navigate('Nutrition', {
@@ -35,7 +26,7 @@ export function ChildPersonalInformation(props: ChildPersonalInformationProps) {
   return (
     <View style={styles.container}>
       <TitleText title={`${props.childInformation.firstName} ${props.childInformation.lastName}`}/>
-      <ChildAccount balance={props.childInformation.balance}/>
+      <ChildAccount balance={0}/>
       <TagsInformation
         class={`${props.childInformation.schoolClass.number}${props.childInformation.schoolClass.literal.toUpperCase()}`}
         school={props.childInformation.schoolClass.school.name}
@@ -50,4 +41,3 @@ export function ChildPersonalInformation(props: ChildPersonalInformationProps) {
   );
 }
 
-//todo: изменить 26 строку на даныые  сервера

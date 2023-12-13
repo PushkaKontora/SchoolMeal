@@ -5,29 +5,38 @@ import {DEFAULT_ITEM_NUMBER, PANELS, SELECTION_COLOR} from '../config/config';
 import {useEffect, useState} from 'react';
 import {NutritionPanelProps} from '../types/props';
 import {PanelPressListeners} from '../types/types';
-import {CancelMealPeriods} from '../../../../7_shared/model/cancelMealPeriods';
-import {findPeriodIdByDate, isDateExpired} from '../lib/meal-utils';
+import {isDateExpired} from '../lib/date-utils';
 import {hideModal, showModal} from '../lib/modal-utils';
-import {useDeleteCanceledMealMutation, useCancelMealMutation} from '../../../../6_entities/meal/api/api';
 import {createPanels} from '../lib/create-panels';
 import {MonthPicker} from '../../../../7_shared/ui/special/mini-calendar/ui/month-picker';
 import {findFirstFullWeek} from '../../../../7_shared/ui/special/mini-calendar/lib/dates-utils';
 import {DEFAULT_DATE} from '../../../../7_shared/consts/default_date';
 import {dateToISOWithoutTime} from '../../../../7_shared/lib/date';
+import {useCancelNutritionMutation, useResumeNutritionMutation} from '../../api';
+import { isNutritionCancelled} from '../lib/period-utils';
 
 export function NutritionPanel(props: NutritionPanelProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(DEFAULT_DATE);
   const [monthDate, setMonthDate] = useState<Date>(DEFAULT_DATE);
-  const [currentCancelMeal, setCurrentCancelMeal] = useState<CancelMealPeriods | undefined>(undefined);
+  const [cancelledCurrentNutrition, setCancelledCurrentNutrition]
+    = useState<boolean | undefined>(undefined);
 
-  const [cancelMeal, {isSuccess: canceledSuccess}] = useCancelMealMutation();
-  const [deleteCanceledMeal, {isSuccess: deletedSuccess}] = useDeleteCanceledMealMutation();
+  const [cancelNutrition, {isSuccess: isCanceledSuccess}] = useCancelNutritionMutation();
+  const [resumeNutrition, {isSuccess: isResumedSuccess}] = useResumeNutritionMutation();
+
+  const dateToString = (date: Date) => {
+    return dateToISOWithoutTime(date);
+  };
 
   const showModalCustom = () => showModal(
     async () => {
-      await cancelMeal({
-        pupilId: props?.child?.id,
-        startDate: dateToISOWithoutTime(selectedDate)
+      await cancelNutrition({
+        pupilId: props.pupilId,
+        body: {
+          startsAt: dateToString(selectedDate),
+          endsAt: dateToString(selectedDate),
+          reason: 'Я заболел филлеро-вирусом'
+        }
       });
       hideModal();
     },
@@ -36,38 +45,35 @@ export function NutritionPanel(props: NutritionPanelProps) {
     });
 
   useEffect(() => {
-    if (props.child && selectedDate) {
-      setCurrentCancelMeal(
-        findPeriodIdByDate(props.child.cancelMealPeriods, selectedDate)
-      );
-    }
-  }, [selectedDate]);
+    setCancelledCurrentNutrition(
+      isNutritionCancelled(dateToString(selectedDate), props.nutritionInfo.cancellationPeriods)
+    );
+  }, [selectedDate,
+    props.nutritionInfo,
+    props.nutritionInfo.cancellationPeriods]);
 
   useEffect(() => {
-    if (props.child && selectedDate) {
-      setCurrentCancelMeal(
-        findPeriodIdByDate(props.child.cancelMealPeriods, selectedDate)
-      );
+    if (isCanceledSuccess) {
+      props.refetchNutritionInfo();
     }
-  }, [props.child]);
+  }, [isCanceledSuccess]);
 
   useEffect(() => {
-    if (canceledSuccess) {
-      props.refetchChild();
+    if (isResumedSuccess) {
+      props.refetchNutritionInfo();
     }
-  }, [canceledSuccess]);
-
-  useEffect(() => {
-    if (deletedSuccess) {
-      props.refetchChild();
-    }
-  }, [deletedSuccess]);
+  }, [isResumedSuccess]);
 
   const panelListeners: PanelPressListeners = {
     onCancel: showModalCustom,
     onSubmit: async () => {
-      if (currentCancelMeal) {
-        await deleteCanceledMeal(currentCancelMeal.id);
+      if (cancelledCurrentNutrition) {
+        await resumeNutrition({
+          pupilId: props.pupilId,
+          body: {
+            date: dateToString(selectedDate)
+          }
+        });
       }
     }
   };
@@ -114,7 +120,7 @@ export function NutritionPanel(props: NutritionPanelProps) {
       </View>
 
       {
-        currentCancelMeal
+        cancelledCurrentNutrition
           ? panels.canceled({visibleButton: !isDateExpired(selectedDate)})
           : panels.submitted({visibleButton: !isDateExpired(selectedDate)})
       }

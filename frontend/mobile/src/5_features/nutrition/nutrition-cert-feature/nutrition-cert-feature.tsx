@@ -8,7 +8,7 @@ export function NutritionCertFeature(props: NutritionCertFeatureProps) {
     <View
       style={styles.container}>
       {
-        props?.child?.certificateBeforeDate &&
+        props.nutritionInfo?.preferentialCertificate &&
         <View>
           <Text
             style={styles.title}>
@@ -17,7 +17,9 @@ export function NutritionCertFeature(props: NutritionCertFeatureProps) {
 
           <Text
             style={styles.dateBadge}>
-            {formatDateToCasual(new Date(props.child.certificateBeforeDate))}
+            {
+              formatDateToCasual(new Date(props.nutritionInfo.preferentialCertificate.endsAt))
+            }
           </Text>
         </View>
       }

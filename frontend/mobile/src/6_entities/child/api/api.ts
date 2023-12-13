@@ -4,5 +4,4 @@ import {CONFIG} from './config';
 export const CHILD_API = createApi(CONFIG);
 
 // useGetUserChildQuery, useFindChildOnIDMutation, useChangeMealPlanMutation, useGetChildByIdQuery
-export const {useGetChildrenQuery, useAddChildMutation,
-  useChangeMealPlanMutation, useGetChildByIdQuery} = CHILD_API;
+export const {useGetChildrenQuery, useAddChildMutation} = CHILD_API;

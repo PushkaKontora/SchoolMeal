@@ -1,5 +1,5 @@
-import {Child} from '../../../6_entities/child/model/child';
+import {PupilNutritionInfo} from '../../../7_shared/model/nutrition';
 
 export type NutritionCertFeatureProps = {
-  child?: Child
+  nutritionInfo: PupilNutritionInfo
 }

@@ -20,3 +20,10 @@ export function equalsDates(d1: Date, d2: Date) {
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
 }
+
+export function isTodayDate(d: Date) {
+  const today = new Date(Date.now());
+  return d.getFullYear() === today.getFullYear() &&
+    d.getMonth() === today.getMonth() &&
+    d.getDate() === today.getDate();
+}

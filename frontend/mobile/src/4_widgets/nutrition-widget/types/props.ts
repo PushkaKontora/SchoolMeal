@@ -1,3 +1,3 @@
 export type NutritionWidgetProps = {
-  childId: string
+  pupilId: string
 };
