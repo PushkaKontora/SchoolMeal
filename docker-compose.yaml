@@ -29,11 +29,31 @@ services:
     networks:
       - school_meal_nw
 
+  rabbitmq:
+    build: rabbitmq
+    hostname: master
+    restart: always
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD}
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: -rabbit disk_free_limit 2147483648
+    volumes:
+      - rabbitmq_volume:/var/lib/rabbitmq
+    networks:
+      - school_meal_nw
+
   app:
     image: peroovy/school_meal:app-${BRANCH_TAG:-master}
     container_name: school_meal_app
     depends_on:
       postgres-server:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     environment:
       <<: [*database, *jwt]
@@ -58,6 +78,7 @@ services:
 
 volumes:
   postgres_volume:
+  rabbitmq_volume:
 
 networks:
   school_meal_nw:
