@@ -3,7 +3,6 @@ import {Calendar as ExternalCalendar, DateData} from 'react-native-calendars';
 import {Text} from 'react-native';
 import {useEffect, useState} from 'react';
 import {DayComponent} from './day-component';
-import {LocaleConfig} from 'react-native-calendars/src';
 import {generatePeriod} from '../lib/period';
 import {dateToISOWithoutTime} from '../../../../../lib/date';
 import {DEFAULT_DATE} from '../config/calendar-config';
@@ -18,30 +17,6 @@ export function Calendar(props: CalendarProps) {
   const [markedDates, setMarkedDates]
     = useState(initPeriod());
   const [selectPeriod, setSelectPeriod] = useState(true);
-
-  useEffect(() => {
-    LocaleConfig.locales['ru'] = {
-      monthNames: [
-        'Janvier',
-        'Février',
-        'Mars',
-        'Avril',
-        'Mai',
-        'Juin',
-        'Juillet',
-        'Août',
-        'Septembre',
-        'Octobre',
-        'Novembre',
-        'Décembre'
-      ],
-      monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
-      dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
-      today: 'Aujourd\'hui',
-      dayNamesShort: ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
-    };
-    LocaleConfig.defaultLocale = 'ru';
-  }, []);
 
   useEffect(() => {
     const dates = Object.keys(markedDates);

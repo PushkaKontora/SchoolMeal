@@ -7,12 +7,20 @@ import {NutritionPanel} from '../../../5_features/nutrition/nutrition-panel';
 import {NutritionWidgetProps} from '../types/props';
 import {useEffect, useState} from 'react';
 import {isEnoughMealAmountToShow, isFeeding} from '../lib/utils';
-import {useChangeNutritionPlanMutation, useGetPupilNutritionQuery} from '../../../5_features/nutrition/api';
+import {
+  useCancelNutritionMutation,
+  useChangeNutritionPlanMutation,
+  useGetPupilNutritionQuery, useResumeNutritionMutation
+} from '../../../5_features/nutrition/api';
 import {NutritionPlan} from '../../../7_shared/model/nutrition';
+import {hideModal, showModal} from '../lib/cancellation-modal-utils';
+import {dateToISOWithoutTime} from '../../../7_shared/lib/date';
+import {DEFAULT_DATE} from '../../../7_shared/consts/default_date';
 
 export function NutritionWidget(props: NutritionWidgetProps) {
   // === states ===
-  const [showToogles, setShowToogles] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(DEFAULT_DATE);
+  const [showToggles, setShowToggles] = useState(true);
 
   const [mealData, setMealData] = useState<NutritionPlan>({
     hasBreakfast: false,
@@ -22,6 +30,11 @@ export function NutritionWidget(props: NutritionWidgetProps) {
   const [feeding, setFeeding] = useState(isFeeding(mealData));
 
   // === variables ===
+
+  const [cancelNutrition, {isSuccess: isCanceledSuccess, data: cancelData}]
+    = useCancelNutritionMutation();
+  const [resumeNutrition, {isSuccess: isResumedSuccess, data: resumeData}]
+    = useResumeNutritionMutation();
 
   const [changeMeal] = useChangeNutritionPlanMutation();
   const {data: nutritionInfo, refetch: refetchNutritionInfo, isSuccess: isNutritionSuccess}
@@ -42,10 +55,27 @@ export function NutritionWidget(props: NutritionWidgetProps) {
   }, [mealData]);
 
   useEffect(() => {
-    setShowToogles(feeding && isEnoughMealAmountToShow(mealData));
+    setShowToggles(feeding && isEnoughMealAmountToShow(mealData));
   }, [feeding, mealData]);
 
+  useEffect(() => {
+    if (isCanceledSuccess) {
+      nutritionInfo.cancellationPeriods = cancelData;
+    }
+  }, [isCanceledSuccess]);
+
+  useEffect(() => {
+    if (isResumedSuccess) {
+      nutritionInfo.cancellationPeriods = resumeData;
+      console.log(resumeData);
+    }
+  }, [isResumedSuccess]);
+
   // === functions ===
+
+  const dateToString = (date: Date) => {
+    return dateToISOWithoutTime(date);
+  };
 
   const init = () => {
     if (isNutritionSuccess) {
@@ -83,6 +113,23 @@ export function NutritionWidget(props: NutritionWidgetProps) {
     });
   };
 
+  const showCancellationModal = () => showModal(selectedDate, {
+    onConfirm: async (startingDate, endingDate) => {
+      await cancelNutrition({
+        pupilId: props.pupilId,
+        body: {
+          startsAt: dateToString(startingDate),
+          endsAt: dateToString(endingDate),
+          reason: 'Я заболел филлеро-вирусом'
+        }
+      });
+      hideModal();
+    },
+    onClose: () => {
+      hideModal();
+    }
+  });
+
   // === render ===
 
   return (
@@ -101,7 +148,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
             nutritionInfo={nutritionInfo}/>
 
           {
-            showToogles &&
+            showToggles &&
             <NutritionTogglesFeature
               onToggleBreakfast={(turnedOn: boolean) => {
                 onCheckChange({hasBreakfast: turnedOn});
@@ -125,7 +172,18 @@ export function NutritionWidget(props: NutritionWidgetProps) {
             <NutritionPanel
               refetchNutritionInfo={refetchNutritionInfo}
               nutritionInfo={nutritionInfo}
-              pupilId={props.pupilId}/>
+              pupilId={props.pupilId}
+              selectedDate={selectedDate}
+              onSelectedDateChange={setSelectedDate}
+              cancelNutrition={showCancellationModal}
+              resumeNutrition={async () => {
+                await resumeNutrition({
+                  pupilId: props.pupilId,
+                  body: {
+                    date: dateToString(selectedDate)
+                  }
+                });
+              }}/>
           }
 
         </View>

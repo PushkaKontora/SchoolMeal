@@ -1,6 +1,5 @@
 import {MEAL_AMOUNT_BORDER_TO_SHOW} from '../config/config';
 import {NutritionPlan} from '../../../7_shared/model/nutrition';
-import {SchoolClass} from '../../../6_entities/school-class/model/school-class';
 
 export function checkItem(array: boolean[], index: number, value: boolean) {
   return array.map((item, idx) => {

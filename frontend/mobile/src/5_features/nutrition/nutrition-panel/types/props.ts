@@ -11,7 +11,10 @@ export type PanelContentProps = {
 export type NutritionPanelProps = {
   pupilId: string,
   nutritionInfo: PupilNutritionInfo,
-  refetchNutritionInfo: () => void
+  cancelNutrition: () => void,
+  resumeNutrition: () => void,
+  selectedDate: Date,
+  onSelectedDateChange?: (selectedDate: Date) => void
 }
 
 export type ConfirmModalProps = {
