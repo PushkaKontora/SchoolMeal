@@ -3,7 +3,7 @@ from fastapi import APIRouter, Response, status
 from app.shared.fastapi import responses
 from app.shared.fastapi.errors import AuthorizationError, BadRequestError, NotFoundError, UnprocessableEntityError
 from app.shared.fastapi.schemas import AuthorizedUser, OKSchema
-from app.users.api.dependencies.services import SessionsServiceDep, UsersServiceDep
+from app.users.api.dependencies.services import UsersServiceDep
 from app.users.api.dependencies.settings import JWTSettingsDep
 from app.users.api.dependencies.tokens import (
     AccessTokenDep,
@@ -17,7 +17,7 @@ from app.users.application.services import IncorrectLoginOrPassword, PhoneBelong
 from app.users.domain import passwords, phone
 from app.users.domain.email import InvalidEmailFormat
 from app.users.domain.names import FirstNameContainsNotCyrillicCharacters, LastNameContainsNotCyrillicCharacters
-from app.users.domain.session import CantRevokeAlreadyRevokedSession
+from app.users.domain.session import SessionIsAlreadyRevoked
 from app.users.domain.tokens import SignatureIsBroken, TokenHasExpired
 
 
@@ -100,13 +100,13 @@ async def logout(
 async def refresh_tokens(
     response: Response,
     refresh_token: RefreshTokenDep,
-    sessions_service: SessionsServiceDep,
+    users_service: UsersServiceDep,
     jwt_settings: JWTSettingsDep,
 ) -> AccessTokenOut:
     try:
-        access, refresh = await sessions_service.refresh_session(refresh_token)
+        access, refresh = await users_service.refresh_session(refresh_token)
 
-    except CantRevokeAlreadyRevokedSession as error:
+    except SessionIsAlreadyRevoked as error:
         raise BadRequestError("Сессия уже была отозвана") from error
 
     except SignatureIsBroken as error:

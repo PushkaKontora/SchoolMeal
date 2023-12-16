@@ -4,7 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel
 
 
-class CantRevokeAlreadyRevokedSession(Exception):
+class SessionIsAlreadyRevoked(Exception):
     pass
 
 
@@ -18,11 +18,11 @@ class Session(BaseModel):
 
     def revoke(self) -> "Session":
         """
-        :raise CantRevokeAlreadyRevokedSession: сессия уже отозвана
+        :raise SessionIsAlreadyRevoked: сессия уже отозвана
         """
 
         if self.revoked:
-            raise CantRevokeAlreadyRevokedSession
+            raise SessionIsAlreadyRevoked
 
         self.revoked = True
         return self

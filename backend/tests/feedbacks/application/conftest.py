@@ -1,12 +1,13 @@
-from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import pytest
 
 from app.feedbacks.application.services import FeedbacksService
+from app.feedbacks.application.unit_of_work import FeedbacksContext
 from app.feedbacks.domain.canteen import Canteen
 from app.shared.fastapi.schemas import AuthorizedUser, RoleOut
 from tests.feedbacks.application.repositories import LocalCanteensRepository, LocalFeedbacksRepository
+from tests.unit_of_work import LocalUnitOfWork
 
 
 @pytest.fixture
@@ -22,7 +23,10 @@ def authorized_user() -> AuthorizedUser:
 @pytest.fixture
 def feedbacks_service(canteen: Canteen) -> FeedbacksService:
     return FeedbacksService(
-        unit_of_work=AsyncMock(),
-        feedbacks_repository=LocalFeedbacksRepository(),
-        canteens_repository=LocalCanteensRepository(canteens=[canteen]),
+        unit_of_work=LocalUnitOfWork(
+            lambda: FeedbacksContext(
+                feedbacks=LocalFeedbacksRepository(),
+                canteens=LocalCanteensRepository([canteen]),
+            )
+        )
     )

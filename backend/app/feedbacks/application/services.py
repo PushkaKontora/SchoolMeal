@@ -1,9 +1,9 @@
 from uuid import UUID, uuid4
 
-from app.feedbacks.application.repositories import ICanteensRepository, IFeedbacksRepository
+from app.feedbacks.application.unit_of_work import FeedbacksContext
 from app.feedbacks.domain.feedback import Feedback
 from app.feedbacks.domain.text import FeedbackText
-from app.shared.unit_of_work import UnitOfWork
+from app.shared.unit_of_work.abc import IUnitOfWork
 
 
 class CantLeaveFeedbackOnUnregisteredCanteen(Exception):
@@ -11,15 +11,8 @@ class CantLeaveFeedbackOnUnregisteredCanteen(Exception):
 
 
 class FeedbacksService:
-    def __init__(
-        self,
-        unit_of_work: UnitOfWork,
-        feedbacks_repository: IFeedbacksRepository,
-        canteens_repository: ICanteensRepository,
-    ) -> None:
+    def __init__(self, unit_of_work: IUnitOfWork[FeedbacksContext]) -> None:
         self._unit_of_work = unit_of_work
-        self._feedbacks = feedbacks_repository
-        self._canteens = canteens_repository
 
     async def leave_feedback_about_canteen(self, canteen_id: UUID, user_id: UUID, text: str) -> Feedback:
         """
@@ -28,8 +21,8 @@ class FeedbacksService:
         :raise ExceededMaxLengthFeedbackText: превышена максимальная длина отзыва
         """
 
-        async with self._unit_of_work as session:
-            if not await self._canteens.exists_by_id(canteen_id):
+        async with self._unit_of_work as context:
+            if not await context.canteens.exists_by_id(canteen_id):
                 raise CantLeaveFeedbackOnUnregisteredCanteen
 
             feedback_text = FeedbackText(text)
@@ -39,8 +32,8 @@ class FeedbacksService:
                 user_id=user_id,
                 text=feedback_text,
             )
-            await self._feedbacks.save(feedback)
+            await context.feedbacks.save(feedback)
 
-            await session.commit()
+            await self._unit_of_work.commit()
 
         return feedback

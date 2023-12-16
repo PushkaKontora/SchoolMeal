@@ -3,7 +3,7 @@ from uuid import uuid4
 
 import pytest
 
-from app.users.domain.session import CantRevokeAlreadyRevokedSession, Session
+from app.users.domain.session import Session, SessionIsAlreadyRevoked
 
 
 def test_revoke(session: Session):
@@ -15,7 +15,7 @@ def test_revoke(session: Session):
 def test_revoke_revoked_session(session: Session):
     session.revoke()
 
-    with pytest.raises(CantRevokeAlreadyRevokedSession):
+    with pytest.raises(SessionIsAlreadyRevoked):
         session.revoke()
 
 
