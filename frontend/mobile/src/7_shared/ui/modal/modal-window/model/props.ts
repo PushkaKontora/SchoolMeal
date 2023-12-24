@@ -1,6 +1,4 @@
 import {PropsWithChildren} from 'react';
+import {ModalHeaderProps} from '../../modal-header/props';
 
-export type ModalProps = {
-    headerModalTitle: string,
-    clickExit: () => void,
-} & PropsWithChildren;
+export type ModalProps = ModalHeaderProps & PropsWithChildren;

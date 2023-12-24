@@ -8,6 +8,7 @@ export const createStyle = (props: ButtonPrimaryProps) => StyleSheet.create({
     paddingVertical: props.paddingVertical || 8.5,
     paddingHorizontal: props.paddingHorizontal || 0,
     width: '100%',
+    height: 36,
     alignItems: 'center',
     flex: props.flex
   },
@@ -17,6 +18,6 @@ export const createStyle = (props: ButtonPrimaryProps) => StyleSheet.create({
   title: {
     color: props.textColor || '#FFFFFF',
     fontWeight: props.fontWeight || '600',
-    fontSize: props.fontSize || 16
+    fontSize: props.fontSize || 14
   }
 });

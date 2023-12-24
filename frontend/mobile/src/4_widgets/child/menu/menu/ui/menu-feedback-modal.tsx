@@ -1,4 +1,4 @@
-import {FeedbackFormData, ModalWithLimitedField} from '../../../../../5_features/modal-with-limited-field';
+import {FeedbackFormData, ModalMenuFeedback} from '../../../../../5_features/modal-menu-feedback';
 import {MenuFeedbackModalProps} from '../model/props';
 import {useCreateFeedbackMutation} from '../../../../../6_entities/feedback';
 import {SuccessFeedback} from './success-feedback';
@@ -14,7 +14,7 @@ export function MenuFeedbackModal(props: MenuFeedbackModalProps) {
   };
 
   return (
-    <ModalWithLimitedField
+    <ModalMenuFeedback
       title={'Отзыв о столовой'}
       buttonTitle={'Отправить отзыв'}
       onSubmit={sendFeedback}

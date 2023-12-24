@@ -1,15 +1,24 @@
 import {magicModal} from 'react-native-magic-modal';
 import {ModalMealPeriod} from '../../../5_features/modal-meal-period';
 import {ModalMealPeriodProps} from '../../../5_features/modal-meal-period';
+import {ModalNutritionComment} from '../../../5_features/modal-nutrition-comment';
+import {ModalNutritionCommentProps} from '../../../5_features/modal-nutrition-comment';
 
-export function showModal(selectedDate: Date, props: ModalMealPeriodProps) {
-  magicModal.show(() => (
+export function createPeriodModal(selectedDate: Date, props: ModalMealPeriodProps) {
+  return (
     <ModalMealPeriod
       initialDate={selectedDate}
       {...props}/>
-  ));
+  );
+}
+
+export function createCommentModal(props: ModalNutritionCommentProps) {
+  return (
+    <ModalNutritionComment
+      {...props}/>
+  );
 }
 
 export function hideModal() {
-  magicModal.hide();
+  return magicModal.hide();
 }

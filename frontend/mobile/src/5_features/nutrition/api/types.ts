@@ -10,7 +10,7 @@ export type CancelNutritionIn = {
   body: {
     startsAt: string,
     endsAt: string,
-    reason: string
+    reason?: string
   }
 }
 

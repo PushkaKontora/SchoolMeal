@@ -5,7 +5,7 @@ import {FeedbackModalProps} from '../model/props';
 import {useEffect} from 'react';
 import {CLOSE_AFTER_MS} from '../const/config';
 
-export function ModalWithLimitedField(props: FeedbackModalProps) {
+export function ModalMenuFeedback(props: FeedbackModalProps) {
   const closeModal = () => {
     magicModal.hide();
   };

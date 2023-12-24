@@ -4,7 +4,7 @@ import {NutritionHeaderFeature} from '../../../5_features/nutrition/nutrition-he
 import {NutritionCertFeature} from '../../../5_features/nutrition/nutrition-cert-feature';
 import {NutritionTogglesFeature} from '../../../5_features/nutrition/nutrition-toggles-feature';
 import {NutritionPanel} from '../../../5_features/nutrition/nutrition-panel';
-import {NutritionWidgetProps} from '../types/props';
+import {NutritionWidgetProps} from '../types/nutrition-widget-props';
 import {useEffect, useState} from 'react';
 import {isEnoughMealAmountToShow, isFeeding} from '../lib/utils';
 import {
@@ -12,10 +12,17 @@ import {
   useChangeNutritionPlanMutation,
   useGetPupilNutritionQuery, useResumeNutritionMutation
 } from '../../../5_features/nutrition/api';
-import {NutritionPlan} from '../../../7_shared/model/nutrition';
-import {hideModal, showModal} from '../lib/cancellation-modal-utils';
+import {NutritionPlan, PupilNutritionInfo} from '../../../7_shared/model/nutrition';
+import {
+  createCommentModal,
+  createPeriodModal,
+  hideModal
+} from '../lib/cancellation-modal-utils';
 import {dateToISOWithoutTime} from '../../../7_shared/lib/date';
 import {DEFAULT_DATE} from '../../../7_shared/consts/default_date';
+import {CommentFormData} from '../../../5_features/modal-nutrition-comment';
+import {magicModal} from 'react-native-magic-modal';
+import {CancelNutritionIn} from '../../../5_features/nutrition/api/types';
 
 export function NutritionWidget(props: NutritionWidgetProps) {
   // === states ===
@@ -29,7 +36,10 @@ export function NutritionWidget(props: NutritionWidgetProps) {
   });
   const [feeding, setFeeding] = useState(isFeeding(mealData));
 
-  // === variables ===
+  const [nutritionInfoState, setNutritionInfoState]
+    = useState<PupilNutritionInfo | undefined>(undefined);
+
+  // === api calls ===
 
   const [cancelNutrition, {isSuccess: isCanceledSuccess, data: cancelData}]
     = useCancelNutritionMutation();
@@ -37,7 +47,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
     = useResumeNutritionMutation();
 
   const [changeMeal] = useChangeNutritionPlanMutation();
-  const {data: nutritionInfo, refetch: refetchNutritionInfo, isSuccess: isNutritionSuccess}
+  const {data: nutritionInfo,  refetch: refetchNutritionInfo, isSuccess: isNutritionSuccess}
     = useGetPupilNutritionQuery(props.pupilId);
 
   // === useEffects ===
@@ -60,14 +70,19 @@ export function NutritionWidget(props: NutritionWidgetProps) {
 
   useEffect(() => {
     if (isCanceledSuccess) {
-      nutritionInfo.cancellationPeriods = cancelData;
+      setNutritionInfoState({
+        ...nutritionInfoState,
+        cancellationPeriods: cancelData
+      });
     }
   }, [isCanceledSuccess]);
 
   useEffect(() => {
     if (isResumedSuccess) {
-      nutritionInfo.cancellationPeriods = resumeData;
-      console.log(resumeData);
+      setNutritionInfoState({
+        ...nutritionInfoState,
+        cancellationPeriods: resumeData
+      });
     }
   }, [isResumedSuccess]);
 
@@ -86,10 +101,11 @@ export function NutritionWidget(props: NutritionWidgetProps) {
       };
 
       setMealData(newMealData);
+      setNutritionInfoState(nutritionInfo as PupilNutritionInfo);
     }
   };
 
-  const onCheckChange = async (changedProperties: Partial<NutritionPlan>) => {
+  const onToggleChange = async (changedProperties: Partial<NutritionPlan>) => {
     if (nutritionInfo) {
       const newMealData = {
         ...mealData,
@@ -106,29 +122,42 @@ export function NutritionWidget(props: NutritionWidgetProps) {
   };
 
   const onHeaderCheckChange = async (turnedOn: boolean) => {
-    await onCheckChange({
+    await onToggleChange({
       hasBreakfast: turnedOn,
       hasDinner: turnedOn,
       hasSnacks: turnedOn
     });
   };
 
-  const showCancellationModal = () => showModal(selectedDate, {
-    onConfirm: async (startingDate, endingDate) => {
-      await cancelNutrition({
-        pupilId: props.pupilId,
-        body: {
+  const showCancellationModal = () => {
+    magicModal.show(() => createPeriodModal(selectedDate, {
+      onConfirm: showCommentModal,
+      onClose: () => {
+        hideModal();
+      }
+    }));
+  };
+
+  const showCommentModal = async (startingDate: Date, endingDate: Date) => {
+    await hideModal();
+    magicModal.show(() => createCommentModal({
+      onSendClick: async (commentData: CommentFormData) => {
+        await sendCancellation({
           startsAt: dateToString(startingDate),
           endsAt: dateToString(endingDate),
-          reason: 'Я заболел филлеро-вирусом'
-        }
-      });
-      hideModal();
-    },
-    onClose: () => {
-      hideModal();
-    }
-  });
+          reason: commentData.reason
+        });
+        await hideModal();
+      }
+    }));
+  };
+
+  const sendCancellation = async (body: CancelNutritionIn['body']) => {
+    await cancelNutrition({
+      pupilId: props.pupilId,
+      body: body
+    });
+  };
 
   // === render ===
 
@@ -140,24 +169,24 @@ export function NutritionWidget(props: NutritionWidgetProps) {
           style={styles.card}>
 
           <NutritionHeaderFeature
-            nutritionInfo={nutritionInfo}
+            nutritionInfo={nutritionInfoState}
             onToggle={(toggledRight: boolean) => onHeaderCheckChange(toggledRight)}
             defaultToggleState={feeding}/>
 
           <NutritionCertFeature
-            nutritionInfo={nutritionInfo}/>
+            nutritionInfo={nutritionInfoState}/>
 
           {
             showToggles &&
             <NutritionTogglesFeature
               onToggleBreakfast={(turnedOn: boolean) => {
-                onCheckChange({hasBreakfast: turnedOn});
+                onToggleChange({hasBreakfast: turnedOn});
               }}
               onToggleLunch={(turnedOn: boolean) => {
-                onCheckChange({hasDinner: turnedOn});
+                onToggleChange({hasDinner: turnedOn});
               }}
               onToggleAfternoonSnack={(turnedOn: boolean) => {
-                onCheckChange({hasSnacks: turnedOn});
+                onToggleChange({hasSnacks: turnedOn});
               }}
               breakfastState={mealData?.hasBreakfast}
               lunchState={mealData?.hasDinner}
@@ -170,8 +199,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
           {
             feeding &&
             <NutritionPanel
-              refetchNutritionInfo={refetchNutritionInfo}
-              nutritionInfo={nutritionInfo}
+              nutritionInfo={nutritionInfoState}
               pupilId={props.pupilId}
               selectedDate={selectedDate}
               onSelectedDateChange={setSelectedDate}

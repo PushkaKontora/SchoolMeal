@@ -15,7 +15,8 @@ export function ModalWindow(props: ModalProps) {
       <View style={styles.containerContent}>
         <ModalHeader
           headerModalTitle={props.headerModalTitle}
-          clickExit={props.clickExit}/>
+          clickExit={props.clickExit}
+          showCloseButton={props.showCloseButton}/>
         <PaddingArea
           {...PADDINGS}>
           {props.children}

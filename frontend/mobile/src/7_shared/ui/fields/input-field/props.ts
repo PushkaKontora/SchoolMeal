@@ -5,10 +5,10 @@ import {
   FormOnChangeText,
   FormRegister
 } from '../../../model/forms/form-types';
-import {TextStyle} from 'react-native';
+import {DimensionValue, TextStyle} from 'react-native';
 
 export type InputStyle = {
-  width?: string,
+  width?: DimensionValue,
   paddingVertical?: number,
   paddingHorizontal?: number,
   backgroundColor?: string,
