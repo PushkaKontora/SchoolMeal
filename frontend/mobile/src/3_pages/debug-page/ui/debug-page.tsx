@@ -6,15 +6,16 @@ import {AUTH_API, AuthTokenService} from '../../../5_features/auth';
 import {useAppDispatch} from '../../../../store/hooks';
 import {setAuthorized} from '../../../5_features/auth/model/auth-slice/auth-slice';
 import {PropsWithNavigation} from '../../../7_shared/model/props-with-navigation';
-import {USER_API} from '../../../6_entities/user';
-import {useGetChildrenQuery} from '../../../6_entities/child';
+import {Child, useGetChildrenQuery} from '../../../6_entities/child';
 import {useEffect} from 'react';
 import {magicModal} from 'react-native-magic-modal';
 import {ModalMealPeriod} from '../../../5_features/modal-meal-period';
+import {useCurrentUserQuery} from '../../../6_entities/user/api/api';
+import {TokenPayload} from '../../../5_features/auth/model/token-payload';
 
 export function DebugPage({navigation}: PropsWithNavigation) {
-  const {data: currentUser, refetch: refetchUser} = USER_API.useCurrentUserQuery();
-  const {data: children, refetch: refetchChildren} = useGetChildrenQuery();
+  const {data: currentUser, refetch: refetchUser} = useCurrentUserQuery({});
+  const {data: children, refetch: refetchChildren} = useGetChildrenQuery({});
   const [refreshToken] = AUTH_API.useRefreshTokensMutation();
   const dispatch = useAppDispatch();
 
@@ -38,7 +39,7 @@ export function DebugPage({navigation}: PropsWithNavigation) {
   };
 
   const handleTokenRefresh = async () => {
-    const tokenResponse = await refreshToken().unwrap();
+    const tokenResponse: TokenPayload = await refreshToken().unwrap();
     await AuthTokenService.saveAuthToken(tokenResponse);
     await showToken();
   };
@@ -52,8 +53,8 @@ export function DebugPage({navigation}: PropsWithNavigation) {
   };
 
   const toNutrition = () => {
-    if (children && children[0]) {
-      const child = children[0];
+    if (children && (children as Child[])[0]) {
+      const child = (children as Child[])[0];
       navigation.navigate('Nutrition', {
         childId: child.id
       });
@@ -63,7 +64,11 @@ export function DebugPage({navigation}: PropsWithNavigation) {
   };
 
   const showCalendar = () => {
-    magicModal.show(() => <ModalMealPeriod/>);
+    magicModal.show(() => (
+      <ModalMealPeriod
+        onConfirm={(startingDate, endingDate) => console.log(startingDate, endingDate)}
+        onClose={() => magicModal.hide()}/>
+    ));
   };
 
   return (

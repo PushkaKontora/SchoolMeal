@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {DayComponentProps} from '../model/props';
-import {isBorderDay, selectAbsoluteBackgroundStyles} from '../lib/lib';
+import {DayComponentProps} from '../../model/props';
+import {isBorderDay, selectAbsoluteBackgroundStyles} from '../../lib/lib';
 
 export const createDayStyle = (props: DayComponentProps) => StyleSheet.create({
   container: {

@@ -6,7 +6,7 @@ import {NutritionTogglesFeature} from '../../../5_features/nutrition/nutrition-t
 import {NutritionPanel} from '../../../5_features/nutrition/nutrition-panel';
 import {NutritionWidgetProps} from '../types/nutrition-widget-props';
 import {useEffect, useState} from 'react';
-import {isEnoughMealAmountToShow, isFeeding} from '../lib/utils';
+import {isEnoughMealAmountToShow, isFeeding} from '../lib/nutrition-utils';
 import {
   useCancelNutritionMutation,
   useChangeNutritionPlanMutation,
@@ -14,15 +14,11 @@ import {
 } from '../../../5_features/nutrition/api';
 import {NutritionPlan, PupilNutritionInfo} from '../../../7_shared/model/nutrition';
 import {
-  createCommentModal,
-  createPeriodModal,
-  hideModal
+  createCancellationModal
 } from '../lib/cancellation-modal-utils';
-import {dateToISOWithoutTime} from '../../../7_shared/lib/date';
 import {DEFAULT_DATE} from '../../../7_shared/consts/default_date';
-import {CommentFormData} from '../../../5_features/modal-nutrition-comment';
-import {magicModal} from 'react-native-magic-modal';
 import {CancelNutritionIn} from '../../../5_features/nutrition/api/types';
+import {dateToString} from '../lib/date-utils';
 
 export function NutritionWidget(props: NutritionWidgetProps) {
   // === states ===
@@ -57,7 +53,16 @@ export function NutritionWidget(props: NutritionWidgetProps) {
   }, [props.pupilId]);
 
   useEffect(() => {
-    init();
+    if (isNutritionSuccess) {
+      const newMealData = {
+        hasBreakfast: nutritionInfo.mealPlan.hasBreakfast,
+        hasDinner: nutritionInfo.mealPlan.hasDinner,
+        hasSnacks: nutritionInfo.mealPlan.hasSnacks
+      };
+
+      setMealData(newMealData);
+      setNutritionInfoState(nutritionInfo as PupilNutritionInfo);
+    }
   }, [nutritionInfo]);
 
   useEffect(() => {
@@ -86,24 +91,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
     }
   }, [isResumedSuccess]);
 
-  // === functions ===
-
-  const dateToString = (date: Date) => {
-    return dateToISOWithoutTime(date);
-  };
-
-  const init = () => {
-    if (isNutritionSuccess) {
-      const newMealData = {
-        hasBreakfast: nutritionInfo.mealPlan.hasBreakfast,
-        hasDinner: nutritionInfo.mealPlan.hasDinner,
-        hasSnacks: nutritionInfo.mealPlan.hasSnacks
-      };
-
-      setMealData(newMealData);
-      setNutritionInfoState(nutritionInfo as PupilNutritionInfo);
-    }
-  };
+  // === callback functions ===
 
   const onToggleChange = async (changedProperties: Partial<NutritionPlan>) => {
     if (nutritionInfo) {
@@ -129,28 +117,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
     });
   };
 
-  const showCancellationModal = () => {
-    magicModal.show(() => createPeriodModal(selectedDate, {
-      onConfirm: showCommentModal,
-      onClose: () => {
-        hideModal();
-      }
-    }));
-  };
-
-  const showCommentModal = async (startingDate: Date, endingDate: Date) => {
-    await hideModal();
-    magicModal.show(() => createCommentModal({
-      onSendClick: async (commentData: CommentFormData) => {
-        await sendCancellation({
-          startsAt: dateToString(startingDate),
-          endsAt: dateToString(endingDate),
-          reason: commentData.reason
-        });
-        await hideModal();
-      }
-    }));
-  };
+  // === modal functions  ===
 
   const sendCancellation = async (body: CancelNutritionIn['body']) => {
     await cancelNutrition({
@@ -158,6 +125,8 @@ export function NutritionWidget(props: NutritionWidgetProps) {
       body: body
     });
   };
+
+  const showCancellationModal = createCancellationModal(sendCancellation);
 
   // === render ===
 
@@ -203,7 +172,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
               pupilId={props.pupilId}
               selectedDate={selectedDate}
               onSelectedDateChange={setSelectedDate}
-              cancelNutrition={showCancellationModal}
+              cancelNutrition={() => showCancellationModal(selectedDate)}
               resumeNutrition={async () => {
                 await resumeNutrition({
                   pupilId: props.pupilId,

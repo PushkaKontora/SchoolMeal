@@ -1,5 +1,5 @@
 import {PeriodDateBadgeProps} from '../model/props';
-import {createPeriodBadgeStyles} from '../const/period-badge-styles';
+import {createPeriodBadgeStyles} from '../const/styles/period-badge-styles';
 import {Text, View} from 'react-native';
 import {transformDateToString} from '../lib/period-badge';
 

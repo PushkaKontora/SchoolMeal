@@ -1,11 +1,11 @@
 import {CalendarProps} from '../model/props';
 import {Calendar as ExternalCalendar, DateData} from 'react-native-calendars';
-import {Text} from 'react-native';
 import {useEffect, useState} from 'react';
 import {DayComponent} from './day-component';
 import {generatePeriod} from '../lib/period';
 import {dateToISOWithoutTime} from '../../../../../lib/date';
 import {DEFAULT_DATE} from '../config/calendar-config';
+import {CalendarHeader} from './calendar-header';
 
 export function Calendar(props: CalendarProps) {
   const initPeriod = () => {
@@ -14,6 +14,8 @@ export function Calendar(props: CalendarProps) {
       dateToISOWithoutTime(props.initialDate || DEFAULT_DATE()));
   };
 
+  const [month, setMonth]
+    = useState(dateToISOWithoutTime(props.initialDate || DEFAULT_DATE()));
   const [markedDates, setMarkedDates]
     = useState(initPeriod());
   const [selectPeriod, setSelectPeriod] = useState(true);
@@ -30,20 +32,28 @@ export function Calendar(props: CalendarProps) {
     if (selectPeriod) {
       const selectedDate = Object.keys(markedDates)[0];
       const clickedDate = date.dateString;
-      const isSelectedDateLess = selectedDate < clickedDate;
-      const leftDate = isSelectedDateLess ? selectedDate : clickedDate;
-      const rightDate = isSelectedDateLess ? clickedDate : selectedDate;
-      setMarkedDates(generatePeriod(leftDate, rightDate));
-      setSelectPeriod(false);
+      setMarkedDates(generatePeriod(selectedDate, clickedDate));
     } else {
       setMarkedDates(generatePeriod(date.dateString, date.dateString));
-      setSelectPeriod(true);
     }
+    setSelectPeriod(prevState => !prevState);
+  };
+
+  const onHeaderLeftPress = () => {
+    const date = new Date(month);
+    date.setMonth(date.getMonth() - 1);
+    setMonth(dateToISOWithoutTime(date));
+  };
+
+  const onHeaderRightPress = () => {
+    const date = new Date(month);
+    date.setMonth(date.getMonth() + 1);
+    setMonth(dateToISOWithoutTime(date));
   };
 
   return (
     <ExternalCalendar
-      initialDate={dateToISOWithoutTime(props.initialDate || DEFAULT_DATE())}
+      initialDate={month}
       markingType={'period'}
       hideArrows={true}
       hideExtraDays={true}
@@ -53,10 +63,11 @@ export function Calendar(props: CalendarProps) {
       dayComponent={(props) => (
         <DayComponent {...props}/>
       )}
-      renderHeader={(date: any) => (
-        <Text>
-          {'Custom Header'}
-        </Text>
+      renderHeader={(date: Date) => (
+        <CalendarHeader
+          onLeftPress={onHeaderLeftPress}
+          onRightPress={onHeaderRightPress}
+          monthDate={date}/>
       )}
     />
   );

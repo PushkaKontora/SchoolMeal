@@ -1,12 +1,6 @@
 import {MEAL_AMOUNT_BORDER_TO_SHOW} from '../config/config';
 import {NutritionPlan} from '../../../7_shared/model/nutrition';
 
-export function checkItem(array: boolean[], index: number, value: boolean) {
-  return array.map((item, idx) => {
-    return idx == index ? value : item;
-  });
-}
-
 export function isFeeding(mealData: NutritionPlan) {
   return mealData.hasBreakfast ||
     mealData.hasDinner ||
