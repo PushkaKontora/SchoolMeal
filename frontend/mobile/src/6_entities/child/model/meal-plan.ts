@@ -1,9 +1,5 @@
+import {MealPlanStatus} from '../../../7_shared/model/meal-plan-status';
+
 export type MealPlan = {
   status: MealPlanStatus
-}
-
-export enum MealPlanStatus {
-  Preferential = 'Питается льготно',
-  Paid = 'Питается платно',
-  NotFeeding = 'Не питается'
 }

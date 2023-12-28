@@ -12,12 +12,16 @@ export function ModalHeader(props: ModalHeaderProps) {
       style={styles.headerContent}
       {...PADDINGS_HEADER}>
       <Text style={styles.headerTitle}>{props.headerModalTitle}</Text>
-      <TouchableOpacity
-        style={styles.image}
-        onPress={props?.clickExit}>
-        <Image onAccessibilityTap={props?.clickExit}
-          source={require('../../../../7_shared/assets/images/exit.png')}/>
-      </TouchableOpacity>
+      {
+        (props.showCloseButton ?? true) && (
+          <TouchableOpacity
+            style={styles.image}
+            onPress={props?.clickExit}>
+            <Image onAccessibilityTap={props?.clickExit}
+              source={require('../../../../7_shared/assets/images/exit.png')}/>
+          </TouchableOpacity>
+        )
+      }
     </PaddingArea>
   );
 }

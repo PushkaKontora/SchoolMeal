@@ -1,14 +1,14 @@
 import {View, Text} from 'react-native';
 import {NutritionCertFeatureProps} from './props';
 import {styles} from './styles';
-import {formatDate} from '../../../6_entities/date';
+import {formatDateToCasual} from '../../../7_shared/lib/date';
 
 export function NutritionCertFeature(props: NutritionCertFeatureProps) {
   return (
     <View
       style={styles.container}>
       {
-        props?.child?.certificateBeforeDate &&
+        props.nutritionInfo?.preferentialCertificate &&
         <View>
           <Text
             style={styles.title}>
@@ -17,7 +17,9 @@ export function NutritionCertFeature(props: NutritionCertFeatureProps) {
 
           <Text
             style={styles.dateBadge}>
-            {formatDate(new Date(props.child.certificateBeforeDate))}
+            {
+              formatDateToCasual(new Date(props.nutritionInfo.preferentialCertificate.endsAt))
+            }
           </Text>
         </View>
       }

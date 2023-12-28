@@ -1,4 +1,4 @@
-import {FeedbackFormData, ModalWithLimitedField} from '../../../../../5_features/modal-with-limited-field';
+import {FeedbackFormData, ModalMenuFeedback} from '../../../../../5_features/modal-menu-feedback';
 import {MenuFeedbackModalProps} from '../model/props';
 import {useCreateFeedbackMutation} from '../../../../../6_entities/feedback';
 import {SuccessFeedback} from './success-feedback';
@@ -6,7 +6,7 @@ import {SuccessFeedback} from './success-feedback';
 export function MenuFeedbackModal(props: MenuFeedbackModalProps) {
   const [createFeedback, {isSuccess}] = useCreateFeedbackMutation();
 
-  const onSendFeedback = async (currentData: FeedbackFormData) => {
+  const sendFeedback = async (currentData: FeedbackFormData) => {
     await createFeedback({
       canteenId: props.canteenId,
       ...currentData
@@ -14,10 +14,10 @@ export function MenuFeedbackModal(props: MenuFeedbackModalProps) {
   };
 
   return (
-    <ModalWithLimitedField
+    <ModalMenuFeedback
       title={'Отзыв о столовой'}
       buttonTitle={'Отправить отзыв'}
-      onSubmit={onSendFeedback}
+      onSubmit={sendFeedback}
       successfulSubmission={isSuccess}
       successComponent={<SuccessFeedback/>}
       canteenId={props.canteenId}/>

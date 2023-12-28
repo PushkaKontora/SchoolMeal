@@ -1,4 +1,4 @@
-import {Child} from '../../../../6_entities/child/model/child';
+import {PupilNutritionInfo} from '../../../../7_shared/model/nutrition';
 
 export type PanelContentProps = {
   emojiImage: any,
@@ -9,8 +9,12 @@ export type PanelContentProps = {
 }
 
 export type NutritionPanelProps = {
-  child?: Child,
-  refetchChild: () => void
+  pupilId: string,
+  nutritionInfo: PupilNutritionInfo,
+  cancelNutrition: () => void,
+  resumeNutrition: () => void,
+  selectedDate: Date,
+  onSelectedDateChange?: (selectedDate: Date) => void
 }
 
 export type ConfirmModalProps = {

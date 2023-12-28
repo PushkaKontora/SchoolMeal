@@ -4,69 +4,105 @@ import {NutritionHeaderFeature} from '../../../5_features/nutrition/nutrition-he
 import {NutritionCertFeature} from '../../../5_features/nutrition/nutrition-cert-feature';
 import {NutritionTogglesFeature} from '../../../5_features/nutrition/nutrition-toggles-feature';
 import {NutritionPanel} from '../../../5_features/nutrition/nutrition-panel';
-import {NutritionWidgetProps} from '../types/props';
+import {NutritionWidgetProps} from '../types/nutrition-widget-props';
 import {useEffect, useState} from 'react';
-import {useChangeMealPlanMutation, useGetChildByIdQuery} from '../../../6_entities/child/api/api';
-import {isEnoughMealAmountToShow, isFeeding} from '../lib/utils';
-import {ChildMealData} from '../../../6_entities/child';
-import {getMealAmount} from '../../../6_entities/school-class/lib/class-utils';
+import {isEnoughMealAmountToShow, isFeeding} from '../lib/nutrition-utils';
+import {
+  useCancelNutritionMutation,
+  useChangeNutritionPlanMutation,
+  useGetPupilNutritionQuery, useResumeNutritionMutation
+} from '../../../5_features/nutrition/api';
+import {NutritionPlan, PupilNutritionInfo} from '../../../7_shared/model/nutrition';
+import {
+  createCancellationModal
+} from '../lib/cancellation-modal-utils';
+import {DEFAULT_DATE} from '../../../7_shared/consts/default_date';
+import {CancelNutritionIn} from '../../../5_features/nutrition/api/types';
+import {dateToString} from '../lib/date-utils';
 
 export function NutritionWidget(props: NutritionWidgetProps) {
   // === states ===
-  const [mealAmount, setMealAmount] = useState(3);
+  const [selectedDate, setSelectedDate] = useState(DEFAULT_DATE);
+  const [showToggles, setShowToggles] = useState(true);
 
-  const [mealData, setMealData] = useState<ChildMealData>({
-    breakfast: false,
-    lunch: false,
-    dinner: false
+  const [mealData, setMealData] = useState<NutritionPlan>({
+    hasBreakfast: false,
+    hasDinner: false,
+    hasSnacks: false
   });
   const [feeding, setFeeding] = useState(isFeeding(mealData));
 
-  // === variables ===
+  const [nutritionInfoState, setNutritionInfoState]
+    = useState<PupilNutritionInfo | undefined>(undefined);
 
-  const [changeMeal] = useChangeMealPlanMutation();
+  // === api calls ===
 
-  const {data: child, isSuccess: childSuccess, refetch: refetchChild} = useGetChildByIdQuery(props.childId);
+  const [cancelNutrition, {isSuccess: isCanceledSuccess, data: cancelData}]
+    = useCancelNutritionMutation();
+  const [resumeNutrition, {isSuccess: isResumedSuccess, data: resumeData}]
+    = useResumeNutritionMutation();
+
+  const [changeMeal] = useChangeNutritionPlanMutation();
+  const {data: nutritionInfo,  refetch: refetchNutritionInfo, isSuccess: isNutritionSuccess}
+    = useGetPupilNutritionQuery(props.pupilId);
 
   // === useEffects ===
 
   useEffect(() => {
-    refetchChild();
-  }, []);
+    refetchNutritionInfo();
+  }, [props.pupilId]);
 
   useEffect(() => {
-    init();
-  }, [child]);
+    if (isNutritionSuccess) {
+      const newMealData = {
+        hasBreakfast: nutritionInfo.mealPlan.hasBreakfast,
+        hasDinner: nutritionInfo.mealPlan.hasDinner,
+        hasSnacks: nutritionInfo.mealPlan.hasSnacks
+      };
+
+      setMealData(newMealData);
+      setNutritionInfoState(nutritionInfo as PupilNutritionInfo);
+    }
+  }, [nutritionInfo]);
 
   useEffect(() => {
     setFeeding(isFeeding(mealData));
   }, [mealData]);
 
-  // === functions ===
+  useEffect(() => {
+    setShowToggles(feeding && isEnoughMealAmountToShow(mealData));
+  }, [feeding, mealData]);
 
-  const init = () => {
-    if (childSuccess) {
-      const newMealData = {
-        breakfast: child.breakfast,
-        lunch: child.lunch,
-        dinner: child.dinner
-      };
-
-      setMealData(newMealData);
-      setMealAmount(getMealAmount(child.schoolClass));
+  useEffect(() => {
+    if (isCanceledSuccess) {
+      setNutritionInfoState({
+        ...nutritionInfoState,
+        cancellationPeriods: cancelData
+      });
     }
-  };
+  }, [isCanceledSuccess]);
 
-  const onCheckChange = async (changedProperties: Partial<ChildMealData>) => {
-    if (child) {
+  useEffect(() => {
+    if (isResumedSuccess) {
+      setNutritionInfoState({
+        ...nutritionInfoState,
+        cancellationPeriods: resumeData
+      });
+    }
+  }, [isResumedSuccess]);
+
+  // === callback functions ===
+
+  const onToggleChange = async (changedProperties: Partial<NutritionPlan>) => {
+    if (nutritionInfo) {
       const newMealData = {
         ...mealData,
         ...changedProperties
       };
 
       await changeMeal({
-        childId: child.id,
-        ...newMealData
+        pupilId: props.pupilId,
+        body: newMealData
       });
 
       setMealData(newMealData);
@@ -74,57 +110,77 @@ export function NutritionWidget(props: NutritionWidgetProps) {
   };
 
   const onHeaderCheckChange = async (turnedOn: boolean) => {
-    await onCheckChange({
-      breakfast: turnedOn,
-      lunch: turnedOn,
-      dinner: turnedOn
+    await onToggleChange({
+      hasBreakfast: turnedOn,
+      hasDinner: turnedOn,
+      hasSnacks: turnedOn
     });
   };
+
+  // === modal functions  ===
+
+  const sendCancellation = async (body: CancelNutritionIn['body']) => {
+    await cancelNutrition({
+      pupilId: props.pupilId,
+      body: body
+    });
+  };
+
+  const showCancellationModal = createCancellationModal(sendCancellation);
 
   // === render ===
 
   return (
     <ScrollView>
-
       <View
         style={styles.background}>
         <View
           style={styles.card}>
 
           <NutritionHeaderFeature
-            child={child}
+            nutritionInfo={nutritionInfoState}
             onToggle={(toggledRight: boolean) => onHeaderCheckChange(toggledRight)}
             defaultToggleState={feeding}/>
 
           <NutritionCertFeature
-            child={child}/>
+            nutritionInfo={nutritionInfoState}/>
 
           {
-            feeding &&
-            isEnoughMealAmountToShow(mealAmount) &&
+            showToggles &&
             <NutritionTogglesFeature
               onToggleBreakfast={(turnedOn: boolean) => {
-                onCheckChange({breakfast: turnedOn});
+                onToggleChange({hasBreakfast: turnedOn});
               }}
               onToggleLunch={(turnedOn: boolean) => {
-                onCheckChange({lunch: turnedOn});
+                onToggleChange({hasDinner: turnedOn});
               }}
               onToggleAfternoonSnack={(turnedOn: boolean) => {
-                onCheckChange({dinner: turnedOn});
+                onToggleChange({hasSnacks: turnedOn});
               }}
-              breakfastState={mealData?.breakfast}
-              lunchState={mealData?.lunch}
-              afternoonSnackState={mealData?.dinner}
-              hasBreakfast={child?.schoolClass.hasBreakfast || false}
-              hasLunch={child?.schoolClass.hasLunch || false}
-              hasAfternoonSnack={child?.schoolClass.hasDinner || false}/>
-          }   
+              breakfastState={mealData?.hasBreakfast}
+              lunchState={mealData?.hasDinner}
+              afternoonSnackState={mealData?.hasSnacks}
+              hasBreakfast={true}
+              hasLunch={true}
+              hasAfternoonSnack={true}/>
+          }
 
           {
             feeding &&
             <NutritionPanel
-              child={child}
-              refetchChild={refetchChild}/>
+              nutritionInfo={nutritionInfoState}
+              pupilId={props.pupilId}
+              selectedDate={selectedDate}
+              onSelectedDateChange={setSelectedDate}
+              cancelNutrition={() => showCancellationModal(selectedDate)}
+              resumeNutrition={async () => {
+                await resumeNutrition({
+                  pupilId: props.pupilId,
+                  body: {
+                    date: dateToString(selectedDate)
+                  }
+                });
+              }}/>
           }
 
         </View>
