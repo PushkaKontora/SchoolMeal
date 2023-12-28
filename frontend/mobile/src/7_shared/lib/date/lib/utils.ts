@@ -27,3 +27,12 @@ export function isTodayDate(d: Date) {
     d.getMonth() === today.getMonth() &&
     d.getDate() === today.getDate();
 }
+
+export function isTomorrowDate(d: Date) {
+  const today = new Date(Date.now());
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  return d.getFullYear() === tomorrow.getFullYear() &&
+    d.getMonth() === tomorrow.getMonth() &&
+    d.getDate() === tomorrow.getDate();
+}

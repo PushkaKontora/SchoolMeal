@@ -1,18 +1,13 @@
-import {isTodayDate} from '../../../../7_shared/lib/date/lib/utils';
+import {dateToISOWithoutTime, isTomorrowDate} from '../../../../7_shared/lib/date/lib/utils';
+import {GET_LIMIT_TIME_TO_CANCEL_NUTRITION_FOR_TOMORROW} from '../config/config';
 
-export function isDateExpired(d: Date) {
-  const expDate = setHoursTillAbleToCancel();
+export function isAbleToCancelForDate(d: Date) {
+  const expDate = GET_LIMIT_TIME_TO_CANCEL_NUTRITION_FOR_TOMORROW();
+  const now = new Date(Date.now());
 
-  if (isTodayDate(d)) {
-    const now = new Date(Date.now());
-    return now.valueOf() >= expDate.valueOf();
+  if (isTomorrowDate(d)) {
+    return now.valueOf() < expDate.valueOf();
   }
 
-  return d.valueOf() < expDate.valueOf();
-}
-
-export function setHoursTillAbleToCancel() {
-  const now = new Date(Date.now());
-  now.setHours(10, 0, 0, 0);
-  return now;
+  return dateToISOWithoutTime(d) > dateToISOWithoutTime(now);
 }

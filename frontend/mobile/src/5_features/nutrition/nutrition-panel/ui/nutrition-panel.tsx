@@ -5,7 +5,7 @@ import {DEFAULT_ITEM_NUMBER, PANELS, SELECTION_COLOR} from '../config/config';
 import {useEffect, useState} from 'react';
 import {NutritionPanelProps} from '../types/props';
 import {PanelPressListeners} from '../types/types';
-import {isDateExpired} from '../lib/date-utils';
+import {isAbleToCancelForDate} from '../lib/date-utils';
 import {createPanels} from '../lib/create-panels';
 import {MonthPicker} from '../../../../7_shared/ui/special/mini-calendar/ui/month-picker';
 import {findFirstFullWeek} from '../../../../7_shared/ui/special/mini-calendar/lib/dates-utils';
@@ -88,8 +88,8 @@ export function NutritionPanel(props: NutritionPanelProps) {
 
       {
         cancelledCurrentNutrition
-          ? panels.canceled({visibleButton: !isDateExpired(props.selectedDate)})
-          : panels.submitted({visibleButton: !isDateExpired(props.selectedDate)})
+          ? panels.canceled({visibleButton: isAbleToCancelForDate(props.selectedDate)})
+          : panels.submitted({visibleButton: isAbleToCancelForDate(props.selectedDate)})
       }
 
     </View>
