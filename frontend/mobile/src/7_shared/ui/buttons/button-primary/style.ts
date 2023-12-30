@@ -8,7 +8,6 @@ export const createStyle = (props: ButtonPrimaryProps) => StyleSheet.create({
     paddingVertical: props.paddingVertical || 8.5,
     paddingHorizontal: props.paddingHorizontal || 0,
     width: '100%',
-    height: 36,
     alignItems: 'center',
     flex: props.flex
   },

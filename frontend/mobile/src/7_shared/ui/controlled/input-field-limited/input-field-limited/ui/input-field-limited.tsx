@@ -34,6 +34,7 @@ export function InputFieldLimited<FormData>
         maxLength={props.maxLength || DEFAULT_MAX_LENGTH}
         numberOfLines={props.numberOfLines}
         multiline={true}
+        autoFocus={props.autoFocus}
       />
       <SymbolCounter limit={props.maxLength || DEFAULT_MAX_LENGTH} currentSymbols={currentSymbols}/>
     </View>

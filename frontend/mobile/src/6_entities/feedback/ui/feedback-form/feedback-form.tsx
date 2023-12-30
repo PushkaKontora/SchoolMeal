@@ -7,10 +7,12 @@ import {INPUT_DATA} from './input-data';
 import {FeedbackFormData} from './feedback-form-data';
 import {DEFAULT_NUMBER_OF_LINES, DEFAULT_SYMBOL_LIMIT} from './config';
 import {FeedbackFormProps} from './props';
+import {useEffect} from 'react';
 
 export function FeedbackForm(props: FeedbackFormProps) {
   const {
     handleSubmit,
+    trigger,
     control,
     formState: {errors}
   } = useForm<FeedbackFormData>({
@@ -18,6 +20,10 @@ export function FeedbackForm(props: FeedbackFormProps) {
   });
 
   const styles = createStyle();
+
+  useEffect(() => {
+    trigger();
+  }, []);
 
   const onSubmit = (currentData: FeedbackFormData) => {
     props.onSubmit(currentData);
@@ -32,6 +38,7 @@ export function FeedbackForm(props: FeedbackFormProps) {
         control={control}
         data={INPUT_DATA[0]}
         errors={errors}
+        autoFocus={true}
       />
       <ButtonPrimary
         title={props.buttonTitle}
@@ -39,6 +46,7 @@ export function FeedbackForm(props: FeedbackFormProps) {
         fontWeight={'700'}
         paddingVertical={12}
         backgroundColor={'#EC662A'}
+        disabled={errors['text'] !== undefined}
         onPress={handleSubmit(onSubmit)}/>
     </View>
   );

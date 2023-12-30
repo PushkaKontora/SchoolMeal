@@ -33,7 +33,6 @@ export function Menu(props: MenuProps) {
     })();
   }, [date]);
 
-
   return (
     <View style={styles.container}>
       <MenuData/>
@@ -49,9 +48,9 @@ export function Menu(props: MenuProps) {
               && <MealUnit title={'Полдник'}
                 sum={mealsForChild[0]?.menu?.dinner.price}
                 portions={mealsForChild[0].menu.dinner.portions}/>}
-      {mealsForChild && !mealsForChild[0]?.menu?.lunch
-                && !mealsForChild[0]?.menu?.dinner
-                && !mealsForChild[0]?.menu?.breakfast
+      {(!mealsForChild || !mealsForChild?.[0]?.menu?.lunch
+                || !mealsForChild?.[0]?.menu?.dinner
+                || !mealsForChild?.[0]?.menu?.breakfast)
                 && <EmojiTextFeature
                   imageEmoji={require('../lib/assets/Object.png')}
                   subEmojiTitle={'На этот день меню не было предоставлено'}/>}
