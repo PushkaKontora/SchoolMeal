@@ -2,13 +2,15 @@ import re
 
 from pydantic.dataclasses import dataclass
 
+from app.shared.domain import ValueObject
+
 
 class InvalidEmailFormat(Exception):
     pass
 
 
 @dataclass(eq=True, frozen=True)
-class Email:
+class Email(ValueObject):
     value: str
 
     def __post_init_post_parse__(self) -> None:

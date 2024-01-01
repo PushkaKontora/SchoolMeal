@@ -1,5 +1,7 @@
 from pydantic.dataclasses import dataclass
 
+from app.shared.domain import ValueObject
+
 
 class InsufficientMinLengthFeedbackText(Exception):
     pass
@@ -10,7 +12,7 @@ class ExceededMaxLengthFeedbackText(Exception):
 
 
 @dataclass(eq=True, frozen=True)
-class FeedbackText:
+class FeedbackText(ValueObject):
     value: str
 
     def __post_init_post_parse__(self) -> None:

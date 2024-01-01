@@ -1,14 +1,16 @@
 from uuid import UUID
 
-from pydantic import BaseModel
 from pydantic.dataclasses import dataclass
+
+from app.shared.domain import Entity, ValueObject
 
 
 @dataclass(eq=True, frozen=True)
-class SchoolName:
+class SchoolName(ValueObject):
     value: str
 
 
-class School(BaseModel):
+@dataclass
+class School(Entity):
     id: UUID
     name: SchoolName

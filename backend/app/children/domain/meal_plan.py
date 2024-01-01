@@ -1,5 +1,8 @@
-from dataclasses import dataclass
 from enum import Enum
+
+from pydantic.dataclasses import dataclass
+
+from app.shared.domain import ValueObject
 
 
 class MealStatus(str, Enum):
@@ -9,5 +12,5 @@ class MealStatus(str, Enum):
 
 
 @dataclass(eq=True, frozen=True)
-class MealPlan:
+class MealPlan(ValueObject):
     status: MealStatus

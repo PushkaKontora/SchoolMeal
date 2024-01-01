@@ -2,6 +2,7 @@ import re
 
 from pydantic.dataclasses import dataclass
 
+from app.shared.domain import ValueObject
 from app.users.domain.login import Login
 
 
@@ -13,7 +14,7 @@ class InvalidPhoneFormat(Exception):
 
 
 @dataclass(eq=True, frozen=True)
-class Phone:
+class Phone(ValueObject):
     value: str
 
     def __post_init_post_parse__(self) -> None:

@@ -3,6 +3,8 @@ from itertools import chain
 import bcrypt
 from pydantic.dataclasses import dataclass
 
+from app.shared.domain import ValueObject
+
 
 LATIN = "abcdefghijklmnopqrstuvwxyz"
 CYRILLIC = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
@@ -86,7 +88,7 @@ class PasswordContainsUnavailableSpecialCharacter(InvalidPasswordFormat):
 
 
 @dataclass(eq=True, frozen=True)
-class Password:
+class Password(ValueObject):
     value: str
 
     def __post_init_post_parse__(self) -> None:
@@ -131,7 +133,7 @@ class StrictPassword(Password):
 
 
 @dataclass(eq=True, frozen=True)
-class HashedPassword:
+class HashedPassword(ValueObject):
     value: bytes
 
     def verify(self, password: Password) -> bool:

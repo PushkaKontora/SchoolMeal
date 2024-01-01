@@ -7,6 +7,8 @@ from typing import Iterator, Optional, cast
 
 from pydantic.dataclasses import dataclass
 
+from app.shared.domain import ValueObject
+
 
 class EndCannotBeGreaterThanStart(Exception):
     pass
@@ -21,7 +23,7 @@ class ExceededMaxLengthReason(Exception):
 
 
 @dataclass(eq=True, frozen=True)
-class SpecifiedReason:
+class SpecifiedReason(ValueObject):
     value: str
 
     def __post_init_post_parse__(self) -> None:
@@ -33,7 +35,7 @@ class SpecifiedReason:
 
 
 @dataclass(eq=True, frozen=True)
-class Period:
+class Period(ValueObject):
     starts_at: date
     ends_at: date
 

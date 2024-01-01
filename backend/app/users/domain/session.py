@@ -1,14 +1,17 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
+
+from app.shared.domain import Entity
 
 
 class SessionIsAlreadyRevoked(Exception):
     pass
 
 
-class Session(BaseModel):
+@dataclass
+class Session(Entity):
     id: UUID
     jti: UUID
     user_id: UUID

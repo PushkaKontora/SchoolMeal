@@ -1,11 +1,11 @@
 from enum import Enum
 
-from pydantic import BaseModel
 from pydantic.dataclasses import dataclass
 
 from app.nutrition.domain.certificate import PreferentialCertificate
 from app.nutrition.domain.meal_plan import MealPlan
 from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Day
+from app.shared.domain import Entity, ValueObject
 
 
 class CantAttachExpiredPreferentialCertificate(Exception):
@@ -13,17 +13,17 @@ class CantAttachExpiredPreferentialCertificate(Exception):
 
 
 @dataclass(eq=True, frozen=True)
-class PupilID:
+class PupilID(ValueObject):
     value: str
 
 
 @dataclass(eq=True, frozen=True)
-class FirstName:
+class FirstName(ValueObject):
     value: str
 
 
 @dataclass(eq=True, frozen=True)
-class LastName:
+class LastName(ValueObject):
     value: str
 
 
@@ -33,7 +33,8 @@ class MealStatus(str, Enum):
     NONE = "none"
 
 
-class Pupil(BaseModel):
+@dataclass
+class Pupil(Entity):
     id: PupilID
     last_name: LastName
     first_name: FirstName

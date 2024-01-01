@@ -3,6 +3,8 @@ from abc import ABC
 
 from pydantic.dataclasses import dataclass
 
+from app.shared.domain import ValueObject
+
 
 class FirstNameContainsNotCyrillicCharacters(Exception):
     pass
@@ -13,7 +15,7 @@ class LastNameContainsNotCyrillicCharacters(Exception):
 
 
 @dataclass(eq=True, frozen=True)
-class Name(ABC):
+class Name(ValueObject, ABC):
     value: str
 
     def __post_init_post_parse__(self) -> None:

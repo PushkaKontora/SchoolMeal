@@ -22,7 +22,7 @@ def test_creating_parent(last_name: LastName, first_name: FirstName, phone: Phon
 def test_authentication(user: User, password: Password):
     authenticated_user = user.authenticate(password)
 
-    assert authenticated_user == user
+    assert authenticated_user.id == user.id
 
 
 def test_authentication_using_incorrect_password(user: User):

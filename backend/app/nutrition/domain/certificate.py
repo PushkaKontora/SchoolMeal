@@ -2,9 +2,11 @@ from datetime import date, datetime, timezone
 
 from pydantic.dataclasses import dataclass
 
+from app.shared.domain import ValueObject
+
 
 @dataclass(eq=True, frozen=True)
-class PreferentialCertificate:
+class PreferentialCertificate(ValueObject):
     ends_at: date
 
     @property

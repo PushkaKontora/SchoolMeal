@@ -7,6 +7,8 @@ import jwt
 from pydantic import ValidationError
 from pydantic.dataclasses import dataclass
 
+from app.shared.domain import ValueObject
+
 
 class TokenHasExpired(Exception):
     pass
@@ -20,7 +22,7 @@ T = TypeVar("T", bound="Token", covariant=True)
 
 
 @dataclass(eq=True, frozen=True)
-class Token(ABC):
+class Token(ValueObject, ABC):
     jti: UUID
     user_id: UUID
     device_id: UUID

@@ -1,8 +1,10 @@
 from pydantic.dataclasses import dataclass
 
+from app.shared.domain import ValueObject
+
 
 @dataclass(eq=True, frozen=True)
-class MealPlan:
+class MealPlan(ValueObject):
     has_breakfast: bool
     has_dinner: bool
     has_snacks: bool

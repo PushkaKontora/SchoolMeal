@@ -1,7 +1,10 @@
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
+
+from app.shared.domain import Entity
 
 
-class Canteen(BaseModel):
+@dataclass
+class Canteen(Entity):
     id: UUID

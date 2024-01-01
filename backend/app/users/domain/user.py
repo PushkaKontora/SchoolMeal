@@ -1,7 +1,8 @@
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
 
+from app.shared.domain import Entity
 from app.users.domain.email import Email
 from app.users.domain.login import Login
 from app.users.domain.names import FirstName, LastName
@@ -14,7 +15,8 @@ class PasswordIsNotVerified(Exception):
     pass
 
 
-class User(BaseModel):
+@dataclass
+class User(Entity):
     id: UUID
     login: Login
     password: HashedPassword
@@ -28,7 +30,16 @@ class User(BaseModel):
         if not self.password.verify(password):
             raise PasswordIsNotVerified
 
-        return AuthenticatedUser.parse_obj(self)
+        return AuthenticatedUser(
+            id=self.id,
+            login=self.login,
+            password=self.password,
+            last_name=self.last_name,
+            first_name=self.first_name,
+            role=self.role,
+            phone=self.phone,
+            email=self.email,
+        )
 
     @classmethod
     def create_parent(

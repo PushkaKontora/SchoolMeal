@@ -10,7 +10,7 @@ class LocalFeedbacksRepository(IFeedbacksRepository):
         self._feedbacks: list[Feedback] = []
 
     async def save(self, feedback: Feedback) -> None:
-        self._feedbacks += feedback
+        self._feedbacks += [feedback]
 
 
 class LocalCanteensRepository(ICanteensRepository):

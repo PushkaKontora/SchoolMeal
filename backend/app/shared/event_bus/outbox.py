@@ -4,7 +4,6 @@ from uuid import UUID
 
 from pydantic.dataclasses import dataclass
 
-from app.shared.event_bus.connectors.message import Message
 from app.shared.event_bus.types import JSON
 
 

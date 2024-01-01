@@ -1,11 +1,13 @@
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
 
 from app.feedbacks.domain.text import FeedbackText
+from app.shared.domain import Entity
 
 
-class Feedback(BaseModel):
+@dataclass
+class Feedback(Entity):
     id: UUID
     canteen_id: UUID
     user_id: UUID
