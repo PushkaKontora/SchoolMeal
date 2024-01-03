@@ -20,28 +20,6 @@ class Context(ABC):
 TContext = TypeVar("TContext", bound=Context, covariant=True)
 
 
-class ISavepoint(ABC):
-    @abstractmethod
-    async def commit(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def rollback(self) -> None:
-        raise NotImplementedError
-
-
-class ISavepointManager(ABC):
-    @abstractmethod
-    async def __aenter__(self) -> ISavepoint:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def __aexit__(
-        self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None
-    ) -> None:
-        raise NotImplementedError
-
-
 class IUnitOfWork(Generic[TContext], ABC):
     @abstractmethod
     async def commit(self) -> None:
@@ -68,13 +46,6 @@ class IUnitOfWork(Generic[TContext], ABC):
     async def __aexit__(
         self, exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: TracebackType | None
     ) -> None:
-        """
-        :raise UnitOfWorkHasNotBeenOpenedYet: юнит ещё не открыт
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def begin_savepoint(self) -> ISavepointManager:
         """
         :raise UnitOfWorkHasNotBeenOpenedYet: юнит ещё не открыт
         """

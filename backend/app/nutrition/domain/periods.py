@@ -23,7 +23,7 @@ class ExceededMaxLengthReason(Exception):
 
 
 @dataclass(eq=True, frozen=True)
-class SpecifiedReason(ValueObject):
+class Reason(ValueObject):
     value: str
 
     def __post_init_post_parse__(self) -> None:
@@ -57,7 +57,7 @@ class Day(Period):
 
 @dataclass(eq=True, frozen=True)
 class CancellationPeriod(Period):
-    reasons: frozenset[SpecifiedReason]
+    reasons: frozenset[Reason]
 
     def merge(self, other: "CancellationPeriod") -> list["CancellationPeriod"]:
         if not (intersection := self.intersect(other)):

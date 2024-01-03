@@ -1,6 +1,6 @@
 from datetime import date
 
-from app.nutrition.domain.periods import CancellationPeriod, Period, SpecifiedReason
+from app.nutrition.domain.periods import CancellationPeriod, Period, Reason
 
 
 RowDates = tuple[int, int]
@@ -22,7 +22,7 @@ def create_cancellation(start_day: int, end_day: int, reasons: set[str]) -> Canc
     return CancellationPeriod(
         starts_at=create_date(start_day),
         ends_at=create_date(end_day),
-        reasons=frozenset(map(SpecifiedReason, reasons)),
+        reasons=frozenset(map(Reason, reasons)),
     )
 
 

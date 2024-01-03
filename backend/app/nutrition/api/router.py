@@ -1,54 +1,70 @@
 from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Body, status
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Body, Depends, status
 
-from app.nutrition.api.dependencies import NutritionServiceDep
-from app.nutrition.api.schemas import CancellationPeriodIn, CancellationPeriodOut, MealPlanIn, NutritionOut
-from app.nutrition.application.repositories import NotFoundPupil
+from app.nutrition.api.dto import CancellationPeriod, Mealtimes
+from app.nutrition.commands.attach_child_to_parent import AttachChildToParentCommand, AttachChildToParentCommandHandler
+from app.nutrition.commands.cancel_nutrition import CancelNutritionCommand, CancelNutritionCommandHandler
+from app.nutrition.commands.repositories import NotFoundParent, NotFoundPupil
+from app.nutrition.commands.resume_nutrition import ResumeNutritionCommand, ResumeNutritionCommandHandler
+from app.nutrition.commands.update_mealtimes import UpdateMealtimesCommand, UpdateMealtimesCommandHandler
+from app.nutrition.domain.parent import ChildIsAlreadyAttachedToParent
 from app.nutrition.domain.periods import (
     EndCannotBeGreaterThanStart,
     ExceededMaxLengthReason,
     SpecifiedReasonCannotBeEmpty,
 )
+from app.nutrition.infrastructure.dependencies import NutritionContainer
+from app.nutrition.queries.get_children import Child, GetChildrenQuery, GetChildrenQueryExecutor
+from app.nutrition.queries.get_nutrition_info import GetNutritionInfoQueryExecutor, NutritionOut, GetNutritionInfoQuery
 from app.shared.fastapi import responses
+from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.errors import BadRequestError, NotFoundError
 from app.shared.fastapi.schemas import OKSchema
 
 
-router = APIRouter(prefix="/nutrition/{pupil_id}", tags=["Питание"])
+router = APIRouter(tags=["Питание"])
 
 
 @router.get(
-    "",
+    "/nutrition/{pupil_id}",
     summary="Получить информацию о питании ученика",
     status_code=status.HTTP_200_OK,
     responses=responses.NOT_FOUND,
 )
-async def get_pupil_nutrition(pupil_id: str, nutrition_service: NutritionServiceDep) -> NutritionOut:
+@inject
+async def get_pupil_nutrition(
+    pupil_id: str,
+    executor: GetNutritionInfoQueryExecutor = Depends(Provide[NutritionContainer.get_nutrition_info_executor]),
+) -> NutritionOut:
     try:
-        pupil = await nutrition_service.get_pupil(pupil_id=pupil_id)
+        return await executor.execute(query=GetNutritionInfoQuery(pupil_id=pupil_id))
     except NotFoundPupil as error:
         raise NotFoundError("Ученик не был найден") from error
 
-    return NutritionOut.from_model(pupil)
-
 
 @router.put(
-    "/plan",
+    "/nutrition/{pupil_id}/plan",
     summary="Изменить план приёма пищи",
     status_code=status.HTTP_200_OK,
     responses=responses.NOT_FOUND,
 )
-async def change_meal_plan_for_pupil(
-    pupil_id: str, plan: MealPlanIn, nutrition_service: NutritionServiceDep
+@inject
+async def change_plan(
+    pupil_id: str,
+    plan: Mealtimes,
+    handler: UpdateMealtimesCommandHandler = Depends(Provide[NutritionContainer.change_plan_command_handler]),
 ) -> OKSchema:
     try:
-        await nutrition_service.change_meal_plan_for_pupil(
-            pupil_id=pupil_id,
-            has_breakfast=plan.has_breakfast,
-            has_dinner=plan.has_dinner,
-            has_snacks=plan.has_snacks,
+        await handler.handle(
+            command=UpdateMealtimesCommand(
+                pupil_id=pupil_id,
+                has_breakfast=plan.has_breakfast,
+                has_dinner=plan.has_dinner,
+                has_snacks=plan.has_snacks,
+            )
         )
 
     except NotFoundPupil as error:
@@ -58,20 +74,25 @@ async def change_meal_plan_for_pupil(
 
 
 @router.post(
-    "/cancel",
+    "/nutrition/{pupil_id}/cancel",
     summary="Снять ребёнка с питания на период",
     status_code=status.HTTP_200_OK,
     responses=responses.NOT_FOUND | responses.BAD_REQUEST,
 )
-async def cancel_pupil_nutrition_for_period(
-    pupil_id: str, period_in: CancellationPeriodIn, nutrition_service: NutritionServiceDep
-) -> list[CancellationPeriodOut]:
+@inject
+async def cancel_nutrition(
+    pupil_id: str,
+    period_in: CancellationPeriod,
+    handler: CancelNutritionCommandHandler = Depends(Provide[NutritionContainer.cancel_nutrition_command_handler]),
+) -> None:
     try:
-        periods = await nutrition_service.cancel_pupil_nutrition_for_period(
-            pupil_id=pupil_id,
-            starts_at=period_in.starts_at,
-            ends_at=period_in.ends_at,
-            reason=period_in.reason,
+        await handler.handle(
+            command=CancelNutritionCommand(
+                pupil_id=pupil_id,
+                starts_at=period_in.starts_at,
+                ends_at=period_in.ends_at,
+                reason=period_in.reason,
+            )
         )
 
     except NotFoundPupil as error:
@@ -86,24 +107,67 @@ async def cancel_pupil_nutrition_for_period(
     except EndCannotBeGreaterThanStart as error:
         raise BadRequestError("Дата начала периода больше, чем конечная дата") from error
 
-    return [CancellationPeriodOut.from_model(period) for period in periods]
+    # return [CancellationPeriodOut.from_model(period) for period in periods]
 
 
 @router.post(
-    "/resume",
+    "/nutrition/{pupil_id}/resume",
     summary="Поставить ребёнка на питание в дату",
     status_code=status.HTTP_200_OK,
     responses=responses.NOT_FOUND | responses.BAD_REQUEST,
 )
-async def resume_pupil_nutrition_on_day(
+@inject
+async def resume_nutrition(
     pupil_id: str,
     date_in: Annotated[date, Body(embed=True, alias="date")],
-    nutrition_service: NutritionServiceDep,
-) -> list[CancellationPeriodOut]:
+    handler: ResumeNutritionCommandHandler = Depends(Provide[NutritionContainer.resume_nutrition_command_handler]),
+) -> None:
     try:
-        periods = await nutrition_service.resume_pupil_nutrition_on_day(pupil_id=pupil_id, date_=date_in)
+        await handler.handle(command=ResumeNutritionCommand(pupil_id=pupil_id, day=date_in))
 
     except NotFoundPupil as error:
         raise NotFoundError("Ученик не найден") from error
 
-    return [CancellationPeriodOut.from_model(period) for period in periods]
+    # return [CancellationPeriodOut.from_model(period) for period in periods]
+
+
+@router.post(
+    "/children/{child_id}",
+    summary="Закрепить ученика за родителем",
+    status_code=status.HTTP_200_OK,
+    responses=responses.NOT_FOUND | responses.BAD_REQUEST,
+)
+@inject
+async def attach_child_to_parent(
+    child_id: str,
+    user: AuthorizedUserDep,
+    handler: AttachChildToParentCommandHandler = Depends(
+        Provide[NutritionContainer.attach_child_to_parent_command_handler]
+    ),
+) -> OKSchema:
+    try:
+        await handler.handle(command=AttachChildToParentCommand(parent_id=user.id, pupil_id=child_id))
+
+    except NotFoundParent as error:
+        raise BadRequestError("Родитель не зарегистрирован") from error
+
+    except NotFoundPupil as error:
+        raise NotFoundError("Ребёнка не существует") from error
+
+    except ChildIsAlreadyAttachedToParent as error:
+        raise BadRequestError("Ребёнок уже привязан к родителю") from error
+
+    return OKSchema()
+
+
+@router.get(
+    "/children",
+    summary="Получить список детей",
+    status_code=status.HTTP_200_OK,
+)
+@inject
+async def get_children(
+    user: AuthorizedUserDep,
+    executor: GetChildrenQueryExecutor = Depends(Provide[NutritionContainer.get_children_query_executor]),
+) -> list[Child]:
+    return await executor.execute(query=GetChildrenQuery(parent_id=user.id))

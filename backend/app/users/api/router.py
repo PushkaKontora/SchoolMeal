@@ -1,24 +1,19 @@
-from fastapi import APIRouter, Response, status
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Depends, Response, status
 
 from app.shared.fastapi import responses
 from app.shared.fastapi.errors import AuthorizationError, BadRequestError, NotFoundError, UnprocessableEntityError
 from app.shared.fastapi.schemas import AuthorizedUser, OKSchema
-from app.users.api.dependencies.services import UsersServiceDep
-from app.users.api.dependencies.settings import JWTSettingsDep
-from app.users.api.dependencies.tokens import (
-    AccessTokenDep,
-    RefreshTokenDep,
-    delete_refresh_from_cookies,
-    set_refresh_in_cookies,
-)
 from app.users.api.schemas import AccessTokenOut, CredentialIn, ParentRegistrationForm, UserOut
+from app.users.api.tokens import AccessTokenDep, RefreshTokenDep, delete_refresh_from_cookies, set_refresh_in_cookies
 from app.users.application.repositories import NotFoundUser
-from app.users.application.services import IncorrectLoginOrPassword, PhoneBelongsToAnotherParent
+from app.users.application.services import IncorrectLoginOrPassword, PhoneBelongsToAnotherParent, UsersService
 from app.users.domain import passwords, phone
 from app.users.domain.email import InvalidEmailFormat
 from app.users.domain.names import FirstNameContainsNotCyrillicCharacters, LastNameContainsNotCyrillicCharacters
 from app.users.domain.session import SessionIsAlreadyRevoked
 from app.users.domain.tokens import SignatureIsBroken, TokenHasExpired
+from app.users.infrastructure.dependencies import UsersContainer
 
 
 router = APIRouter(prefix="/users", tags=["Аутентификация и пользователи"])
@@ -30,7 +25,10 @@ router = APIRouter(prefix="/users", tags=["Аутентификация и по�
     status_code=status.HTTP_204_NO_CONTENT,
     responses=responses.FORBIDDEN,
 )
-async def authorize(access_token: AccessTokenDep, users_service: UsersServiceDep) -> Response:
+@inject
+async def authorize(
+    access_token: AccessTokenDep, users_service: UsersService = Depends(Provide[UsersContainer.service])
+) -> Response:
     try:
         user = await users_service.authorize(access_token)
     except Exception as error:
@@ -49,14 +47,15 @@ async def authorize(access_token: AccessTokenDep, users_service: UsersServiceDep
     status_code=status.HTTP_200_OK,
     responses=responses.BAD_REQUEST | responses.UNPROCESSABLE_ENTITY,
 )
+@inject
 async def authenticate(
     response: Response,
     credential: CredentialIn,
-    user_service: UsersServiceDep,
-    jwt_settings: JWTSettingsDep,
+    users_service: UsersService = Depends(Provide[UsersContainer.service]),
+    secret: str = Depends(Provide[UsersContainer.jwt_config.secret]),
 ) -> AccessTokenOut:
     try:
-        access_token, refresh_token = await user_service.authenticate(
+        access_token, refresh_token = await users_service.authenticate(
             login=credential.login,
             password=credential.password,
         )
@@ -64,18 +63,19 @@ async def authenticate(
     except IncorrectLoginOrPassword as error:
         raise BadRequestError("Неверный логин или пароль") from error
 
-    set_refresh_in_cookies(response, refresh_token, settings=jwt_settings)
+    set_refresh_in_cookies(response, refresh_token, secret)
 
-    return AccessTokenOut.from_model(access_token, settings=jwt_settings)
+    return AccessTokenOut.from_model(access_token, secret)
 
 
 @router.post(
     "/logout", summary="Выход из аккаунта", status_code=status.HTTP_200_OK, responses=responses.UNPROCESSABLE_ENTITY
 )
+@inject
 async def logout(
     response: Response,
     access_token: AccessTokenDep,
-    users_service: UsersServiceDep,
+    users_service: UsersService = Depends(Provide[UsersContainer.service]),
 ) -> OKSchema:
     try:
         await users_service.logout(access_token)
@@ -97,11 +97,12 @@ async def logout(
     status_code=status.HTTP_200_OK,
     responses=responses.BAD_REQUEST | responses.UNPROCESSABLE_ENTITY,
 )
+@inject
 async def refresh_tokens(
     response: Response,
     refresh_token: RefreshTokenDep,
-    users_service: UsersServiceDep,
-    jwt_settings: JWTSettingsDep,
+    users_service: UsersService = Depends(Provide[UsersContainer.service]),
+    secret: str = Depends(Provide[UsersContainer.jwt_config.secret]),
 ) -> AccessTokenOut:
     try:
         access, refresh = await users_service.refresh_session(refresh_token)
@@ -115,9 +116,9 @@ async def refresh_tokens(
     except TokenHasExpired as error:
         raise UnprocessableEntityError("Время жизни токена истекло") from error
 
-    set_refresh_in_cookies(response, refresh, settings=jwt_settings)
+    set_refresh_in_cookies(response, refresh, secret)
 
-    return AccessTokenOut.from_model(access, settings=jwt_settings)
+    return AccessTokenOut.from_model(access, secret)
 
 
 @router.post(
@@ -126,7 +127,10 @@ async def refresh_tokens(
     status_code=status.HTTP_201_CREATED,
     responses=responses.BAD_REQUEST,
 )
-async def register_parent(form: ParentRegistrationForm, users_service: UsersServiceDep) -> OKSchema:
+@inject
+async def register_parent(
+    form: ParentRegistrationForm, users_service: UsersService = Depends(Provide[UsersContainer.service])
+) -> OKSchema:
     try:
         await users_service.register_parent(
             first_name=form.first_name,
@@ -187,7 +191,10 @@ async def register_parent(form: ParentRegistrationForm, users_service: UsersServ
     status_code=status.HTTP_200_OK,
     responses=responses.NOT_FOUND | responses.UNPROCESSABLE_ENTITY,
 )
-async def get_user_by_access_token(access_token: AccessTokenDep, users_service: UsersServiceDep) -> UserOut:
+@inject
+async def get_user_by_access_token(
+    access_token: AccessTokenDep, users_service: UsersService = Depends(Provide[UsersContainer.service])
+) -> UserOut:
     try:
         user = await users_service.get_user_by_access_token(access_token)
 

@@ -1,12 +1,7 @@
 from loguru import logger
 
 from src.db import Connection, DatabaseSettings
-from src.schemas import (
-    ChildrenSchemaInitializer,
-    FeedbacksSchemaInitializer,
-    NutritionSchemaInitializer,
-    SchemaInitializer,
-)
+from src.schemas import FeedbacksSchemaInitializer, NutritionSchemaInitializer, SchemaInitializer
 from src.schools import generate_schools
 
 
@@ -17,7 +12,6 @@ def main() -> None:
     connection = Connection(settings=DatabaseSettings())
 
     initializers: list[type[SchemaInitializer]] = [
-        ChildrenSchemaInitializer,
         FeedbacksSchemaInitializer,
         NutritionSchemaInitializer,
     ]

@@ -1,11 +1,12 @@
 from uuid import UUID
 
-from fastapi import APIRouter, status
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Depends, status
 
-from app.feedbacks.api.dependencies import FeedbacksServiceDep
 from app.feedbacks.api.schemas import FeedbackIn
-from app.feedbacks.application.services import CantLeaveFeedbackOnUnregisteredCanteen
+from app.feedbacks.application.services import CantLeaveFeedbackOnUnregisteredCanteen, FeedbacksService
 from app.feedbacks.domain.text import ExceededMaxLengthFeedbackText, InsufficientMinLengthFeedbackText
+from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
 from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.errors import NotFoundError, UnprocessableEntityError
@@ -21,11 +22,12 @@ router = APIRouter(prefix="/canteens/{canteen_id}", tags=["Отзывы стол
     status_code=status.HTTP_201_CREATED,
     responses=responses.UNPROCESSABLE_ENTITY | responses.NOT_FOUND,
 )
+@inject
 async def leave_feedback_about_canteen(
     canteen_id: UUID,
     feedback: FeedbackIn,
     authorized_user: AuthorizedUserDep,
-    feedbacks_service: FeedbacksServiceDep,
+    feedbacks_service: FeedbacksService = Depends(Provide[FeedbacksContainer.service]),
 ) -> OKSchema:
     try:
         await feedbacks_service.leave_feedback_about_canteen(

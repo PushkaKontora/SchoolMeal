@@ -24,14 +24,14 @@ class EventsSendingJob(IEventsSendingJob):
         async with self._bus.sender() as sender:
             while True:
                 async with self._unit_of_work as context:
-                    if outbox := await context.outboxes.get_first_with(status=Status.UNDELIVERED):
-                        try:
-                            await sender.send(outbox)
-                            outbox.deliver()
-                        except FailedSending as error:
-                            outbox.fail(error=error.message)
-                    else:
-                        outbox.skip()
+                    if not (outbox := await context.outboxes.get_first_with(status=Status.UNDELIVERED)):
+                        continue
+
+                    try:
+                        await sender.send(outbox)
+                        outbox.deliver()
+                    except FailedSending as error:
+                        outbox.fail(error=error.message)
 
                     await context.outboxes.update(outbox)
                     await self._unit_of_work.commit()

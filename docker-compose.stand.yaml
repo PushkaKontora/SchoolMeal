@@ -5,9 +5,9 @@ services:
     ports:
       - ${DB_PORT:-5432}:${DB_PORT:-5432}
 
-  rabbitmq:
-    ports:
-      - "15672:15672"
+#  rabbitmq:
+#    ports:
+#      - "15672:15672"
 
   app:
     ports:

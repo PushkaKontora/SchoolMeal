@@ -2,13 +2,24 @@ import asyncio
 
 from alembic import context
 from alembic.config import Config
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import MetaData, engine_from_config, pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from app.shared.db.base import Base
+from app.feedbacks.infrastructure.db.models import FeedbacksBase
+from app.nutrition.infrastructure.db.models import NutritionBase
 from app.shared.db.settings import DatabaseSettings
 from app.shared.db.utils import create_database, exists_database, wait_connect
+from app.users.infrastructure.db.models import UsersBase
+
+
+POSTGRES_INDEXES_NAMING_CONVENTION = {
+    "ix": "%(column_0_label)s_idx",
+    "uq": "%(table_name)s_%(column_0_name)s_key",
+    "ck": "%(table_name)s_%(constraint_name)s_check",
+    "fk": "%(table_name)s_%(column_0_name)s_fkey",
+    "pk": "%(table_name)s_pkey",
+}
 
 
 database = DatabaseSettings()
@@ -17,7 +28,12 @@ database = DatabaseSettings()
 config: Config = context.config
 config.set_main_option("sqlalchemy.url", database.url)
 
-target_metadata = Base.metadata
+bases = [FeedbacksBase, NutritionBase, UsersBase]
+target_metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)
+
+for base in bases:
+    for table in base.metadata.tables.values():
+        table.to_metadata(target_metadata)
 
 
 def run_migrations_offline() -> None:

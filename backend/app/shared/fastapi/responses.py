@@ -2,7 +2,7 @@ from typing import Any
 
 from fastapi import status
 
-from app.shared.fastapi.schemas import HTTPError
+from app.shared.fastapi.schemas import HTTPError, OKSchema
 
 
 Response = dict[int | str, dict[str, Any]]
@@ -13,3 +13,4 @@ UNPROCESSABLE_ENTITY: Response = {status.HTTP_422_UNPROCESSABLE_ENTITY: {"model"
 NOT_FOUND: Response = {status.HTTP_404_NOT_FOUND: {"model": HTTPError}}
 FORBIDDEN: Response = {status.HTTP_403_FORBIDDEN: {"model": HTTPError}}
 INTERNAL_SERVER_ERROR: Response = {status.HTTP_500_INTERNAL_SERVER_ERROR: {"model": HTTPError}}
+SUCCESS: Response = {status.HTTP_200_OK: {"model": OKSchema}, status.HTTP_201_CREATED: {"model": OKSchema}}

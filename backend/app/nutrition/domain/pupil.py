@@ -1,9 +1,10 @@
+import secrets
+from dataclasses import field
+from datetime import date, datetime, timezone
 from enum import Enum
 
 from pydantic.dataclasses import dataclass
 
-from app.nutrition.domain.certificate import PreferentialCertificate
-from app.nutrition.domain.meal_plan import MealPlan
 from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Day
 from app.shared.domain import Entity, ValueObject
 
@@ -14,20 +15,24 @@ class CantAttachExpiredPreferentialCertificate(Exception):
 
 @dataclass(eq=True, frozen=True)
 class PupilID(ValueObject):
+    value: str = field(default_factory=lambda: secrets.token_hex(10))
+
+
+@dataclass(eq=True, frozen=True)
+class Name(ValueObject):
     value: str
 
 
 @dataclass(eq=True, frozen=True)
-class FirstName(ValueObject):
-    value: str
+class PreferentialCertificate(ValueObject):
+    ends_at: date
+
+    @property
+    def is_expired(self) -> bool:
+        return datetime.now(timezone.utc).date() > self.ends_at
 
 
-@dataclass(eq=True, frozen=True)
-class LastName(ValueObject):
-    value: str
-
-
-class MealStatus(str, Enum):
+class NutritionStatus(str, Enum):
     PREFERENTIAL = "preferential"
     PAID = "paid"
     NONE = "none"
@@ -36,42 +41,32 @@ class MealStatus(str, Enum):
 @dataclass
 class Pupil(Entity):
     id: PupilID
-    last_name: LastName
-    first_name: FirstName
-    meal_plan: MealPlan
+    first_name: Name
+    last_name: Name
+    patronymic: Name | None
+    has_breakfast: bool
+    has_dinner: bool
+    has_snacks: bool
     preferential_certificate: PreferentialCertificate | None
     cancellation_periods: CancellationPeriodSequence
 
     @property
-    def status(self) -> MealStatus:
-        if not self.meal_plan.is_feeding:
-            return MealStatus.NONE
+    def nutrition_status(self) -> NutritionStatus:
+        if not any([self.has_breakfast, self.has_dinner, self.has_snacks]):
+            return NutritionStatus.NONE
 
         if self.preferential_certificate and not self.preferential_certificate.is_expired:
-            return MealStatus.PREFERENTIAL
+            return NutritionStatus.PREFERENTIAL
 
-        return MealStatus.PAID
+        return NutritionStatus.PAID
 
-    def update_meal_plan(self, plan: MealPlan) -> None:
-        self.meal_plan = plan
+    def update_mealtimes(self, has_breakfast: bool, has_dinner: bool, has_snacks: bool) -> None:
+        self.has_breakfast = has_breakfast
+        self.has_dinner = has_dinner
+        self.has_snacks = has_snacks
 
-    def attach_preferential_certificate(self, certificate: PreferentialCertificate) -> None:
-        """
-        :raise CantAddExpiredPreferentialCertificate: сертификат просрочен
-        """
-
-        if certificate.is_expired:
-            raise CantAttachExpiredPreferentialCertificate
-
-        self.preferential_certificate = certificate
-
-    def detach_preferential_certificate(self) -> None:
-        self.preferential_certificate = None
-
-    def cancel_nutrition(self, period: CancellationPeriod) -> CancellationPeriodSequence:
+    def cancel_nutrition(self, period: CancellationPeriod) -> None:
         self.cancellation_periods = self.cancellation_periods.insert(period)
-        return self.cancellation_periods
 
-    def resume_nutrition(self, day: Day) -> CancellationPeriodSequence:
+    def resume_nutrition(self, day: Day) -> None:
         self.cancellation_periods = self.cancellation_periods.remove(day)
-        return self.cancellation_periods

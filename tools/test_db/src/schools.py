@@ -2,17 +2,10 @@ import itertools
 import secrets
 import time
 from datetime import date, datetime, timedelta, timezone
-from enum import Enum
 from uuid import uuid4
 
 import names
 from pydantic import BaseModel
-
-
-class MealStatus(str, Enum):
-    PREFERENTIAL = "preferential"
-    PAID = "paid"
-    NONE = "none"
 
 
 class MealPlan(BaseModel):
@@ -29,9 +22,9 @@ class Pupil(BaseModel):
     id: str
     last_name: str
     first_name: str
+    patronymic: str | None
     meal_plan: MealPlan
     preferential_certificate: PreferentialCertificate | None
-    meal_status: MealStatus
 
 
 class SchoolClass(BaseModel):
@@ -63,7 +56,8 @@ def _generate_school_classes() -> list[SchoolClass]:
 
 
 def _generate_pupils(amount: int = 30) -> list[Pupil]:
-    statuses = itertools.cycle(MealStatus)
+    gets_patronymic = itertools.cycle([names.get_first_name, lambda: None])
+
     meal_plans = itertools.cycle(
         MealPlan(has_breakfast=b, has_dinner=d, has_snacks=s) for b, d, s in itertools.product([False, True], repeat=3)
     )
@@ -79,8 +73,8 @@ def _generate_pupils(amount: int = 30) -> list[Pupil]:
             id=secrets.token_hex(10),
             last_name=names.get_last_name(),
             first_name=names.get_first_name(),
+            patronymic=next(gets_patronymic)(),
             meal_plan=next(meal_plans),
-            meal_status=next(statuses),
             preferential_certificate=next(certificates),
         )
         for _ in range(amount)

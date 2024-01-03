@@ -3,7 +3,7 @@ from uuid import UUID
 
 from sqlalchemy import Boolean, Column, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID as UUID_DB
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped, declarative_base
 
 from app.shared.db.base import Base
 from app.users.domain.email import Email
@@ -16,11 +16,11 @@ from app.users.domain.session import Session
 from app.users.domain.user import User
 
 
-class UsersSchemaMixin:
-    __table_args__ = {"schema": "users"}
+UsersBase = declarative_base(cls=Base)
+UsersBase.__table_args__ = {"schema": "users"}
 
 
-class SessionDB(Base, UsersSchemaMixin):
+class SessionDB(UsersBase):
     __tablename__ = "session"
 
     id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
@@ -52,7 +52,7 @@ class SessionDB(Base, UsersSchemaMixin):
         )
 
 
-class UserDB(Base, UsersSchemaMixin):
+class UserDB(UsersBase):
     __tablename__ = "user"
 
     id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
