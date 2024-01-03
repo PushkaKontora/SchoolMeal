@@ -18,7 +18,7 @@ from app.nutrition.domain.periods import (
 )
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.nutrition.queries.get_children import Child, GetChildrenQuery, GetChildrenQueryExecutor
-from app.nutrition.queries.get_nutrition_info import GetNutritionInfoQueryExecutor, NutritionOut, GetNutritionInfoQuery
+from app.nutrition.queries.get_nutrition_info import GetNutritionInfoQuery, GetNutritionInfoQueryExecutor, NutritionOut
 from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.errors import BadRequestError, NotFoundError

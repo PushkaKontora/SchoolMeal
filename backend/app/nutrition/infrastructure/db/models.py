@@ -127,7 +127,7 @@ class ParentDB(NutritionBase):
 
     id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
 
-    children: Mapped[PupilDB] = relationship(PupilDB, secondary=f"{SCHEMA}.child", uselist=True, viewonly=True)
+    children: Mapped[list[PupilDB]] = relationship(PupilDB, secondary=f"{SCHEMA}.child", uselist=True, viewonly=True)
 
     def __init__(self, id_: UUID) -> None:
         super().__init__()

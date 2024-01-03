@@ -1,14 +1,11 @@
 from datetime import date
 
-
-from app.nutrition.commands.context import NutritionContext
 from app.nutrition.commands.repositories import IPupilsRepository
 from app.nutrition.domain.periods import CancellationPeriod
 from app.nutrition.domain.pupil import PreferentialCertificate, Pupil
 from app.nutrition.queries.dto import MealStatus
 from app.shared.cqs.queries import IQueryExecutor, Query
 from app.shared.fastapi.schemas import FrontendModel
-from app.shared.unit_of_work.abc import IUnitOfWork
 
 
 class GetNutritionInfoQuery(Query):

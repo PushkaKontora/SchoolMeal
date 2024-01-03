@@ -32,7 +32,7 @@ class AlchemyPupilsRepository(IPupilsRepository):
                 .values(
                     last_name=pupil.last_name.value,
                     first_name=pupil.first_name.value,
-                    patronymic=pupil.patronymic.value,
+                    patronymic=pupil.patronymic.value if pupil.patronymic else None,
                     has_breakfast=pupil.has_breakfast,
                     has_dinner=pupil.has_dinner,
                     has_snacks=pupil.has_snacks,
