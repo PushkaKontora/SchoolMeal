@@ -10,5 +10,8 @@ services:
 #      - "15672:15672"
 
   app:
+    environment:
+      SHOW_SWAGGER_UI: 'true'
+
     ports:
       - "8000:8000"
