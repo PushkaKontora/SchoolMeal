@@ -23,15 +23,23 @@ class SchoolDB(NutritionBase):
     name: Mapped[str] = Column(String, nullable=False)
 
 
+class TeacherDB(NutritionBase):
+    __tablename__ = "teacher"
+
+    id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
+
+
 class SchoolClassDB(NutritionBase):
     __tablename__ = "school_class"
 
     id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
     school_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(SchoolDB.id), nullable=False)
+    teacher_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(TeacherDB.id), nullable=True)
     number: Mapped[int] = Column(Integer, nullable=False)
     literal: Mapped[str] = Column(String(1), nullable=False)
 
     school: Mapped[SchoolDB] = relationship(SchoolDB, uselist=False, viewonly=True)
+    teacher: Mapped[TeacherDB] = relationship(TeacherDB, uselist=False, viewonly=True)
 
 
 class PupilDB(NutritionBase):

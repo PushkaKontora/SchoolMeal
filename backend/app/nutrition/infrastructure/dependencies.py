@@ -11,6 +11,7 @@ from app.nutrition.commands.update_mealtimes import UpdateMealtimesCommandHandle
 from app.nutrition.infrastructure.db.repositories import AlchemyParentsRepository, AlchemyPupilsRepository
 from app.nutrition.queries.get_children import GetChildrenQueryExecutor
 from app.nutrition.queries.get_nutrition_info import GetNutritionInfoQueryExecutor
+from app.nutrition.queries.get_school_classes import GetSchoolClassesQueryExecutor
 from app.shared.unit_of_work.alchemy import AlchemyUnitOfWork
 
 
@@ -37,3 +38,4 @@ class NutritionContainer(DeclarativeContainer):
 
     get_children_query_executor = Factory(GetChildrenQueryExecutor, session_factory=session.provider)
     get_nutrition_info_executor = Factory(GetNutritionInfoQueryExecutor, pupils_repository=pupils_repository)
+    get_school_classes_executor = Factory(GetSchoolClassesQueryExecutor, session_factory=session.provider)

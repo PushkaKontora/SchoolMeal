@@ -19,6 +19,7 @@ from app.nutrition.domain.periods import (
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.nutrition.queries.get_children import Child, GetChildrenQuery, GetChildrenQueryExecutor
 from app.nutrition.queries.get_nutrition_info import GetNutritionInfoQuery, GetNutritionInfoQueryExecutor, NutritionOut
+from app.nutrition.queries.get_school_classes import GetSchoolClassesQuery, GetSchoolClassesQueryExecutor, SchoolClass
 from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.errors import BadRequestError, NotFoundError
@@ -171,3 +172,12 @@ async def get_children(
     executor: GetChildrenQueryExecutor = Depends(Provide[NutritionContainer.get_children_query_executor]),
 ) -> list[Child]:
     return await executor.execute(query=GetChildrenQuery(parent_id=user.id))
+
+
+@router.get("/school-classes", summary="Получить информацию о классах", status_code=status.HTTP_200_OK)
+@inject
+async def get_school_classes(
+    query: GetSchoolClassesQuery = Depends(),
+    executor: GetSchoolClassesQueryExecutor = Depends(Provide[NutritionContainer.get_school_classes_executor]),
+) -> list[SchoolClass]:
+    return await executor.execute(query)
