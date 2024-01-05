@@ -9,6 +9,7 @@ from app.shared.db.container import DatabaseContainer
 from app.shared.db.settings import AlchemySettings, DatabaseSettings
 from app.shared.fastapi.errors import default_handler
 from app.shared.fastapi.settings import FastAPIConfig
+from app.shared.objects_storage.local import GatewaySettings
 from app.users.api.router import router as users_router
 from app.users.infrastructure.dependencies import UsersContainer
 from app.users.infrastructure.settings import JWTSettings
@@ -21,6 +22,7 @@ database.database_config.from_pydantic(DatabaseSettings())
 database.alchemy_config.from_pydantic(AlchemySettings())
 
 nutrition = NutritionContainer(session=database.session)
+nutrition.gateway_config.from_pydantic(GatewaySettings())
 
 feedbacks = FeedbacksContainer(session=database.session)
 

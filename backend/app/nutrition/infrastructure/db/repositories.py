@@ -1,3 +1,4 @@
+from datetime import date
 from uuid import UUID, uuid4
 
 from sqlalchemy import delete, select, update
@@ -6,15 +7,18 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.nutrition.application.commands.repositories import (
+from app.nutrition.application.repositories import (
+    IMenusRepository,
     IParentsRepository,
     IPupilsRepository,
     NotFoundParent,
     NotFoundPupil,
 )
+from app.nutrition.domain.menu import Menu
 from app.nutrition.domain.parent import Parent
 from app.nutrition.domain.pupil import Pupil
-from app.nutrition.infrastructure.db.models import CancellationPeriodDB, ChildDB, ParentDB, PupilDB
+from app.nutrition.domain.school_class import SchoolClassType
+from app.nutrition.infrastructure.db.models import CancellationPeriodDB, ChildDB, MenuDB, ParentDB, PupilDB
 
 
 class AlchemyPupilsRepository(IPupilsRepository):
@@ -85,3 +89,22 @@ class AlchemyParentsRepository(IParentsRepository):
                 .on_conflict_do_nothing(index_elements=[ChildDB.parent_id, ChildDB.pupil_id])
             )
         )
+
+
+class AlchemyMenusRepository(IMenusRepository):
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+
+    async def get_all_by_class_type_and_date(self, school_class_type: SchoolClassType, on_date: date) -> list[Menu]:
+        query = (
+            select(MenuDB)
+            .where(MenuDB.school_class_type == school_class_type.value)
+            .where(MenuDB.on_date == on_date)
+            .options(selectinload(MenuDB.breakfast_foods))
+            .options(selectinload(MenuDB.dinner_foods))
+            .options(selectinload(MenuDB.snacks_foods))
+        )
+
+        menus_db: list[MenuDB] = (await self._session.scalars(query)).all()
+
+        return [menu_db.to_model() for menu_db in menus_db]

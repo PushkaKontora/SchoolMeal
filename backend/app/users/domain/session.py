@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic.dataclasses import dataclass
 
-from app.shared.domain import Entity
+from app.shared.domain.abc import Entity
 
 
 class SessionIsAlreadyRevoked(Exception):

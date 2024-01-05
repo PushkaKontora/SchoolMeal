@@ -1,4 +1,4 @@
-from app.nutrition.application.commands.context import NutritionContext
+from app.nutrition.application.context import NutritionContext
 from app.shared.cqs.commands import Command, ICommandHandler
 from app.shared.unit_of_work.abc import IUnitOfWork
 

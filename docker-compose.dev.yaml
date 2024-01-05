@@ -4,7 +4,11 @@ services:
   app:
     build: backend
     environment:
-      SHOW_SWAGGER_UI: 'true'
+      SHOW_SWAGGER_UI: "true"
+      GATEWAY_PROTOCOL: ${GATEWAY_PROTOCOL:-http}
+      GATEWAY_HOST: ${GATEWAY_HOST:-localhost}
+      GATEWAY_PORT: ${GATEWAY_PORT:-80}
+      GATEWAY_MEDIA_PATH: ${GATEWAY_MEDIA_PATH:-/media}
     volumes:
       - ./backend/app:/school_meal/app
 

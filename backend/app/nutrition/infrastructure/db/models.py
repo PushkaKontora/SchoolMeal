@@ -1,15 +1,20 @@
 from datetime import date
+from decimal import Decimal
+from pathlib import Path
 from uuid import UUID
 
-from sqlalchemy import ARRAY, Boolean, Column, Date, ForeignKey, Integer, String
+from sqlalchemy import ARRAY, Boolean, Column, Date, ForeignKey, Integer, Numeric, String
 from sqlalchemy.dialects.postgresql import UUID as UUID_DB
 from sqlalchemy.orm import Mapped, declarative_base, relationship
 from sqlalchemy.sql import expression
 
+from app.nutrition.domain.menu import Food, Menu
 from app.nutrition.domain.parent import Parent
 from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Reason
 from app.nutrition.domain.pupil import Name, PreferentialCertificate, Pupil, PupilID
+from app.nutrition.domain.school_class import SchoolClassType
 from app.shared.db.base import Base
+from app.shared.domain.money import Money
 
 
 SCHEMA = "nutrition"
@@ -155,3 +160,73 @@ class ChildDB(NutritionBase):
 
     parent_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(ParentDB.id), primary_key=True)
     pupil_id: Mapped[str] = Column(String, ForeignKey(PupilDB.id), primary_key=True)
+
+
+class FoodDB(NutritionBase):
+    __tablename__ = "food"
+
+    id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
+    name: Mapped[str] = Column(String, nullable=False)
+    description: Mapped[str] = Column(String, nullable=False)
+    calories: Mapped[Decimal] = Column(Numeric(asdecimal=True, scale=2), nullable=False)
+    proteins: Mapped[Decimal] = Column(Numeric(asdecimal=True, scale=2), nullable=False)
+    fats: Mapped[Decimal] = Column(Numeric(asdecimal=True, scale=2), nullable=False)
+    carbohydrates: Mapped[Decimal] = Column(Numeric(asdecimal=True, scale=2), nullable=False)
+    price: Mapped[Decimal] = Column(Numeric(asdecimal=True, scale=2), nullable=False)
+    photo: Mapped[str] = Column(String(1024), nullable=False)
+
+    def to_model(self) -> Food:
+        return Food(
+            id=self.id,
+            name=self.name,
+            description=self.description,
+            calories=self.calories,
+            proteins=self.proteins,
+            fats=self.fats,
+            carbohydrates=self.carbohydrates,
+            price=Money(self.price),
+            photo=Path(self.photo),
+        )
+
+
+class MenuDB(NutritionBase):
+    __tablename__ = "menu"
+
+    id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
+    school_class_type: Mapped[int] = Column(Integer, nullable=False)
+    on_date: Mapped[date] = Column(Date, nullable=False)
+
+    breakfast_foods: Mapped[list[FoodDB]] = relationship(FoodDB, secondary=f"{SCHEMA}.breakfast_food", uselist=True)
+    dinner_foods: Mapped[list[FoodDB]] = relationship(FoodDB, secondary=f"{SCHEMA}.dinner_food", uselist=True)
+    snacks_foods: Mapped[list[FoodDB]] = relationship(FoodDB, secondary=f"{SCHEMA}.snacks_food", uselist=True)
+
+    def to_model(self) -> Menu:
+        return Menu(
+            id=self.id,
+            school_class_type=SchoolClassType(self.school_class_type),
+            on_date=self.on_date,
+            breakfast_foods=[food_db.to_model() for food_db in self.breakfast_foods],
+            dinner_foods=[food_db.to_model() for food_db in self.dinner_foods],
+            snacks_foods=[food_db.to_model() for food_db in self.snacks_foods],
+        )
+
+
+class BreakfastFoodDB(NutritionBase):
+    __tablename__ = "breakfast_food"
+
+    menu_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(MenuDB.id), primary_key=True)
+    food_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(FoodDB.id), primary_key=True)
+
+
+class DinnerFoodDB(NutritionBase):
+    __tablename__ = "dinner_food"
+
+    menu_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(MenuDB.id), primary_key=True)
+    food_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(FoodDB.id), primary_key=True)
+
+
+class SnacksFoodDB(NutritionBase):
+    __tablename__ = "snacks_food"
+
+    menu_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(MenuDB.id), primary_key=True)
+    food_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(FoodDB.id), primary_key=True)

@@ -10,11 +10,11 @@ from app.nutrition.application.commands.attach_child_to_parent import (
     AttachChildToParentCommandHandler,
 )
 from app.nutrition.application.commands.cancel_nutrition import CancelNutritionCommand, CancelNutritionCommandHandler
-from app.nutrition.application.commands.repositories import NotFoundParent, NotFoundPupil
 from app.nutrition.application.commands.resume_nutrition import ResumeNutritionCommand, ResumeNutritionCommandHandler
 from app.nutrition.application.commands.update_mealtimes import UpdateMealtimesCommand, UpdateMealtimesCommandHandler
 from app.nutrition.application.dto import CancellationPeriodOut
 from app.nutrition.application.queries.get_children import ChildOut, GetChildrenQuery, GetChildrenQueryExecutor
+from app.nutrition.application.queries.get_menus import GetMenusQuery, GetMenusQueryExecutor, MenuOut
 from app.nutrition.application.queries.get_nutrition_info import (
     GetNutritionInfoQuery,
     GetNutritionInfoQueryExecutor,
@@ -25,13 +25,14 @@ from app.nutrition.application.queries.get_school_classes import (
     GetSchoolClassesQueryExecutor,
     SchoolClassOut,
 )
+from app.nutrition.application.repositories import NotFoundParent, NotFoundPupil
 from app.nutrition.domain.parent import ChildIsAlreadyAttachedToParent
 from app.nutrition.domain.periods import (
     EndCannotBeGreaterThanStart,
     ExceededMaxLengthReason,
     SpecifiedReasonCannotBeEmpty,
 )
-from app.nutrition.domain.pupil import CannotResumeNutritionAfterTime, CannotCancelNutritionAfterTime
+from app.nutrition.domain.pupil import CannotCancelNutritionAfterTime, CannotResumeNutritionAfterTime
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
@@ -195,4 +196,13 @@ async def get_school_classes(
     query: GetSchoolClassesQuery = Depends(),
     executor: GetSchoolClassesQueryExecutor = Depends(Provide[NutritionContainer.get_school_classes_executor]),
 ) -> list[SchoolClassOut]:
+    return await executor.execute(query)
+
+
+@router.get("/menus", summary="Получить список меню", status_code=status.HTTP_200_OK)
+@inject
+async def get_menus(
+    query: GetMenusQuery = Depends(),
+    executor: GetMenusQueryExecutor = Depends(Provide[NutritionContainer.get_menus_query_executor]),
+) -> list[MenuOut]:
     return await executor.execute(query)

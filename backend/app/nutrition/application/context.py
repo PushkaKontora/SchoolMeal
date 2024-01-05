@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.nutrition.application.commands.repositories import IParentsRepository, IPupilsRepository
+from app.nutrition.application.repositories import IMenusRepository, IParentsRepository, IPupilsRepository
 from app.shared.unit_of_work.abc import Context
 
 
@@ -8,3 +8,4 @@ from app.shared.unit_of_work.abc import Context
 class NutritionContext(Context):
     pupils: IPupilsRepository
     parents: IParentsRepository
+    menus: IMenusRepository

@@ -1,6 +1,6 @@
 from datetime import date
 
-from app.nutrition.application.commands.context import NutritionContext
+from app.nutrition.application.context import NutritionContext
 from app.nutrition.application.dto import CancellationPeriodOut
 from app.nutrition.domain.periods import Day
 from app.shared.cqs.commands import Command, ICommandHandler

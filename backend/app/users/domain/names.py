@@ -3,7 +3,7 @@ from abc import ABC
 
 from pydantic.dataclasses import dataclass
 
-from app.shared.domain import ValueObject
+from app.shared.domain.abc import ValueObject
 
 
 class FirstNameContainsNotCyrillicCharacters(Exception):

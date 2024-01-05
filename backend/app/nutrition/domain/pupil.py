@@ -6,7 +6,7 @@ from enum import Enum
 from pydantic.dataclasses import dataclass
 
 from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Day
-from app.shared.domain import Entity, ValueObject
+from app.shared.domain.abc import Entity, ValueObject
 
 
 tz = timezone(offset=timedelta(hours=5), name="Yekaterinburg")

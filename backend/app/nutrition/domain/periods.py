@@ -7,7 +7,7 @@ from typing import Iterator, Optional, cast
 
 from pydantic.dataclasses import dataclass
 
-from app.shared.domain import ValueObject
+from app.shared.domain.abc import ValueObject
 
 
 class EndCannotBeGreaterThanStart(Exception):

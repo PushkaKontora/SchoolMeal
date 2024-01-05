@@ -3,7 +3,7 @@ from itertools import chain
 import bcrypt
 from pydantic.dataclasses import dataclass
 
-from app.shared.domain import ValueObject
+from app.shared.domain.abc import ValueObject
 
 
 LATIN = "abcdefghijklmnopqrstuvwxyz"

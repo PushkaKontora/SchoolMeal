@@ -2,7 +2,7 @@ import re
 
 from pydantic.dataclasses import dataclass
 
-from app.shared.domain import ValueObject
+from app.shared.domain.abc import ValueObject
 from app.users.domain.login import Login
 
 

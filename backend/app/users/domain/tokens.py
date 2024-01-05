@@ -7,7 +7,7 @@ import jwt
 from pydantic import ValidationError
 from pydantic.dataclasses import dataclass
 
-from app.shared.domain import ValueObject
+from app.shared.domain.abc import ValueObject
 
 
 class TokenHasExpired(Exception):

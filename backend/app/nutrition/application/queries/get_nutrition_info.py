@@ -1,8 +1,8 @@
 from datetime import date
 
-from app.nutrition.application.commands.repositories import IPupilsRepository
 from app.nutrition.application.dto import CancellationPeriodOut
 from app.nutrition.application.queries.dto import MealStatus
+from app.nutrition.application.repositories import IPupilsRepository
 from app.nutrition.domain.pupil import PreferentialCertificate, Pupil
 from app.shared.cqs.queries import IQueryExecutor, Query
 from app.shared.fastapi.schemas import FrontendModel

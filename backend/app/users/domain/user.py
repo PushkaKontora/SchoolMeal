@@ -2,7 +2,7 @@ from uuid import UUID, uuid4
 
 from pydantic.dataclasses import dataclass
 
-from app.shared.domain import Entity
+from app.shared.domain.abc import Entity
 from app.users.domain.email import Email
 from app.users.domain.login import Login
 from app.users.domain.names import FirstName, LastName
