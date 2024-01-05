@@ -8,14 +8,15 @@ export const createStyle = (props: ToastProps) => StyleSheet.create({
     backgroundColor: setBackgroundColor(props.type),
     flexDirection: 'row',
     gap: 16,
-    width: 304,
     height: 76,
-    padding: 16
+    padding: 16,
+    margin: 8,
   },
   textContainer: {
     flexDirection: 'column',
     alignContent: 'center',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
+    flex: 1
   },
   title: {
     color: '#000000',

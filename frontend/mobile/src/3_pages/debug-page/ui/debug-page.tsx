@@ -12,6 +12,8 @@ import {magicModal} from 'react-native-magic-modal';
 import {ModalMealPeriod} from '../../../5_features/modal-meal-period';
 import {useCurrentUserQuery} from '../../../6_entities/user/api/api';
 import {TokenPayload} from '../../../5_features/auth/model/token-payload';
+import {Toast} from 'react-native-toast-notifications';
+import {ToastService} from '../../../7_shared/ui/special/toast-notifier/toast-service';
 
 export function DebugPage({navigation}: PropsWithNavigation) {
   const {data: currentUser, refetch: refetchUser} = useCurrentUserQuery({});
@@ -71,6 +73,13 @@ export function DebugPage({navigation}: PropsWithNavigation) {
     ));
   };
 
+  const showNotification = (type: string, title?: string, description?: string) => {
+    ToastService.show(type, {
+      title: title,
+      description: description
+    });
+  };
+
   return (
     <ScrollView>
       <View style={{display: 'flex', rowGap: 16, padding: 16}}>
@@ -79,11 +88,35 @@ export function DebugPage({navigation}: PropsWithNavigation) {
         <ButtonPrimary title={'Токен в консоль'} onPress={showToken}/>
         <ButtonPrimary title={'Вызвать refresh-tokens'} onPress={handleTokenRefresh}/>
         <ButtonPrimary title={'Данные пользователя в консоль'} onPress={getUserData}/>
+
         <Text>Экраны</Text>
         <ButtonPrimary title={'На главную'} onPress={toMain}/>
         <ButtonPrimary title={'Питание'} onPress={toNutrition}/>
+
         <Text>Модальные окна</Text>
         <ButtonPrimary title={'Снять с питания (Календарь)'} onPress={showCalendar}/>
+
+        <Text>Уведомления</Text>
+        <ButtonPrimary title={'Положительное'}
+          onPress={() => showNotification(
+            'success',
+            'Позитивное уведомление',
+            'Описание уведомления')}/>
+        <ButtonPrimary title={'Отрицательное'}
+          onPress={() => showNotification(
+            'danger',
+            'Отрицательное уведомление',
+            'Описание уведомления')}/>
+        <ButtonPrimary title={'Только описание'}
+          onPress={() => showNotification(
+            'success',
+            undefined,
+            'Только описание')}/>
+        <ButtonPrimary title={'Только заголовок'}
+          onPress={() => showNotification(
+            'success',
+            'Только заголовок',
+            undefined)}/>
       </View>
     </ScrollView>
   );

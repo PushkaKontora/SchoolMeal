@@ -4,9 +4,11 @@ import {ToastProps} from 'react-native-toast-notifications/lib/typescript/toast'
 
 export type ToastNotifierProps = ComponentProps<typeof ToastProvider>;
 
+export type ToastPayload = {
+  title?: string,
+  description?: string
+};
+
 export type TypedToastProps = ToastProps & {
-  data?: {
-    title: string,
-    description: string
-  }
+  data?: ToastPayload
 };

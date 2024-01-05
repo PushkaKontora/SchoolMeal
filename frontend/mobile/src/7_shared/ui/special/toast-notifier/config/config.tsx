@@ -12,7 +12,7 @@ export const CONFIG: Omit<ToastNotifierProps, 'children'> = {
   dangerColor: COLORS.danger,
   offsetTop: 40,
   offset: 16,
-  swipeEnabled: true,
+  swipeEnabled: false,
   renderToast: (toast: ToastProps): JSX.Element => (
     <ToastView {...toast} />
   )

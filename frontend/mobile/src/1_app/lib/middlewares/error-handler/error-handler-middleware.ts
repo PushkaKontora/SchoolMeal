@@ -1,17 +1,19 @@
-import {isFulfilled, isRejectedWithValue, Middleware, MiddlewareAPI} from '@reduxjs/toolkit';
-import {MiddlewareListeners} from './types';
-import {Toast} from 'react-native-toast-notifications';
+import {isRejectedWithValue, Middleware, MiddlewareAPI, PayloadAction} from '@reduxjs/toolkit';
+import {ToastService} from '../../../../7_shared/ui/special/toast-notifier/toast-service';
 
 //export const callbacks: MiddlewareListeners = new MiddlewareListeners();
 
 export const errorHandlerMiddleware: Middleware =
-  (api: MiddlewareAPI) => (next) => (action) => {
+  (api: MiddlewareAPI) => (next) => <A extends PayloadAction<{
+    status: string,
+    originalStatus: number,
+    data: any,
+    error: any
+  }>>(action: A) => {
     if (isRejectedWithValue(action)) {
-      Toast.show('fdfdsfsdds', {
-        type: 'danger',
-        data: {
-          title: action.payload.data.detail
-        }
+      ToastService.show('danger', {
+        title: action.payload.originalStatus.toString(),
+        description: action.payload.data
       });
     }
 
