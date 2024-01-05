@@ -24,6 +24,7 @@ class CancelNutritionCommandHandler(ICommandHandler[CancelNutritionCommand, list
         :raise SpecifiedReasonCannotBeEmpty: текст причины не может быть пустым
         :raise ExceededMaxLengthReason: превышена максимальная длина текста причины
         :raise EndCannotBeGreaterThanStart: дата начала периода больше, чем конечная дата
+        :raise CannotCancelNutritionAfterTime: нельзя снимать с питания после 10 утра по ЕКБ
         """
 
         async with self._unit_of_work as context:

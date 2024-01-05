@@ -19,6 +19,7 @@ class ResumeNutritionCommandHandler(ICommandHandler[ResumeNutritionCommand, list
     async def handle(self, command: ResumeNutritionCommand) -> list[CancellationPeriodOut]:
         """
         :raise NotFoundPupil: не найден ученик
+        :raise CannotResumeNutritionAfterTime: нельзя ставить на питание после 10 утра по ЕКБ
         """
 
         async with self._unit_of_work as context:

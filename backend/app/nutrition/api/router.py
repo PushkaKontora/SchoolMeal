@@ -31,6 +31,7 @@ from app.nutrition.domain.periods import (
     ExceededMaxLengthReason,
     SpecifiedReasonCannotBeEmpty,
 )
+from app.nutrition.domain.pupil import CannotResumeNutritionAfterTime, CannotCancelNutritionAfterTime
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
@@ -120,6 +121,9 @@ async def cancel_nutrition(
     except EndCannotBeGreaterThanStart as error:
         raise BadRequestError("Дата начала периода больше, чем конечная дата") from error
 
+    except CannotCancelNutritionAfterTime as error:
+        raise BadRequestError(f"Запрещено после {error.completed_at} снимать с питания") from error
+
 
 @router.post(
     "/nutrition/{pupil_id}/resume",
@@ -138,6 +142,9 @@ async def resume_nutrition(
 
     except NotFoundPupil as error:
         raise NotFoundError("Ученик не найден") from error
+
+    except CannotResumeNutritionAfterTime as error:
+        raise BadRequestError(f"Запрещено после {error.completed_at} ставить на питание") from error
 
 
 @router.post(
