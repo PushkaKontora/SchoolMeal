@@ -17,6 +17,9 @@ class SchoolClassOut(FrontendModel):
     id: UUID
     number: int
     literal: str
+    breakfast: bool
+    dinner: bool
+    snacks: bool
 
     @classmethod
     def from_db(cls, school_class_db: SchoolClassDB) -> "SchoolClassOut":
@@ -24,6 +27,9 @@ class SchoolClassOut(FrontendModel):
             id=school_class_db.id,
             number=school_class_db.number,
             literal=school_class_db.literal,
+            breakfast=school_class_db.breakfast,
+            dinner=school_class_db.dinner,
+            snacks=school_class_db.snacks,
         )
 
 

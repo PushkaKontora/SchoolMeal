@@ -4,6 +4,7 @@ from uuid import UUID
 from sqlalchemy import ARRAY, Boolean, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID as UUID_DB
 from sqlalchemy.orm import Mapped, declarative_base, relationship
+from sqlalchemy.sql import expression
 
 from app.nutrition.domain.parent import Parent
 from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Reason
@@ -35,6 +36,9 @@ class SchoolClassDB(NutritionBase):
     id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), primary_key=True)
     school_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(SchoolDB.id), nullable=False)
     teacher_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(TeacherDB.id), nullable=True)
+    breakfast: Mapped[bool] = Column(Boolean, nullable=False, server_default=expression.true())
+    dinner: Mapped[bool] = Column(Boolean, nullable=False, server_default=expression.true())
+    snacks: Mapped[bool] = Column(Boolean, nullable=False, server_default=expression.true())
     number: Mapped[int] = Column(Integer, nullable=False)
     literal: Mapped[str] = Column(String(1), nullable=False)
 
