@@ -4,12 +4,27 @@ from typing import Annotated
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Body, Depends, status
 
-from app.nutrition.api.dto import CancellationPeriod, Mealtimes
-from app.nutrition.commands.attach_child_to_parent import AttachChildToParentCommand, AttachChildToParentCommandHandler
-from app.nutrition.commands.cancel_nutrition import CancelNutritionCommand, CancelNutritionCommandHandler
-from app.nutrition.commands.repositories import NotFoundParent, NotFoundPupil
-from app.nutrition.commands.resume_nutrition import ResumeNutritionCommand, ResumeNutritionCommandHandler
-from app.nutrition.commands.update_mealtimes import UpdateMealtimesCommand, UpdateMealtimesCommandHandler
+from app.nutrition.api.dto import CancellationPeriodIn, Mealtimes
+from app.nutrition.application.commands.attach_child_to_parent import (
+    AttachChildToParentCommand,
+    AttachChildToParentCommandHandler,
+)
+from app.nutrition.application.commands.cancel_nutrition import CancelNutritionCommand, CancelNutritionCommandHandler
+from app.nutrition.application.commands.repositories import NotFoundParent, NotFoundPupil
+from app.nutrition.application.commands.resume_nutrition import ResumeNutritionCommand, ResumeNutritionCommandHandler
+from app.nutrition.application.commands.update_mealtimes import UpdateMealtimesCommand, UpdateMealtimesCommandHandler
+from app.nutrition.application.dto import CancellationPeriodOut
+from app.nutrition.application.queries.get_children import ChildOut, GetChildrenQuery, GetChildrenQueryExecutor
+from app.nutrition.application.queries.get_nutrition_info import (
+    GetNutritionInfoQuery,
+    GetNutritionInfoQueryExecutor,
+    NutritionOut,
+)
+from app.nutrition.application.queries.get_school_classes import (
+    GetSchoolClassesQuery,
+    GetSchoolClassesQueryExecutor,
+    SchoolClassOut,
+)
 from app.nutrition.domain.parent import ChildIsAlreadyAttachedToParent
 from app.nutrition.domain.periods import (
     EndCannotBeGreaterThanStart,
@@ -17,9 +32,6 @@ from app.nutrition.domain.periods import (
     SpecifiedReasonCannotBeEmpty,
 )
 from app.nutrition.infrastructure.dependencies import NutritionContainer
-from app.nutrition.queries.get_children import Child, GetChildrenQuery, GetChildrenQueryExecutor
-from app.nutrition.queries.get_nutrition_info import GetNutritionInfoQuery, GetNutritionInfoQueryExecutor, NutritionOut
-from app.nutrition.queries.get_school_classes import GetSchoolClassesQuery, GetSchoolClassesQueryExecutor, SchoolClass
 from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.errors import BadRequestError, NotFoundError
@@ -83,11 +95,11 @@ async def change_plan(
 @inject
 async def cancel_nutrition(
     pupil_id: str,
-    period_in: CancellationPeriod,
+    period_in: CancellationPeriodIn,
     handler: CancelNutritionCommandHandler = Depends(Provide[NutritionContainer.cancel_nutrition_command_handler]),
-) -> None:
+) -> list[CancellationPeriodOut]:
     try:
-        await handler.handle(
+        return await handler.handle(
             command=CancelNutritionCommand(
                 pupil_id=pupil_id,
                 starts_at=period_in.starts_at,
@@ -108,8 +120,6 @@ async def cancel_nutrition(
     except EndCannotBeGreaterThanStart as error:
         raise BadRequestError("Дата начала периода больше, чем конечная дата") from error
 
-    # return [CancellationPeriodOut.from_model(period) for period in periods]
-
 
 @router.post(
     "/nutrition/{pupil_id}/resume",
@@ -122,14 +132,12 @@ async def resume_nutrition(
     pupil_id: str,
     date_in: Annotated[date, Body(embed=True, alias="date")],
     handler: ResumeNutritionCommandHandler = Depends(Provide[NutritionContainer.resume_nutrition_command_handler]),
-) -> None:
+) -> list[CancellationPeriodOut]:
     try:
-        await handler.handle(command=ResumeNutritionCommand(pupil_id=pupil_id, day=date_in))
+        return await handler.handle(command=ResumeNutritionCommand(pupil_id=pupil_id, day=date_in))
 
     except NotFoundPupil as error:
         raise NotFoundError("Ученик не найден") from error
-
-    # return [CancellationPeriodOut.from_model(period) for period in periods]
 
 
 @router.post(
@@ -170,7 +178,7 @@ async def attach_child_to_parent(
 async def get_children(
     user: AuthorizedUserDep,
     executor: GetChildrenQueryExecutor = Depends(Provide[NutritionContainer.get_children_query_executor]),
-) -> list[Child]:
+) -> list[ChildOut]:
     return await executor.execute(query=GetChildrenQuery(parent_id=user.id))
 
 
@@ -179,5 +187,5 @@ async def get_children(
 async def get_school_classes(
     query: GetSchoolClassesQuery = Depends(),
     executor: GetSchoolClassesQueryExecutor = Depends(Provide[NutritionContainer.get_school_classes_executor]),
-) -> list[SchoolClass]:
+) -> list[SchoolClassOut]:
     return await executor.execute(query)

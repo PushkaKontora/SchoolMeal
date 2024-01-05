@@ -5,8 +5,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
 
+from app.nutrition.application.queries.dto import MealStatus
 from app.nutrition.infrastructure.db.models import PupilDB, SchoolClassDB, SchoolDB
-from app.nutrition.queries.dto import MealStatus
 from app.shared.cqs.queries import IQueryExecutor, Query
 from app.shared.fastapi.schemas import FrontendModel
 
@@ -47,7 +47,7 @@ class MealPlan(FrontendModel):
     status: MealStatus
 
 
-class Child(FrontendModel):
+class ChildOut(FrontendModel):
     id: str
     last_name: str
     first_name: str
@@ -55,7 +55,7 @@ class Child(FrontendModel):
     meal_plan: MealPlan
 
     @classmethod
-    def from_db(cls, pupil_db: PupilDB) -> "Child":
+    def from_db(cls, pupil_db: PupilDB) -> "ChildOut":
         return cls(
             id=pupil_db.id,
             last_name=pupil_db.last_name,
@@ -65,11 +65,11 @@ class Child(FrontendModel):
         )
 
 
-class GetChildrenQueryExecutor(IQueryExecutor[GetChildrenQuery, list[Child]]):
+class GetChildrenQueryExecutor(IQueryExecutor[GetChildrenQuery, list[ChildOut]]):
     def __init__(self, session_factory: Callable[[], AsyncSession]) -> None:
         self._session_factory = session_factory
 
-    async def execute(self, query: GetChildrenQuery) -> list[Child]:
+    async def execute(self, query: GetChildrenQuery) -> list[ChildOut]:
         async with self._session_factory() as session:
             pupils_db: list[PupilDB] = (
                 await session.scalars(
@@ -82,4 +82,4 @@ class GetChildrenQueryExecutor(IQueryExecutor[GetChildrenQuery, list[Child]]):
                 )
             ).all()
 
-            return [Child.from_db(pupil_db) for pupil_db in pupils_db]
+            return [ChildOut.from_db(pupil_db) for pupil_db in pupils_db]

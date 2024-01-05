@@ -2,16 +2,17 @@ from dependency_injector.containers import DeclarativeContainer, WiringConfigura
 from dependency_injector.providers import Dependency, Factory
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.nutrition import api, commands
-from app.nutrition.commands.attach_child_to_parent import AttachChildToParentCommandHandler
-from app.nutrition.commands.cancel_nutrition import CancelNutritionCommandHandler
-from app.nutrition.commands.context import NutritionContext
-from app.nutrition.commands.resume_nutrition import ResumeNutritionCommandHandler
-from app.nutrition.commands.update_mealtimes import UpdateMealtimesCommandHandler
+from app.nutrition import api
+from app.nutrition.application import commands
+from app.nutrition.application.commands.attach_child_to_parent import AttachChildToParentCommandHandler
+from app.nutrition.application.commands.cancel_nutrition import CancelNutritionCommandHandler
+from app.nutrition.application.commands.context import NutritionContext
+from app.nutrition.application.commands.resume_nutrition import ResumeNutritionCommandHandler
+from app.nutrition.application.commands.update_mealtimes import UpdateMealtimesCommandHandler
+from app.nutrition.application.queries.get_children import GetChildrenQueryExecutor
+from app.nutrition.application.queries.get_nutrition_info import GetNutritionInfoQueryExecutor
+from app.nutrition.application.queries.get_school_classes import GetSchoolClassesQueryExecutor
 from app.nutrition.infrastructure.db.repositories import AlchemyParentsRepository, AlchemyPupilsRepository
-from app.nutrition.queries.get_children import GetChildrenQueryExecutor
-from app.nutrition.queries.get_nutrition_info import GetNutritionInfoQueryExecutor
-from app.nutrition.queries.get_school_classes import GetSchoolClassesQueryExecutor
 from app.shared.unit_of_work.alchemy import AlchemyUnitOfWork
 
 

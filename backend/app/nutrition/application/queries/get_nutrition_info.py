@@ -1,9 +1,9 @@
 from datetime import date
 
-from app.nutrition.commands.repositories import IPupilsRepository
-from app.nutrition.domain.periods import CancellationPeriod
+from app.nutrition.application.commands.repositories import IPupilsRepository
+from app.nutrition.application.dto import CancellationPeriodOut
+from app.nutrition.application.queries.dto import MealStatus
 from app.nutrition.domain.pupil import PreferentialCertificate, Pupil
-from app.nutrition.queries.dto import MealStatus
 from app.shared.cqs.queries import IQueryExecutor, Query
 from app.shared.fastapi.schemas import FrontendModel
 
@@ -25,20 +25,6 @@ class PreferentialCertificateOut(FrontendModel):
     def from_model(cls, certificate: PreferentialCertificate) -> "PreferentialCertificateOut":
         return cls(
             ends_at=certificate.ends_at,
-        )
-
-
-class CancellationPeriodOut(FrontendModel):
-    starts_at: date
-    ends_at: date
-    reasons: list[str]
-
-    @classmethod
-    def from_model(cls, period: CancellationPeriod) -> "CancellationPeriodOut":
-        return cls(
-            starts_at=period.starts_at,
-            ends_at=period.ends_at,
-            reasons=[reason.value for reason in period.reasons],
         )
 
 

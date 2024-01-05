@@ -9,9 +9,10 @@ class Command(BaseModel, ABC):
 
 
 TCommand = TypeVar("TCommand", bound=Command)
+TResult = TypeVar("TResult")
 
 
-class ICommandHandler(Generic[TCommand], ABC):
+class ICommandHandler(Generic[TCommand, TResult], ABC):
     @abstractmethod
-    async def handle(self, command: TCommand) -> None:
+    async def handle(self, command: TCommand) -> TResult:
         raise NotImplementedError

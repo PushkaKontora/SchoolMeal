@@ -1,6 +1,7 @@
 from datetime import date
 
-from app.nutrition.commands.context import NutritionContext
+from app.nutrition.application.commands.context import NutritionContext
+from app.nutrition.application.dto import CancellationPeriodOut
 from app.nutrition.domain.periods import Day
 from app.shared.cqs.commands import Command, ICommandHandler
 from app.shared.unit_of_work.abc import IUnitOfWork
@@ -11,11 +12,11 @@ class ResumeNutritionCommand(Command):
     day: date
 
 
-class ResumeNutritionCommandHandler(ICommandHandler[ResumeNutritionCommand]):
+class ResumeNutritionCommandHandler(ICommandHandler[ResumeNutritionCommand, list[CancellationPeriodOut]]):
     def __init__(self, unit_of_work: IUnitOfWork[NutritionContext]) -> None:
         self._unit_of_work = unit_of_work
 
-    async def handle(self, command: ResumeNutritionCommand) -> None:
+    async def handle(self, command: ResumeNutritionCommand) -> list[CancellationPeriodOut]:
         """
         :raise NotFoundPupil: не найден ученик
         """
@@ -27,3 +28,5 @@ class ResumeNutritionCommandHandler(ICommandHandler[ResumeNutritionCommand]):
             await context.pupils.update(pupil)
 
             await self._unit_of_work.commit()
+
+        return list(map(CancellationPeriodOut.from_model, pupil.cancellation_periods))

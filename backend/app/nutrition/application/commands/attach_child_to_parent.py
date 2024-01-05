@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from app.nutrition.commands.context import NutritionContext
+from app.nutrition.application.commands.context import NutritionContext
 from app.shared.cqs.commands import Command, ICommandHandler
 from app.shared.unit_of_work.abc import IUnitOfWork
 
@@ -10,7 +10,7 @@ class AttachChildToParentCommand(Command):
     pupil_id: str
 
 
-class AttachChildToParentCommandHandler(ICommandHandler[AttachChildToParentCommand]):
+class AttachChildToParentCommandHandler(ICommandHandler[AttachChildToParentCommand, None]):
     def __init__(self, unit_of_work: IUnitOfWork[NutritionContext]) -> None:
         self._unit_of_work = unit_of_work
 

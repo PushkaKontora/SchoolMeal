@@ -9,7 +9,7 @@ class Mealtimes(FrontendModel):
     has_snacks: bool
 
 
-class CancellationPeriod(FrontendModel):
+class CancellationPeriodIn(FrontendModel):
     starts_at: date
     ends_at: date
     reason: str | None

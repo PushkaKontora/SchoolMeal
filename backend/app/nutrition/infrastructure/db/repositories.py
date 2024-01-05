@@ -6,7 +6,12 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.nutrition.commands.repositories import IParentsRepository, IPupilsRepository, NotFoundParent, NotFoundPupil
+from app.nutrition.application.commands.repositories import (
+    IParentsRepository,
+    IPupilsRepository,
+    NotFoundParent,
+    NotFoundPupil,
+)
 from app.nutrition.domain.parent import Parent
 from app.nutrition.domain.pupil import Pupil
 from app.nutrition.infrastructure.db.models import CancellationPeriodDB, ChildDB, ParentDB, PupilDB
