@@ -20,6 +20,10 @@ class NotFoundSchool(Exception):
     pass
 
 
+class NotFoundMenu(Exception):
+    pass
+
+
 class IPupilsRepository(ABC):
     @abstractmethod
     async def get_by_id(self, pupil_id: str) -> Pupil:
@@ -48,5 +52,8 @@ class IParentsRepository(ABC):
 
 class IMenusRepository(ABC):
     @abstractmethod
-    async def get_all_by_class_type_and_date(self, school_class_type: SchoolClassType, on_date: date) -> list[Menu]:
+    async def get_by_class_type_and_date(self, school_class_type: SchoolClassType, on_date: date) -> Menu:
+        """
+        :raise NotFoundMenu: не найдено меню
+        """
         raise NotImplementedError

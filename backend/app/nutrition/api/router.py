@@ -14,7 +14,7 @@ from app.nutrition.application.commands.resume_nutrition import ResumeNutritionC
 from app.nutrition.application.commands.update_mealtimes import UpdateMealtimesCommand, UpdateMealtimesCommandHandler
 from app.nutrition.application.dto import CancellationPeriodOut
 from app.nutrition.application.queries.get_children import ChildOut, GetChildrenQuery, GetChildrenQueryExecutor
-from app.nutrition.application.queries.get_menus import GetMenusQuery, GetMenusQueryExecutor, MenuOut
+from app.nutrition.application.queries.get_menu_on_date import GetMenuOnDateQuery, GetMenuOnDateQueryExecutor, MenuOut
 from app.nutrition.application.queries.get_nutrition_info import (
     GetNutritionInfoQuery,
     GetNutritionInfoQueryExecutor,
@@ -25,7 +25,7 @@ from app.nutrition.application.queries.get_school_classes import (
     GetSchoolClassesQueryExecutor,
     SchoolClassOut,
 )
-from app.nutrition.application.repositories import NotFoundParent, NotFoundPupil
+from app.nutrition.application.repositories import NotFoundMenu, NotFoundParent, NotFoundPupil
 from app.nutrition.domain.parent import ChildIsAlreadyAttachedToParent
 from app.nutrition.domain.periods import (
     EndCannotBeGreaterThanStart,
@@ -199,10 +199,13 @@ async def get_school_classes(
     return await executor.execute(query)
 
 
-@router.get("/menus", summary="Получить список меню", status_code=status.HTTP_200_OK)
+@router.get("/menu", summary="Получить меню на дату", status_code=status.HTTP_200_OK, responses=responses.NOT_FOUND)
 @inject
-async def get_menus(
-    query: GetMenusQuery = Depends(),
-    executor: GetMenusQueryExecutor = Depends(Provide[NutritionContainer.get_menus_query_executor]),
-) -> list[MenuOut]:
-    return await executor.execute(query)
+async def get_menu_on_date(
+    query: GetMenuOnDateQuery = Depends(),
+    executor: GetMenuOnDateQueryExecutor = Depends(Provide[NutritionContainer.get_menus_query_executor]),
+) -> MenuOut:
+    try:
+        return await executor.execute(query)
+    except NotFoundMenu as error:
+        raise NotFoundError(f"Не найдено меню на дату {query.on_date}") from error

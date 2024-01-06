@@ -13,7 +13,7 @@ from app.shared.objects_storage.abc import IObjectsStorage
 from app.shared.unit_of_work.abc import IUnitOfWork
 
 
-class GetMenusQuery(Query):
+class GetMenuOnDateQuery(Query):
     school_class_number: int = Field(ge=1, le=11)
     on_date: date
 
@@ -43,28 +43,29 @@ class MenuOut(FrontendModel):
     snacks: MealtimeInfo
 
 
-class GetMenusQueryExecutor(IQueryExecutor[GetMenusQuery, list[MenuOut]]):
+class GetMenuOnDateQueryExecutor(IQueryExecutor[GetMenuOnDateQuery, MenuOut]):
     def __init__(self, unit_of_work: IUnitOfWork[NutritionContext], objects_storage: IObjectsStorage) -> None:
         self._unit_of_work = unit_of_work
         self._objects = objects_storage
 
-    async def execute(self, query: GetMenusQuery) -> list[MenuOut]:
+    async def execute(self, query: GetMenuOnDateQuery) -> MenuOut:
+        """
+        :raise NotFoundMenu: не найдено меню
+        """
+
         async with self._unit_of_work as context:
-            menus = await context.menus.get_all_by_class_type_and_date(
+            menu = await context.menus.get_by_class_type_and_date(
                 school_class_type=SchoolClassType.from_number(query.school_class_number),
                 on_date=query.on_date,
             )
 
-            return [
-                MenuOut(
-                    id=menu.id,
-                    on_date=menu.on_date,
-                    breakfast=await self._get_mealtime_info(menu.breakfast_foods),
-                    dinner=await self._get_mealtime_info(menu.dinner_foods),
-                    snacks=await self._get_mealtime_info(menu.snacks_foods),
-                )
-                for menu in menus
-            ]
+            return MenuOut(
+                id=menu.id,
+                on_date=menu.on_date,
+                breakfast=await self._get_mealtime_info(menu.breakfast_foods),
+                dinner=await self._get_mealtime_info(menu.dinner_foods),
+                snacks=await self._get_mealtime_info(menu.snacks_foods),
+            )
 
     async def _get_mealtime_info(self, foods: list[Food]) -> MealtimeInfo:
         return MealtimeInfo(

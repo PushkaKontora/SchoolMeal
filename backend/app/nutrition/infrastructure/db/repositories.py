@@ -11,6 +11,7 @@ from app.nutrition.application.repositories import (
     IMenusRepository,
     IParentsRepository,
     IPupilsRepository,
+    NotFoundMenu,
     NotFoundParent,
     NotFoundPupil,
 )
@@ -95,16 +96,20 @@ class AlchemyMenusRepository(IMenusRepository):
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def get_all_by_class_type_and_date(self, school_class_type: SchoolClassType, on_date: date) -> list[Menu]:
-        query = (
-            select(MenuDB)
-            .where(MenuDB.school_class_type == school_class_type.value)
-            .where(MenuDB.on_date == on_date)
-            .options(selectinload(MenuDB.breakfast_foods))
-            .options(selectinload(MenuDB.dinner_foods))
-            .options(selectinload(MenuDB.snacks_foods))
-        )
+    async def get_by_class_type_and_date(self, school_class_type: SchoolClassType, on_date: date) -> Menu:
+        try:
+            query = (
+                select(MenuDB)
+                .where(MenuDB.school_class_type == school_class_type.value)
+                .where(MenuDB.on_date == on_date)
+                .options(selectinload(MenuDB.breakfast_foods))
+                .options(selectinload(MenuDB.dinner_foods))
+                .options(selectinload(MenuDB.snacks_foods))
+                .limit(1)
+            )
 
-        menus_db: list[MenuDB] = (await self._session.scalars(query)).all()
+            menu_db: MenuDB = (await self._session.scalars(query)).one()
+        except NoResultFound as error:
+            raise NotFoundMenu from error
 
-        return [menu_db.to_model() for menu_db in menus_db]
+        return menu_db.to_model()

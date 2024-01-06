@@ -1,11 +1,12 @@
 from datetime import date
 
+from app.nutrition.application.context import NutritionContext
 from app.nutrition.application.dto import CancellationPeriodOut
 from app.nutrition.application.queries.dto import MealStatus
-from app.nutrition.application.repositories import IPupilsRepository
 from app.nutrition.domain.pupil import PreferentialCertificate, Pupil
 from app.shared.cqs.queries import IQueryExecutor, Query
 from app.shared.fastapi.schemas import FrontendModel
+from app.shared.unit_of_work.abc import IUnitOfWork
 
 
 class GetNutritionInfoQuery(Query):
@@ -55,12 +56,13 @@ class NutritionOut(FrontendModel):
 
 
 class GetNutritionInfoQueryExecutor(IQueryExecutor[GetNutritionInfoQuery, NutritionOut]):
-    def __init__(self, pupils_repository: IPupilsRepository) -> None:
-        self._pupils_repository = pupils_repository
+    def __init__(self, unit_of_work: IUnitOfWork[NutritionContext]) -> None:
+        self._unit_of_work = unit_of_work
 
     async def execute(self, query: GetNutritionInfoQuery) -> NutritionOut:
         """
         :raise NotFoundPupil: не найден ученик
         """
 
-        return NutritionOut.from_model(pupil=await self._pupils_repository.get_by_id(pupil_id=query.pupil_id))
+        async with self._unit_of_work as context:
+            return NutritionOut.from_model(pupil=await context.pupils.get_by_id(pupil_id=query.pupil_id))

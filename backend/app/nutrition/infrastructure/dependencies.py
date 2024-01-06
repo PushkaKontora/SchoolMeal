@@ -12,7 +12,7 @@ from app.nutrition.application.commands.resume_nutrition import ResumeNutritionC
 from app.nutrition.application.commands.update_mealtimes import UpdateMealtimesCommandHandler
 from app.nutrition.application.context import NutritionContext
 from app.nutrition.application.queries.get_children import GetChildrenQueryExecutor
-from app.nutrition.application.queries.get_menus import GetMenusQueryExecutor
+from app.nutrition.application.queries.get_menu_on_date import GetMenuOnDateQueryExecutor
 from app.nutrition.application.queries.get_nutrition_info import GetNutritionInfoQueryExecutor
 from app.nutrition.application.queries.get_school_classes import GetSchoolClassesQueryExecutor
 from app.nutrition.infrastructure.db.repositories import (
@@ -30,8 +30,6 @@ class NutritionContainer(DeclarativeContainer):
     gateway_config = Configuration(strict=True)
 
     session = Dependency(instance_of=AsyncSession)
-
-    pupils_repository = Factory(AlchemyPupilsRepository, session=session)
 
     unit_of_work = Factory(
         AlchemyUnitOfWork,
@@ -57,8 +55,8 @@ class NutritionContainer(DeclarativeContainer):
     resume_nutrition_command_handler = Factory(ResumeNutritionCommandHandler, unit_of_work=unit_of_work)
 
     get_children_query_executor = Factory(GetChildrenQueryExecutor, session_factory=session.provider)
-    get_nutrition_info_executor = Factory(GetNutritionInfoQueryExecutor, pupils_repository=pupils_repository)
+    get_nutrition_info_executor = Factory(GetNutritionInfoQueryExecutor, unit_of_work=unit_of_work)
     get_school_classes_executor = Factory(GetSchoolClassesQueryExecutor, session_factory=session.provider)
     get_menus_query_executor = Factory(
-        GetMenusQueryExecutor, unit_of_work=unit_of_work, objects_storage=objects_storage
+        GetMenuOnDateQueryExecutor, unit_of_work=unit_of_work, objects_storage=objects_storage
     )
