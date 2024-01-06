@@ -1,5 +1,5 @@
 import {isRejectedWithValue, Middleware, MiddlewareAPI, PayloadAction} from '@reduxjs/toolkit';
-import {ToastService} from '../../../../7_shared/ui/special/toast-notifier/toast-service';
+import {ToastService} from '../../../../7_shared/lib/toast-service';
 
 //export const callbacks: MiddlewareListeners = new MiddlewareListeners();
 

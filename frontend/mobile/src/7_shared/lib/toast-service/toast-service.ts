@@ -1,5 +1,5 @@
 import {Toast} from 'react-native-toast-notifications';
-import {ToastPayload} from '../model/props';
+import {ToastPayload} from '../../ui/special/toast/model/props';
 
 export class ToastService {
   public hideAll() {
