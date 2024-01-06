@@ -20,7 +20,10 @@ export const CONFIG: ConfigSettings = {
         method: 'POST',
         body: body
       }),
-      invalidatesTags: ['User']
+      invalidatesTags: ['User'],
+      extraOptions: {
+        myParam: true
+      }
     }),
     logout: build.mutation<UniversalResponse, void>({
       query: () => ({

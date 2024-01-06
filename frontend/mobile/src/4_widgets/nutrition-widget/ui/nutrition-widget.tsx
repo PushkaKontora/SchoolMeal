@@ -19,6 +19,8 @@ import {
 import {DEFAULT_DATE} from '../../../7_shared/consts/default_date';
 import {CancelNutritionIn} from '../../../5_features/nutrition/api/types';
 import {dateToString} from '../lib/date-utils';
+import {ToastService} from '../../../7_shared/lib/toast-service';
+import {CANCELLED_NUTRITION_DESCRIPTION, RESUMED_NUTRITION_DESCRIPTION} from '../consts/strings';
 
 export function NutritionWidget(props: NutritionWidgetProps) {
   // === states ===
@@ -79,6 +81,9 @@ export function NutritionWidget(props: NutritionWidgetProps) {
         ...nutritionInfoState,
         cancellationPeriods: cancelData
       });
+      ToastService.show('success', {
+        description: CANCELLED_NUTRITION_DESCRIPTION
+      });
     }
   }, [isCanceledSuccess]);
 
@@ -87,6 +92,9 @@ export function NutritionWidget(props: NutritionWidgetProps) {
       setNutritionInfoState({
         ...nutritionInfoState,
         cancellationPeriods: resumeData
+      });
+      ToastService.show('success', {
+        description: RESUMED_NUTRITION_DESCRIPTION
       });
     }
   }, [isResumedSuccess]);
