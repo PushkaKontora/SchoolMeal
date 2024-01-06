@@ -1,10 +1,10 @@
-import {isRejectedWithValue, Middleware, MiddlewareAPI, PayloadAction} from '@reduxjs/toolkit';
+import {isRejectedWithValue, Middleware, PayloadAction} from '@reduxjs/toolkit';
 import {ToastService} from '../../../../7_shared/lib/toast-service';
 
 //export const callbacks: MiddlewareListeners = new MiddlewareListeners();
 
 export const errorHandlerMiddleware: Middleware =
-  (api: MiddlewareAPI) => (next) => <A extends PayloadAction<{
+  () => (next) => <A extends PayloadAction<{
     status: string,
     originalStatus: number,
     data: any,
@@ -16,12 +16,6 @@ export const errorHandlerMiddleware: Middleware =
         description: action.payload.data
       });
     }
-
-    /*
-    if (isFulfilled(action)) {
-      callbacks.emitRejection(action);
-    }
-    */
 
     return next(action);
   };

@@ -7,10 +7,12 @@ export const createStyle = (props: ToastProps) => StyleSheet.create({
     borderRadius: 12,
     backgroundColor: setBackgroundColor(props.type),
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 16,
     height: 76,
     padding: 16,
-    margin: 8,
+    marginVertical: 8,
+    marginHorizontal: 16
   },
   textContainer: {
     flexDirection: 'column',
@@ -21,13 +23,13 @@ export const createStyle = (props: ToastProps) => StyleSheet.create({
   title: {
     color: '#000000',
     fontWeight: '500',
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: 20
   },
   description: {
     color: '#000000',
     fontWeight: '300',
-    fontSize: 11,
+    fontSize: 14,
     lineHeight: 24
   }
 });

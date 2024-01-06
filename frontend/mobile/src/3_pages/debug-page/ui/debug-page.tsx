@@ -12,7 +12,6 @@ import {magicModal} from 'react-native-magic-modal';
 import {ModalMealPeriod} from '../../../5_features/modal-meal-period';
 import {useCurrentUserQuery} from '../../../6_entities/user/api/api';
 import {TokenPayload} from '../../../5_features/auth/model/token-payload';
-import {Toast} from 'react-native-toast-notifications';
 import {ToastService} from '../../../7_shared/lib/toast-service';
 
 export function DebugPage({navigation}: PropsWithNavigation) {

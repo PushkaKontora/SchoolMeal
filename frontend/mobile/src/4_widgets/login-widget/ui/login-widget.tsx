@@ -1,7 +1,7 @@
 import {MarginArea} from '../../../7_shared/ui/styling/margin-area';
 import {HorizontalLine} from '../../../7_shared/ui/styling/horizontal-line';
 import {AuthFeature} from '../../../5_features/auth';
-import {HEADER_TITLE, SUBHEADER_TITLE} from '../consts/consts';
+import {HEADER_TITLE, SUBHEADER_TITLE} from '../consts/strings';
 import {LoginForm, LoginFormData} from '../../../6_entities/user';
 import {LoginPageProps} from '../../../3_pages/login-page/model/props';
 import {ButtonSecondary} from '../../../7_shared/ui/buttons/button-secondary/button-secondary';
@@ -9,24 +9,47 @@ import {AUTH_API, TokenResponse} from '../../../5_features/auth';
 import {AuthTokenService} from '../../../5_features/auth';
 import {setAuthorized} from '../../../5_features/auth/model/auth-slice/auth-slice';
 import {useAppDispatch} from '../../../../store/hooks';
+import {TokenPayload} from '../../../5_features/auth/model/token-payload';
+import {useEffect, useState} from 'react';
+import {ToastService} from '../../../7_shared/lib/toast-service';
+import {ERROR_MESSAGES_TITLES} from '../config/errors';
 
 export function LoginWidget({navigation}: LoginPageProps) {
   const navigateToSignUp = () => {
     navigation.navigate('SignUp');
   };
 
-  const [signIn] = AUTH_API.useSignInMutation();
+  const [signIn, {data, isSuccess, isError, error}] =
+    AUTH_API.useSignInMutation();
   const dispatch = useAppDispatch();
 
-  const saveToken = async (currentData: LoginFormData) => {
-    const response: {data: TokenResponse} = await signIn(currentData);
-    await AuthTokenService.saveAuthToken(response.data);
+  const [formDisabled, setFormDisabled] = useState(false);
+
+  const saveToken = async (data: TokenPayload) => {
+    await AuthTokenService.saveAuthToken(data);
     dispatch(setAuthorized(true));
   };
 
-  const onSubmit = (currentData: LoginFormData) => {
-    saveToken(currentData);
+  const onSubmit = async (currentData: LoginFormData) => {
+    setFormDisabled(true);
+    await signIn(currentData);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      saveToken(data as TokenResponse);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setFormDisabled(false);
+      ToastService.show('danger', {
+        title: ERROR_MESSAGES_TITLES[error.status] || ERROR_MESSAGES_TITLES.other,
+        description: error.data.detail
+      });
+    }
+  }, [isError]);
 
   return (
     <AuthFeature
@@ -37,7 +60,8 @@ export function LoginWidget({navigation}: LoginPageProps) {
         marginBottom={16}>
 
         <LoginForm
-          onSubmit={onSubmit}/>
+          onSubmit={onSubmit}
+          disabled={formDisabled}/>
 
       </MarginArea>
 

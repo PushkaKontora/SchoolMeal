@@ -1,7 +1,7 @@
-import {errorHandlerMiddleware} from './error-handler-middleware';
+import {Middleware} from '@reduxjs/toolkit';
 
-const middlewares = [
-  errorHandlerMiddleware
+const middlewares: Middleware[] = [
+  //errorHandlerMiddleware
 ];
 
 export default middlewares;

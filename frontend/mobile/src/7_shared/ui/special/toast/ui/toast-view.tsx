@@ -13,7 +13,6 @@ export function ToastView(props: TypedToastProps) {
       }
 
       <View style={styles.textContainer}>
-
         {
           props.data.title && (
             <Text style={styles.title}>
