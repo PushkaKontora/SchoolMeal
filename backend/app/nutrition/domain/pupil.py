@@ -1,15 +1,13 @@
 import secrets
 from dataclasses import field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime
 from enum import Enum
 
 from pydantic.dataclasses import dataclass
 
 from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Day
+from app.shared.domain import timezones
 from app.shared.domain.abc import Entity, ValueObject
-
-
-tz = timezone(offset=timedelta(hours=5), name="Yekaterinburg")
 
 
 class CantAttachExpiredPreferentialCertificate(Exception):
@@ -44,7 +42,7 @@ class PreferentialCertificate(ValueObject):
 
     @property
     def is_expired(self) -> bool:
-        return datetime.now(timezone.utc).date() > self.ends_at
+        return datetime.now(timezones.yekaterinburg).date() > self.ends_at
 
 
 class NutritionStatus(str, Enum):
@@ -85,7 +83,7 @@ class Pupil(Entity):
         :raise CannotCancelNutritionAfterTime: нельзя снимать с питания после 10 утра по ЕКБ
         """
 
-        now = datetime.now(tz)
+        now = datetime.now(timezones.yekaterinburg)
         if now.hour > 10:
             raise CannotCancelNutritionAfterTime(
                 now=now, completed_at=now.replace(hour=10, minute=0, second=0, microsecond=0)
@@ -98,7 +96,7 @@ class Pupil(Entity):
         :raise CannotResumeNutritionAfterTime: нельзя ставить на питание после 10 утра по ЕКБ
         """
 
-        now = datetime.now(tz)
+        now = datetime.now(timezones.yekaterinburg)
         if now.hour > 10:
             raise CannotResumeNutritionAfterTime(
                 now=now, completed_at=now.replace(hour=10, minute=0, second=0, microsecond=0)
