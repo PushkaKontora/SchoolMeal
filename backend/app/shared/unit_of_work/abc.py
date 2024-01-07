@@ -4,10 +4,6 @@ from types import TracebackType
 from typing import Generic, TypeVar
 
 
-class UnitOfWorkIsAlreadyOpened(Exception):
-    pass
-
-
 class UnitOfWorkHasNotBeenOpenedYet(Exception):
     pass
 
@@ -37,9 +33,6 @@ class IUnitOfWork(Generic[TContext], ABC):
 
     @abstractmethod
     async def __aenter__(self) -> TContext:
-        """
-        :raise UnitOfWorkIsAlreadyOpened: юнит уже открыт
-        """
         raise NotImplementedError
 
     @abstractmethod

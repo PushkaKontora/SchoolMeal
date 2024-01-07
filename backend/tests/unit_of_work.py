@@ -2,10 +2,15 @@ from dataclasses import replace
 from types import TracebackType
 from typing import Callable, TypeVar
 
-from app.shared.unit_of_work.abc import IUnitOfWork, TContext, UnitOfWorkHasNotBeenOpenedYet, UnitOfWorkIsAlreadyOpened
+from app.shared.unit_of_work.abc import IUnitOfWork, TContext, UnitOfWorkHasNotBeenOpenedYet
 
 
 T = TypeVar("T")
+
+
+# TODO: убрать
+class UnitOfWorkIsAlreadyOpened(Exception):
+    pass
 
 
 class LocalUnitOfWork(IUnitOfWork[TContext]):
