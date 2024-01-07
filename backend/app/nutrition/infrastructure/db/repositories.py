@@ -11,15 +11,24 @@ from app.nutrition.application.repositories import (
     IMenusRepository,
     IParentsRepository,
     IPupilsRepository,
+    ISchoolClassesRepository,
     NotFoundMenu,
     NotFoundParent,
     NotFoundPupil,
+    NotFoundSchoolClass,
 )
 from app.nutrition.domain.menu import Menu
 from app.nutrition.domain.parent import Parent
 from app.nutrition.domain.pupil import Pupil
-from app.nutrition.domain.school_class import SchoolClassType
-from app.nutrition.infrastructure.db.models import CancellationPeriodDB, ChildDB, MenuDB, ParentDB, PupilDB
+from app.nutrition.domain.school_class import SchoolClass, SchoolClassType
+from app.nutrition.infrastructure.db.models import (
+    CancellationPeriodDB,
+    ChildDB,
+    MenuDB,
+    ParentDB,
+    PupilDB,
+    SchoolClassDB,
+)
 
 
 class AlchemyPupilsRepository(IPupilsRepository):
@@ -34,6 +43,12 @@ class AlchemyPupilsRepository(IPupilsRepository):
             raise NotFoundPupil from error
 
         return pupil_db.to_model()
+
+    async def get_by_class_id(self, class_id: UUID) -> list[Pupil]:
+        query = select(PupilDB).where(PupilDB.school_class_id == class_id)
+        pupils_db: list[PupilDB] = (await self._session.scalars(query)).all()
+
+        return [pupil_db.to_model() for pupil_db in pupils_db]
 
     async def update(self, pupil: Pupil) -> None:
         await self._session.execute(
@@ -113,3 +128,23 @@ class AlchemyMenusRepository(IMenusRepository):
             raise NotFoundMenu from error
 
         return menu_db.to_model()
+
+
+class AlchemySchoolClassesRepository(ISchoolClassesRepository):
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+
+    async def get_by_id(self, id_: UUID) -> SchoolClass:
+        try:
+            query = select(SchoolClassDB).where(SchoolClassDB.id == id_).limit(1)
+            class_db: SchoolClassDB = (await self._session.scalars(query)).one()
+        except NoResultFound as error:
+            raise NotFoundSchoolClass from error
+
+        return class_db.to_model()
+
+    async def get_all_by_teacher_id(self, teacher_id: UUID) -> list[SchoolClass]:
+        query = select(SchoolClassDB).where(SchoolClassDB.teacher_id == teacher_id)
+        classes_db: list[SchoolClassDB] = (await self._session.scalars(query)).all()
+
+        return [class_db.to_model() for class_db in classes_db]

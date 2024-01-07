@@ -5,7 +5,7 @@ from uuid import UUID
 from app.nutrition.domain.menu import Menu
 from app.nutrition.domain.parent import Parent
 from app.nutrition.domain.pupil import Pupil
-from app.nutrition.domain.school_class import SchoolClassType
+from app.nutrition.domain.school_class import SchoolClass, SchoolClassType
 
 
 class NotFoundPupil(Exception):
@@ -20,7 +20,15 @@ class NotFoundSchool(Exception):
     pass
 
 
+class NotFoundSchoolClass(Exception):
+    pass
+
+
 class NotFoundMenu(Exception):
+    pass
+
+
+class NotFoundRequest(Exception):
     pass
 
 
@@ -34,6 +42,10 @@ class IPupilsRepository(ABC):
 
     @abstractmethod
     async def update(self, pupil: Pupil) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_by_class_id(self, class_id: UUID) -> list[Pupil]:
         raise NotImplementedError
 
 
@@ -56,4 +68,17 @@ class IMenusRepository(ABC):
         """
         :raise NotFoundMenu: не найдено меню
         """
+        raise NotImplementedError
+
+
+class ISchoolClassesRepository(ABC):
+    @abstractmethod
+    async def get_by_id(self, id_: UUID) -> SchoolClass:
+        """
+        :raise NotFoundSchoolClass: не найден класс
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_all_by_teacher_id(self, teacher_id: UUID) -> list[SchoolClass]:
         raise NotImplementedError

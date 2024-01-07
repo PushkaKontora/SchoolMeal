@@ -12,7 +12,7 @@ from app.nutrition.domain.menu import Food, Menu
 from app.nutrition.domain.parent import Parent
 from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Reason
 from app.nutrition.domain.pupil import Name, PreferentialCertificate, Pupil, PupilID
-from app.nutrition.domain.school_class import SchoolClassType
+from app.nutrition.domain.school_class import SchoolClass, SchoolClassInitials, SchoolClassType
 from app.shared.db.base import Base
 from app.shared.domain.money import Money
 
@@ -50,6 +50,16 @@ class SchoolClassDB(NutritionBase):
     school: Mapped[SchoolDB] = relationship(SchoolDB, uselist=False, viewonly=True)
     teacher: Mapped[TeacherDB] = relationship(TeacherDB, uselist=False, viewonly=True)
 
+    def to_model(self) -> SchoolClass:
+        return SchoolClass(
+            id=self.id,
+            initials=SchoolClassInitials(literal=self.literal, number=self.number),
+            teacher_id=self.teacher_id,
+            breakfast=self.breakfast,
+            dinner=self.dinner,
+            snacks=self.snacks,
+        )
+
 
 class PupilDB(NutritionBase):
     __tablename__ = "pupil"
@@ -64,7 +74,9 @@ class PupilDB(NutritionBase):
     preferential_certificate_ends_at: Mapped[date | None] = Column(Date, nullable=True)
     school_class_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(SchoolClassDB.id), nullable=False)
 
-    cancellation_periods: Mapped[list["CancellationPeriodDB"]] = relationship("CancellationPeriodDB", uselist=True)
+    cancellation_periods: Mapped[list["CancellationPeriodDB"]] = relationship(
+        "CancellationPeriodDB", uselist=True, lazy="selectin"
+    )
 
     parents: Mapped[list["ParentDB"]] = relationship(
         "ParentDB", secondary=f"{SCHEMA}.child", uselist=True, viewonly=True

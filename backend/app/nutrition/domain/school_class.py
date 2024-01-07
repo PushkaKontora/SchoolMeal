@@ -3,7 +3,6 @@ from uuid import UUID
 
 from pydantic.dataclasses import dataclass
 
-from app.nutrition.domain.pupil import Pupil
 from app.shared.domain.abc import Entity, ValueObject
 
 
@@ -40,7 +39,11 @@ class SchoolClassInitials(ValueObject):
         return SchoolClassType.PRIMARY if 1 <= self.number <= 4 else SchoolClassType.HIGH
 
 
+@dataclass
 class SchoolClass(Entity):
     id: UUID
     initials: SchoolClassInitials
-    pupils: list[Pupil]
+    teacher_id: UUID
+    breakfast: bool
+    dinner: bool
+    snacks: bool

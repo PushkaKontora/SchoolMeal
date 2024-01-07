@@ -1,14 +1,13 @@
 from datetime import date
-from uuid import UUID
 
 from pydantic import Field
 
 from app.nutrition.application.context import NutritionContext
+from app.nutrition.application.queries.dto import FoodOut, MealtimeInfo, MenuOut
 from app.nutrition.domain.menu import Food
 from app.nutrition.domain.school_class import SchoolClassType
 from app.shared.cqs.queries import IQueryExecutor, Query
 from app.shared.domain.money import Money
-from app.shared.fastapi.schemas import FrontendModel
 from app.shared.objects_storage.abc import IObjectsStorage
 from app.shared.unit_of_work.abc import IUnitOfWork
 
@@ -16,31 +15,6 @@ from app.shared.unit_of_work.abc import IUnitOfWork
 class GetMenuOnDateQuery(Query):
     school_class_number: int = Field(ge=1, le=11)
     on_date: date
-
-
-class FoodOut(FrontendModel):
-    id: UUID
-    name: str
-    description: str
-    calories: str
-    proteins: str
-    fats: str
-    carbohydrates: str
-    price: str
-    photo_url: str | None
-
-
-class MealtimeInfo(FrontendModel):
-    foods: list[FoodOut]
-    cost: str
-
-
-class MenuOut(FrontendModel):
-    id: UUID
-    on_date: date
-    breakfast: MealtimeInfo
-    dinner: MealtimeInfo
-    snacks: MealtimeInfo
 
 
 class GetMenuOnDateQueryExecutor(IQueryExecutor[GetMenuOnDateQuery, MenuOut]):

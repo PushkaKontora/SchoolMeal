@@ -13,17 +13,14 @@ from app.nutrition.application.commands.cancel_nutrition import CancelNutritionC
 from app.nutrition.application.commands.resume_nutrition import ResumeNutritionCommand, ResumeNutritionCommandHandler
 from app.nutrition.application.commands.update_mealtimes import UpdateMealtimesCommand, UpdateMealtimesCommandHandler
 from app.nutrition.application.dto import CancellationPeriodOut
+from app.nutrition.application.queries.dto import MenuOut, PupilOut, SchoolClassOut
 from app.nutrition.application.queries.get_children import ChildOut, GetChildrenQuery, GetChildrenQueryExecutor
-from app.nutrition.application.queries.get_menu_on_date import GetMenuOnDateQuery, GetMenuOnDateQueryExecutor, MenuOut
-from app.nutrition.application.queries.get_nutrition_info import (
-    GetNutritionInfoQuery,
-    GetNutritionInfoQueryExecutor,
-    NutritionOut,
-)
-from app.nutrition.application.queries.get_school_classes import (
+from app.nutrition.application.queries.menus.get_menu_on_date import GetMenuOnDateQuery, GetMenuOnDateQueryExecutor
+from app.nutrition.application.queries.pupils.get_pupil_by_id import GetPupilByIDQuery, GetPupilByIDQueryExecutor
+from app.nutrition.application.queries.pupils.get_pupils import GetPupilsQuery, GetPupilsQueryExecutor
+from app.nutrition.application.queries.school_classes.get_school_classes import (
     GetSchoolClassesQuery,
     GetSchoolClassesQueryExecutor,
-    SchoolClassOut,
 )
 from app.nutrition.application.repositories import NotFoundMenu, NotFoundParent, NotFoundPupil
 from app.nutrition.domain.parent import ChildIsAlreadyAttachedToParent
@@ -50,14 +47,27 @@ router = APIRouter(tags=["Питание"])
     responses=responses.NOT_FOUND,
 )
 @inject
-async def get_pupil_nutrition(
+async def get_pupil_by_id(
     pupil_id: str,
-    executor: GetNutritionInfoQueryExecutor = Depends(Provide[NutritionContainer.get_nutrition_info_executor]),
-) -> NutritionOut:
+    executor: GetPupilByIDQueryExecutor = Depends(Provide[NutritionContainer.get_pupil_by_id_executor]),
+) -> PupilOut:
     try:
-        return await executor.execute(query=GetNutritionInfoQuery(pupil_id=pupil_id))
+        return await executor.execute(query=GetPupilByIDQuery(pupil_id=pupil_id))
     except NotFoundPupil as error:
         raise NotFoundError("Ученик не был найден") from error
+
+
+@router.get(
+    "/pupils",
+    summary="Получить информацию об учениках",
+    status_code=status.HTTP_200_OK,
+)
+@inject
+async def get_pupils(
+    query: GetPupilsQuery = Depends(),
+    executor: GetPupilsQueryExecutor = Depends(Provide[NutritionContainer.get_pupils]),
+) -> list[PupilOut]:
+    return await executor.execute(query)
 
 
 @router.put(
