@@ -123,7 +123,9 @@ async def cancel_nutrition(
         raise BadRequestError("Дата начала периода больше, чем конечная дата") from error
 
     except CannotCancelNutritionAfterTime as error:
-        raise BadRequestError(f"Запрещено после {error.completed_at} снимать с питания") from error
+        raise BadRequestError(
+            f"Запрещено снимать с питания {error.completed_at.date()} после {error.completed_at.time()}"
+        ) from error
 
 
 @router.post(
@@ -145,7 +147,9 @@ async def resume_nutrition(
         raise NotFoundError("Ученик не найден") from error
 
     except CannotResumeNutritionAfterTime as error:
-        raise BadRequestError(f"Запрещено после {error.completed_at} ставить на питание") from error
+        raise BadRequestError(
+            f"Запрещено ставить на питание {error.completed_at.date()} после {error.completed_at.time()}"
+        ) from error
 
 
 @router.post(

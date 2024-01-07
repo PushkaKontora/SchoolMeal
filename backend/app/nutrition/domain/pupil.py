@@ -68,10 +68,14 @@ class Pupil(Entity):
         if not any([self.has_breakfast, self.has_dinner, self.has_snacks]):
             return NutritionStatus.NONE
 
-        if self.preferential_certificate and not self.preferential_certificate.is_expired:
+        if self.is_preferential:
             return NutritionStatus.PREFERENTIAL
 
         return NutritionStatus.PAID
+
+    @property
+    def is_preferential(self) -> bool:
+        return self.preferential_certificate is not None and not self.preferential_certificate.is_expired
 
     def update_mealtimes(self, has_breakfast: bool, has_dinner: bool, has_snacks: bool) -> None:
         self.has_breakfast = has_breakfast
@@ -84,7 +88,7 @@ class Pupil(Entity):
         """
 
         now = datetime.now(timezones.yekaterinburg)
-        if now.hour > 10:
+        if now.hour > 10 and now.date() in period:
             raise CannotCancelNutritionAfterTime(
                 now=now, completed_at=now.replace(hour=10, minute=0, second=0, microsecond=0)
             )
@@ -97,7 +101,7 @@ class Pupil(Entity):
         """
 
         now = datetime.now(timezones.yekaterinburg)
-        if now.hour > 10:
+        if now.hour > 10 and now.date() in day:
             raise CannotResumeNutritionAfterTime(
                 now=now, completed_at=now.replace(hour=10, minute=0, second=0, microsecond=0)
             )

@@ -48,11 +48,21 @@ class Period(ValueObject):
 
         return Period(starts_at=max_start, ends_at=min_end) if max_start <= min_end else None
 
+    def __contains__(self, item: date) -> bool:
+        if not isinstance(item, date):
+            raise ValueError("Ожидался тип date")
+
+        return self.starts_at <= item <= self.ends_at
+
 
 @dataclass(eq=True, frozen=True)
 class Day(Period):
     def __init__(self, date_: date) -> None:
         super().__init__(starts_at=date_, ends_at=date_)
+
+    @property
+    def date(self) -> date:
+        return self.starts_at
 
 
 @dataclass(eq=True, frozen=True)
