@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 
 from pydantic.dataclasses import dataclass
 
@@ -13,7 +13,7 @@ class Money(ValueObject):
     value: Decimal
 
     def __init__(self, value: Number) -> None:
-        object.__setattr__(self, "value", Decimal(str(value)))
+        object.__setattr__(self, "value", Decimal(str(value)).quantize(Decimal(".01"), rounding=ROUND_HALF_UP))
 
     def __post_init_post_parse__(self) -> None:
         if self.value < 0:
