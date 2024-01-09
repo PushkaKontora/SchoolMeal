@@ -8,7 +8,7 @@ services:
       GATEWAY_PROTOCOL: ${GATEWAY_PROTOCOL:-http}
       GATEWAY_HOST: ${GATEWAY_HOST:-localhost}
       GATEWAY_PORT: ${GATEWAY_PORT:-80}
-      GATEWAY_MEDIA_PATH: ${GATEWAY_MEDIA_PATH:-/media}
+      MEDIA_PATH: ${MEDIA_PATH:-/usr/share/media}
     volumes:
       - ./backend/app:/school_meal/app
 

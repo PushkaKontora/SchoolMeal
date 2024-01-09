@@ -1,5 +1,7 @@
+import os.path
 from enum import Enum, unique
 from pathlib import Path
+from uuid import uuid4
 
 from pydantic import BaseSettings, Field
 
@@ -12,11 +14,11 @@ class Protocol(str, Enum):
     HTTPS = "https"
 
 
-class GatewaySettings(BaseSettings):
+class LocalObjectsStorageSettings(BaseSettings):
     protocol: Protocol = Field(env="GATEWAY_PROTOCOL")
     host: str = Field(env="GATEWAY_HOST")
     port: int = Field(env="GATEWAY_PORT")
-    base_path: Path = Field(env="GATEWAY_MEDIA_PATH")
+    base_path: Path = Field(env="MEDIA_PATH")
 
 
 class LocalObjectsStorage(IObjectsStorage):
@@ -32,4 +34,13 @@ class LocalObjectsStorage(IObjectsStorage):
         if not path.exists():
             return None
 
-        return f"{self._protocol.value}://{self._host}:{self._port}/{'/'.join(path.parts[1:])}"
+        return f"{self._protocol.value}://{self._host}:{self._port}{path.as_posix()}"
+
+    async def save(self, name: str, content: bytes) -> Path:
+        prefix, extension = os.path.splitext(name)
+        relative_path = Path(f"{uuid4()}{extension}")
+
+        with open(self._base_path / Path(f"{uuid4()}{extension}"), "wb") as file:
+            file.write(content)
+
+        return relative_path

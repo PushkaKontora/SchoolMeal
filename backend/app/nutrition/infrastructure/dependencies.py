@@ -30,7 +30,7 @@ from app.shared.unit_of_work.alchemy import AlchemyUnitOfWork
 class NutritionContainer(DeclarativeContainer):
     wiring_config = WiringConfiguration(packages=[api, commands])
 
-    gateway_config = Configuration(strict=True)
+    object_storage_config = Configuration(strict=True)
 
     session = Dependency(instance_of=AsyncSession)
 
@@ -47,10 +47,10 @@ class NutritionContainer(DeclarativeContainer):
 
     objects_storage = Singleton(
         LocalObjectsStorage,
-        protocol=Factory(Protocol, gateway_config.protocol),
-        host=gateway_config.host,
-        port=gateway_config.port,
-        base_path=Factory(Path, gateway_config.base_path),
+        protocol=Factory(Protocol, object_storage_config.protocol),
+        host=object_storage_config.host,
+        port=object_storage_config.port,
+        base_path=Factory(Path, object_storage_config.base_path),
     )
 
     attach_child_to_parent_command_handler = Factory(AttachChildToParentCommandHandler, unit_of_work=unit_of_work)

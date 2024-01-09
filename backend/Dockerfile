@@ -9,8 +9,6 @@ ENV PATH=$POETRY_HOME/bin:$PATH
 
 WORKDIR $APP_DIR
 
-RUN useradd -m $USER
-
 RUN apt update && \
     apt install make && \
     pip install -U pip && \
@@ -41,6 +39,5 @@ RUN make BIN_DIR=/usr/local/bin ci
 FROM base as final
 
 EXPOSE 8000
-USER $USER
 
 CMD ["sh", "./docker-entrypoint.sh"]
