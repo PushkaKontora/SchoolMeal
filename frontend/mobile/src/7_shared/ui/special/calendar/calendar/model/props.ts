@@ -4,6 +4,7 @@ import {Calendar as ExternalCalendar} from 'react-native-calendars';
 export type CalendarProps = {
   onPeriodChange: (startingDate: Date, endingDate: Date) => void
   initialDate?: Date,
+  passedDatesUntil?: Date,
   customHeader?: React.JSX.Element
 };
 
@@ -19,4 +20,6 @@ export type PeriodDateBadgeProps = {
   transformDateToString?: (d: Date) => string
 };
 
-export type DayComponentProps = ComponentProps<NonNullable<ComponentProps<typeof ExternalCalendar>['dayComponent']>>;
+export type DayComponentProps = {
+  passedDateUntil: Date
+} & ComponentProps<NonNullable<ComponentProps<typeof ExternalCalendar>['dayComponent']>>;

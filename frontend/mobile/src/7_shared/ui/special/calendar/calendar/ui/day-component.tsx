@@ -10,15 +10,13 @@ export const DayComponent
   = memo(function DayComponent(props: DayComponentProps) {
     const styles = createDayStyle(props);
 
-    const today = TODAY_DATE();
-
     return (
       <TouchableOpacity
         style={styles.container}
         onPress={() => {
           if (props.onPress) {
             if (props.date) {
-              if (props.date?.dateString >= dateToISOWithoutTime(today)) {
+              if (props.date?.dateString > dateToISOWithoutTime(props.passedDateUntil)) {
                 props.onPress(props.date);
               }
             }

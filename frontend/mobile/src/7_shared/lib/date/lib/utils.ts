@@ -1,5 +1,6 @@
 import {STRINGS} from '../consts/consts';
 import {CASUAL_OPTIONS} from '../config/config';
+import moment from 'moment-timezone';
 
 export function formatDateToCasual(d: Date) {
   const formattedDate = d.toLocaleDateString('ru-RU', CASUAL_OPTIONS);
@@ -21,18 +22,18 @@ export function equalsDates(d1: Date, d2: Date) {
     d1.getDate() === d2.getDate();
 }
 
-export function isTodayDate(d: Date) {
-  const today = new Date(Date.now());
-  return d.getFullYear() === today.getFullYear() &&
-    d.getMonth() === today.getMonth() &&
-    d.getDate() === today.getDate();
+export function isTodayDate(d: Date, tz: string) {
+  const today = moment().tz(tz);
+  return d.getFullYear() === today.year() &&
+    d.getMonth() === today.month() &&
+    d.getDate() === today.date();
 }
 
-export function isTomorrowDate(d: Date) {
-  const today = new Date(Date.now());
-  const tomorrow = new Date(today);
-  tomorrow.setDate(today.getDate() + 1);
-  return d.getFullYear() === tomorrow.getFullYear() &&
-    d.getMonth() === tomorrow.getMonth() &&
-    d.getDate() === tomorrow.getDate();
+export function isTomorrowDate(d: Date, tz: string) {
+  const today = moment().tz(tz);
+  const tomorrow = moment(today);
+  tomorrow.add(1, 'days');
+  return d.getFullYear() === tomorrow.year() &&
+    d.getMonth() === tomorrow.month() &&
+    d.getDate() === tomorrow.date();
 }

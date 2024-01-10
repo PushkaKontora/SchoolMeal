@@ -18,7 +18,7 @@ import {
 } from '../lib/cancellation-modal-utils';
 import {DEFAULT_DATE} from '../../../7_shared/consts/default_date';
 import {CancelNutritionIn} from '../../../5_features/nutrition/api/types';
-import {dateToString} from '../lib/date-utils';
+import {dateToString, getLastAbleDateToCancelNutrition} from '../lib/date-utils';
 import {ToastService} from '../../../7_shared/lib/toast-service';
 import {CANCELLED_NUTRITION_DESCRIPTION, RESUMED_NUTRITION_DESCRIPTION} from '../consts/strings';
 
@@ -134,7 +134,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
     });
   };
 
-  const showCancellationModal = createCancellationModal(sendCancellation);
+  const showCancellationModal = createCancellationModal(sendCancellation, getLastAbleDateToCancelNutrition);
 
   // === render ===
 
