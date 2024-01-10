@@ -22,13 +22,15 @@ export function createCommentModal(props: ModalNutritionCommentProps) {
 }
 
 export function createCancellationModal(
-  sendCancellation: (body: CancelNutritionIn['body']) => Promise<void>) {
+  sendCancellation: (body: CancelNutritionIn['body']) => Promise<void>,
+  getPassedDatesUntil: () => Date) {
   const showCancellationModal = (selectedDate: Date) => {
     magicModal.show(() => createPeriodModal(selectedDate, {
       onConfirm: showCommentModal,
       onClose: () => {
         hideModal();
-      }
+      },
+      passedDatesUntil: getPassedDatesUntil()
     }));
   };
 

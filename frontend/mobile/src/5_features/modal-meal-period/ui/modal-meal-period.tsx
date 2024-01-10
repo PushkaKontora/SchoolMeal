@@ -24,7 +24,8 @@ export function ModalMealPeriod(props: ModalMealPeriodProps) {
       clickExit={props.onClose}>
       <Calendar
         initialDate={props.initialDate}
-        onPeriodChange={onPeriodChange}/>
+        onPeriodChange={onPeriodChange}
+        passedDatesUntil={props.passedDatesUntil}/>
       <MarginArea
         marginBottom={24}>
         <PeriodDateBadge

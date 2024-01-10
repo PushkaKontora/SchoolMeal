@@ -116,6 +116,10 @@ export function DebugPage({navigation}: PropsWithNavigation) {
             'success',
             'Только заголовок',
             undefined)}/>
+        <ButtonPrimary title={'Длинное описание'}
+          onPress={() => showNotification(
+            'success', undefined,
+            'Длинное описание, ну очень длинное описание в данном тосте')}/>
       </View>
     </ScrollView>
   );

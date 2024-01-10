@@ -6,6 +6,7 @@ import {generatePeriod} from '../lib/period';
 import {dateToISOWithoutTime} from '../../../../../lib/date';
 import {DEFAULT_DATE} from '../config/calendar-config';
 import {CalendarHeader} from './calendar-header';
+import {TODAY_DATE} from '../config/day-config';
 
 export function Calendar(props: CalendarProps) {
   const initPeriod = () => {
@@ -14,6 +15,8 @@ export function Calendar(props: CalendarProps) {
       dateToISOWithoutTime(props.initialDate || DEFAULT_DATE()));
   };
 
+  const [passedDatesUntil]
+    = useState(props.passedDatesUntil || TODAY_DATE());
   const [month, setMonth]
     = useState(dateToISOWithoutTime(props.initialDate || DEFAULT_DATE()));
   const [markedDates, setMarkedDates]
@@ -61,7 +64,9 @@ export function Calendar(props: CalendarProps) {
       markedDates={markedDates}
       onDayPress={onDayPress}
       dayComponent={(props) => (
-        <DayComponent {...props}/>
+        <DayComponent
+          {...props}
+          passedDateUntil={passedDatesUntil}/>
       )}
       renderHeader={(date: Date) => (
         <CalendarHeader

@@ -3,14 +3,11 @@ import {DayComponentProps} from '../model/props';
 import {createDayStyle} from '../const/styles/day-styles';
 import {memo} from 'react';
 import {selectDateTextStyles} from '../lib/day';
-import {TODAY_DATE} from '../config/day-config';
 import {dateToISOWithoutTime} from '../../../../../lib/date';
 
 export const DayComponent 
   = memo(function DayComponent(props: DayComponentProps) {
     const styles = createDayStyle(props);
-
-    const today = TODAY_DATE();
 
     return (
       <TouchableOpacity
@@ -18,7 +15,7 @@ export const DayComponent
         onPress={() => {
           if (props.onPress) {
             if (props.date) {
-              if (props.date?.dateString >= dateToISOWithoutTime(today)) {
+              if (props.date?.dateString > dateToISOWithoutTime(props.passedDateUntil)) {
                 props.onPress(props.date);
               }
             }

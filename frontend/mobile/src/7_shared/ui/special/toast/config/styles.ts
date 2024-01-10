@@ -30,6 +30,6 @@ export const createStyle = (props: ToastProps) => StyleSheet.create({
     color: '#000000',
     fontWeight: '300',
     fontSize: 14,
-    lineHeight: 24
+    lineHeight: 20
   }
 });
