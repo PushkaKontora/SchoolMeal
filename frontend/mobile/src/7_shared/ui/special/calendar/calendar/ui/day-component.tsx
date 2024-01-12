@@ -3,7 +3,6 @@ import {DayComponentProps} from '../model/props';
 import {createDayStyle} from '../const/styles/day-styles';
 import {memo} from 'react';
 import {selectDateTextStyles} from '../lib/day';
-import {TODAY_DATE} from '../config/day-config';
 import {dateToISOWithoutTime} from '../../../../../lib/date';
 
 export const DayComponent 
