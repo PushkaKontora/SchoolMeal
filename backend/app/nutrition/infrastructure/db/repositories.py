@@ -11,15 +11,19 @@ from app.nutrition.application.repositories import (
     IMenusRepository,
     IParentsRepository,
     IPupilsRepository,
+    IRequestsRepository,
     ISchoolClassesRepository,
     NotFoundMenu,
     NotFoundParent,
     NotFoundPupil,
+    NotFoundRequest,
     NotFoundSchoolClass,
 )
 from app.nutrition.domain.menu import Menu
 from app.nutrition.domain.parent import Parent
+from app.nutrition.domain.periods import Day
 from app.nutrition.domain.pupil import Pupil
+from app.nutrition.domain.request import Request
 from app.nutrition.domain.school_class import SchoolClass, SchoolClassType
 from app.nutrition.infrastructure.db.models import (
     CancellationPeriodDB,
@@ -27,6 +31,7 @@ from app.nutrition.infrastructure.db.models import (
     MenuDB,
     ParentDB,
     PupilDB,
+    RequestDB,
     SchoolClassDB,
 )
 
@@ -58,9 +63,9 @@ class AlchemyPupilsRepository(IPupilsRepository):
                     last_name=pupil.last_name.value,
                     first_name=pupil.first_name.value,
                     patronymic=pupil.patronymic.value if pupil.patronymic else None,
-                    has_breakfast=pupil.has_breakfast,
-                    has_dinner=pupil.has_dinner,
-                    has_snacks=pupil.has_snacks,
+                    has_breakfast=pupil.meal_plan.breakfast,
+                    has_dinner=pupil.meal_plan.dinner,
+                    has_snacks=pupil.meal_plan.snacks,
                     preferential_certificate_ends_at=pupil.preferential_certificate.ends_at
                     if pupil.preferential_certificate
                     else None,
@@ -148,3 +153,30 @@ class AlchemySchoolClassesRepository(ISchoolClassesRepository):
         classes_db: list[SchoolClassDB] = (await self._session.scalars(query)).all()
 
         return [class_db.to_model() for class_db in classes_db]
+
+
+class AlchemyRequestsRepository(IRequestsRepository):
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+
+    async def get_by_class_id_and_date(self, class_id: UUID, on_date: Day) -> Request:
+        try:
+            query = select(RequestDB).where(RequestDB.class_id == class_id, RequestDB.on_date == on_date.date)
+            request_db: RequestDB = (await self._session.scalars(query)).one()
+        except NoResultFound as error:
+            raise NotFoundRequest from error
+
+        return request_db.to_model()
+
+    async def upsert(self, request: Request) -> None:
+        request_db = RequestDB.from_model(request)
+
+        query = (
+            insert(RequestDB)
+            .values(**request_db.dict())
+            .on_conflict_do_update(
+                index_elements=[RequestDB.class_id, RequestDB.on_date],
+                set_=request_db.dict(),
+            )
+        )
+        await self._session.execute(query)

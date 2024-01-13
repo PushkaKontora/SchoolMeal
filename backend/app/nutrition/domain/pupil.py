@@ -52,20 +52,25 @@ class NutritionStatus(str, Enum):
 
 
 @dataclass
+class MealPlan:
+    breakfast: bool
+    dinner: bool
+    snacks: bool
+
+
+@dataclass
 class Pupil(Entity):
     id: PupilID
     first_name: Name
     last_name: Name
     patronymic: Name | None
-    has_breakfast: bool
-    has_dinner: bool
-    has_snacks: bool
+    meal_plan: MealPlan
     preferential_certificate: PreferentialCertificate | None
     cancellation_periods: CancellationPeriodSequence
 
     @property
     def nutrition_status(self) -> NutritionStatus:
-        if not any([self.has_breakfast, self.has_dinner, self.has_snacks]):
+        if not any([self.meal_plan.breakfast, self.meal_plan.dinner, self.meal_plan.snacks]):
             return NutritionStatus.NONE
 
         if self.is_preferential:
@@ -77,10 +82,8 @@ class Pupil(Entity):
     def is_preferential(self) -> bool:
         return self.preferential_certificate is not None and not self.preferential_certificate.is_expired
 
-    def update_mealtimes(self, has_breakfast: bool, has_dinner: bool, has_snacks: bool) -> None:
-        self.has_breakfast = has_breakfast
-        self.has_dinner = has_dinner
-        self.has_snacks = has_snacks
+    def update_meal_plan(self, meal_plan: MealPlan) -> None:
+        self.meal_plan = meal_plan
 
     def cancel_nutrition(self, period: CancellationPeriod) -> None:
         """

@@ -4,7 +4,7 @@ import pytest
 
 from app.nutrition.domain.parent import Parent
 from app.nutrition.domain.periods import CancellationPeriodSequence
-from app.nutrition.domain.pupil import Name, Pupil, PupilID
+from app.nutrition.domain.pupil import MealPlan, Name, Pupil, PupilID
 
 
 @pytest.fixture
@@ -14,9 +14,7 @@ def pupil() -> Pupil:
         last_name=Name("Иванов"),
         first_name=Name("Иван"),
         patronymic=Name("Иванович"),
-        has_breakfast=True,
-        has_dinner=True,
-        has_snacks=True,
+        meal_plan=MealPlan(breakfast=True, dinner=True, snacks=True),
         preferential_certificate=None,
         cancellation_periods=CancellationPeriodSequence(periods=tuple()),
     )

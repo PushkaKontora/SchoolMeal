@@ -1,4 +1,5 @@
 from app.nutrition.application.context import NutritionContext
+from app.nutrition.domain.pupil import MealPlan
 from app.shared.cqs.commands import Command, ICommandHandler
 from app.shared.unit_of_work.abc import IUnitOfWork
 
@@ -22,10 +23,12 @@ class UpdateMealtimesCommandHandler(ICommandHandler[UpdateMealtimesCommand, None
         async with self._unit_of_work as context:
             pupil = await context.pupils.get_by_id(pupil_id=command.pupil_id)
 
-            pupil.update_mealtimes(
-                has_breakfast=command.has_breakfast,
-                has_dinner=command.has_dinner,
-                has_snacks=command.has_snacks,
+            pupil.update_meal_plan(
+                MealPlan(
+                    breakfast=command.has_breakfast,
+                    dinner=command.has_dinner,
+                    snacks=command.has_snacks,
+                )
             )
             await context.pupils.update(pupil)
 

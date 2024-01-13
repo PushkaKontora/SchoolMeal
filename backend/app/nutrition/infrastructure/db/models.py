@@ -4,14 +4,15 @@ from pathlib import Path
 from uuid import UUID
 
 from sqlalchemy import ARRAY, Boolean, Column, Date, ForeignKey, Integer, Numeric, String, literal
-from sqlalchemy.dialects.postgresql import UUID as UUID_DB
+from sqlalchemy.dialects.postgresql import JSONB, UUID as UUID_DB
 from sqlalchemy.orm import Mapped, declarative_base, relationship
 from sqlalchemy.sql import expression
 
 from app.nutrition.domain.menu import Food, Menu
 from app.nutrition.domain.parent import Parent
-from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Reason
-from app.nutrition.domain.pupil import Name, PreferentialCertificate, Pupil, PupilID
+from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Day, Reason
+from app.nutrition.domain.pupil import MealPlan, Name, PreferentialCertificate, Pupil, PupilID
+from app.nutrition.domain.request import Request, Status
 from app.nutrition.domain.school_class import SchoolClass, SchoolClassInitials, SchoolClassType
 from app.shared.db.base import Base
 from app.shared.domain.money import Money
@@ -47,6 +48,7 @@ class SchoolClassDB(NutritionBase):
     number: Mapped[int] = Column(Integer, nullable=False)
     literal: Mapped[str] = Column(String(1), nullable=False)
 
+    pupils: Mapped[list["PupilDB"]] = relationship("PupilDB", uselist=True, lazy="selectin")
     school: Mapped[SchoolDB] = relationship(SchoolDB, uselist=False, viewonly=True)
     teacher: Mapped[TeacherDB] = relationship(TeacherDB, uselist=False, viewonly=True)
 
@@ -58,6 +60,7 @@ class SchoolClassDB(NutritionBase):
             breakfast=self.breakfast,
             dinner=self.dinner,
             snacks=self.snacks,
+            pupils=[pupil_db.to_model() for pupil_db in self.pupils],
         )
 
 
@@ -113,9 +116,7 @@ class PupilDB(NutritionBase):
             first_name=Name(self.first_name),
             last_name=Name(self.last_name),
             patronymic=Name(self.patronymic) if self.patronymic else None,
-            has_breakfast=self.has_breakfast,
-            has_dinner=self.has_dinner,
-            has_snacks=self.has_snacks,
+            meal_plan=MealPlan(breakfast=self.has_breakfast, dinner=self.has_dinner, snacks=self.has_snacks),
             preferential_certificate=PreferentialCertificate(ends_at=self.preferential_certificate_ends_at)
             if self.preferential_certificate_ends_at
             else None,
@@ -244,3 +245,43 @@ class SnacksFoodDB(NutritionBase):
 
     menu_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(MenuDB.id), primary_key=True)
     food_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(FoodDB.id), primary_key=True)
+
+
+class RequestDB(NutritionBase):
+    __tablename__ = "request"
+
+    class_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(SchoolClassDB.id), primary_key=True)
+    on_date: Mapped[date] = Column(Date, primary_key=True)
+    status: Mapped[int] = Column(Integer, nullable=False)
+    pupils: Mapped[dict[str, tuple[bool, bool, bool]]] = Column(JSONB, nullable=False)
+
+    def __init__(self, class_id: UUID, on_date: date, status: int, pupils: dict[str, tuple[bool, bool, bool]]) -> None:
+        super().__init__()
+
+        self.class_id = class_id
+        self.on_date = on_date
+        self.status = status
+        self.pupils = pupils
+
+    def to_model(self) -> Request:
+        return Request(
+            class_id=self.class_id,
+            on_date=Day(self.on_date),
+            status=Status(self.status),
+            pupils={
+                PupilID(pupil_id): MealPlan(breakfast=mealtimes[0], dinner=mealtimes[1], snacks=mealtimes[2])
+                for pupil_id, mealtimes in self.pupils.items()
+            },
+        )
+
+    @classmethod
+    def from_model(cls, request: Request) -> "RequestDB":
+        return cls(
+            class_id=request.class_id,
+            on_date=request.on_date.date,
+            status=request.status.value,
+            pupils={
+                pupil_id.value: (meal_plan.breakfast, meal_plan.dinner, meal_plan.snacks)
+                for pupil_id, meal_plan in request.pupils.items()
+            },
+        )

@@ -10,6 +10,7 @@ from app.nutrition.application.commands.attach_child_to_parent import (
     AttachChildToParentCommandHandler,
 )
 from app.nutrition.application.commands.cancel_nutrition import CancelNutritionCommand, CancelNutritionCommandHandler
+from app.nutrition.application.commands.prefill_request import PrefillRequestCommand, PrefillRequestCommandHandler
 from app.nutrition.application.commands.resume_nutrition import ResumeNutritionCommand, ResumeNutritionCommandHandler
 from app.nutrition.application.commands.update_mealtimes import UpdateMealtimesCommand, UpdateMealtimesCommandHandler
 from app.nutrition.application.dto import CancellationPeriodOut
@@ -22,7 +23,7 @@ from app.nutrition.application.queries.school_classes.get_school_classes import 
     GetSchoolClassesQuery,
     GetSchoolClassesQueryExecutor,
 )
-from app.nutrition.application.repositories import NotFoundMenu, NotFoundParent, NotFoundPupil
+from app.nutrition.application.repositories import NotFoundMenu, NotFoundParent, NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain.parent import ChildIsAlreadyAttachedToParent
 from app.nutrition.domain.periods import (
     EndCannotBeGreaterThanStart,
@@ -30,6 +31,7 @@ from app.nutrition.domain.periods import (
     SpecifiedReasonCannotBeEmpty,
 )
 from app.nutrition.domain.pupil import CannotCancelNutritionAfterTime, CannotResumeNutritionAfterTime
+from app.nutrition.domain.request import RequestIsAlreadyToBeSubmitted
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
@@ -223,3 +225,25 @@ async def get_menu_on_date(
         return await executor.execute(query)
     except NotFoundMenu as error:
         raise NotFoundError(f"Не найдено меню на дату {query.on_date}") from error
+
+
+@router.post(
+    "/requests/prepare",
+    summary="Предзаполнить заявку",
+    status_code=status.HTTP_201_CREATED,
+    responses=responses.BAD_REQUEST,
+)
+@inject
+async def prefill_request(
+    command: PrefillRequestCommand,
+    handler: PrefillRequestCommandHandler = Depends(Provide[NutritionContainer.prefill_request_command_handler]),
+) -> OKSchema:
+    try:
+        await handler.handle(command)
+    except NotFoundSchoolClass as error:
+        raise NotFoundError("Не найден класс с заданными идентификатором") from error
+
+    except RequestIsAlreadyToBeSubmitted as error:
+        raise BadRequestError("Заявка уже готова к отправке и не может быть отредактирована") from error
+
+    return OKSchema()

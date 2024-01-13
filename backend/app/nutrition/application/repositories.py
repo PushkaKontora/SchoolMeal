@@ -4,7 +4,9 @@ from uuid import UUID
 
 from app.nutrition.domain.menu import Menu
 from app.nutrition.domain.parent import Parent
+from app.nutrition.domain.periods import Day
 from app.nutrition.domain.pupil import Pupil
+from app.nutrition.domain.request import Request
 from app.nutrition.domain.school_class import SchoolClass, SchoolClassType
 
 
@@ -81,4 +83,17 @@ class ISchoolClassesRepository(ABC):
 
     @abstractmethod
     async def get_all_by_teacher_id(self, teacher_id: UUID) -> list[SchoolClass]:
+        raise NotImplementedError
+
+
+class IRequestsRepository(ABC):
+    @abstractmethod
+    async def get_by_class_id_and_date(self, class_id: UUID, on_date: Day) -> Request:
+        """
+        :raise NotFoundRequest: не найдена заявка для класса на дату
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    async def upsert(self, request: Request) -> None:
         raise NotImplementedError

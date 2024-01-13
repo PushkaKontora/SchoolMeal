@@ -8,6 +8,7 @@ from app.nutrition import api
 from app.nutrition.application import commands
 from app.nutrition.application.commands.attach_child_to_parent import AttachChildToParentCommandHandler
 from app.nutrition.application.commands.cancel_nutrition import CancelNutritionCommandHandler
+from app.nutrition.application.commands.prefill_request import PrefillRequestCommandHandler
 from app.nutrition.application.commands.resume_nutrition import ResumeNutritionCommandHandler
 from app.nutrition.application.commands.update_mealtimes import UpdateMealtimesCommandHandler
 from app.nutrition.application.context import NutritionContext
@@ -21,6 +22,7 @@ from app.nutrition.infrastructure.db.repositories import (
     AlchemyMenusRepository,
     AlchemyParentsRepository,
     AlchemyPupilsRepository,
+    AlchemyRequestsRepository,
     AlchemySchoolClassesRepository,
 )
 from app.shared.objects_storage.local import LocalObjectsStorage, Protocol
@@ -42,6 +44,7 @@ class NutritionContainer(DeclarativeContainer):
             parents=AlchemyParentsRepository(session),
             menus=AlchemyMenusRepository(session),
             school_classes=AlchemySchoolClassesRepository(session),
+            requests=AlchemyRequestsRepository(session),
         ),
     )
 
@@ -57,6 +60,7 @@ class NutritionContainer(DeclarativeContainer):
     cancel_nutrition_command_handler = Factory(CancelNutritionCommandHandler, unit_of_work=unit_of_work)
     change_plan_command_handler = Factory(UpdateMealtimesCommandHandler, unit_of_work=unit_of_work)
     resume_nutrition_command_handler = Factory(ResumeNutritionCommandHandler, unit_of_work=unit_of_work)
+    prefill_request_command_handler = Factory(PrefillRequestCommandHandler, unit_of_work=unit_of_work)
 
     get_children_query_executor = Factory(GetChildrenQueryExecutor, session_factory=session.provider)
     get_pupil_by_id_executor = Factory(GetPupilByIDQueryExecutor, unit_of_work=unit_of_work)

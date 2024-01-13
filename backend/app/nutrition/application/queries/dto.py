@@ -3,7 +3,7 @@ from enum import Enum
 from uuid import UUID
 
 from app.nutrition.application.dto import CancellationPeriodOut
-from app.nutrition.domain.pupil import NutritionStatus, PreferentialCertificate, Pupil
+from app.nutrition.domain.pupil import MealPlan, NutritionStatus, PreferentialCertificate, Pupil
 from app.nutrition.domain.school_class import SchoolClass, SchoolClassInitials
 from app.shared.fastapi.schemas import FrontendModel
 
@@ -27,6 +27,14 @@ class MealPlanOut(FrontendModel):
     has_breakfast: bool
     has_dinner: bool
     has_snacks: bool
+
+    @classmethod
+    def from_model(cls, meal_plan: MealPlan) -> "MealPlanOut":
+        return cls(
+            has_breakfast=meal_plan.breakfast,
+            has_dinner=meal_plan.dinner,
+            has_snacks=meal_plan.snacks,
+        )
 
 
 class PreferentialCertificateOut(FrontendModel):
@@ -54,9 +62,7 @@ class PupilOut(FrontendModel):
             id=pupil.id.value,
             last_name=pupil.last_name.value,
             first_name=pupil.first_name.value,
-            meal_plan=MealPlanOut(
-                has_breakfast=pupil.has_breakfast, has_dinner=pupil.has_dinner, has_snacks=pupil.has_snacks
-            ),
+            meal_plan=MealPlanOut.from_model(pupil.meal_plan),
             preferential_certificate=PreferentialCertificateOut.from_model(pupil.preferential_certificate)
             if pupil.preferential_certificate
             else None,

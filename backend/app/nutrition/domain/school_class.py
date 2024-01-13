@@ -3,6 +3,7 @@ from uuid import UUID
 
 from pydantic.dataclasses import dataclass
 
+from app.nutrition.domain.pupil import Pupil
 from app.shared.domain.abc import Entity, ValueObject
 
 
@@ -43,7 +44,8 @@ class SchoolClassInitials(ValueObject):
 class SchoolClass(Entity):
     id: UUID
     initials: SchoolClassInitials
-    teacher_id: UUID
+    teacher_id: UUID | None
     breakfast: bool
     dinner: bool
     snacks: bool
+    pupils: list[Pupil]
