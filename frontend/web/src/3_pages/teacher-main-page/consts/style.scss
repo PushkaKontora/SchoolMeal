@@ -50,22 +50,46 @@
       margin-top: 24px;
       position: relative;
 
-      .btnSendAppl {
-        margin-left: auto;
-        margin-top: 24px;
-        width: 296px;
+      .btnWrapper {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
 
         .btn {
           padding: 14px;
-          background-color: #ec662a;
-          color: #ffffff;
           font-size: 14px;
           border-radius: 10px;
           font-weight: 700;
           font-family: 'Ubuntu', serif;
+          background-color: #ffffff;
+          color: #ec662a;
 
-          width: 100%;
           border-width: 0;
+        }
+
+        .btnCancelChange {
+          border: #ec662a 2px solid;
+          width: 179px;
+
+          &:hover {
+            background-color: #f4f4f4;
+            border: #fb8f61 2px solid;
+            transition: 0.3s linear;
+          }
+
+          &:active {
+            background-color: #fbf0ec;
+            transition: 0.3s linear;
+          }
+        }
+
+        .btnSendAppl {
+          margin-left: 10px;
+          margin-top: 24px;
+          width: 296px;
+
+          background-color: #ec662a;
+          color: #ffffff;
 
           &:hover {
             background-color: #e57645;
@@ -98,7 +122,7 @@
 
       position: fixed;
       right: 10%;
-      top: 10%; /* в левый-верхний угол */
+      top: 400px; /* в левый-верхний угол */
     }
 
     .containerClassSelection {

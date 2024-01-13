@@ -1,5 +1,7 @@
-import {PropsWithChildren} from 'react';
+import { PropsWithChildren } from 'react';
 
 export type TableHeadersProps = {
-    price: string[] | number[]
+  breakfastPrice: string | number;
+  lunchPrice: string | number;
+  snackPrice: string | number;
 } & PropsWithChildren;

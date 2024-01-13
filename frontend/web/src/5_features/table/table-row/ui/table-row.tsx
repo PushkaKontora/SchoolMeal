@@ -11,11 +11,32 @@ export default function TableRow(props: TableRowProps) {
   const [lunchCheckbox, setLunchCheckbox] = useState(lunch.isCheck);
   const [snackCheckbox, setSnackCheckbox] = useState(snack.isCheck);
 
+  const [countTotalSum, setCountTotalSum] = useState(total);
 
-  const checkHandler = () => {};
+  useEffect(() => {
+    let sum = 0;
+    if (!breakfast.isDisabled && breakfastCheckbox) {
+      sum += breakfast.price;
+    }
+    if (!lunch.isDisabled && lunchCheckbox) {
+      sum += lunch.price;
+    }
+    if (!snack.isDisabled && snackCheckbox) {
+      sum += snack.price;
+    }
+    setCountTotalSum(sum);
+  }, [breakfastCheckbox, lunchCheckbox, snackCheckbox]);
 
   const onChangeBreakfastCheckbox = (state: boolean) => {
     setBreakfastCheckbox(state);
+  };
+
+  const onChangeLunchCheckbox = (state: boolean) => {
+    setLunchCheckbox(state);
+  };
+
+  const onChangeSnackCheckbox = (state: boolean) => {
+    setSnackCheckbox(state);
   };
 
   return (
@@ -71,20 +92,33 @@ export default function TableRow(props: TableRowProps) {
       <td scope='row'>
         <BasicCheckbox
           isDisable={breakfast.isDisabled}
-          isCheck={breakfastCheckbox}
+          isCheck={breakfast.isCheck}
           onChange={onChangeBreakfastCheckbox}
-          type='b' isHeader={false}
+          type='b'
+          isHeader={false}
         />
       </td>
       <td scope='row'>
-        <BasicCheckbox isDisable={lunch.isDisabled} isCheck={lunch.isCheck} type='l' isHeader={false}/>
+        <BasicCheckbox
+          isDisable={lunch.isDisabled}
+          isCheck={lunch.isCheck}
+          onChange={onChangeLunchCheckbox}
+          type='l'
+          isHeader={false}
+        />
       </td>
       <td scope='row'>
-        <BasicCheckbox isDisable={snack.isDisabled} isCheck={snack.isCheck} type='s' isHeader={false}/>
+        <BasicCheckbox
+          isDisable={snack.isDisabled}
+          isCheck={snack.isCheck}
+          onChange={onChangeSnackCheckbox}
+          type='s'
+          isHeader={false}
+        />
       </td>
       <td scope='row'>
         <ValueBadge
-          value={`${total ? total : 0} ₽`}
+          value={`${countTotalSum ? countTotalSum : 0} ₽`}
           textColor={'#58BCBB'}
           width='52px'
           margin='auto 0 auto auto'
