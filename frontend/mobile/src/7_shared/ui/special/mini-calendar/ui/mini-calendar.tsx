@@ -3,11 +3,12 @@ import {datePicker, styles} from '../consts/styles';
 import {MiniCalendarProps} from '../types/props';
 import {useEffect, useRef, useState} from 'react';
 import {DEFAULT_DATE, DEFAULT_ITEM_NUMBER} from '../config/config';
-import {findDatesFrom, findNext, findPrev, isEqualDates} from '../lib/dates-utils';
+import {findDatesFrom, findNext, findPrev, isEqualDates} from '../lib/dates';
 import {ButtonIconed} from '../../../buttons/button-iconed';
-import {DateButton} from './date-button';
 import {PaddingArea} from '../../../styling/padding-area';
 import {DEFAULT_VERTICAL_PADDING} from '../consts/consts';
+import {NewDateButton} from './new-date-button';
+import {dateToISOWithoutTime} from '../../../../lib/date';
 
 export function MiniCalendar(props: MiniCalendarProps) {
   // === states ===
@@ -67,10 +68,11 @@ export function MiniCalendar(props: MiniCalendarProps) {
 
           {
             dates.map((item, idx) =>
-              <DateButton key={idx}
-                checked={checkedIndexRef.current === idx}
+              <NewDateButton
+                key={idx}
                 date={item}
-                selectionColor={props.selectionColor}
+                selected={checkedIndexRef.current === idx}
+                {...props?.dateInfo?.[dateToISOWithoutTime(item)]}
                 onPress={() => {
                   onDateButtonChange(idx);
                 }}/>)

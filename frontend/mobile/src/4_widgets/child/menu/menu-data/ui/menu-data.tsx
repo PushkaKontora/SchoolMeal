@@ -7,7 +7,7 @@ import {useAppDispatch} from '../../../../../../store/hooks';
 import {MonthPicker} from '../../../../../7_shared/ui/special/mini-calendar/ui/month-picker';
 import {useEffect, useState} from 'react';
 import {DEFAULT_DATE} from '../../../../../7_shared/consts/default_date';
-import {findFirstFullWeek} from '../../../../../7_shared/ui/special/mini-calendar/lib/dates-utils';
+import {findFirstFullWeek} from '../../../../../7_shared/ui/special/mini-calendar/lib/dates';
 import {dateToISOWithoutTime} from '../../../../../7_shared/lib/date';
 
 export function MenuData() {
@@ -38,7 +38,7 @@ export function MenuData() {
           paddingBottom={0}/>
         <MonthPicker date={monthDate} onMonthChange={handleMonth}/>
       </View>
-      <MiniCalendar selectionColor={'#E9632C'}
+      <MiniCalendar
         currentDate={selectedDate}
         onDateChange={handleDate}/>
     </View>
