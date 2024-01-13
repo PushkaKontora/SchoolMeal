@@ -52,6 +52,7 @@ class GetMenuOnDateQueryExecutor(IQueryExecutor[GetMenuOnDateQuery, MenuOut]):
                     proteins=str(food.proteins),
                     fats=str(food.fats),
                     carbohydrates=str(food.carbohydrates),
+                    weight=str(food.weight),
                     price=str(food.price),
                     photo_url=await self._objects.get_url(file=food.photo),
                 )

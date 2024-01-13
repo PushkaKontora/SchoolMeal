@@ -19,6 +19,7 @@ class Food(Entity):
     proteins: Decimal
     fats: Decimal
     carbohydrates: Decimal
+    weight: Decimal
     price: Money
     photo: Path
 

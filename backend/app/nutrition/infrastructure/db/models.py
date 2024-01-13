@@ -3,7 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 from uuid import UUID
 
-from sqlalchemy import ARRAY, Boolean, Column, Date, ForeignKey, Integer, Numeric, String
+from sqlalchemy import ARRAY, Boolean, Column, Date, ForeignKey, Integer, Numeric, String, literal
 from sqlalchemy.dialects.postgresql import UUID as UUID_DB
 from sqlalchemy.orm import Mapped, declarative_base, relationship
 from sqlalchemy.sql import expression
@@ -184,6 +184,7 @@ class FoodDB(NutritionBase):
     proteins: Mapped[Decimal] = Column(Numeric(asdecimal=True, scale=2), nullable=False)
     fats: Mapped[Decimal] = Column(Numeric(asdecimal=True, scale=2), nullable=False)
     carbohydrates: Mapped[Decimal] = Column(Numeric(asdecimal=True, scale=2), nullable=False)
+    weight: Mapped[Decimal] = Column(Numeric(asdecimal=True, scale=2), nullable=False, server_default=literal(0))
     price: Mapped[Decimal] = Column(Numeric(asdecimal=True, scale=2), nullable=False)
     photo: Mapped[str] = Column(String(1024), nullable=False)
 
@@ -196,6 +197,7 @@ class FoodDB(NutritionBase):
             proteins=self.proteins,
             fats=self.fats,
             carbohydrates=self.carbohydrates,
+            weight=self.weight,
             price=Money(self.price),
             photo=Path(self.photo),
         )

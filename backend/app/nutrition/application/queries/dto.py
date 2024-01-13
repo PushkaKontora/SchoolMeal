@@ -103,6 +103,7 @@ class FoodOut(FrontendModel):
     proteins: str
     fats: str
     carbohydrates: str
+    weight: str
     price: str
     photo_url: str | None
 
