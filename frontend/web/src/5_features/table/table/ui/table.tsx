@@ -8,7 +8,11 @@ export default function Table() {
     <div className='containerTable'>
       <table className='table'>
         <thead>
-          <TableHeaders price={[61, 128, 91]} />
+          <TableHeaders
+            breakfastPrice={CHILDRENS_NAME[0].breakfast.price}
+            lunchPrice={CHILDRENS_NAME[0].lunch.price}
+            snackPrice={CHILDRENS_NAME[0].snack.price}
+          />
         </thead>
         <tbody>
           {CHILDRENS_NAME.map((item) => (

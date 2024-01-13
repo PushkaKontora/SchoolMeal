@@ -7,14 +7,17 @@ export const CHILDRENS_NAME = [
     breakfast: {
       isCheck: true,
       isDisabled: false,
+      price: 111,
     },
     lunch: {
       isCheck: false,
       isDisabled: false,
+      price: 180,
     },
     snack: {
       isCheck: true,
       isDisabled: true,
+      price: 195,
     },
   },
   {
@@ -25,14 +28,17 @@ export const CHILDRENS_NAME = [
     breakfast: {
       isCheck: false,
       isDisabled: false,
+      price: 111,
     },
     lunch: {
       isCheck: true,
       isDisabled: true,
+      price: 180,
     },
     snack: {
       isCheck: true,
       isDisabled: false,
+      price: 195,
     },
   },
   {
@@ -42,14 +48,17 @@ export const CHILDRENS_NAME = [
     breakfast: {
       isCheck: true,
       isDisabled: false,
+      price: 111,
     },
     lunch: {
       isCheck: false,
       isDisabled: false,
+      price: 180,
     },
     snack: {
       isCheck: false,
       isDisabled: false,
+      price: 195,
     },
   },
   {
@@ -60,14 +69,17 @@ export const CHILDRENS_NAME = [
     breakfast: {
       isCheck: true,
       isDisabled: false,
+      price: 111,
     },
     lunch: {
       isCheck: true,
       isDisabled: true,
+      price: 180,
     },
     snack: {
       isCheck: true,
       isDisabled: true,
+      price: 195,
     },
   },
   {
@@ -78,14 +90,17 @@ export const CHILDRENS_NAME = [
     breakfast: {
       isCheck: true,
       isDisabled: true,
+      price: 111,
     },
     lunch: {
       isCheck: true,
       isDisabled: true,
+      price: 180,
     },
     snack: {
       isCheck: false,
       isDisabled: true,
+      price: 195,
     },
   },
   {
@@ -96,14 +111,17 @@ export const CHILDRENS_NAME = [
     breakfast: {
       isCheck: true,
       isDisabled: false,
+      price: 111,
     },
     lunch: {
       isCheck: true,
       isDisabled: true,
+      price: 180,
     },
     snack: {
       isCheck: false,
       isDisabled: false,
+      price: 195,
     },
   },
   {
@@ -114,14 +132,17 @@ export const CHILDRENS_NAME = [
     breakfast: {
       isCheck: false,
       isDisabled: false,
+      price: 111,
     },
     lunch: {
       isCheck: true,
       isDisabled: true,
+      price: 180,
     },
     snack: {
       isCheck: true,
       isDisabled: true,
+      price: 195,
     },
   },
   {
@@ -132,14 +153,17 @@ export const CHILDRENS_NAME = [
     breakfast: {
       isCheck: true,
       isDisabled: false,
+      price: 111,
     },
     lunch: {
       isCheck: true,
       isDisabled: true,
+      price: 180,
     },
     snack: {
       isCheck: true,
       isDisabled: true,
+      price: 195,
     },
   },
   {
@@ -150,14 +174,17 @@ export const CHILDRENS_NAME = [
     breakfast: {
       isCheck: true,
       isDisabled: false,
+      price: 111,
     },
     lunch: {
       isCheck: true,
       isDisabled: true,
+      price: 180,
     },
     snack: {
       isCheck: true,
       isDisabled: true,
+      price: 195,
     },
   },
 ];

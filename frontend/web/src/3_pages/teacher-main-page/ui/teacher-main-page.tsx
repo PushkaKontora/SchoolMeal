@@ -1,6 +1,11 @@
 import '../consts/style.scss';
 import HeaderTeacherWidget from '../../../4_widgets/header-teacher/ui/header-teacher.tsx';
-import { infoMessageTime, infoMessageInstruction } from '../consts/consts.ts';
+import {
+  infoMessageTime,
+  infoMessageInstruction,
+  BUTTON_TEXT_SEND_ISSUE,
+  BUTTON_TEXT_SAVED_CHANGED,
+} from '../consts/consts.ts';
 import { useState } from 'react';
 import Popup from 'reactjs-popup';
 import ClassSelection from '../../../5_features/tabs/class-selection/ui/class-selection.tsx';
@@ -10,14 +15,24 @@ import Table from '../../../5_features/table/table/ui/table.tsx';
 export function TeacherMainPage() {
   const [open, setOpen] = useState(false);
 
+  const [buttonText, setBttonText] = useState(BUTTON_TEXT_SEND_ISSUE);
+
   const statusName = 'Не подана';
 
   function handlerSendApplication() {
-    setOpen(true);
+    if (buttonText == BUTTON_TEXT_SEND_ISSUE) {
+      setBttonText(BUTTON_TEXT_SAVED_CHANGED);
+    } else if (buttonText == BUTTON_TEXT_SAVED_CHANGED) {
+      setOpen(true);
 
-    setTimeout(() => {
-      setOpen(false);
-    }, 2000);
+      setTimeout(() => {
+        setOpen(false);
+      }, 2000);
+    }
+  }
+
+  function handlerCancelChange() {
+
   }
 
   return (
@@ -44,14 +59,26 @@ export function TeacherMainPage() {
               <MonthSelection />
             </div>
           </div>
-          <Table/>
-          <div className='btnSendAppl'>
-            <button className='btn' onClick={handlerSendApplication}>
-              Отправить заявку
+          <Table />
+          <div className='btnWrapper'>
+            {buttonText == BUTTON_TEXT_SAVED_CHANGED && (
+              <button
+                className='btn btnCancelChange'
+                onClick={handlerCancelChange}
+              >
+                Отменить
+              </button>
+            )}
+
+            <button
+              className='btn btnSendAppl'
+              onClick={handlerSendApplication}
+            >
+              {buttonText}
             </button>
             <Popup nested modal open={open}>
               {() => (
-                <div className={'modalText'}>Заявка успешно отправлена</div>
+                <div className='modalText'>Заявка успешно отправлена</div>
               )}
             </Popup>
           </div>

@@ -4,7 +4,7 @@ import '../consts/style.scss';
 import { TableHeadersProps } from '../model/props';
 
 export default function TableHeaders(props: TableHeadersProps) {
-  const { price } = props;
+  const { breakfastPrice, lunchPrice, snackPrice } = props;
   const dispatch = useAppDispatch();
 
   return (
@@ -15,18 +15,33 @@ export default function TableHeaders(props: TableHeadersProps) {
       </td>
       <td scope='col'>
         <div className='nameCol'>Завтрак</div>
-        {price && <div className='price'>{price[0]} ₽</div>}
-        <BasicCheckbox isDisable={false} isCheck={false} type='b' isHeader={true}/>
+        {breakfastPrice && <div className='price'>{breakfastPrice} ₽</div>}
+        <BasicCheckbox
+          isDisable={false}
+          isCheck={false}
+          type='b'
+          isHeader={true}
+        />
       </td>
       <td scope='col'>
         <div className='nameCol'>Обед</div>
-        {price && <div className='price'>{price[1]} ₽</div>}
-        <BasicCheckbox isDisable={false} isCheck={false} type='l' isHeader={true}/>
+        {lunchPrice && <div className='price'>{lunchPrice} ₽</div>}
+        <BasicCheckbox
+          isDisable={false}
+          isCheck={false}
+          type='l'
+          isHeader={true}
+        />
       </td>
       <td scope='col'>
         <div className='nameCol'>Полдник</div>
-        {price && <div className='price'>{price[2]} ₽</div>}
-        <BasicCheckbox isDisable={false} isCheck={false} type='s' isHeader={true}/>
+        {snackPrice && <div className='price'>{snackPrice} ₽</div>}
+        <BasicCheckbox
+          isDisable={false}
+          isCheck={false}
+          type='s'
+          isHeader={true}
+        />
       </td>
       <td scope='col'>
         <div className='nameCol'>Итого</div>

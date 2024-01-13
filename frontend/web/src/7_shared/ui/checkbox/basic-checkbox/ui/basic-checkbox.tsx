@@ -6,11 +6,13 @@ import { useAppSelector, useAppDispatch } from '../../../../../../store/hooks';
 import { changeStateCheckbox } from '../../../../../5_features/table/model/checkbox-slice.ts/checkbox-slice';
 
 export default function BasicCheckbox(props: BasicCheckboxProps) {
-  const { isDisable, isCheck, type, isHeader } = props;
+  const { isDisable, isCheck, type, isHeader, onChange } = props;
   const [isChecked, setIsChecked] = useState(isCheck);
   const valueHeader = useAppSelector((state) => state.checkbox.isAction);
   const typeChangeHeaders = useAppSelector((state) => state.checkbox.type);
-  const valueChangeHeaders = useAppSelector((state) => state.checkbox.lastValue);
+  const valueChangeHeaders = useAppSelector(
+    (state) => state.checkbox.lastValue
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -18,9 +20,13 @@ export default function BasicCheckbox(props: BasicCheckboxProps) {
   }, [isCheck]);
 
   useEffect(() => {
-    if(isHeader == false) {
-      if(type === typeChangeHeaders){
+    if (isHeader == false) {
+      if (type === typeChangeHeaders) {
         setIsChecked(!valueChangeHeaders);
+        
+        if (onChange) {
+          onChange(!isChecked);
+        }
       }
     }
   }, [valueHeader]);
@@ -29,7 +35,11 @@ export default function BasicCheckbox(props: BasicCheckboxProps) {
     setIsChecked(!isChecked);
 
     if (isHeader == true) {
-      dispatch(changeStateCheckbox({type: type, value: isChecked}));
+      dispatch(changeStateCheckbox({ type: type, value: isChecked }));
+    }
+
+    if (onChange) {
+      onChange(!isChecked);
     }
   };
 
