@@ -15,11 +15,12 @@ services:
       GATEWAY_PROTOCOL: ${GATEWAY_PROTOCOL:-http}
       GATEWAY_HOST: ${GATEWAY_HOST:-localhost}
       GATEWAY_PORT: ${GATEWAY_PORT:-80}
-      MEDIA_PATH: ${MEDIA_PATH:-/usr/share/media}
+      MEDIA_PATH: ${MEDIA_PATH:-/media}
     volumes:
-      - media:${MEDIA_PATH:-/usr/share/media}
+      - ./media:${MEDIA_PATH:-/media}:ro
     ports:
       - "8000:8000"
 
-volumes:
-  media:
+  nginx:
+    volumes:
+      - ./media:/usr/share/nginx/media:ro
