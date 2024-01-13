@@ -1,14 +1,14 @@
 import {Text, View} from 'react-native';
 import {styles} from '../consts/styles';
 import {MiniCalendar} from '../../../../7_shared/ui/special/mini-calendar';
-import {DEFAULT_ITEM_NUMBER, PANELS, SELECTION_COLOR} from '../config/config';
+import {DEFAULT_ITEM_NUMBER, PANELS} from '../config/config';
 import {useEffect, useState} from 'react';
 import {NutritionPanelProps} from '../types/props';
 import {PanelPressListeners} from '../types/types';
-import {isAbleToCancelForDate} from '../lib/date-utils';
+import {generateCalendarDateInfo, isAbleToCancelForDate} from '../lib/date-utils';
 import {createPanels} from '../lib/create-panels';
 import {MonthPicker} from '../../../../7_shared/ui/special/mini-calendar/ui/month-picker';
-import {findFirstFullWeek} from '../../../../7_shared/ui/special/mini-calendar/lib/dates-utils';
+import {findFirstFullWeek} from '../../../../7_shared/ui/special/mini-calendar/lib/dates';
 import {dateToISOWithoutTime} from '../../../../7_shared/lib/date';
 import { isNutritionCancelled} from '../lib/period-utils';
 
@@ -18,6 +18,9 @@ export function NutritionPanel(props: NutritionPanelProps) {
   const [cancelledCurrentNutrition, setCancelledCurrentNutrition]
     = useState<boolean | undefined>(undefined);
 
+  const [dateInfo, setDateInfo]
+    = useState(generateCalendarDateInfo(props.nutritionInfo.cancellationPeriods));
+  
   const dateToString = (date: Date) => {
     return dateToISOWithoutTime(date);
   };
@@ -29,6 +32,10 @@ export function NutritionPanel(props: NutritionPanelProps) {
   }, [props.selectedDate,
     props.nutritionInfo,
     props.nutritionInfo.cancellationPeriods]);
+
+  useEffect(() => {
+    setDateInfo(generateCalendarDateInfo(props.nutritionInfo.cancellationPeriods));
+  }, [props.nutritionInfo.cancellationPeriods]);
 
   const panelListeners: PanelPressListeners = {
     onCancel: props.cancelNutrition,
@@ -80,9 +87,9 @@ export function NutritionPanel(props: NutritionPanelProps) {
       <View
         style={styles.calendar}>
         <MiniCalendar
-          selectionColor={SELECTION_COLOR}
           itemNumber={DEFAULT_ITEM_NUMBER}
           currentDate={props.selectedDate}
+          dateInfo={dateInfo}
           onDateChange={onDateChange}/>
       </View>
 

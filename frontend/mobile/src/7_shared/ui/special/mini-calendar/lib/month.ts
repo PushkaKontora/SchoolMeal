@@ -1,5 +1,5 @@
 import {MONTHS} from '../config/config';
-import {findMondayOnWeek} from './dates-utils';
+import {findMondayOnWeek} from './dates';
 
 export function getMonthName(monthIndex: number) {
   return MONTHS[monthIndex];

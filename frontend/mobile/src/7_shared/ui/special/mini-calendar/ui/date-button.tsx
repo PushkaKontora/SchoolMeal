@@ -1,7 +1,7 @@
 import {DateButtonProps} from '../types/props';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {useEffect, useState} from 'react';
-import {getShortDayName} from '../lib/dates-utils';
+import {getShortDayName} from '../lib/dates';
 import {createContainerStyle, createTextStyle} from '../button-style-utils';
 
 export function DateButton(props: DateButtonProps) {
