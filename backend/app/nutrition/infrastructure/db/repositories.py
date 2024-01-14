@@ -6,6 +6,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from sqlalchemy.sql import Select
 
 from app.nutrition.application.repositories import (
     IDraftRequestsRepository,
@@ -144,7 +145,7 @@ class AlchemySchoolClassesRepository(ISchoolClassesRepository):
 
     async def get_by_id(self, id_: UUID) -> SchoolClass:
         try:
-            query = select(SchoolClassDB).where(SchoolClassDB.id == id_).limit(1)
+            query = self._select.where(SchoolClassDB.id == id_).limit(1)
             class_db: SchoolClassDB = (await self._session.scalars(query)).one()
         except NoResultFound as error:
             raise NotFoundSchoolClass from error
@@ -152,16 +153,27 @@ class AlchemySchoolClassesRepository(ISchoolClassesRepository):
         return class_db.to_model()
 
     async def get_all_by_teacher_id(self, teacher_id: UUID) -> list[SchoolClass]:
-        query = select(SchoolClassDB).where(SchoolClassDB.teacher_id == teacher_id)
+        query = self._select.where(SchoolClassDB.teacher_id == teacher_id)
         classes_db: list[SchoolClassDB] = (await self._session.scalars(query)).all()
 
         return [class_db.to_model() for class_db in classes_db]
 
     async def get_all(self) -> list[SchoolClass]:
-        query = select(SchoolClassDB)
+        classes_db: list[SchoolClassDB] = (await self._session.scalars(self._select)).all()
+
+        return [class_db.to_model() for class_db in classes_db]
+
+    async def get_all_by_type(self, class_type: SchoolClassType) -> list[SchoolClass]:
+        range_ = class_type.to_range()
+
+        query = self._select.where(SchoolClassDB.number >= range_[0], SchoolClassDB.number <= range_[1])
         classes_db: list[SchoolClassDB] = (await self._session.scalars(query)).all()
 
         return [class_db.to_model() for class_db in classes_db]
+
+    @property
+    def _select(self) -> Select:
+        return select(SchoolClassDB).order_by(SchoolClassDB.number, SchoolClassDB.literal)
 
 
 class AlchemyDraftRequestsRepository(IDraftRequestsRepository):
@@ -211,3 +223,9 @@ class AlchemyRequestsRepository(IRequestsRepository):
             raise NotFoundRequest from error
 
         return request_db.to_model()
+
+    async def get_all_by_date(self, on_date: Day) -> list[Request]:
+        query = select(RequestDB).where(RequestDB.on_date == on_date.date)
+        requests_db: list[RequestDB] = (await self._session.scalars(query)).all()
+
+        return [request_db.to_model() for request_db in requests_db]

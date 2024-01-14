@@ -51,7 +51,14 @@ class NutritionSchemaInitializer(SchemaInitializer):
         return "nutrition"
 
     def clear(self) -> None:
-        for table in ["pupil", "food", "menu", *[f"{mealtime}_food" for mealtime in ["breakfast", "dinner", "snacks"]]]:
+        for table in [
+            "school",
+            "school_class",
+            "pupil",
+            "food",
+            "menu",
+            *[f"{mealtime}_food" for mealtime in ["breakfast", "dinner", "snacks"]],
+        ]:
             self._database.truncate(self.schema, table)
 
     def push(self, data: Data) -> None:

@@ -19,6 +19,11 @@ from app.nutrition.application.queries.get_children import ChildOut, GetChildren
 from app.nutrition.application.queries.menus.get_menu_on_date import GetMenuOnDateQuery, GetMenuOnDateQueryExecutor
 from app.nutrition.application.queries.pupils.get_pupil_by_id import GetPupilByIDQuery, GetPupilByIDQueryExecutor
 from app.nutrition.application.queries.pupils.get_pupils import GetPupilsQuery, GetPupilsQueryExecutor
+from app.nutrition.application.queries.requests.get_request_report import (
+    GetCountedRequestsQuery,
+    GetCountedRequestsQueryExecutor,
+    Report,
+)
 from app.nutrition.application.queries.requests.get_request_with_plans import (
     GetRequestWithPlansQuery,
     GetRequestWithPlansQueryExecutor,
@@ -254,15 +259,15 @@ async def prefill_request(
     return OKSchema()
 
 
-@router.post(
-    "/request-with-plans",
+@router.get(
+    "/requests/plan-report",
     summary="Получить заявку по классу и дате",
     status_code=status.HTTP_200_OK,
     responses=responses.NOT_FOUND,
 )
 @inject
 async def get_request_with_plans(
-    query: GetRequestWithPlansQuery,
+    query: GetRequestWithPlansQuery = Depends(),
     executor: GetRequestWithPlansQueryExecutor = Depends(
         Provide[NutritionContainer.get_request_with_plans_query_executor]
     ),
@@ -271,3 +276,17 @@ async def get_request_with_plans(
         return await executor.execute(query)
     except NotFoundSchoolClass as error:
         raise NotFoundError("Не найден класс по идентификатору") from error
+
+
+@router.get(
+    "/requests/report",
+    summary="Получить отчёт по заявкам",
+    status_code=status.HTTP_200_OK,
+    responses=responses.NOT_FOUND,
+)
+@inject
+async def get_request_with_plans(
+    query: GetCountedRequestsQuery = Depends(),
+    executor: GetCountedRequestsQueryExecutor = Depends(Provide[NutritionContainer.get_request_report_query_executor]),
+) -> Report:
+    return await executor.execute(query)

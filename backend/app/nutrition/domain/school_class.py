@@ -12,6 +12,12 @@ class SchoolClassType(IntEnum):
     PRIMARY = 0
     HIGH = 1
 
+    def to_range(self) -> tuple[int, int]:
+        return {
+            self.PRIMARY: (1, 4),
+            self.HIGH: (5, 11),
+        }[self]
+
     @classmethod
     def from_number(cls, number: int) -> "SchoolClassType":
         if 1 <= number <= 4:
@@ -38,6 +44,9 @@ class SchoolClassInitials(ValueObject):
     @property
     def school_class_type(self) -> SchoolClassType:
         return SchoolClassType.PRIMARY if 1 <= self.number <= 4 else SchoolClassType.HIGH
+
+    def __str__(self) -> str:
+        return str(self.number) + self.literal
 
 
 @dataclass

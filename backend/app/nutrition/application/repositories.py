@@ -93,6 +93,10 @@ class ISchoolClassesRepository(ABC):
     async def get_all(self) -> list[SchoolClass]:
         raise NotImplementedError
 
+    @abstractmethod
+    async def get_all_by_type(self, class_type: SchoolClassType) -> list[SchoolClass]:
+        raise NotImplementedError
+
 
 class IDraftRequestsRepository(ABC):
     @abstractmethod
@@ -117,4 +121,8 @@ class IRequestsRepository(ABC):
         """
         :raise NotFoundRequest: не найдена заявка
         """
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_all_by_date(self, on_date: Day) -> list[Request]:
         raise NotImplementedError

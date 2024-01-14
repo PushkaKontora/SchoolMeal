@@ -40,7 +40,7 @@ class School(BaseModel):
     school_classes: list[SchoolClass]
 
 
-def generate_schools(amount: int = 3) -> list[School]:
+def generate_schools(amount: int = 1) -> list[School]:
     return [
         School(
             id=str(uuid4()),
