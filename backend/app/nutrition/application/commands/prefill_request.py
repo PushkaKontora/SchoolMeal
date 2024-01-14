@@ -4,10 +4,10 @@ from uuid import UUID
 from pydantic import BaseModel
 
 from app.nutrition.application.context import NutritionContext
-from app.nutrition.application.repositories import NotFoundRequest
+from app.nutrition.application.repositories import NotFoundDraftRequest
 from app.nutrition.domain.periods import Day
 from app.nutrition.domain.pupil import MealPlan, PupilID
-from app.nutrition.domain.request import Request
+from app.nutrition.domain.request import DraftRequest
 from app.shared.cqs.commands import Command, ICommandHandler
 from app.shared.unit_of_work.abc import IUnitOfWork
 
@@ -32,24 +32,24 @@ class PrefillRequestCommandHandler(ICommandHandler[PrefillRequestCommand, None])
     async def handle(self, command: PrefillRequestCommand) -> None:
         """
         :raise NotFoundSchoolClass: не найден класс по идентификатору
-        :raise RequestIsAlreadyToBeSubmitted: заявка уже готова к отправке и не может быть изменена
+        :raise RequestCannotBeUpdatedAfter: заявка не может быть отредактирована
         """
 
         async with self._unit_of_work as context:
             try:
-                request = await context.requests.get_by_class_id_and_date(
+                draft = await context.draft_requests.get_by_class_id_and_date(
                     class_id=command.class_id, on_date=Day(command.on_date)
                 )
-            except NotFoundRequest:
+            except NotFoundDraftRequest:
                 school_class = await context.school_classes.get_by_id(id_=command.class_id)
-                request = Request.prefill(school_class, on_date=Day(command.on_date))
+                draft = DraftRequest.prefill(school_class, on_date=Day(command.on_date))
 
-            request.prepare(
+            draft.edit(
                 pupils={
                     PupilID(pupil.id): MealPlan(breakfast=pupil.breakfast, dinner=pupil.dinner, snacks=pupil.snacks)
                     for pupil in command.overriden_pupils
                 }
             )
-            await context.requests.upsert(request)
+            await context.draft_requests.upsert(draft)
 
             await self._unit_of_work.commit()

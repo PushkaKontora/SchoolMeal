@@ -18,6 +18,7 @@ python-dotenv = "^1.0.0"
 pydantic = {version = "^1.10.7", extras = ["email"]}
 aio-pika = "^9.3.1"
 dependency-injector = "^4.41.0"
+apscheduler = "^3.10.4"
 
 
 [tool.poetry.group.dev.dependencies]

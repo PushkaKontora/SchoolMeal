@@ -31,7 +31,7 @@ from app.nutrition.domain.periods import (
     SpecifiedReasonCannotBeEmpty,
 )
 from app.nutrition.domain.pupil import CannotCancelNutritionAfterTime, CannotResumeNutritionAfterTime
-from app.nutrition.domain.request import RequestIsAlreadyToBeSubmitted
+from app.nutrition.domain.request import RequestCannotBeEditedAfter
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
@@ -243,7 +243,7 @@ async def prefill_request(
     except NotFoundSchoolClass as error:
         raise NotFoundError("Не найден класс с заданными идентификатором") from error
 
-    except RequestIsAlreadyToBeSubmitted as error:
-        raise BadRequestError("Заявка уже готова к отправке и не может быть отредактирована") from error
+    except RequestCannotBeEditedAfter as error:
+        raise BadRequestError("Заявка готова к отправке и не может быть отредактирована") from error
 
     return OKSchema()

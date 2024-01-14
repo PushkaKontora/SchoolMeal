@@ -1,7 +1,7 @@
 from collections import deque
 from collections.abc import Iterable
 from dataclasses import field
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta
 from itertools import chain
 from typing import Iterator, Optional, cast
 
@@ -63,6 +63,9 @@ class Day(Period):
     @property
     def date(self) -> date:
         return self.starts_at
+
+    def combine(self, time_: time) -> datetime:
+        return datetime.combine(self.date, time_)
 
 
 @dataclass(eq=True, frozen=True)

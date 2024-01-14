@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from app.nutrition.application.repositories import (
+    IDraftRequestsRepository,
     IMenusRepository,
     IParentsRepository,
     IPupilsRepository,
@@ -16,4 +17,5 @@ class NutritionContext(Context):
     parents: IParentsRepository
     menus: IMenusRepository
     school_classes: ISchoolClassesRepository
+    draft_requests: IDraftRequestsRepository
     requests: IRequestsRepository

@@ -12,7 +12,7 @@ from app.nutrition.domain.menu import Food, Menu
 from app.nutrition.domain.parent import Parent
 from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Day, Reason
 from app.nutrition.domain.pupil import MealPlan, Name, PreferentialCertificate, Pupil, PupilID
-from app.nutrition.domain.request import Request, Status
+from app.nutrition.domain.request import DraftRequest, PupilInfo, Request
 from app.nutrition.domain.school_class import SchoolClass, SchoolClassInitials, SchoolClassType
 from app.shared.db.base import Base
 from app.shared.domain.money import Money
@@ -247,27 +247,24 @@ class SnacksFoodDB(NutritionBase):
     food_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(FoodDB.id), primary_key=True)
 
 
-class RequestDB(NutritionBase):
-    __tablename__ = "request"
+class DraftRequestDB(NutritionBase):
+    __tablename__ = "draft_request"
 
     class_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(SchoolClassDB.id), primary_key=True)
     on_date: Mapped[date] = Column(Date, primary_key=True)
-    status: Mapped[int] = Column(Integer, nullable=False)
     pupils: Mapped[dict[str, tuple[bool, bool, bool]]] = Column(JSONB, nullable=False)
 
-    def __init__(self, class_id: UUID, on_date: date, status: int, pupils: dict[str, tuple[bool, bool, bool]]) -> None:
+    def __init__(self, class_id: UUID, on_date: date, pupils: dict[str, tuple[bool, bool, bool]]) -> None:
         super().__init__()
 
         self.class_id = class_id
         self.on_date = on_date
-        self.status = status
         self.pupils = pupils
 
-    def to_model(self) -> Request:
-        return Request(
+    def to_model(self) -> DraftRequest:
+        return DraftRequest(
             class_id=self.class_id,
             on_date=Day(self.on_date),
-            status=Status(self.status),
             pupils={
                 PupilID(pupil_id): MealPlan(breakfast=mealtimes[0], dinner=mealtimes[1], snacks=mealtimes[2])
                 for pupil_id, mealtimes in self.pupils.items()
@@ -275,13 +272,52 @@ class RequestDB(NutritionBase):
         )
 
     @classmethod
-    def from_model(cls, request: Request) -> "RequestDB":
+    def from_model(cls, request: DraftRequest) -> "DraftRequestDB":
         return cls(
             class_id=request.class_id,
             on_date=request.on_date.date,
-            status=request.status.value,
             pupils={
                 pupil_id.value: (meal_plan.breakfast, meal_plan.dinner, meal_plan.snacks)
                 for pupil_id, meal_plan in request.pupils.items()
             },
+        )
+
+
+class RequestDB(NutritionBase):
+    __tablename__ = "request"
+
+    class_id: Mapped[UUID] = Column(UUID_DB(as_uuid=True), ForeignKey(SchoolClassDB.id), primary_key=True)
+    on_date: Mapped[date] = Column(Date, primary_key=True)
+    pupils: Mapped[list[tuple[str, bool, bool, bool, bool]]] = Column(JSONB, nullable=False)
+
+    def __init__(self, class_id: UUID, on_date: date, pupils: list[tuple[str, bool, bool, bool, bool]]) -> None:
+        super().__init__()
+
+        self.class_id = class_id
+        self.on_date = on_date
+        self.pupils = pupils
+
+    def to_model(self) -> Request:
+        return Request(
+            class_id=self.class_id,
+            on_date=Day(self.on_date),
+            pupils=[
+                PupilInfo(
+                    id=PupilID(pupil[0]),
+                    plan=MealPlan(breakfast=pupil[1], dinner=pupil[2], snacks=pupil[3]),
+                    preferential=pupil[4],
+                )
+                for pupil in self.pupils
+            ],
+        )
+
+    @classmethod
+    def from_model(cls, request: Request) -> "Request":
+        return cls(
+            class_id=request.class_id,
+            on_date=request.on_date.date,
+            pupils=[
+                (pupil.id.value, pupil.plan.breakfast, pupil.plan.dinner, pupil.plan.snacks, pupil.preferential)
+                for pupil in request.pupils
+            ],
         )
