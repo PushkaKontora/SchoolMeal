@@ -2,6 +2,6 @@ import {EMPLOYEE_ROUTES, TEACHER_ROUTES} from '../../7_shared/config/routes/auth
 import {Role} from '../../7_shared/model/role';
 
 export const ROLE_DEFAULT_ROUTES: {[index: string]: string} = {
-  [Role.employee]: EMPLOYEE_ROUTES.application,
+  [Role.canteen_staff]: EMPLOYEE_ROUTES.application,
   [Role.teacher]: TEACHER_ROUTES.teacher,
 };
