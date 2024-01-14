@@ -17,6 +17,7 @@ from app.nutrition.application.queries.get_children import GetChildrenQueryExecu
 from app.nutrition.application.queries.menus.get_menu_on_date import GetMenuOnDateQueryExecutor
 from app.nutrition.application.queries.pupils.get_pupil_by_id import GetPupilByIDQueryExecutor
 from app.nutrition.application.queries.pupils.get_pupils import GetPupilsQueryExecutor
+from app.nutrition.application.queries.requests.get_request_with_plans import GetRequestWithPlansQueryExecutor
 from app.nutrition.application.queries.school_classes.get_school_class_by_id import GetSchoolClassByIDQueryExecutor
 from app.nutrition.application.queries.school_classes.get_school_classes import GetSchoolClassesQueryExecutor
 from app.nutrition.infrastructure.db.repositories import (
@@ -74,3 +75,4 @@ class NutritionContainer(DeclarativeContainer):
     get_menus_query_executor = Factory(
         GetMenuOnDateQueryExecutor, unit_of_work=unit_of_work, objects_storage=objects_storage
     )
+    get_request_with_plans_query_executor = Factory(GetRequestWithPlansQueryExecutor, unit_of_work=unit_of_work)

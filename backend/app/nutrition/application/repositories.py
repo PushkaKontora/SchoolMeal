@@ -34,6 +34,10 @@ class NotFoundDraftRequest(Exception):
     pass
 
 
+class NotFoundRequest(Exception):
+    pass
+
+
 class IPupilsRepository(ABC):
     @abstractmethod
     async def get_by_id(self, pupil_id: str) -> Pupil:
@@ -106,4 +110,11 @@ class IDraftRequestsRepository(ABC):
 class IRequestsRepository(ABC):
     @abstractmethod
     async def save(self, request: Request) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_by_class_id_and_date(self, class_id: UUID, on_date: Day) -> Request:
+        """
+        :raise NotFoundRequest: не найдена заявка
+        """
         raise NotImplementedError

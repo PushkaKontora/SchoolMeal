@@ -18,6 +18,7 @@ from app.nutrition.application.repositories import (
     NotFoundMenu,
     NotFoundParent,
     NotFoundPupil,
+    NotFoundRequest,
     NotFoundSchoolClass,
 )
 from app.nutrition.domain.menu import Menu
@@ -201,3 +202,12 @@ class AlchemyRequestsRepository(IRequestsRepository):
 
         self._session.add(request_db)
         await self._session.flush([request_db])
+
+    async def get_by_class_id_and_date(self, class_id: UUID, on_date: Day) -> Request:
+        try:
+            query = select(RequestDB).where(RequestDB.class_id == class_id, RequestDB.on_date == on_date.date).limit(1)
+            request_db: RequestDB = (await self._session.scalars(query)).one()
+        except NoResultFound as error:
+            raise NotFoundRequest from error
+
+        return request_db.to_model()
