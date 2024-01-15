@@ -30,8 +30,8 @@ export function PortionsPart(props: PortionsPartProps) {
           </ImageBackground>
         </View>
         <View style={styles.textContainer}>
-          <Text style={styles.textPart}>{props.portions.food.name}</Text>
-          <Text style={styles.textPart}>{props.portions.weight} г</Text>
+          <Text style={styles.textPart}>{props.food.name}</Text>
+          <Text style={styles.textPart}>{props.food.weight} г</Text>
         </View>
       </View>
     </TouchableOpacity>

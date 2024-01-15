@@ -11,7 +11,8 @@ export function ChildInformationPage({route, navigation}: ChildInformationProps)
       <ChildPersonalInformation childInformation={route.params.childInformation}
         navigation={navigation}/>
       <Menu
-        schoolId={route.params.childInformation.schoolClass.school.id}/>
+        schoolId={route.params.childInformation.schoolClass.school.id}
+        schoolClassNumber={route.params.childInformation.schoolClass.number}/>
     </ScrollView>
   );
 }

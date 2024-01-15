@@ -1,8 +1,8 @@
 import {PropsWithChildren} from 'react';
-import {Portions} from '../../../../../7_shared/model/portions';
+import {Food} from '../../../../../7_shared/model/food';
 
 export type MealUnitProps = {
     title: string,
-    sum: number,
-    portions: Portions[],
+    sum: string,
+    foods: Food[],
 } & PropsWithChildren;
