@@ -5,19 +5,19 @@ import {MenuProps} from '../model/props';
 import {createStyle} from '../consts/style';
 import {MenuData} from '../../menu-data/ui/menu-data';
 import {MealUnit} from '../../meal-unit/ui/meal-unit';
-import {useGetMealsQuery} from '../../../../../6_entities/meal/api/meal-api/config';
 import {EmojiTextFeature} from '../../../../../5_features/emoji-text-feature/ui/emoji-text-feature';
 import {ButtonPrimary} from '../../../../../7_shared/ui/buttons/button-primary';
 import {magicModal} from 'react-native-magic-modal';
 import {MenuFeedbackModal} from './menu-feedback-modal';
+import {useGetMenuQuery} from '../../../../../6_entities/menu/api/api';
 
 export function Menu(props: MenuProps) {
   const date = useAppSelector((state) => state.menu.dateMeal);
 
-  const {data: mealsForChild, refetch} = useGetMealsQuery({
-    classId: props.schoolId,
-    dateFrom: date,
-    dateTo: date});
+  const {data: mealsForChild, refetch} = useGetMenuQuery({
+    schoolClassNumber: props.schoolClassNumber,
+    date: date
+  });
 
   const styles = createStyle();
 
@@ -36,21 +36,21 @@ export function Menu(props: MenuProps) {
   return (
     <View style={styles.container}>
       <MenuData/>
-      {mealsForChild && mealsForChild[0]?.menu?.breakfast
+      {mealsForChild && mealsForChild?.breakfast
                 && <MealUnit title={'Завтрак'}
-                  sum={mealsForChild[0]?.menu?.breakfast.price}
-                  portions={mealsForChild[0].menu.breakfast.portions}/>}
-      {mealsForChild && mealsForChild[0]?.menu?.lunch
+                  sum={mealsForChild?.breakfast.cost}
+                  foods={mealsForChild.breakfast.foods}/>}
+      {mealsForChild && mealsForChild?.dinner
                 && <MealUnit title={'Обед'}
-                  sum={mealsForChild[0]?.menu?.lunch.price}
-                  portions={mealsForChild[0].menu.lunch.portions}/>}
-      {mealsForChild && mealsForChild[0]?.menu?.dinner
+                  sum={mealsForChild.dinner.cost}
+                  foods={mealsForChild.dinner.foods}/>}
+      {mealsForChild && mealsForChild?.snacks
               && <MealUnit title={'Полдник'}
-                sum={mealsForChild[0]?.menu?.dinner.price}
-                portions={mealsForChild[0].menu.dinner.portions}/>}
-      {(!mealsForChild || !mealsForChild?.[0]?.menu?.lunch
-                || !mealsForChild?.[0]?.menu?.dinner
-                || !mealsForChild?.[0]?.menu?.breakfast)
+                sum={mealsForChild.snacks.cost}
+                foods={mealsForChild.snacks.foods}/>}
+      {(!mealsForChild || !mealsForChild?.breakfast
+                || !mealsForChild?.dinner
+                || !mealsForChild?.snacks)
                 && <EmojiTextFeature
                   imageEmoji={require('../lib/assets/Object.png')}
                   subEmojiTitle={'На этот день меню не было предоставлено'}/>}

@@ -12,6 +12,7 @@ import {MEAL_API} from '../src/6_entities/meal/api/meal-api/config';
 import {FEEDBACK_API} from '../src/6_entities/feedback';
 import {NUTRITION_API} from '../src/5_features/nutrition/api';
 import middlewares from '../src/1_app/lib/middlewares/error-handler';
+import {MENU_API} from '../src/6_entities/menu/api/api';
 
 const middleware = [
   ...middlewares,
@@ -29,7 +30,8 @@ export const store = configureStore({
     [MEAL_API.reducerPath]: MEAL_API.reducer,
     [MEAL_CANCEL_API.reducerPath]: MEAL_CANCEL_API.reducer,
     [FEEDBACK_API.reducerPath]: FEEDBACK_API.reducer,
-    [NUTRITION_API.reducerPath]: NUTRITION_API.reducer
+    [NUTRITION_API.reducerPath]: NUTRITION_API.reducer,
+    [MENU_API.reducerPath]: MENU_API.reducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()

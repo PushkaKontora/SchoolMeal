@@ -1,11 +1,11 @@
 import {PropsWithChildren} from 'react';
-import {Portions} from '../../../../../../7_shared/model/portions';
-import {StyleSheet} from 'react-native';
+import {ImageSourcePropType, StyleSheet} from 'react-native';
 import NamedStyles = StyleSheet.NamedStyles;
+import {Food} from '../../../../../../7_shared/model/food';
 
 export type PortionsPartProps = {
-    imagePath: any,
-    portions: Portions
+    imagePath: ImageSourcePropType,
+    food: Food
 } & PropsWithChildren;
 
 export type InformationModalProps = {

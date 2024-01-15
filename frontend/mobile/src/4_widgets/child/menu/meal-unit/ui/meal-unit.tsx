@@ -3,6 +3,7 @@ import {MealUnitProps} from '../model/props';
 import {createStyle} from '../consts/style';
 import {TitleText} from '../../../../../7_shared/ui/text/title-text/title.text';
 import {PortionsPart} from './portions-part/portions-part';
+import {getImageSource} from '../../../../../7_shared/lib/image-source';
 
 export function MealUnit(props: MealUnitProps) {
   const styles = createStyle();
@@ -17,14 +18,14 @@ export function MealUnit(props: MealUnitProps) {
           title={`${props.sum} ₽`}
           marginLeft={'auto'}/>
       </View>
-      {props?.portions.map(por =>
+      {props?.foods.map(por =>
         <PortionsPart key={por.id}
           //imagePath={require('../../../../../7_shared/assets/images/Rectangle.png')}
           //imagePath={por.food.photoPath}
           imagePath={{
-            'uri': por.food?.photoPath
+            'uri': getImageSource(por.photoUrl, true),
           }}
-          portions={por}/>)}
+          food={por}/>)}
     </View>
   );
 }

@@ -7,9 +7,9 @@ export function InformationModal(props: InformationModalProps) {
   return (
     <View style={props.styles.containerModal}>
       <ModalHeader
-        headerModalTitle={props.portions.food.name}
+        headerModalTitle={props.food.name}
         clickExit={props.onExit}/>
-      <ContentInformationModal imagePath={props.imagePath} portions={props.portions}/>
+      <ContentInformationModal imagePath={props.imagePath} food={props.food}/>
     </View>
   );
 }

@@ -1,8 +1,8 @@
-import {Food} from './food';
+import {LegacyFood} from './food';
 
 export type Portions = {
     'id': number,
-    'food': Food,
+    'food': LegacyFood,
     'components': string,
     'weight': number,
     'kcal': number,
