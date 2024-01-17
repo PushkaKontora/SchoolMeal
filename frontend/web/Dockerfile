@@ -13,6 +13,7 @@ COPY public $WORK_DIR/public
 COPY tsconfig.json $WORK_DIR
 COPY tsconfig.node.json $WORK_DIR
 COPY .eslintrc.cjs $WORK_DIR
+COPY index.html $WORK_DIR
 
 COPY store $WORK_DIR/store
 COPY src $WORK_DIR/src
