@@ -25,7 +25,6 @@ export function LoginForm(props: LoginFormProps) {
 
   return (
     <FormContainer>
-
       {
         INPUT_DATA.map((item) => (
           <FieldContainer
@@ -45,6 +44,7 @@ export function LoginForm(props: LoginFormProps) {
 
       <ButtonPrimary
         title={'Далее'}
+        fontSize={'24px'}
         onPress={handleSubmit(onSubmit)}
         disabled={disabled}/>
 

@@ -14,7 +14,7 @@ export function AuthController() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const checkToken = () => {
+  useEffect(() => {
     AuthTokenService.getToken()
       .then(async (value) => {
         const result = value !== null;
@@ -22,11 +22,7 @@ export function AuthController() {
         dispatch(setAuthorized(result));
       })
       .catch(() => dispatch(setAuthorized(false)));
-  };
-
-  useEffect(() => {
-    checkToken();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     (async () => {
@@ -36,13 +32,13 @@ export function AuthController() {
         navigate(NO_AUTH_ROUTES.login);
       }
     })();
-  }, [authorized]);
+  }, [authorized, navigate, refetchUser]);
 
   useEffect(() => {
     if (currentUser) {
       navigate(chooseRedirectRoute(currentUser.role));
     }
-  }, [currentUser]);
+  }, [currentUser, navigate]);
 
   return null;
 }

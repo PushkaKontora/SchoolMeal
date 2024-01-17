@@ -19,7 +19,7 @@ export const FieldContainer = styled.section`
 export const InputLabelStyled = styled.article`
   display: block;
   
-  font-family: 'Graphik';
+  font-family: 'Graphik', sans-serif;
   font-weight: 500;
   font-size: 16px;
   line-height: 22px;

@@ -10,6 +10,8 @@ export const InputFieldContainer = styled.input`
 
   border: 1px solid #9C9C9C;
   border-radius: 10px;
+
+  box-sizing: border-box;
   
   &:active {
     border-color: #4AC1FF;
