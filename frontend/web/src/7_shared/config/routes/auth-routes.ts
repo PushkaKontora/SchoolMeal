@@ -1,13 +1,10 @@
-export const EMPLOYEE_ROUTES = {
-  root: '/employee',
+export const CANTEEN_STAFF_ROUTES = {
+  root: '/canteen',
   application: '/application',
+  requests: '/requests'
 };
 
 export const TEACHER_ROUTES = {
   teacher: 'teacher',
-};
-
-
-export const ORGANIZER_ROUTES = {
-
+  sendRequest: '/requests/send'
 };
