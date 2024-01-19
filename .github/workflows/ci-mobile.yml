@@ -27,6 +27,9 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: Проброс конфиг API в config.ts
+        run: sh configure_api.sh ./src/7_shared/api/config.ts
+
       - name: Установка зависимостей
         run: npm ci
 

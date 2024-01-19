@@ -1,6 +1,7 @@
 FROM node:16.20.2-buster-slim as build
 
 ARG WORK_DIR=/web
+ARG API_DOMAIN
 WORKDIR $WORK_DIR
 
 ENV PATH=$WORK_DIR/node_modules/.bin:$PATH
@@ -17,6 +18,10 @@ COPY index.html $WORK_DIR
 
 COPY store $WORK_DIR/store
 COPY src $WORK_DIR/src
+
+COPY configure_api.sh $WORK_DIR
+RUN chmod +x $WORK_DIR/configure_api.sh && \
+    $WORK_DIR/configure_api.sh ./src/7_shared/api/config.ts
 
 RUN npm run lint
 
