@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import AsyncContextManager
+from typing import AsyncIterator
 
 from apscheduler.triggers.cron import CronTrigger
 from fastapi import FastAPI
@@ -41,7 +41,7 @@ for container in [nutrition, feedbacks, users]:
 
 
 @asynccontextmanager
-async def startup_tasks(_: FastAPI) -> AsyncContextManager[None]:
+async def startup_tasks(_: FastAPI) -> AsyncIterator[None]:
     scheduler = SchedulerContainer().scheduler()
     scheduler.add_job(
         func=nutrition.submit_requests_command_handler().handle,

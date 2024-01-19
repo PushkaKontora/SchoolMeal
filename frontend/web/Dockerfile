@@ -36,4 +36,4 @@ USER $USER
 
 FROM proxy as web
 
-COPY --from=build /web/build /usr/share/nginx/html
+COPY --from=build /web/dist /usr/share/nginx/html

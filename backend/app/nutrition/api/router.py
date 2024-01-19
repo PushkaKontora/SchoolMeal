@@ -285,7 +285,7 @@ async def get_request_with_plans(
     responses=responses.NOT_FOUND,
 )
 @inject
-async def get_request_with_plans(
+async def get_request_report(
     query: GetCountedRequestsQuery = Depends(),
     executor: GetCountedRequestsQueryExecutor = Depends(Provide[NutritionContainer.get_request_report_query_executor]),
 ) -> Report:

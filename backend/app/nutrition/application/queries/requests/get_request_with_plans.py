@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from app.nutrition.application.context import NutritionContext
 from app.nutrition.application.repositories import NotFoundDraftRequest, NotFoundRequest
 from app.nutrition.domain.periods import Day
+from app.nutrition.domain.pupil import Name
 from app.nutrition.domain.school_class import SchoolClass
 from app.shared.cqs.queries import IQueryExecutor, Query
 from app.shared.unit_of_work.abc import IUnitOfWork
@@ -57,9 +58,8 @@ class GetRequestWithPlansQueryExecutor(IQueryExecutor[GetRequestWithPlansQuery, 
             except NotFoundRequest:
                 return await self._get_draft(school_class, context, query)
 
-    @staticmethod
     async def _get_submitted(
-        school_class: SchoolClass, context: NutritionContext, query: GetRequestWithPlansQuery
+        self, school_class: SchoolClass, context: NutritionContext, query: GetRequestWithPlansQuery
     ) -> RequestWithPlansDTO:
         request = await context.requests.get_by_class_id_and_date(class_id=query.class_id, on_date=Day(query.on_date))
         existent_pupils = {pupil.id: pupil for pupil in school_class.pupils}
@@ -73,9 +73,7 @@ class GetRequestWithPlansQueryExecutor(IQueryExecutor[GetRequestWithPlansQuery, 
                     id=pupil.id.value,
                     last_name=existent_pupils[pupil.id].last_name.value,
                     first_name=existent_pupils[pupil.id].first_name.value,
-                    patronymic=existent_pupils[pupil.id].patronymic.value
-                    if existent_pupils[pupil.id].patronymic
-                    else None,
+                    patronymic=self._get_patronymic(existent_pupils[pupil.id].patronymic),
                     breakfast=pupil.plan.breakfast,
                     dinner=pupil.plan.dinner,
                     snacks=pupil.plan.snacks,
@@ -84,6 +82,10 @@ class GetRequestWithPlansQueryExecutor(IQueryExecutor[GetRequestWithPlansQuery, 
                 if pupil.id in existent_pupils
             ],
         )
+
+    @staticmethod
+    def _get_patronymic(name: Name | None) -> str | None:
+        return name.value if name else None
 
     @staticmethod
     async def _get_draft(

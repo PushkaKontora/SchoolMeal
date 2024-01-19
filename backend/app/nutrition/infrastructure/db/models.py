@@ -312,7 +312,7 @@ class RequestDB(NutritionBase):
         )
 
     @classmethod
-    def from_model(cls, request: Request) -> "Request":
+    def from_model(cls, request: Request) -> "RequestDB":
         return cls(
             class_id=request.class_id,
             on_date=request.on_date.date,
