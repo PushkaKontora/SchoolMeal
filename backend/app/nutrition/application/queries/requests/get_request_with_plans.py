@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from app.nutrition.application.context import NutritionContext
 from app.nutrition.application.repositories import NotFoundDraftRequest, NotFoundRequest
 from app.nutrition.domain.periods import Day
-from app.nutrition.domain.pupil import Name
+from app.nutrition.domain.pupil import MealPlan, Name, Pupil
 from app.nutrition.domain.school_class import SchoolClass
 from app.shared.cqs.queries import IQueryExecutor, Query
 from app.shared.unit_of_work.abc import IUnitOfWork
@@ -87,48 +87,63 @@ class GetRequestWithPlansQueryExecutor(IQueryExecutor[GetRequestWithPlansQuery, 
     def _get_patronymic(name: Name | None) -> str | None:
         return name.value if name else None
 
-    @staticmethod
     async def _get_draft(
-        school_class: SchoolClass, context: NutritionContext, query: GetRequestWithPlansQuery
+        self, school_class: SchoolClass, context: NutritionContext, query: GetRequestWithPlansQuery
     ) -> RequestWithPlansDTO:
+        pupils: list[PupilWithPlanDTO] = []
+
         try:
             draft = await context.draft_requests.get_by_class_id_and_date(
                 class_id=query.class_id, on_date=Day(query.on_date)
             )
 
+            for pupil in school_class.pupils:
+                plan = draft.pupils.get(pupil.id) or self._prefill_plan(pupil, on_date=Day(query.on_date))
+                pupils += [
+                    PupilWithPlanDTO(
+                        id=pupil.id.value,
+                        last_name=pupil.last_name.value,
+                        first_name=pupil.first_name.value,
+                        patronymic=pupil.patronymic.value if pupil.patronymic else None,
+                        breakfast=plan.breakfast,
+                        dinner=plan.dinner,
+                        snacks=plan.snacks,
+                    )
+                ]
+
             return RequestWithPlansDTO(
                 class_id=school_class.id,
                 on_date=draft.on_date.date,
                 status=RequestStatus.ON_EDITING,
-                pupils=[
+                pupils=pupils,
+            )
+
+        except NotFoundDraftRequest:
+            for pupil in school_class.pupils:
+                plan = self._prefill_plan(pupil, on_date=Day(query.on_date))
+                pupils += [
                     PupilWithPlanDTO(
                         id=pupil.id.value,
                         last_name=pupil.last_name.value,
                         first_name=pupil.first_name.value,
                         patronymic=pupil.patronymic.value if pupil.patronymic else None,
-                        breakfast=(draft.pupils.get(pupil.id) or pupil.meal_plan).breakfast,
-                        dinner=(draft.pupils.get(pupil.id) or pupil.meal_plan).dinner,
-                        snacks=(draft.pupils.get(pupil.id) or pupil.meal_plan).snacks,
+                        breakfast=plan.breakfast,
+                        dinner=plan.dinner,
+                        snacks=plan.snacks,
                     )
-                    for pupil in school_class.pupils
-                ],
-            )
+                ]
 
-        except NotFoundDraftRequest:
             return RequestWithPlansDTO(
                 class_id=school_class.id,
                 on_date=query.on_date,
                 status=RequestStatus.NOT_SUBMITTED,
-                pupils=[
-                    PupilWithPlanDTO(
-                        id=pupil.id.value,
-                        last_name=pupil.last_name.value,
-                        first_name=pupil.first_name.value,
-                        patronymic=pupil.patronymic.value if pupil.patronymic else None,
-                        breakfast=pupil.meal_plan.breakfast,
-                        dinner=pupil.meal_plan.dinner,
-                        snacks=pupil.meal_plan.snacks,
-                    )
-                    for pupil in school_class.pupils
-                ],
+                pupils=pupils,
             )
+
+    @staticmethod
+    def _prefill_plan(pupil: Pupil, on_date: Day) -> MealPlan:
+        return (
+            MealPlan(breakfast=False, dinner=False, snacks=False)
+            if on_date in pupil.cancellation_periods
+            else pupil.meal_plan
+        )

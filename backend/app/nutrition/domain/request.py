@@ -40,7 +40,12 @@ class DraftRequest:
         return cls(
             class_id=school_class.id,
             on_date=on_date,
-            pupils={pupil.id: pupil.meal_plan for pupil in school_class.pupils},
+            pupils={
+                pupil.id: MealPlan(breakfast=False, dinner=False, snacks=False)
+                if on_date in pupil.cancellation_periods
+                else pupil.meal_plan
+                for pupil in school_class.pupils
+            },
         )
 
 

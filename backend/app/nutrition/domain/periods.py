@@ -178,6 +178,16 @@ class CancellationPeriodSequence(Iterable[CancellationPeriod]):
 
         return CancellationPeriodSequence(periods=tuple(chain(self.periods[:start], new_periods, self.periods[end:])))
 
+    def __contains__(self, item: Day) -> bool:
+        if not isinstance(item, Day):
+            raise ValueError("Ожидался день")
+
+        if len(self.periods) == 0:
+            return False
+
+        idx = self._search_insert_index(item)
+        return item.date in self.periods[idx]
+
     def _search_insert_index(self, period: Period) -> int:
         left, right = 0, len(self.periods)
 
