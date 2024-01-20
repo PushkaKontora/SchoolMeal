@@ -6,16 +6,19 @@ import {
   BUTTON_TEXT_SEND_ISSUE,
   BUTTON_TEXT_SAVED_CHANGED,
 } from '../consts/consts.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Popup from 'reactjs-popup';
 import ClassSelection from '../../../5_features/tabs/class-selection/ui/class-selection.tsx';
 import MonthSelection from '../../../7_shared/ui/selection/month/ui/class-selection.tsx';
 import Table from '../../../5_features/table/table/ui/table.tsx';
+import { useCurrentUserQuery } from '../../../6_entities/user/api/api.ts';
+
 
 export function TeacherMainPage() {
   const [open, setOpen] = useState(false);
-
+  const {data: id} = useCurrentUserQuery();
   const [buttonText, setBttonText] = useState(BUTTON_TEXT_SEND_ISSUE);
+
 
   const statusName = 'Не подана';
 
