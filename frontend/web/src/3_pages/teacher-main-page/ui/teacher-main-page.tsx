@@ -1,4 +1,5 @@
 import '../consts/style.scss';
+
 import HeaderTeacherWidget from '../../../4_widgets/header-teacher/ui/header-teacher.tsx';
 import {
   infoMessageTime,
@@ -12,13 +13,44 @@ import ClassSelection from '../../../5_features/tabs/class-selection/ui/class-se
 import MonthSelection from '../../../7_shared/ui/selection/month/ui/class-selection.tsx';
 import Table from '../../../5_features/table/table/ui/table.tsx';
 import { useCurrentUserQuery } from '../../../6_entities/user/api/api.ts';
-
+import { useSchoolClassesQuery } from '../../../6_entities/nutrition/api/api.ts';
+import { useAppDispatch } from '../../../../store/hooks.ts';
+import {
+  fillAvailableClasses,
+  allTeacherClasses,
+} from '../../../5_features/tabs/class-selection/model/class-tabs-slice.ts';
+import { SchoolClasses } from '../../../6_entities/nutrition/model/schoolClasses.ts';
 
 export function TeacherMainPage() {
   const [open, setOpen] = useState(false);
-  const {data: id} = useCurrentUserQuery();
+  const dispatch = useAppDispatch();
+
+  const { data: currentUser } = useCurrentUserQuery();
+  const { data: teacherClasses, refetch: refTeacherClasses } =
+    useSchoolClassesQuery(currentUser.id);
+
+  useEffect(() => {
+    if (currentUser) {
+      refTeacherClasses();
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (teacherClasses) {
+      makeInitialClassList(teacherClasses);
+      dispatch(allTeacherClasses({ allClassList: teacherClasses }));
+      console.log(teacherClasses[0].id, '1');
+    }
+  }, [teacherClasses]);
+
   const [buttonText, setBttonText] = useState(BUTTON_TEXT_SEND_ISSUE);
 
+  function makeInitialClassList(teacherClasses: SchoolClasses[]) {
+    const schoolClass = teacherClasses.map((element) =>
+      String(element.initials.number + element.initials.literal)
+    );
+    dispatch(fillAvailableClasses({ classList: schoolClass }));
+  }
 
   const statusName = 'Не подана';
 
@@ -34,9 +66,7 @@ export function TeacherMainPage() {
     }
   }
 
-  function handlerCancelChange() {
-
-  }
+  function handlerCancelChange() {}
 
   return (
     <div className='containerTeacherMain'>
@@ -53,7 +83,7 @@ export function TeacherMainPage() {
           </div>
         </div>
         <div className='message'>
-          {infoMessageTime} <br /> {infoMessageInstruction}
+          {infoMessageTime} 
         </div>
         <div className='containerTeacherApplication'>
           <div className='containerClassSelection'>
@@ -80,9 +110,7 @@ export function TeacherMainPage() {
               {buttonText}
             </button>
             <Popup nested modal open={open}>
-              {() => (
-                <div className='modalText'>Заявка успешно отправлена</div>
-              )}
+              {() => <div className='modalText'>Заявка успешно отправлена</div>}
             </Popup>
           </div>
         </div>

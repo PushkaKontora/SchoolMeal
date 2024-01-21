@@ -7,8 +7,8 @@ export default function ClassSelection() {
 
   return (
     <div className='containerClassItems'>
-      {classList.map((item) => (
-        <ClassItemWidget key={item} className={item} />
+      {classList.map((item, index) => (
+        <ClassItemWidget key={item} className={item} indexArray={index} />
       ))}
     </div>
   );

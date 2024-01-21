@@ -44,7 +44,7 @@ export default function TableHeaders(props: TableHeadersProps) {
         />
       </td>
       <td scope='col'>
-        <div className='nameCol'>Итого</div>
+       
       </td>
     </tr>
   );

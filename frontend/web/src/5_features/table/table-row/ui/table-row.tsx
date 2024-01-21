@@ -5,27 +5,27 @@ import { TableRowProps } from '../model/props';
 import { ValueBadge } from '../../../../7_shared/ui/special/value-badge';
 
 export default function TableRow(props: TableRowProps) {
-  const { name, balance, total, breakfast, lunch, snack } = props;
+  const { name,  breakfast, lunch, snack } = props;
 
   const [breakfastCheckbox, setBreakfastCheckbox] = useState(breakfast.isCheck);
   const [lunchCheckbox, setLunchCheckbox] = useState(lunch.isCheck);
   const [snackCheckbox, setSnackCheckbox] = useState(snack.isCheck);
 
-  const [countTotalSum, setCountTotalSum] = useState(total);
+  // const [countTotalSum, setCountTotalSum] = useState(total);
 
-  useEffect(() => {
-    let sum = 0;
-    if (!breakfast.isDisabled && breakfastCheckbox) {
-      sum += breakfast.price;
-    }
-    if (!lunch.isDisabled && lunchCheckbox) {
-      sum += lunch.price;
-    }
-    if (!snack.isDisabled && snackCheckbox) {
-      sum += snack.price;
-    }
-    setCountTotalSum(sum);
-  }, [breakfastCheckbox, lunchCheckbox, snackCheckbox]);
+  // useEffect(() => {
+  //   let sum = 0;
+  //   if (!breakfast.isDisabled && breakfastCheckbox) {
+  //     sum += breakfast.price;
+  //   }
+  //   if (!lunch.isDisabled && lunchCheckbox) {
+  //     sum += lunch.price;
+  //   }
+  //   if (!snack.isDisabled && snackCheckbox) {
+  //     sum += snack.price;
+  //   }
+  //   setCountTotalSum(sum);
+  // }, [breakfastCheckbox, lunchCheckbox, snackCheckbox]);
 
   const onChangeBreakfastCheckbox = (state: boolean) => {
     setBreakfastCheckbox(state);
@@ -82,11 +82,11 @@ export default function TableRow(props: TableRowProps) {
               snack.isDisabled)
           }
         /> */}
-        <ValueBadge
+        {/* <ValueBadge
           value={`${balance} ₽`}
           textColor={balance[0] !== '-' ? '#58BCBB' : '#EC662A'}
           width='60px'
-        />
+        /> */}
         <div className='nameChild'>{name}</div>
       </td>
       <td scope='row'>
@@ -116,14 +116,14 @@ export default function TableRow(props: TableRowProps) {
           isHeader={false}
         />
       </td>
-      <td scope='row'>
+      {/* <td scope='row'>
         <ValueBadge
           value={`${countTotalSum ? countTotalSum : 0} ₽`}
           textColor={'#58BCBB'}
           width='52px'
           margin='auto 0 auto auto'
         />
-      </td>
+      </td> */}
     </tr>
   );
 }

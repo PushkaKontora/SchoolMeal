@@ -3,8 +3,8 @@ import { FoodType } from './foodType';
 
 export type TableRowProps = {
   name: string;
-  balance: string;
-  total?: string | number;
+  // balance: string;
+  // total?: string | number;
   breakfast: FoodType,
   lunch: FoodType,
   snack: FoodType,
