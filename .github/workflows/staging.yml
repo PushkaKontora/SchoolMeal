@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 'master'
-      - 'deploy'
 
 jobs:
   build:
@@ -66,7 +65,7 @@ jobs:
           password: ${{ secrets.STAND_PASSWORD }}
           source: "docker-compose.yaml,docker-compose.stand.yaml,.env"
           target: "~/school_meal"
-          rm: true
+          overwrite: true
 
       - name: Раскатка
         uses: appleboy/ssh-action@v1.0.3
