@@ -44,9 +44,16 @@ export function LoginWidget({navigation}: LoginPageProps) {
   useEffect(() => {
     if (isError) {
       setFormDisabled(false);
+
+      const typedError = error as {
+        status: number,
+        data: {
+          detail: string
+        }
+      };
       ToastService.show('danger', {
-        title: ERROR_MESSAGES_TITLES[error.status] || ERROR_MESSAGES_TITLES.other,
-        description: error.data.detail
+        title: ERROR_MESSAGES_TITLES[typedError.status] || ERROR_MESSAGES_TITLES.other,
+        description: typedError.data.detail
       });
     }
   }, [isError]);

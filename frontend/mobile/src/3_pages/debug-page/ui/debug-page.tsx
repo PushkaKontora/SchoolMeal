@@ -15,8 +15,8 @@ import {TokenPayload} from '../../../5_features/auth/model/token-payload';
 import {ToastService} from '../../../7_shared/lib/toast-service';
 
 export function DebugPage({navigation}: PropsWithNavigation) {
-  const {data: currentUser, refetch: refetchUser} = useCurrentUserQuery({});
-  const {data: children, refetch: refetchChildren} = useGetChildrenQuery({});
+  const {data: currentUser, refetch: refetchUser} = useCurrentUserQuery();
+  const {data: children, refetch: refetchChildren} = useGetChildrenQuery();
   const [refreshToken] = AUTH_API.useRefreshTokensMutation();
   const dispatch = useAppDispatch();
 

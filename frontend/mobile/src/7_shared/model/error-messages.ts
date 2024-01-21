@@ -1,4 +1,4 @@
 export type ErrorMessages = {
-  [key: number]: string | string[];
-  other?: string | string[];
+  [key: number]: string;
+  other?: string;
 }

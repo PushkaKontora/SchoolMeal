@@ -76,7 +76,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
   }, [feeding, mealData]);
 
   useEffect(() => {
-    if (isCanceledSuccess) {
+    if (isCanceledSuccess && cancelData) {
       setNutritionInfoState({
         ...nutritionInfoState,
         cancellationPeriods: cancelData
@@ -85,7 +85,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
         description: CANCELLED_NUTRITION_DESCRIPTION
       });
     }
-  }, [isCanceledSuccess]);
+  }, [isCanceledSuccess, cancelData]);
 
   useEffect(() => {
     if (isResumedSuccess) {
