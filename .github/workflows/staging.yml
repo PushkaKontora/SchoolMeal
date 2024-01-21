@@ -20,16 +20,12 @@ jobs:
           - image: postgres
             target: final
             context: postgres
-            args: []
           - image: app
             target: final
             context: backend
-            args: []
           - image: nginx
             target: web
             context: frontend/web
-            args:
-              API_DOMAIN: ${{ secrets.API_DOMAIN }}
     steps:
       - name: Получение изменений
         uses: actions/checkout@v3
@@ -48,7 +44,7 @@ jobs:
         with:
           context: ${{ matrix.context }}
           target: ${{ matrix.target }}
-          build-args: ${{ matrix.args }}
+          build-args: API_DOMAIN=${{ secrets.API_DOMAIN }}
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:${{ matrix.image }}
           push: true
 
