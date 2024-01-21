@@ -2,13 +2,15 @@ import {Controller} from 'react-hook-form';
 import {ControlledInputFieldProps} from '../model/props';
 import {InputData, InputField} from '../../../fields/input-field';
 
-export function ControlledInputField<FormData>
+export function ControlledInputField<FormData extends {[key: string]: any}>
 (props: ControlledInputFieldProps<FormData>) {
   const data: InputData<FormData> = props.data;
 
   return (
     <Controller
       control={props.control}
+      //eslint-disable-next-line
+      //@ts-ignore
       name={data.name}
       rules={data.options}
       render={({field: {onChange, value}}) => (

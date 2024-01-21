@@ -1,4 +1,4 @@
-import {FlexAlignType} from 'react-native';
+import {DimensionValue, FlexAlignType} from 'react-native';
 import {PropsWithChildren} from 'react';
 
 export type TitleTextProps = {
@@ -9,5 +9,5 @@ export type TitleTextProps = {
     fontWeight?: 'bold' | '100' | '600' | 'normal' | '200' | '300' | '400' | '500' | '700' | '800' | '900' | undefined,
     paddingBottom?: number,
     alignItems?: FlexAlignType | undefined,
-    marginLeft?: string | number,
+    marginLeft?: DimensionValue,
 } & PropsWithChildren;

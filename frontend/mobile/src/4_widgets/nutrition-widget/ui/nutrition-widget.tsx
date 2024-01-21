@@ -78,7 +78,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
   useEffect(() => {
     if (isCanceledSuccess && cancelData) {
       setNutritionInfoState({
-        ...nutritionInfoState,
+        ...nutritionInfoState as PupilNutritionInfo,
         cancellationPeriods: cancelData
       });
       ToastService.show('success', {
@@ -88,9 +88,9 @@ export function NutritionWidget(props: NutritionWidgetProps) {
   }, [isCanceledSuccess, cancelData]);
 
   useEffect(() => {
-    if (isResumedSuccess) {
+    if (isResumedSuccess && resumeData) {
       setNutritionInfoState({
-        ...nutritionInfoState,
+        ...nutritionInfoState as PupilNutritionInfo,
         cancellationPeriods: resumeData
       });
       ToastService.show('success', {
@@ -174,7 +174,7 @@ export function NutritionWidget(props: NutritionWidgetProps) {
           }
 
           {
-            feeding &&
+            feeding && nutritionInfoState &&
             <NutritionPanel
               nutritionInfo={nutritionInfoState}
               pupilId={props.pupilId}

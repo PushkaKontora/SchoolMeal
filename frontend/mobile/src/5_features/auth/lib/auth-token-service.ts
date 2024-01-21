@@ -1,7 +1,6 @@
 import {AUTH_TOKEN_NAME} from '../config/config';
 import {JwtManager, HmacManager} from '../../../7_shared/lib/token-manager';
 import {TokenPayload} from '../model/token-payload';
-import {JwtPayload} from '../model/jwt-payload';
 
 export const AuthTokenService = {
   async getToken() {
@@ -20,10 +19,6 @@ export const AuthTokenService = {
 
   async deleteToken() {
     await JwtManager.dropToken(AUTH_TOKEN_NAME);
-  },
-
-  async isAuthTokenExpired(decodedToken: JwtPayload) {
-    return (decodedToken.expires_in - Date.now()) < 0;
   },
 
   getHmacToken(): string {

@@ -8,7 +8,7 @@ export function NutritionCertFeature(props: NutritionCertFeatureProps) {
     <View
       style={styles.container}>
       {
-        props.nutritionInfo?.preferentialCertificate &&
+        props?.nutritionInfo?.preferentialCertificate &&
         <View>
           <Text
             style={styles.title}>

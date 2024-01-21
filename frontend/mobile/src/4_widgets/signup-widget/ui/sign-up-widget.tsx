@@ -6,7 +6,7 @@ import {HorizontalLine} from '../../../7_shared/ui/styling/horizontal-line';
 import {ButtonSecondary} from '../../../7_shared/ui/buttons/button-secondary/button-secondary';
 import {SignUpForm, USER_API} from '../../../6_entities/user';
 import {SignUpFormData} from '../../../6_entities/user/ui/sign-up-form/types';
-import {AUTH_API, AuthTokenService, TokenResponse} from '../../../5_features/auth';
+import {AUTH_API, AuthTokenService} from '../../../5_features/auth';
 import {setAuthorized} from '../../../5_features/auth/model/auth-slice/auth-slice';
 import {useAppDispatch} from '../../../../store/hooks';
 
@@ -28,9 +28,11 @@ export function SignUpWidget({navigation}: SignUpProps) {
 
     await register(data);
 
-    const response: {data: TokenResponse} = await signIn(loginData);
-    await AuthTokenService.saveAuthToken(response.data);
-    dispatch(setAuthorized(true));
+    const response = await signIn(loginData);
+    if ('data' in response) {
+      await AuthTokenService.saveAuthToken(response.data);
+      dispatch(setAuthorized(true));
+    }
   };
 
   const onSubmit = (data: SignUpFormData) => {

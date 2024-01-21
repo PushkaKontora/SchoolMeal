@@ -25,6 +25,8 @@ export function InputFieldLimited<FormData>
       style={applyViewStyle(viewStyles, focused)}>
       <ControlledInputField
         control={props.control}
+        //eslint-disable-next-line
+        //@ts-ignore
         data={props.data}
         errors={props.errors}
         style={styles.internalField}

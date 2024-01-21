@@ -1,5 +1,5 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
-import {CONFIG, TAGS} from './config';
+import {TAGS} from './config';
 import {fetchBaseQuery} from '@reduxjs/toolkit/dist/query/react';
 import {BASE_BACKEND_URL} from '../../../7_shared/api/config';
 import {AuthTokenService} from '../../../5_features/auth';
