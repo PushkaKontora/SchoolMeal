@@ -29,20 +29,20 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:postgres
           push: true
 
-      - name: Сборка backend
+      - name: Сборка app
         uses: docker/build-push-action@v5
         with:
           context: backend
           target: final
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:backend
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:app
           push: true
 
-      - name: Сборка web
+      - name: Сборка nginx
         uses: docker/build-push-action@v5
         with:
           context: frontend/web
           target: web
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:web
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:nginx
           push: true
 
       - name: Генерация .env
