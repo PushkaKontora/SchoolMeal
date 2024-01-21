@@ -1,0 +1,74 @@
+name: Стейджинг
+
+on:
+  push:
+    branches:
+      - 'master'
+      - 'deploy'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Получение изменений
+        uses: actions/checkout@v3
+
+      - name: Подготовка Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Аутентификация в Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Сборка postgres
+        uses: docker/build-push-action@v5
+        with:
+          context: postgres
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:postgres
+          push: true
+
+      - name: Сборка backend
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          target: final
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:backend
+          push: true
+
+      - name: Сборка web
+        uses: docker/build-push-action@v5
+        with:
+          context: frontend/web
+          target: web
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:web
+          push: true
+
+      - name: Генерация .env
+        run: echo "${{ secrets.STAND_DOT_ENV }}" > .env
+
+      - name: Копирование композов и .env
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.STAND_HOST }}
+          username: ${{ secrets.STAND_USER }}
+          password: ${{ secrets.STAND_PASSWORD }}
+          target: "~/school_meal"
+          source: "./docker-compose.yaml,./docker-compose.stand.yaml,./.env"
+
+      - name: Раскатка
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          REGISTRY_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          REGISTRY_PASSWORD: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        with:
+          host: ${{ secrets.STAND_HOST }}
+          username: ${{ secrets.STAND_USER }}
+          password: ${{ secrets.STAND_PASSWORD }}
+          envs: REGISTRY_USERNAME,REGISTRY_PASSWORD
+          script: |
+            echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USERNAME --password-stdin
+            cd ~/school_meal
+            docker-compose pull
+            docker-compose up -d
