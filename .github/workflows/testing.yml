@@ -1,4 +1,4 @@
-name: Тестирование
+name: Testing
 
 on:
   push:
@@ -14,7 +14,9 @@ jobs:
       web: ${{ steps.changes.outputs.web }}
       mobile: ${{ steps.changes.outputs.mobile }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Получение изменений
+        uses: actions/checkout@v3
+
       - uses: dorny/paths-filter@v2
         id: changes
         with:
@@ -32,9 +34,11 @@ jobs:
     if: ${{ needs.changes.outputs.backend == 'true' }}
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
-      - uses: docker/build-push-action@v5
-        name: Запуск линтеров и тестов
+      - name: Получение изменений
+        uses: actions/checkout@v3
+
+      - name: Запуск линтеров и тестов
+        uses: docker/build-push-action@v5
         with:
           context: backend
           target: test
@@ -46,9 +50,11 @@ jobs:
     if: ${{ needs.changes.outputs.web == 'true' }}
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
-      - uses: docker/build-push-action@v5
-        name: Запуск линтеров и сборки
+      - name: Получение изменений
+        uses: actions/checkout@v3
+
+      - name: Запуск линтеров и сборки
+        uses: docker/build-push-action@v5
         with:
           context: frontend/web
           target: build
@@ -63,12 +69,16 @@ jobs:
       run:
         working-directory: frontend/mobile
     steps:
-      - uses: actions/checkout@v3
+      - name: Получение изменений
+        uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         name: Установка Node.js
         with:
           node-version: 16.20.*
+
       - name: Установка зависимостей
         run: npm ci
+
       - name: Запуск линтеров
         run: npm run lint

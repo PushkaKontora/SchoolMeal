@@ -1,4 +1,4 @@
-name: Стейджинг
+name: Staging
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Сборка ${{ matrix.image }}
+    name: ${{ matrix.image }}
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -52,17 +52,21 @@ jobs:
     needs: build
     runs-on: ubuntu-20.04
     steps:
+      - name: Получение изменений
+        uses: actions/checkout@v3
+
       - name: Генерация .env
         run: echo "${{ secrets.STAND_DOT_ENV }}" > .env
 
-      - name: Копирование композов и .env
+      - name: Копирование композов и .env на стенд
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.STAND_HOST }}
           username: ${{ secrets.STAND_USER }}
           password: ${{ secrets.STAND_PASSWORD }}
+          source: "docker-compose.yaml,docker-compose.stand.yaml,.env"
           target: "~/school_meal"
-          source: "./docker-compose.yaml,./docker-compose.stand.yaml,./.env"
+          rm: true
 
       - name: Раскатка
         uses: appleboy/ssh-action@v1.0.3
