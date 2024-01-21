@@ -8,9 +8,6 @@ services:
   app:
     environment:
       SHOW_SWAGGER_UI: "true"
-      GATEWAY_PROTOCOL: ${GATEWAY_PROTOCOL:-http}
-      GATEWAY_HOST: ${GATEWAY_HOST:-localhost}
-      GATEWAY_PORT: ${GATEWAY_PORT:-80}
       MEDIA_PATH: ${MEDIA_PATH:-/media}
     volumes:
       - ./media:${MEDIA_PATH:-/media}:ro
