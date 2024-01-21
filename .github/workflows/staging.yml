@@ -7,14 +7,29 @@ on:
       - 'deploy'
 
 jobs:
-  deploy:
+  build:
+    name: Сборка ${{ matrix.image }}
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - postgres
+          - app
+          - nginx
+        include:
+          - image: postgres
+            target: final
+            context: postgres
+          - image: app
+            target: final
+            context: backend
+          - image: nginx
+            target: web
+            context: frontend/web
     steps:
       - name: Получение изменений
         uses: actions/checkout@v3
-
-      - name: Подготовка Buildx
-        uses: docker/setup-buildx-action@v2
 
       - name: Аутентификация в Docker Hub
         uses: docker/login-action@v2
@@ -22,29 +37,21 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Сборка postgres
+      - name: Установка Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Сборка
         uses: docker/build-push-action@v5
         with:
-          context: postgres
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:postgres
+          context: ${{ matrix.context }}
+          target: ${{ matrix.target }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:${{ matrix.image }}
           push: true
 
-      - name: Сборка app
-        uses: docker/build-push-action@v5
-        with:
-          context: backend
-          target: final
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:app
-          push: true
-
-      - name: Сборка nginx
-        uses: docker/build-push-action@v5
-        with:
-          context: frontend/web
-          target: web
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:nginx
-          push: true
-
+  deploy:
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
       - name: Генерация .env
         run: echo "${{ secrets.STAND_DOT_ENV }}" > .env
 
