@@ -1,0 +1,74 @@
+name: Тестирование
+
+on:
+  push:
+    branches:
+      - '**'
+      - '!master'
+
+jobs:
+  changes:
+    runs-on: ubuntu-20.04
+    outputs:
+      backend: ${{ steps.changes.outputs.backend }}
+      web: ${{ steps.changes.outputs.web }}
+      mobile: ${{ steps.changes.outputs.mobile }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            web:
+              - 'frontend/web/**'
+            mobile:
+              - 'frontend/mobile/**'
+
+  backend:
+    name: backend
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/build-push-action@v5
+        name: Запуск линтеров и тестов
+        with:
+          context: backend
+          target: test
+          push: false
+
+  web:
+    name: web
+    needs: changes
+    if: ${{ needs.changes.outputs.web == 'true' }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/build-push-action@v5
+        name: Запуск линтеров и сборки
+        with:
+          context: frontend/web
+          target: build
+          push: false
+
+  mobile:
+    name: mobile
+    needs: changes
+    if: ${{ needs.changes.outputs.mobile == 'true' }}
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: frontend/mobile
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        name: Установка Node.js
+        with:
+          node-version: 16.20.*
+      - name: Установка зависимостей
+        run: npm ci
+      - name: Запуск линтеров
+        run: npm run lint
