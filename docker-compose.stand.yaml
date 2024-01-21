@@ -5,10 +5,6 @@ services:
     ports:
       - ${DB_PORT:-5432}:${DB_PORT:-5432}
 
-#  rabbitmq:
-#    ports:
-#      - "15672:15672"
-
   app:
     environment:
       SHOW_SWAGGER_UI: "true"

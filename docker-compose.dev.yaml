@@ -1,13 +1,19 @@
 version: "3.9"
 
 services:
+  postgres:
+    build:
+      context: postgres
+
   app:
-    build: backend
+    build:
+      context: backend
     volumes:
       - ./backend/app:/school_meal/app
 
   nginx:
     build:
+      context: frontend/web
       target: proxy
     volumes:
       - ./frontend/web/nginx:/etc/nginx/conf.d

@@ -1,19 +1,8 @@
 version: "3.9"
 
-x-database: &database
-  DB_HOST: ${DB_HOST:-postgres-server}
-  DB_PORT: ${DB_PORT:-5432}
-  DB_NAME: ${DB_NAME:-school_meal}
-  DB_USER: ${DB_USER:-postgres}
-  DB_PASSWORD: ${DB_PASSWORD:-postgres}
-
-x-jwt: &jwt
-  JWT_SECRET: ${JWT_SECRET}
-
 services:
   postgres-server:
-    container_name: school_meal_postgres
-    build: postgres
+    image: peroovy/school_meal:postgres
     healthcheck:
       test: pg_isready -U ${DB_USER} -d ${DB_PASSWORD} -p ${DB_PORT}
       interval: 10s
@@ -29,58 +18,35 @@ services:
     networks:
       - school_meal_nw
 
-#  rabbitmq:
-#    build: rabbitmq
-#    hostname: master
-#    restart: always
-#    healthcheck:
-#      test: rabbitmq-diagnostics -q ping
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#    environment:
-#      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
-#      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD}
-#      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: -rabbit disk_free_limit 2147483648
-#    volumes:
-#      - rabbitmq_volume:/var/lib/rabbitmq
-#    networks:
-#      - school_meal_nw
-
   app:
-    image: peroovy/school_meal:app-${BRANCH_TAG:-master}
+    image: peroovy/school_meal:app
     container_name: school_meal_app
     depends_on:
       postgres-server:
         condition: service_healthy
-#      rabbitmq:
-#        condition: service_healthy
     environment:
-      <<: [*database, *jwt]
+      JWT_SECRET: ${JWT_SECRET}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
     networks:
       - school_meal_nw
 
   nginx:
+    image: peroovy/school_meal:nginx
     container_name: school_meal_nginx
-    build:
-      context: frontend/web
-      dockerfile: Dockerfile
-      target: web
-      args:
-        API_DOMAIN: ${API_DOMAIN?}
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - app
-    volumes:
-      - ./env/nginx/certs:/etc/ssl/nginx:ro
     networks:
       - school_meal_nw
 
 volumes:
   postgres_volume:
-#  rabbitmq_volume:
 
 networks:
   school_meal_nw:
