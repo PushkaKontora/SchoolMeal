@@ -4,7 +4,7 @@ services:
   postgres-server:
     image: peroovy/school_meal:postgres
     healthcheck:
-      test: pg_isready -U ${DB_USER} -d ${DB_PASSWORD} -p ${DB_PORT}
+      test: pg_isready -U ${DB_USER} -p ${DB_PORT} -d ${DB_NAME}
       interval: 10s
       timeout: 5s
       retries: 5
