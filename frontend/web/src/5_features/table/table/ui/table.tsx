@@ -37,7 +37,7 @@ export default function Table() {
 
   return (
     <div className='containerTable'>
-      <table className='table'>
+      <table className='planReportTable'>
         <thead className='containerHead'>
           <TableHeaders
             breakfastPrice={CHILDRENS_NAME[0].breakfast.price}

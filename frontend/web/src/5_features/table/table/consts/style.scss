@@ -1,17 +1,17 @@
 .containerTable {
   margin-top: 12px;
 
-  .table {
+  .planReportTable {
     width: 100%;
     border-collapse: collapse;
 
-    thead.containerHead {
-      background: #f3f6f9;
-      padding: 16px 32px;
-      height: 50px;
+    .containerHead {
+      // background: #f3f6f9;
+      // height: 50px;
+      // border-radius: 6px;
     }
 
-    tbody.containerBody {
+    .containerBody {
       justify-content: center;
       align-items: center;
     }

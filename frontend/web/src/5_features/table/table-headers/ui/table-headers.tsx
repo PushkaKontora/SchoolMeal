@@ -11,7 +11,7 @@ export default function TableHeaders(props: TableHeadersProps) {
         {/* <BasicCheckbox isDisable={false} /> */}
         <span className='spanName'>ФИО</span>
       </td>
-      <td scope='col' className='tableHeaderCell'>
+      <td scope='col' className='tableHeaderCell tableHeaderCell__breakfast'>
         <div className='nameCol'>Завтрак</div>
         {breakfastPrice && <div className='price'>{breakfastPrice} ₽</div>}
         <BasicCheckbox
@@ -31,7 +31,7 @@ export default function TableHeaders(props: TableHeadersProps) {
           isHeader={true}
         />
       </td>
-      <td scope='col' className='tableHeaderCell'>
+      <td scope='col' className='tableHeaderCell snack'>
         <div className='nameCol'>Полдник</div>
         {snackPrice && <div className='price'>{snackPrice} ₽</div>}
         <BasicCheckbox
