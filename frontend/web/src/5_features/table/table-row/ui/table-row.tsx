@@ -44,7 +44,7 @@ export default function TableRow(props: TableRowProps) {
   };
 
   return (
-    <tr>
+    <tr className='tableRow'>
       <td scope='col' className='checkChild'>
         {/* <BasicCheckbox
           isDisable={
@@ -93,7 +93,7 @@ export default function TableRow(props: TableRowProps) {
         /> */}
         <div className='nameChild'>{name}</div>
       </td>
-      <td scope='row'>
+      <td scope='row' className='row'>
         <BasicCheckbox
           isDisable={false}
           isCheck={breakfast}
@@ -102,7 +102,7 @@ export default function TableRow(props: TableRowProps) {
           isHeader={false}
         />
       </td>
-      <td scope='row'>
+      <td scope='row' className='row'>
         <BasicCheckbox
           isDisable={false}
           isCheck={lunch}
@@ -111,7 +111,7 @@ export default function TableRow(props: TableRowProps) {
           isHeader={false}
         />
       </td>
-      <td scope='row'>
+      <td scope='row' className='row'>
         <BasicCheckbox
           isDisable={false}
           isCheck={snack}

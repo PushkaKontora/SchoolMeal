@@ -12,6 +12,7 @@ import {useGetReportQuery} from '../../../6_entities/requests/api/api.ts';
 import {dateToISOString} from '../lib/date-utils.ts';
 import {RequestReportIn} from '../../../6_entities/requests/api/types.ts';
 import {ClassSelector} from '../../../7_shared/ui/special/class-selector';
+import {useCurrentUserQuery} from '../../../6_entities/user/api/api.ts';
 
 export function MealApplicationWidget() {
   const [date] = useState(dateToISOString(new Date()));
@@ -21,6 +22,8 @@ export function MealApplicationWidget() {
     classType: classType,
     date: date
   });
+
+  const { data: currentUser } = useCurrentUserQuery();
 
   const [mealRowData, setMealRowData] = useState<MealRowData | null>(null);
 
@@ -37,7 +40,8 @@ export function MealApplicationWidget() {
   return (
     <div>
       <Content>
-        <HeaderTeacherWidget/>
+        <HeaderTeacherWidget
+          name={`${currentUser.firstName} ${currentUser.lastName}`}/>
 
         <Title>
           {TITLE}

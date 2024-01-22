@@ -6,12 +6,12 @@ export default function TableHeaders(props: TableHeadersProps) {
   const { breakfastPrice, lunchPrice, snackPrice } = props;
 
   return (
-    <tr>
+    <tr className='tableHeader'>
       <td scope='col' className='col_name'>
         {/* <BasicCheckbox isDisable={false} /> */}
         <span className='spanName'>ФИО</span>
       </td>
-      <td scope='col'>
+      <td scope='col' className='tableHeaderCell'>
         <div className='nameCol'>Завтрак</div>
         {breakfastPrice && <div className='price'>{breakfastPrice} ₽</div>}
         <BasicCheckbox
@@ -21,7 +21,7 @@ export default function TableHeaders(props: TableHeadersProps) {
           isHeader={true}
         />
       </td>
-      <td scope='col'>
+      <td scope='col' className='tableHeaderCell'>
         <div className='nameCol'>Обед</div>
         {lunchPrice && <div className='price'>{lunchPrice} ₽</div>}
         <BasicCheckbox
@@ -31,7 +31,7 @@ export default function TableHeaders(props: TableHeadersProps) {
           isHeader={true}
         />
       </td>
-      <td scope='col'>
+      <td scope='col' className='tableHeaderCell'>
         <div className='nameCol'>Полдник</div>
         {snackPrice && <div className='price'>{snackPrice} ₽</div>}
         <BasicCheckbox
@@ -41,7 +41,6 @@ export default function TableHeaders(props: TableHeadersProps) {
           isHeader={true}
         />
       </td>
-      <td scope='col'></td>
     </tr>
   );
 }

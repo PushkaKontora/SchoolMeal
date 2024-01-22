@@ -1,9 +1,9 @@
-tr {
+tr.tableHeader {
   height: 50px;
   font-family: 'Ubuntu', serif;
   border-radius: 6px;
 
-  td {
+  td.tableHeaderCell {
     text-align: center;
     font-weight: 700;
 

@@ -38,14 +38,14 @@ export default function Table() {
   return (
     <div className='containerTable'>
       <table className='table'>
-        <thead>
+        <thead className='containerHead'>
           <TableHeaders
             breakfastPrice={CHILDRENS_NAME[0].breakfast.price}
             lunchPrice={CHILDRENS_NAME[0].lunch.price}
             snackPrice={CHILDRENS_NAME[0].snack.price}
           />
         </thead>
-        <tbody>
+        <tbody className='containerBody'>
           {planReport &&
             planReport.pupils.map((item: PupilItemApi) => (
               <TableRow
