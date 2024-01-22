@@ -4,8 +4,8 @@ import {DEFAULT_STYLES} from './config';
 
 export const ButtonContainer = styled.button<ButtonSecondaryStyles>`
   padding: ${DEFAULT_STYLES.padding};
-  background-color: ${DEFAULT_STYLES.backgroundColor};
-  color: ${DEFAULT_STYLES.color};
+  background-color: ${props => props.backgroundColor || DEFAULT_STYLES.backgroundColor};
+  color: ${props => props.textColor || DEFAULT_STYLES.color};
   font-size: ${DEFAULT_STYLES.fontSize};
   border-radius: ${DEFAULT_STYLES.borderRadius};
   font-weight: ${DEFAULT_STYLES.fontWeight};

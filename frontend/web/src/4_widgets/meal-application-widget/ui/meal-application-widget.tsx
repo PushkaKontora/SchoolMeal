@@ -2,28 +2,35 @@ import {TableContainer, Tabs, Title} from './styles';
 import {MealClassTable} from '../../../5_features/meals/meal-class-table';
 import {MealInfoTable} from '../../../5_features/meals/meal-info-table';
 import {Content} from '../../../7_shared/ui/markup/content';
-import {useGetMealRequestsQuery} from '../../../6_entities/meals/api/api';
-import {GetMealRequestsParams} from '../../../6_entities/meals/api/types';
 import {useEffect, useState} from 'react';
 import {MealRowData} from '../types/meal-row-data';
-import {sortMealsOfDate} from '../lib/utils';
+import {transformRequestReport} from '../lib/utils';
 import {BREAKFAST_TITLE, DINNER_TITLE, LUNCH_TITLE} from '../consts/titles';
 import HeaderTeacherWidget from '../../header-teacher/ui/header-teacher';
-import {CLASS_TITLES, TITLE} from '../config/config';
-import {ButtonSecondary} from '../../../7_shared/ui/buttons/button-secondary';
+import {TITLE} from '../config/config';
+import {useGetReportQuery} from '../../../6_entities/requests/api/api.ts';
+import {dateToISOString} from '../lib/date-utils.ts';
+import {RequestReportIn} from '../../../6_entities/requests/api/types.ts';
+import {ClassSelector} from '../../../7_shared/ui/special/class-selector';
 
 export function MealApplicationWidget() {
-  const params: GetMealRequestsParams = {
-    date: '2023-06-14'
-  };
-  const {data: mealRequests} = useGetMealRequestsQuery(params);
+  const [date, setDate] = useState(dateToISOString(new Date()));
+  const [classType, setClassType]
+    = useState<RequestReportIn['classType']>('primary');
+  const {data: mealRequests, refetch: refetchReport} = useGetReportQuery({
+    classType: classType,
+    date: date
+  });
 
   const [mealRowData, setMealRowData] = useState<MealRowData | null>(null);
-  //const [totalMealRowData, setTotalMealRowData] = useState<MealRowValue | null>(null);
+
+  useEffect(() => {
+    refetchReport();
+  }, [date, classType]);
 
   useEffect(() => {
     if (mealRequests) {
-      setMealRowData(sortMealsOfDate(mealRequests));
+      setMealRowData(transformRequestReport(mealRequests));
     }
   }, [mealRequests]);
 
@@ -36,15 +43,21 @@ export function MealApplicationWidget() {
           {TITLE}
         </Title>
 
-        <Tabs>
-          <ButtonSecondary
-            title={CLASS_TITLES.elementary}
-            onPress={() => {return;}}/>
-          <ButtonSecondary
-            title={CLASS_TITLES.high}
-            disabled
-            onPress={() => {return;}}/>
-        </Tabs>
+        <ClassSelector
+          config={[
+            {
+              name: '1-4 класс',
+              onClick: () => {
+                setClassType('primary');
+              }
+            },
+            {
+              name: '5-11 класс',
+              onClick: () => {
+                setClassType('high');
+              }
+            }
+          ]}/>
 
         <TableContainer>
           <MealClassTable
@@ -68,7 +81,7 @@ export function MealApplicationWidget() {
             data={
               (mealRowData &&
                 Object.values(mealRowData)
-                  .map(item => item.lunch)) || []
+                  .map(item => item.dinner)) || []
             }/>
 
           <MealInfoTable
@@ -78,7 +91,7 @@ export function MealApplicationWidget() {
             data={
               (mealRowData &&
                 Object.values(mealRowData)
-                  .map(item => item.dinner)) || []
+                  .map(item => item.snacks)) || []
             }/>
         </TableContainer>
       </Content>

@@ -12,6 +12,7 @@ export function ButtonSecondary(props: ButtonSecondaryProps) {
   return (
     <ButtonContainer
       onClick={props.onPress}
+      {...props}
       disabled={disabled}>
       {props.title}
     </ButtonContainer>

@@ -4,6 +4,7 @@ import {Class} from '../../../6_entities/meals/model/class-view';
 import {Pupil} from '../../../6_entities/meals/model/pupil-view';
 import {MealCellData} from '../../../5_features/meals/meal-info-table/types';
 import {MealRowValue} from '../types/meal-row-value';
+import {RequestReport} from '../../../6_entities/requests/api/types.ts';
 
 export function schoolClassToString(schoolClass: Class) {
   return `${schoolClass.number}${schoolClass.letter}`;
@@ -11,6 +12,29 @@ export function schoolClassToString(schoolClass: Class) {
 
 export function isRequiredClass(item: Meal, schoolClass: Class) {
   return item.schoolClass.id === schoolClass.id;
+}
+
+export function transformRequestReport(report: RequestReport): MealRowData {
+  const result: MealRowData = {};
+
+  for (let schoolClass of report.school_classes) {
+    result[schoolClass.initials] = {
+      breakfast: {
+        ...schoolClass.breakfast,
+        sum: schoolClass.breakfast.total
+      },
+      dinner: {
+        ...schoolClass.dinner,
+        sum: schoolClass.dinner.total
+      },
+      snacks: {
+        ...schoolClass.snacks,
+        sum: schoolClass.snacks.total
+      }
+    };
+  }
+
+  return result;
 }
 
 export function sortMealsOfDate(meals: Meal[]): MealRowData {
