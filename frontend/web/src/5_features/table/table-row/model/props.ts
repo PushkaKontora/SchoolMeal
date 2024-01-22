@@ -1,5 +1,4 @@
 import { PropsWithChildren } from 'react';
-import { FoodType } from './foodType';
 
 export type TableRowProps = {
   name: string;

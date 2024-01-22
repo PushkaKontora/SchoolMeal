@@ -12,6 +12,7 @@ export default function TableRow(props: TableRowProps) {
 
   useEffect(() => {
     onChange(breakfastCheckbox, lunchCheckbox, snackCheckbox);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [breakfastCheckbox, lunchCheckbox, snackCheckbox]);
 
   // const [countTotalSum, setCountTotalSum] = useState(total);

@@ -12,9 +12,6 @@ import {
 } from '../../../tabs/class-selection/model/class-tabs-slice.ts';
 
 export default function Table() {
-  const initialsActiveClass = useAppSelector(
-    (state) => state.classTabs.activeClass
-  );
   const сlassID = useAppSelector((state) => state.classTabs.classID);
   const dataCh = useAppSelector((state) => state.classTabs.dataCh);
 
@@ -35,6 +32,7 @@ export default function Table() {
     if (planReport) {
       dispatch(fillPlanReportStatus(planReport.status));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planReport]);
 
   return (

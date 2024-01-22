@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import HeaderTeacherWidget from '../../../4_widgets/header-teacher/ui/header-teacher.tsx';
 import {
   infoMessageTime,
@@ -86,8 +87,6 @@ export function TeacherMainPage() {
       });
     }
   }
-
-  function handlerCancelChange() {}
 
   return (
     <div className='containerTeacherMain'>
