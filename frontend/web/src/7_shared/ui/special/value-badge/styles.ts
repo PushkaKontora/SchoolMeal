@@ -5,6 +5,7 @@ import {DEFAULT_BACKGROUND, DEFAULT_TEXT_COLOR, DEFAULT_WIDTH} from './config';
 export const BadgeContainer = styled.div<ValueBadgeStyles>`
   background-color: ${props => props.backgroundColor || DEFAULT_BACKGROUND};
   color: ${props => props.textColor || DEFAULT_TEXT_COLOR};
+  margin: ${props => props.margin || DEFAULT_TEXT_COLOR};
   
   font-family: 'Ubuntu';
   font-weight: 700;

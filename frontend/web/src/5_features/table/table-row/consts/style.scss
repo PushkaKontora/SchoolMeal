@@ -1,0 +1,45 @@
+td {
+  text-align: center;
+  width: 100%;
+  border-spacing: 0 8px;
+  border-bottom: 1px solid  #f3f6f9;
+
+  &:first-child {
+    text-align: start;
+    padding-left: 32px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &:last-child {
+    margin-left: auto;
+  }
+}
+
+.checkChild {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  width: 100%;
+
+  border-bottom: 1px solid  #f3f6f9;
+
+  padding: 4px 8px;
+  border-radius: 5px;
+
+  margin-right: 8px;
+
+  .nameChild {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 0.03em;
+    font-family: 'Ubuntu', serif;
+
+    color: #464e5f;
+  }
+}
+

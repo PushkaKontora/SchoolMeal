@@ -1,0 +1,80 @@
+label {
+  width: 18px;
+}
+
+input[type='checkbox'] {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.checkbox {
+  display: inline-block; // set to `inline-block` as `inline elements ignore `height` and `width`
+  height: 16px;
+  width: 16px;
+  background: #fff;
+  border: 0.8px #333333 solid;
+  border-radius: 3.2px;
+  cursor: pointer;
+  // margin-right: 4px;
+}
+
+.checkbox--active {
+  border-color: #353636;
+  background: #353636;
+  cursor: pointer;
+}
+
+.checkbox--disabled {
+  border: 0.8px #dbdbdb solid;
+}
+
+// .custom-checkbox {
+//   position: absolute;
+//   z-index: -1;
+//   opacity: 0;
+// }
+
+// .custom-checkbox + label {
+//   display: inline-flex;
+//   align-items: center;
+//   user-select: none;
+// }
+
+// .custom-checkbox + label::before {
+//   content: '';
+//   display: inline-block;
+//   width: 1em;
+//   height: 1em;
+//   flex-shrink: 0;
+//   flex-grow: 0;
+//   background-size: 50% 50%;
+
+//   background: rgba(255, 255, 255, 0.24);
+//   border: 0.8px solid #333333;
+//   border-radius: 3.2px;
+// }
+
+// .custom-checkbox__firstCol + label::before {
+//   margin-right: 8px;
+// }
+
+// .custom-checkbox:checked + label::before {
+//   background: #353636;
+//   background-origin: content-box;
+//   background-position: center;
+//   background-image: url("../../../../7_shared/assets/images/Group.png");
+// }
+
+// label {
+//   font-weight: 700;
+//   font-size: 16px;
+//   line-height: 18px;
+//   letter-spacing: 0.03em;
+
+//   color: #464E5F;
+// }

@@ -1,13 +1,35 @@
+import { useAppDispatch, useAppSelector } from '../../../../../store/hooks.ts';
 import '../consts/style.scss';
-import {ClassItemProps} from '../model/props.ts';
+import { ClassItemProps } from '../model/props.ts';
+import { selectionClassTabs } from '../../../../5_features/tabs/class-selection/model/class-tabs-slice.ts';
 
 export default function ClassItemWidget(props: ClassItemProps) {
-  const active = '3А';
+  const { className, indexArray } = props;
+
+  const activeClass = useAppSelector((state) => state.classTabs.activeClass);
+  const allTeacherClasses = useAppSelector(
+    (state) => state.classTabs.allClassList
+  );
+  const dispatch = useAppDispatch();
+
+  function handlerChooseClass() {
+    dispatch(
+      selectionClassTabs({
+        activeClass: className,
+        classID: allTeacherClasses[indexArray].id,
+        activeClassItemInArray: indexArray,
+      })
+    );
+  }
 
   return (
-    <div className={active != props.className ? 'className' : 'className className__active'}>
-      {props.className}
+    <div
+      className={
+        activeClass != className ? 'className' : 'className className__active'
+      }
+      onClick={handlerChooseClass}
+    >
+      {className}
     </div>
   );
 }
-
