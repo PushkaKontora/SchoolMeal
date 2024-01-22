@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../../store/hooks';
 import { getDayName } from '../../../special/dates/lib/dates-utils';
 import { getMonthShortName } from '../../../special/dates/lib/month-utils';
 import { selectionNewDate } from '../../../special/dates/model/date-teacher-table-slice';
+import { getDataCh } from '../../../../../5_features/tabs/class-selection/model/class-tabs-slice';
 
 export default function MonthSelection() {
   const currentDate = useAppSelector(
@@ -18,6 +19,11 @@ export default function MonthSelection() {
   useEffect(() => {
     setDate(new Date(currentDate));
   }, [currentDate]);
+
+  useEffect(() => {
+    const res = date.toISOString().slice(0, 10);
+    dispatch(getDataCh(res));
+  }, [date, dispatch]);
 
   const onDatePickerLeftPress = () => {
     const prevDate = new Date(date.setDate(date.getDate() - 1));

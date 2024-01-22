@@ -25,7 +25,7 @@ export default function BasicCheckbox(props: BasicCheckboxProps) {
         setIsChecked(!valueChangeHeaders);
         
         if (onChange) {
-          onChange(!isChecked);
+          onChange(!valueChangeHeaders);
         }
       }
     }

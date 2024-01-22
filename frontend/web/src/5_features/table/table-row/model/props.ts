@@ -5,9 +5,8 @@ export type TableRowProps = {
   name: string;
   // balance: string;
   // total?: string | number;
-  breakfast: FoodType,
-  lunch: FoodType,
-  snack: FoodType,
+  breakfast: boolean;
+  lunch: boolean;
+  snack: boolean;
+  onChange: (breakfast: boolean, lunch: boolean, snack: boolean) => void;
 } & PropsWithChildren;
-
-

@@ -1,11 +1,22 @@
-import { useAppDispatch } from '../../../../../store/hooks';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../../store/hooks.ts';
 import BasicCheckbox from '../../../../7_shared/ui/checkbox/basic-checkbox/ui/basic-checkbox';
 import '../consts/style.scss';
 import { TableHeadersProps } from '../model/props';
 
 export default function TableHeaders(props: TableHeadersProps) {
   const { breakfastPrice, lunchPrice, snackPrice } = props;
+  const activeClassItemInArray = useAppSelector(
+    (state) => state.classTabs.activeClassItemInArray
+  );
+  const allTeacherClasses = useAppSelector(
+    (state) => state.classTabs.allClassList
+  );
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    console.log(allTeacherClasses, activeClassItemInArray, '!');
+  }, [allTeacherClasses]);
 
   return (
     <tr>
@@ -43,9 +54,7 @@ export default function TableHeaders(props: TableHeadersProps) {
           isHeader={true}
         />
       </td>
-      <td scope='col'>
-       
-      </td>
+      <td scope='col'></td>
     </tr>
   );
 }

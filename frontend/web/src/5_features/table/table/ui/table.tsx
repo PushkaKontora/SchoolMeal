@@ -2,25 +2,40 @@ import '../consts/style.scss';
 import { CHILDRENS_NAME } from '../../../../3_pages/teacher-main-page/consts/moks.ts';
 import TableHeaders from '../../table-headers/ui/table-headers.tsx';
 import TableRow from '../../table-row/ui/table-row.tsx';
-import { useAppSelector } from '../../../../../store/hooks.ts';
+import { useAppSelector, useAppDispatch } from '../../../../../store/hooks.ts';
 import { useEffect } from 'react';
 import { usePupilsQuery } from '../../../../6_entities/nutrition/api/api.ts';
-import { Pupil } from '../../../../6_entities/meals/model/pupil-view.ts';
+import { PupilItemApi } from '../../../../6_entities/nutrition/model/PlanReport.ts';
+import {
+  fillPlanReportStatus,
+  fillPrepareItems,
+} from '../../../tabs/class-selection/model/class-tabs-slice.ts';
 
 export default function Table() {
   const initialsActiveClass = useAppSelector(
     (state) => state.classTabs.activeClass
   );
   const сlassID = useAppSelector((state) => state.classTabs.classID);
-  const { data: pupils, refetch: refPupils } = usePupilsQuery(сlassID);
+  const dataCh = useAppSelector((state) => state.classTabs.dataCh);
+
+  const dispatch = useAppDispatch();
+
+  const { data: planReport, refetch: refPupils } = usePupilsQuery({
+    class_id: сlassID,
+    on_date: dataCh,
+  });
 
   useEffect(() => {
-    console.log(сlassID, '2')
-    if (сlassID) {
+    if (сlassID && dataCh) {
       refPupils();
     }
-    console.log(pupils, сlassID, '3');
-  }, [сlassID]);
+  }, [сlassID, dataCh, refPupils]);
+
+  useEffect(() => {
+    if (planReport) {
+      dispatch(fillPlanReportStatus(planReport.status));
+    }
+  }, [planReport]);
 
   return (
     <div className='containerTable'>
@@ -33,17 +48,28 @@ export default function Table() {
           />
         </thead>
         <tbody>
-          {pupils && pupils.map((item: Pupil) => (
-            <TableRow
-              name={item.lastName + ' ' + item.firstName}
-              //balance={item.price.toString()}
-              // total={item?.total}
-              key={item.id}
-              breakfast={item.mealPlan.hasBreakfast}
-              lunch={item.mealPlan.hasDinner}
-              snack={item.mealPlan.hasSnacks}
-            />
-          ))}
+          {planReport &&
+            planReport.pupils.map((item: PupilItemApi) => (
+              <TableRow
+                name={item.last_name + ' ' + item.first_name}
+                //balance={item.price.toString()}
+                // total={item?.total}
+                key={item.id}
+                breakfast={item.breakfast}
+                lunch={item.dinner}
+                snack={item.snacks}
+                onChange={(breakfast, lunch, snack) => {
+                  dispatch(
+                    fillPrepareItems({
+                      id: item.id,
+                      breakfast: breakfast,
+                      dinner: lunch,
+                      snacks: snack,
+                    })
+                  );
+                }}
+              />
+            ))}
         </tbody>
       </table>
     </div>

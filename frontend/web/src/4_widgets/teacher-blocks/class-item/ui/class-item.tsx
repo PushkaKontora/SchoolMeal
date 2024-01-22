@@ -17,9 +17,9 @@ export default function ClassItemWidget(props: ClassItemProps) {
       selectionClassTabs({
         activeClass: className,
         classID: allTeacherClasses[indexArray].id,
+        activeClassItemInArray: indexArray,
       })
     );
-    console.log(indexArray, allTeacherClasses[indexArray].id, '4');
   }
 
   return (

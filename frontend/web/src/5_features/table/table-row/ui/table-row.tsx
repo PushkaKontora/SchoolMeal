@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import BasicCheckbox from '../../../../7_shared/ui/checkbox/basic-checkbox/ui/basic-checkbox';
 import '../consts/style.scss';
 import { TableRowProps } from '../model/props';
-import { ValueBadge } from '../../../../7_shared/ui/special/value-badge';
 
 export default function TableRow(props: TableRowProps) {
-  const { name,  breakfast, lunch, snack } = props;
+  const { name, breakfast, lunch, snack, onChange } = props;
 
-  const [breakfastCheckbox, setBreakfastCheckbox] = useState(breakfast.isCheck);
-  const [lunchCheckbox, setLunchCheckbox] = useState(lunch.isCheck);
-  const [snackCheckbox, setSnackCheckbox] = useState(snack.isCheck);
+  const [breakfastCheckbox, setBreakfastCheckbox] = useState(breakfast);
+  const [lunchCheckbox, setLunchCheckbox] = useState(lunch);
+  const [snackCheckbox, setSnackCheckbox] = useState(snack);
+
+  useEffect(() => {
+    onChange(breakfastCheckbox, lunchCheckbox, snackCheckbox);
+  }, [breakfastCheckbox, lunchCheckbox, snackCheckbox]);
 
   // const [countTotalSum, setCountTotalSum] = useState(total);
 
@@ -91,8 +94,8 @@ export default function TableRow(props: TableRowProps) {
       </td>
       <td scope='row'>
         <BasicCheckbox
-          isDisable={breakfast.isDisabled}
-          isCheck={breakfast.isCheck}
+          isDisable={false}
+          isCheck={breakfast}
           onChange={onChangeBreakfastCheckbox}
           type='b'
           isHeader={false}
@@ -100,8 +103,8 @@ export default function TableRow(props: TableRowProps) {
       </td>
       <td scope='row'>
         <BasicCheckbox
-          isDisable={lunch.isDisabled}
-          isCheck={lunch.isCheck}
+          isDisable={false}
+          isCheck={lunch}
           onChange={onChangeLunchCheckbox}
           type='l'
           isHeader={false}
@@ -109,8 +112,8 @@ export default function TableRow(props: TableRowProps) {
       </td>
       <td scope='row'>
         <BasicCheckbox
-          isDisable={snack.isDisabled}
-          isCheck={snack.isCheck}
+          isDisable={false}
+          isCheck={snack}
           onChange={onChangeSnackCheckbox}
           type='s'
           isHeader={false}
