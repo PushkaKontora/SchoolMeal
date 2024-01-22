@@ -29,7 +29,7 @@ from app.nutrition.infrastructure.db.repositories import (
     AlchemyRequestsRepository,
     AlchemySchoolClassesRepository,
 )
-from app.shared.objects_storage.local import LocalObjectsStorage, Protocol
+from app.shared.objects_storage.local import LocalObjectsStorage
 from app.shared.unit_of_work.alchemy import AlchemyUnitOfWork
 
 
@@ -55,9 +55,6 @@ class NutritionContainer(DeclarativeContainer):
 
     objects_storage = Singleton(
         LocalObjectsStorage,
-        protocol=Factory(Protocol, object_storage_config.protocol),
-        host=object_storage_config.host,
-        port=object_storage_config.port,
         base_path=Factory(Path, object_storage_config.base_path),
     )
 

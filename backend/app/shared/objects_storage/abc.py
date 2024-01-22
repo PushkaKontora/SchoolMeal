@@ -4,7 +4,7 @@ from pathlib import Path
 
 class IObjectsStorage(ABC):
     @abstractmethod
-    async def get_url(self, file: Path) -> str | None:
+    async def get_uri(self, file: Path) -> str | None:
         raise NotImplementedError
 
     @abstractmethod
