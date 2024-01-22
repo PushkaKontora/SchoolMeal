@@ -3,7 +3,7 @@ import {MealUnitProps} from '../model/props';
 import {createStyle} from '../consts/style';
 import {TitleText} from '../../../../../7_shared/ui/text/title-text/title.text';
 import {PortionsPart} from './portions-part/portions-part';
-import {getImageSource} from '../../../../../7_shared/lib/image-source';
+import {BACKEND_URL} from '../../../../../7_shared/api/config';
 
 export function MealUnit(props: MealUnitProps) {
   const styles = createStyle();
@@ -23,7 +23,7 @@ export function MealUnit(props: MealUnitProps) {
           //imagePath={require('../../../../../7_shared/assets/images/Rectangle.png')}
           //imagePath={por.food.photoPath}
           imagePath={{
-            'uri': getImageSource(por.photoUrl, true),
+            'uri': `${BACKEND_URL}${por.photoUrl}`,
           }}
           food={por}/>)}
     </View>
