@@ -17,7 +17,7 @@ export function isRequiredClass(item: Meal, schoolClass: Class) {
 export function transformRequestReport(report: RequestReport): MealRowData {
   const result: MealRowData = {};
 
-  for (let schoolClass of report.school_classes) {
+  for (const schoolClass of report.school_classes) {
     result[schoolClass.initials] = {
       breakfast: {
         ...schoolClass.breakfast,

@@ -1,4 +1,4 @@
-import {TableContainer, Tabs, Title} from './styles';
+import {TableContainer, Title} from './styles';
 import {MealClassTable} from '../../../5_features/meals/meal-class-table';
 import {MealInfoTable} from '../../../5_features/meals/meal-info-table';
 import {Content} from '../../../7_shared/ui/markup/content';
@@ -14,7 +14,7 @@ import {RequestReportIn} from '../../../6_entities/requests/api/types.ts';
 import {ClassSelector} from '../../../7_shared/ui/special/class-selector';
 
 export function MealApplicationWidget() {
-  const [date, setDate] = useState(dateToISOString(new Date()));
+  const [date] = useState(dateToISOString(new Date()));
   const [classType, setClassType]
     = useState<RequestReportIn['classType']>('primary');
   const {data: mealRequests, refetch: refetchReport} = useGetReportQuery({
@@ -26,7 +26,7 @@ export function MealApplicationWidget() {
 
   useEffect(() => {
     refetchReport();
-  }, [date, classType]);
+  }, [date, classType, refetchReport]);
 
   useEffect(() => {
     if (mealRequests) {

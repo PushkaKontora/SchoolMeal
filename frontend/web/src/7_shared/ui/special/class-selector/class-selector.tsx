@@ -17,8 +17,7 @@ export function ClassSelector(props: ClassSelectorProps) {
             onPress={() => {
               item.onClick(idx);
               setSelectedIndex(idx);
-            }
-          }/>
+            }}/>
         ))
       }
     </Tabs>

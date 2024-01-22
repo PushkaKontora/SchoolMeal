@@ -7,7 +7,7 @@ export function ValueBadge(props: ValueBadgeProps) {
   return (
     <BadgeContainer
       {...styles}>
-      {value}
+      {(Number(value) > 0) ? value : '-'}
     </BadgeContainer>
   );
 }
