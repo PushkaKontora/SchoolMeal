@@ -1,5 +1,5 @@
 import '../consts/style.scss';
-import { CHILDRENS_NAME } from '../../../../3_pages/teacher-main-page/consts/moks.ts';
+import { CHILDRENS_NAME } from '../../../../3_pages/legacy/teacher-main-page/consts/moks.ts';
 import TableHeaders from '../../table-headers/ui/table-headers.tsx';
 import TableRow from '../../table-row/ui/table-row.tsx';
 import { useAppSelector, useAppDispatch } from '../../../../../store/hooks.ts';

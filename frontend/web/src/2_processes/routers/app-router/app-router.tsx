@@ -4,8 +4,8 @@ import {LoginPage} from '../../../3_pages/login-page';
 import {CANTEEN_STAFF_ROUTES, TEACHER_ROUTES} from '../../../7_shared/config/routes/auth-routes';
 import {PrivateRoute} from '../../../5_features/private-route';
 import {Role} from '../../../7_shared/model/role';
-import {MealApplicationPage} from '../../../3_pages/meal-application-page';
-import {TeacherMainPage} from '../../../3_pages/teacher-main-page/ui/teacher-main-page.tsx';
+import {MealApplicationPage} from '../../../3_pages/legacy/meal-application-page';
+import {TeacherMainPage} from '../../../3_pages/legacy/teacher-main-page/ui/teacher-main-page.tsx';
 
 export function AppRouter() {
   return (

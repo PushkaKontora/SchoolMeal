@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import BasicCheckbox from '../../../../7_shared/ui/checkbox/basic-checkbox/ui/basic-checkbox';
+import Checkbox from '../../../../7_shared/ui/v2/interactive/check-box/ui/checkbox.tsx';
 import '../consts/style.scss';
 import { TableRowProps } from '../model/props';
 
@@ -46,7 +46,7 @@ export default function TableRow(props: TableRowProps) {
   return (
     <tr className='tableRow'>
       <td scope='col' className='checkChild'>
-        {/* <BasicCheckbox
+        {/* <Checkbox
           isDisable={
             breakfast.isDisabled && lunch.isDisabled && snack.isDisabled
           }
@@ -94,7 +94,7 @@ export default function TableRow(props: TableRowProps) {
         <div className='nameChild'>{name}</div>
       </td>
       <td scope='row' className='row'>
-        <BasicCheckbox
+        <Checkbox
           isDisable={false}
           isCheck={breakfast}
           onChange={onChangeBreakfastCheckbox}
@@ -103,7 +103,7 @@ export default function TableRow(props: TableRowProps) {
         />
       </td>
       <td scope='row' className='row'>
-        <BasicCheckbox
+        <Checkbox
           isDisable={false}
           isCheck={lunch}
           onChange={onChangeLunchCheckbox}
@@ -112,7 +112,7 @@ export default function TableRow(props: TableRowProps) {
         />
       </td>
       <td scope='row' className='row'>
-        <BasicCheckbox
+        <Checkbox
           isDisable={false}
           isCheck={snack}
           onChange={onChangeSnackCheckbox}
