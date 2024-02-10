@@ -1,3 +1,6 @@
+@import 'fonts/roboto.css';
+
+/* Graphic */
 @font-face {
     font-family: 'Graphik';
     src: url("/fonts/Graphik-Regular-Web.ttf") format("truetype");
@@ -24,6 +27,7 @@
     src: url("/fonts/Graphik-Black-Web.ttf") format("truetype");
 }
 
+/* Ubuntu */
 @font-face {
     font-weight: 300;
     font-style: normal;

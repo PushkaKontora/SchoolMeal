@@ -1,5 +1,5 @@
 import '../consts/style.scss';
-import ClassItemWidget from '../../../../4_widgets/teacher-blocks/class-item/ui/class-item';
+import ClassItemWidget from '../../../../4_widgets/legacy/teacher-blocks/class-item/ui/class-item';
 import { useAppSelector } from '../../../../../store/hooks';
 
 export default function ClassSelection() {

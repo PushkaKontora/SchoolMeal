@@ -1,13 +1,19 @@
 version: "3.9"
 
 services:
-  postgres:
+  postgres-server:
     build:
       context: postgres
+    ports:
+      - ${DB_PORT:-5432}:${DB_PORT:-5432}
 
   app:
     build:
       context: backend
+    ports:
+      - "8000:8000"
+    environment:
+      SHOW_SWAGGER_UI: "true"
     volumes:
       - ./backend/app:/school_meal/app
 

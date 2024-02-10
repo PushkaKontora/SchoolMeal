@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react';
 
 import '../consts/style.scss';
-import { BasicCheckboxProps } from '../model/props';
-import { useAppSelector, useAppDispatch } from '../../../../../../store/hooks';
-import { changeStateCheckbox } from '../../../../../5_features/table/model/checkbox-slice.ts/checkbox-slice';
+import { BasicCheckboxProps } from '../model/props.ts';
+import { useAppSelector, useAppDispatch } from '../../../../../../../store/hooks.ts';
+import { changeStateCheckbox } from '../../../../../../5_features/table/model/checkbox-slice.ts/checkbox-slice.ts';
 
 export default function BasicCheckbox(props: BasicCheckboxProps) {
   const { isDisable, isCheck, type, isHeader, onChange } = props;
