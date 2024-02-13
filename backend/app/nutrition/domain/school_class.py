@@ -1,60 +1,45 @@
-from enum import IntEnum, unique
-from uuid import UUID
+from dataclasses import dataclass
+from typing import NewType
+from uuid import UUID, uuid4
 
-from pydantic.dataclasses import dataclass
-
-from app.nutrition.domain.pupil import Pupil
-from app.shared.domain.abc import Entity, ValueObject
+from app.nutrition.domain.mealtime import Mealtime
+from app.shared.exceptions import DomainException
 
 
-@unique
-class SchoolClassType(IntEnum):
-    PRIMARY = 0
-    HIGH = 1
+TeacherID = NewType("TeacherID", UUID)
 
-    def to_range(self) -> tuple[int, int]:
-        return {
-            self.PRIMARY: (1, 4),
-            self.HIGH: (5, 11),
-        }[self]
+
+@dataclass(frozen=True)
+class ClassID:
+    value: UUID
 
     @classmethod
-    def from_number(cls, number: int) -> "SchoolClassType":
-        if 1 <= number <= 4:
-            return SchoolClassType.PRIMARY
-
-        if 5 <= number <= 11:
-            return SchoolClassType.HIGH
-
-        raise ValueError("Невалидный номер класса", number)
+    def generate(cls) -> "ClassID":
+        return cls(uuid4())
 
 
-@dataclass(frozen=True, eq=True)
-class SchoolClassInitials(ValueObject):
-    literal: str
-    number: int
+@dataclass(frozen=True)
+class Literal:
+    value: str
 
-    def __post_init_post_parse__(self) -> None:
-        if not "A" <= self.literal <= "Я":
-            raise ValueError("Буква класса должны быть кириллицей")
+    def __post_init__(self) -> None:
+        if not "А" <= self.value <= "Я":
+            raise DomainException("Буква класса должна быть кириллицей")
 
-        if not 1 <= self.number <= 11:
-            raise ValueError("Цифра класса должны быть от 1 до 11")
 
-    @property
-    def school_class_type(self) -> SchoolClassType:
-        return SchoolClassType.PRIMARY if 1 <= self.number <= 4 else SchoolClassType.HIGH
+@dataclass(frozen=True)
+class Number:
+    value: int
 
-    def __str__(self) -> str:
-        return str(self.number) + self.literal
+    def __post_init__(self) -> None:
+        if not 1 <= self.value <= 11:
+            raise DomainException("Цифра класса должны быть от 1 до 11")
 
 
 @dataclass
-class SchoolClass(Entity):
-    id: UUID
-    initials: SchoolClassInitials
-    teacher_id: UUID | None
-    breakfast: bool
-    dinner: bool
-    snacks: bool
-    pupils: list[Pupil]
+class SchoolClass:
+    id: ClassID
+    teacher_id: TeacherID | None
+    number: Number
+    literal: Literal
+    mealtimes: set[Mealtime]

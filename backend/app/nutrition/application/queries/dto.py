@@ -43,7 +43,7 @@ class PreferentialCertificateOut(FrontendModel):
     @classmethod
     def from_model(cls, certificate: PreferentialCertificate) -> "PreferentialCertificateOut":
         return cls(
-            ends_at=certificate.ends_at,
+            ends_at=certificate.end,
         )
 
 
@@ -66,7 +66,7 @@ class PupilOut(FrontendModel):
             preferential_certificate=PreferentialCertificateOut.from_model(pupil.preferential_certificate)
             if pupil.preferential_certificate
             else None,
-            cancellation_periods=[CancellationPeriodOut.from_model(period) for period in pupil.cancellation_periods],
+            cancellation_periods=[CancellationPeriodOut.from_model(period) for period in pupil.cancellation],
             status=MealStatus.from_model(pupil.nutrition_status),
         )
 

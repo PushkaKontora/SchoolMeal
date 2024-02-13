@@ -1079,6 +1079,17 @@ files = [
 ]
 
 [[package]]
+name = "result"
+version = "0.16.0"
+description = "A Rust-like result type for Python"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "result-0.16.0-py3-none-any.whl", hash = "sha256:10e412a320b3aab7dd88e716802b0bf41de380f868aab30c5b5305a9dfd49dc5"},
+    {file = "result-0.16.0.tar.gz", hash = "sha256:9eb4a2c74f28722bf4bdcd5c0fdf35afaa1042b58f638204d0291873c8db7131"},
+]
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -1401,4 +1412,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "3d8f745f2f01a2ad634a3316e720135ac8c6e91435c2784dcf5828665ac645bc"
+content-hash = "5a8943951e2168ddd11f3ca203b7bf169db1ccda3f3988c762552806e90c27aa"

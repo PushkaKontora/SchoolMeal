@@ -8,12 +8,13 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID as UUID_DB
 from sqlalchemy.orm import Mapped, declarative_base, relationship
 from sqlalchemy.sql import expression
 
+from app.nutrition.domain.cancellation import CancellationPeriod, ReasonText
 from app.nutrition.domain.menu import Food, Menu
 from app.nutrition.domain.parent import Parent
-from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Day, Reason
 from app.nutrition.domain.pupil import MealPlan, Name, PreferentialCertificate, Pupil, PupilID
 from app.nutrition.domain.request import DraftRequest, PupilInfo, Request
 from app.nutrition.domain.school_class import SchoolClass, SchoolClassInitials, SchoolClassType
+from app.nutrition.domain.times import CancellationPeriodSequence, Day
 from app.shared.db.base import Base
 from app.shared.domain.money import Money
 
@@ -120,9 +121,7 @@ class PupilDB(NutritionBase):
             preferential_certificate=PreferentialCertificate(ends_at=self.preferential_certificate_ends_at)
             if self.preferential_certificate_ends_at
             else None,
-            cancellation_periods=CancellationPeriodSequence(
-                tuple(period.to_model() for period in self.cancellation_periods)
-            ),
+            cancellation=CancellationPeriodSequence(tuple(period.to_model() for period in self.cancellation_periods)),
         )
 
 
@@ -148,7 +147,7 @@ class CancellationPeriodDB(NutritionBase):
         return CancellationPeriod(
             starts_at=self.starts_at,
             ends_at=self.ends_at,
-            reasons=frozenset(Reason(reason) for reason in self.reasons),
+            reasons=frozenset(ReasonText(reason) for reason in self.reasons),
         )
 
 

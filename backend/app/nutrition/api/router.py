@@ -35,13 +35,13 @@ from app.nutrition.application.queries.school_classes.get_school_classes import 
 )
 from app.nutrition.application.repositories import NotFoundMenu, NotFoundParent, NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain.parent import ChildIsAlreadyAttachedToParent
-from app.nutrition.domain.periods import (
+from app.nutrition.domain.pupil import CannotCancelNutritionAfterTime, CannotResumeNutritionAfterTime
+from app.nutrition.domain.request import RequestCannotBeEditedAfter
+from app.nutrition.domain.times import (
     EndCannotBeGreaterThanStart,
     ExceededMaxLengthReason,
     SpecifiedReasonCannotBeEmpty,
 )
-from app.nutrition.domain.pupil import CannotCancelNutritionAfterTime, CannotResumeNutritionAfterTime
-from app.nutrition.domain.request import RequestCannotBeEditedAfter
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep

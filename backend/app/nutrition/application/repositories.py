@@ -4,10 +4,10 @@ from uuid import UUID
 
 from app.nutrition.domain.menu import Menu
 from app.nutrition.domain.parent import Parent
-from app.nutrition.domain.periods import Day
 from app.nutrition.domain.pupil import Pupil
 from app.nutrition.domain.request import DraftRequest, Request
 from app.nutrition.domain.school_class import SchoolClass, SchoolClassType
+from app.nutrition.domain.times import Day
 
 
 class NotFoundPupil(Exception):

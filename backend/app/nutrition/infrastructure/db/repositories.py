@@ -24,10 +24,10 @@ from app.nutrition.application.repositories import (
 )
 from app.nutrition.domain.menu import Menu
 from app.nutrition.domain.parent import Parent
-from app.nutrition.domain.periods import Day
 from app.nutrition.domain.pupil import Pupil
 from app.nutrition.domain.request import DraftRequest, Request
 from app.nutrition.domain.school_class import SchoolClass, SchoolClassType
+from app.nutrition.domain.times import Day
 from app.nutrition.infrastructure.db.models import (
     CancellationPeriodDB,
     ChildDB,
@@ -70,7 +70,7 @@ class AlchemyPupilsRepository(IPupilsRepository):
                     has_breakfast=pupil.meal_plan.breakfast,
                     has_dinner=pupil.meal_plan.dinner,
                     has_snacks=pupil.meal_plan.snacks,
-                    preferential_certificate_ends_at=pupil.preferential_certificate.ends_at
+                    preferential_certificate_ends_at=pupil.preferential_certificate.end
                     if pupil.preferential_certificate
                     else None,
                 )
@@ -83,11 +83,11 @@ class AlchemyPupilsRepository(IPupilsRepository):
             CancellationPeriodDB(
                 id_=uuid4(),
                 pupil_id=pupil.id.value,
-                starts_at=period.starts_at,
-                ends_at=period.ends_at,
+                starts_at=period.start,
+                ends_at=period.end,
                 reasons=[reason.value for reason in period.reasons],
             )
-            for period in pupil.cancellation_periods
+            for period in pupil.cancellation
         ]
         self._session.add_all(periods)
         await self._session.flush(periods)

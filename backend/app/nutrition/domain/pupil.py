@@ -1,112 +1,58 @@
 import secrets
-from dataclasses import field
-from datetime import date, datetime
-from enum import Enum
+from dataclasses import dataclass
+from datetime import date
+from typing import NewType
 
-from pydantic.dataclasses import dataclass
+from result import Ok
 
-from app.nutrition.domain.periods import CancellationPeriod, CancellationPeriodSequence, Day
-from app.shared.domain import timezones
-from app.shared.domain.abc import Entity, ValueObject
-
-
-class CantAttachExpiredPreferentialCertificate(Exception):
-    pass
+from app.nutrition.domain.mealtime import Mealtime
+from app.nutrition.domain.school_class import ClassID
+from app.nutrition.domain.times import Day, Period, Timeline
 
 
-class CannotCancelNutritionAfterTime(Exception):
-    def __init__(self, now: datetime, completed_at: datetime) -> None:
-        self.now = now
-        self.completed_at = completed_at
+PupilName = NewType("PupilName", str)
 
 
-class CannotResumeNutritionAfterTime(Exception):
-    def __init__(self, now: datetime, completed_at: datetime) -> None:
-        self.now = now
-        self.completed_at = completed_at
-
-
-@dataclass(eq=True, frozen=True)
-class PupilID(ValueObject):
-    value: str = field(default_factory=lambda: secrets.token_hex(10))
-
-
-@dataclass(eq=True, frozen=True)
-class Name(ValueObject):
+@dataclass(frozen=True)
+class PupilID:
     value: str
 
-
-@dataclass(eq=True, frozen=True)
-class PreferentialCertificate(ValueObject):
-    ends_at: date
-
-    @property
-    def is_expired(self) -> bool:
-        return datetime.now(timezones.yekaterinburg).date() > self.ends_at
-
-
-class NutritionStatus(str, Enum):
-    PREFERENTIAL = "preferential"
-    PAID = "paid"
-    NONE = "none"
+    @classmethod
+    def generate(cls) -> "PupilID":
+        return cls(secrets.token_hex(10))
 
 
 @dataclass
-class MealPlan:
-    breakfast: bool
-    dinner: bool
-    snacks: bool
-
-
-@dataclass
-class Pupil(Entity):
+class Pupil:
     id: PupilID
-    first_name: Name
-    last_name: Name
-    patronymic: Name | None
-    meal_plan: MealPlan
-    preferential_certificate: PreferentialCertificate | None
-    cancellation_periods: CancellationPeriodSequence
+    class_id: ClassID
+    last_name: PupilName
+    first_name: PupilName
+    patronymic: PupilName | None
+    mealtimes: set[Mealtime]
+    preferential_until: date | None
+    cancellation: Timeline
 
-    @property
-    def nutrition_status(self) -> NutritionStatus:
-        if not any([self.meal_plan.breakfast, self.meal_plan.dinner, self.meal_plan.snacks]):
-            return NutritionStatus.NONE
+    def does_eat(self, day: Day, mealtime: Mealtime) -> bool:
+        return mealtime in self.mealtimes and day not in self.cancellation
 
-        if self.is_preferential:
-            return NutritionStatus.PREFERENTIAL
+    def resume_nutrition_on_day(self, day: Day) -> Ok["Pupil"]:
+        self.cancellation.exclude(day)
 
-        return NutritionStatus.PAID
+        return Ok(self)
 
-    @property
-    def is_preferential(self) -> bool:
-        return self.preferential_certificate is not None and not self.preferential_certificate.is_expired
+    def cancel_nutrition_for_period(self, period: Period) -> Ok["Pupil"]:
+        self.cancellation.insert(period)
 
-    def update_meal_plan(self, meal_plan: MealPlan) -> None:
-        self.meal_plan = meal_plan
+        return Ok(self)
 
-    def cancel_nutrition(self, period: CancellationPeriod) -> None:
-        """
-        :raise CannotCancelNutritionAfterTime: нельзя снимать с питания после 10 утра по ЕКБ
-        """
+    def resume_mealtime(self, mealtime: Mealtime) -> Ok["Pupil"]:
+        self.mealtimes.add(mealtime)
 
-        now = datetime.now(timezones.yekaterinburg)
-        if now.hour > 10 and now.date() in period:
-            raise CannotCancelNutritionAfterTime(
-                now=now, completed_at=now.replace(hour=10, minute=0, second=0, microsecond=0)
-            )
+        return Ok(self)
 
-        self.cancellation_periods = self.cancellation_periods.insert(period)
+    def cancel_mealtime(self, mealtime: Mealtime) -> Ok["Pupil"]:
+        if mealtime in self.mealtimes:
+            self.mealtimes.remove(mealtime)
 
-    def resume_nutrition(self, day: Day) -> None:
-        """
-        :raise CannotResumeNutritionAfterTime: нельзя ставить на питание после 10 утра по ЕКБ
-        """
-
-        now = datetime.now(timezones.yekaterinburg)
-        if now.hour > 10 and now.date() in day:
-            raise CannotResumeNutritionAfterTime(
-                now=now, completed_at=now.replace(hour=10, minute=0, second=0, microsecond=0)
-            )
-
-        self.cancellation_periods = self.cancellation_periods.remove(day)
+        return Ok(self)

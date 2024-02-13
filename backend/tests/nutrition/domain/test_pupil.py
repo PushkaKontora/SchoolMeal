@@ -1,30 +1,68 @@
-from datetime import datetime, timedelta
+import pytest
 
-from app.nutrition.domain.pupil import MealPlan, NutritionStatus, PreferentialCertificate, Pupil
-
-
-def test_nutrition_status_is_none(pupil: Pupil):
-    pupil.update_meal_plan(MealPlan(False, False, False))
-
-    assert pupil.nutrition_status is NutritionStatus.NONE
+from app.nutrition.domain.mealtime import Mealtime
+from app.nutrition.domain.pupil import Pupil, PupilID, PupilName
+from app.nutrition.domain.school_class import ClassID
+from app.nutrition.domain.times import Day, Timeline, now
 
 
-def test_nutrition_status_is_preferential(pupil: Pupil):
-    pupil.update_meal_plan(MealPlan(True, False, False))
-    pupil.preferential_certificate = PreferentialCertificate(ends_at=datetime.now() + timedelta(days=10))
+def test_cancelling_mealtime_where_pupil_eats(pupil: Pupil) -> None:
+    pupil.cancel_mealtime(Mealtime.DINNER)
 
-    assert pupil.nutrition_status is NutritionStatus.PREFERENTIAL
-
-
-def test_nutrition_status_is_none_when_certificate_was_attached(pupil: Pupil):
-    pupil.update_meal_plan(MealPlan(False, False, False))
-    pupil.preferential_certificate = PreferentialCertificate(ends_at=datetime.now() + timedelta(days=10))
-
-    assert pupil.nutrition_status is NutritionStatus.NONE
+    assert not pupil.mealtimes
 
 
-def test_nutrition_status_is_paid_when_certificate_is_expired(pupil: Pupil):
-    pupil.update_meal_plan(MealPlan(True, False, False))
-    pupil.preferential_certificate = PreferentialCertificate(ends_at=datetime.now() - timedelta(days=10))
+def test_cancelling_mealtime_where_pupil_does_not_eat(pupil: Pupil) -> None:
+    pupil.cancel_mealtime(Mealtime.BREAKFAST)
 
-    assert pupil.nutrition_status is NutritionStatus.PAID
+    assert pupil.mealtimes == {Mealtime.DINNER}
+
+
+def test_resuming_mealtime_where_pupil_does_not_eat(pupil: Pupil) -> None:
+    pupil.resume_mealtime(Mealtime.BREAKFAST)
+
+    assert pupil.mealtimes == {Mealtime.DINNER, Mealtime.BREAKFAST}
+
+
+def test_resuming_mealtime_where_pupil_eats(pupil: Pupil) -> None:
+    pupil.resume_mealtime(Mealtime.DINNER)
+
+    assert pupil.mealtimes == {Mealtime.DINNER}
+
+
+def test_pupil_does_not_eat_when_mealtime_is_cancelled(pupil: Pupil) -> None:
+    eating = pupil.cancel_mealtime(Mealtime.DINNER).and_then(
+        lambda x: x.does_eat(day=Day(now().date()), mealtime=Mealtime.DINNER)
+    )
+
+    assert not eating
+
+
+def test_pupil_does_not_eat_when_pupil_is_cancelled_for_period(pupil: Pupil) -> None:
+    today = Day.today()
+
+    eating = pupil.cancel_nutrition_for_period(today).and_then(
+        lambda x: x.does_eat(day=today, mealtime=Mealtime.DINNER)
+    )
+
+    assert not eating
+
+
+def test_pupil_eats(pupil: Pupil) -> None:
+    eating = pupil.does_eat(day=Day.today(), mealtime=Mealtime.DINNER)
+
+    assert eating
+
+
+@pytest.fixture
+def pupil() -> Pupil:
+    return Pupil(
+        id=PupilID.generate(),
+        class_id=ClassID.generate(),
+        last_name=PupilName("Пупкин"),
+        first_name=PupilName("Вася"),
+        patronymic=None,
+        mealtimes={Mealtime.DINNER},
+        preferential_until=None,
+        cancellation=Timeline(),
+    )

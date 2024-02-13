@@ -1,6 +1,6 @@
 from datetime import date
 
-from app.nutrition.domain.periods import CancellationPeriod
+from app.nutrition.domain.cancellation import CancellationPeriod
 from app.shared.fastapi.schemas import FrontendModel
 
 
@@ -12,7 +12,7 @@ class CancellationPeriodOut(FrontendModel):
     @classmethod
     def from_model(cls, period: CancellationPeriod) -> "CancellationPeriodOut":
         return cls(
-            starts_at=period.starts_at,
-            ends_at=period.ends_at,
+            starts_at=period.start,
+            ends_at=period.end,
             reasons=[reason.value for reason in period.reasons],
         )

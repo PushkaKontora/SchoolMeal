@@ -2,9 +2,9 @@ from datetime import datetime
 
 from app.nutrition.application.context import NutritionContext
 from app.nutrition.application.repositories import NotFoundDraftRequest
-from app.nutrition.domain.periods import Day
 from app.nutrition.domain.request import DraftRequest
 from app.nutrition.domain.services import submit_request
+from app.nutrition.domain.times import Day
 from app.shared.cqs.commands import Command, ICommandHandler
 from app.shared.domain import timezones
 from app.shared.unit_of_work.abc import IUnitOfWork

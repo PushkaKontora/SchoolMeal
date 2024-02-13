@@ -6,9 +6,9 @@ from pydantic import BaseModel
 
 from app.nutrition.application.context import NutritionContext
 from app.nutrition.application.repositories import NotFoundDraftRequest, NotFoundRequest
-from app.nutrition.domain.periods import Day
 from app.nutrition.domain.pupil import MealPlan, Name, Pupil
 from app.nutrition.domain.school_class import SchoolClass
+from app.nutrition.domain.times import Day
 from app.shared.cqs.queries import IQueryExecutor, Query
 from app.shared.unit_of_work.abc import IUnitOfWork
 
@@ -143,7 +143,5 @@ class GetRequestWithPlansQueryExecutor(IQueryExecutor[GetRequestWithPlansQuery, 
     @staticmethod
     def _prefill_plan(pupil: Pupil, on_date: Day) -> MealPlan:
         return (
-            MealPlan(breakfast=False, dinner=False, snacks=False)
-            if on_date in pupil.cancellation_periods
-            else pupil.meal_plan
+            MealPlan(breakfast=False, dinner=False, snacks=False) if on_date in pupil.cancellation else pupil.meal_plan
         )
