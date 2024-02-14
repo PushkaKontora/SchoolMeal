@@ -23,7 +23,7 @@ class Literal:
     value: str
 
     def __post_init__(self) -> None:
-        if not "А" <= self.value <= "Я":
+        if not "А" <= self.value <= "Я" and self.value != "Ё":
             raise DomainException("Буква класса должна быть кириллицей")
 
 

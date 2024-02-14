@@ -51,7 +51,7 @@ class Pupil:
 
         return Ok(self)
 
-    def cancel_on_mealtime(self, mealtime: Mealtime) -> Ok["Pupil"]:
+    def cancel_from_mealtime(self, mealtime: Mealtime) -> Ok["Pupil"]:
         if mealtime in self.mealtimes:
             self.mealtimes.remove(mealtime)
 

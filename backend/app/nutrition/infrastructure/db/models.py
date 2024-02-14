@@ -8,7 +8,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from app.db.base import DictMixin
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import Pupil, PupilID, PupilName
-from app.nutrition.domain.request import Request, RequestID
+from app.nutrition.domain.request import Request
 from app.nutrition.domain.school import School, SchoolName
 from app.nutrition.domain.school_class import ClassID, Literal, Number, SchoolClass, TeacherID
 from app.nutrition.domain.times import Period, Timeline
@@ -138,18 +138,14 @@ class PupilDB(NutritionBase):
 class RequestDB(NutritionBase):
     __tablename__ = "request"
 
-    id: Mapped[UUID] = mapped_column(primary_key=True)
-    class_id: Mapped[UUID] = mapped_column(ForeignKey(SchoolClassDB.id))
+    class_id: Mapped[UUID] = mapped_column(ForeignKey(SchoolClassDB.id), primary_key=True)
     on_date: Mapped[date] = mapped_column()
     mealtimes: Mapped[dict[int, list[str]]] = mapped_column(JSONB)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
-    def __init__(
-        self, id_: UUID, class_id: UUID, on_date: date, mealtimes: dict[int, list[str]], created_at: datetime
-    ) -> None:
+    def __init__(self, class_id: UUID, on_date: date, mealtimes: dict[int, list[str]], created_at: datetime) -> None:
         super().__init__()
 
-        self.id = id_
         self.class_id = class_id
         self.on_date = on_date
         self.mealtimes = mealtimes
@@ -157,7 +153,6 @@ class RequestDB(NutritionBase):
 
     def to_model(self) -> Request:
         return Request(
-            id=RequestID(self.id),
             class_id=ClassID(self.class_id),
             on_date=self.on_date,
             mealtimes={
@@ -170,7 +165,6 @@ class RequestDB(NutritionBase):
     @classmethod
     def from_model(cls, request: Request) -> "RequestDB":
         return cls(
-            id_=request.id.value,
             class_id=request.class_id.value,
             on_date=request.on_date,
             mealtimes={

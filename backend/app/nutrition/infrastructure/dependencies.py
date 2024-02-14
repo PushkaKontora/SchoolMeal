@@ -5,7 +5,7 @@ from dependency_injector.providers import Configuration, Dependency, Factory, Si
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.nutrition import application
-from app.nutrition.infrastructure.dao import AlchemyPupilDAO
+from app.nutrition.infrastructure.dao import AlchemyPupilDAO, AlchemyRequestDAO, AlchemySchoolClassDAO
 from app.shared.objects_storage.local import LocalObjectsStorage
 
 
@@ -22,3 +22,5 @@ class NutritionContainer(DeclarativeContainer):
     )
 
     pupil_dao = Singleton(AlchemyPupilDAO, session_factory=session.provider)
+    school_class_dao = Singleton(AlchemySchoolClassDAO, session_factory=session.provider)
+    request_dao = Singleton(AlchemyRequestDAO, session_factory=session.provider)

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from datetime import date, datetime, time
 from typing import Iterable
-from uuid import UUID, uuid4
 
 from result import Err, Ok, Result
 
@@ -11,59 +10,50 @@ from app.nutrition.domain.school_class import ClassID, SchoolClass
 from app.nutrition.domain.times import Day, combine, now
 
 
-class AlreadyBeenPreparedForSending:
-    pass
-
-
-@dataclass(frozen=True)
-class RequestID:
-    value: UUID
-
-    @classmethod
-    def generate(cls) -> "RequestID":
-        return cls(uuid4())
+class CannotSentRequestAfterDeadline:
+    def __init__(self, deadline: time) -> None:
+        self.deadline = deadline
 
 
 @dataclass
 class Request:
-    id: RequestID
     class_id: ClassID
     on_date: date
     mealtimes: dict[Mealtime, set[PupilID]]
     created_at: datetime
 
-    def edit(self, pupils: Iterable[Pupil]) -> Result["Request", AlreadyBeenPreparedForSending]:
-        if now() >= combine(self.on_date, time(hour=22)):
-            return Err(AlreadyBeenPreparedForSending())
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Request) and (self.class_id, self.on_date) == (other.class_id, other.on_date)
 
-        for mealtime, request in self.mealtimes.items():
-            for pupil in pupils:
-                if pupil.does_eat(day=Day(self.on_date), mealtime=mealtime):
-                    request.add(pupil.id)
-                    continue
-
-                if pupil.id in request:
-                    request.remove(pupil.id)
-
-        return Ok(self)
+    def __ne__(self, other: object) -> bool:
+        return not self.__eq__(other)
 
     @classmethod
-    def submit_to_canteen(cls, school_class: SchoolClass, pupils: Iterable[Pupil], on_date: date) -> "Request":
-        mealtimes: dict[Mealtime, set[PupilID]] = {mealtime: set() for mealtime in school_class.mealtimes}
+    def submit_to_canteen(
+        cls, school_class: SchoolClass, pupils: Iterable[Pupil], overrides: dict[PupilID, set[Mealtime]], on_date: date
+    ) -> Result["Request", CannotSentRequestAfterDeadline]:
+        deadline = combine(on_date, time(hour=22))
 
-        day = Day(on_date)
+        if now() >= deadline:
+            return Err(CannotSentRequestAfterDeadline(deadline=deadline.timetz()))
+
+        mealtimes: dict[Mealtime, set[PupilID]] = {mealtime_: set() for mealtime_ in school_class.mealtimes}
 
         for pupil in pupils:
-            for mealtime_, request in mealtimes.items():
-                if not pupil.does_eat(day, mealtime_):
-                    continue
+            for mealtime, request in mealtimes.items():
+                eats = pupil.does_eat(day=Day(on_date), mealtime=mealtime)
 
-                request.add(pupil.id)
+                if pupil.id in overrides:
+                    eats = mealtime in overrides[pupil.id]
 
-        return cls(
-            id=RequestID.generate(),
-            class_id=school_class.id,
-            on_date=on_date,
-            mealtimes=mealtimes,
-            created_at=now(),
+                if eats:
+                    request.add(pupil.id)
+
+        return Ok(
+            cls(
+                class_id=school_class.id,
+                on_date=on_date,
+                mealtimes=mealtimes,
+                created_at=now(),
+            )
         )

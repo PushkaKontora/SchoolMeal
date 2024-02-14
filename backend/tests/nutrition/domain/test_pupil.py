@@ -7,13 +7,13 @@ from app.nutrition.domain.times import Day, Timeline, now
 
 
 def test_cancelling_mealtime_where_pupil_eats(pupil: Pupil) -> None:
-    pupil.cancel_on_mealtime(Mealtime.DINNER)
+    pupil.cancel_from_mealtime(Mealtime.DINNER)
 
     assert not pupil.mealtimes
 
 
 def test_cancelling_mealtime_where_pupil_does_not_eat(pupil: Pupil) -> None:
-    pupil.cancel_on_mealtime(Mealtime.BREAKFAST)
+    pupil.cancel_from_mealtime(Mealtime.BREAKFAST)
 
     assert pupil.mealtimes == {Mealtime.DINNER}
 
@@ -31,7 +31,7 @@ def test_resuming_mealtime_where_pupil_eats(pupil: Pupil) -> None:
 
 
 def test_pupil_does_not_eat_when_mealtime_is_cancelled(pupil: Pupil) -> None:
-    eating = pupil.cancel_on_mealtime(Mealtime.DINNER).and_then(
+    eating = pupil.cancel_from_mealtime(Mealtime.DINNER).and_then(
         lambda x: x.does_eat(day=Day(now().date()), mealtime=Mealtime.DINNER)
     )
 
