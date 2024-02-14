@@ -14,6 +14,7 @@ export type ConfigSettings = {
 };
 
 export type UniversalResponse = {
+  detail?: string
   msg?: string
 }
 

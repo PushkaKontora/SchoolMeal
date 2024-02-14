@@ -12,7 +12,8 @@ export const ButtonContainer = styled(DefaultStyles)<ButtonPrimaryShadowedStyles
   padding-bottom: ${props => props.$paddingVertical};
   padding-left: ${props => props.$paddingHorizontal};
   padding-right: ${props => props.$paddingHorizontal};
-  width: 100%;
+  width: ${props => props.$width};
+  height: ${props => props.$height};
   border-width: 0;
 
   &:hover {

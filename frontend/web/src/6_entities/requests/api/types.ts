@@ -1,4 +1,4 @@
-import {RequestReportSchoolClass} from '../../../7_shared/model/request-report.ts';
+import {LegacyRequestReportSchoolClass} from '../../../7_shared/model/request-report.ts';
 
 export type RequestReportIn = {
   classType: 'primary' | 'high',
@@ -6,7 +6,7 @@ export type RequestReportIn = {
 };
 
 export type RequestReport = {
-  school_classes: RequestReportSchoolClass[],
+  school_classes: LegacyRequestReportSchoolClass[],
   paid_total: number,
   preferential_total: number,
   total: number

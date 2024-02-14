@@ -10,6 +10,8 @@ export const Title = styled.div`
   font-weight: 400;
   
   line-height: 22px;
+  
+  white-space: nowrap;
 `;
 
 export const Status = styled.div<{
@@ -21,4 +23,6 @@ export const Status = styled.div<{
   line-height: 30px;
   
   color: ${props => props.$color};
+
+  white-space: nowrap;
 `;

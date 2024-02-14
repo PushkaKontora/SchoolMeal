@@ -1,10 +1,9 @@
 export const CANTEEN_STAFF_ROUTES = {
-  root: '/canteen',
-  application: '/application',
-  requests: '/requests'
+  applications: '/applications'
 };
 
 export const TEACHER_ROUTES = {
-  teacher: 'teacher',
-  sendRequest: '/requests/send'
+  classes: '/classes',
+  apply: '/apply',
+  history: '/history'
 };

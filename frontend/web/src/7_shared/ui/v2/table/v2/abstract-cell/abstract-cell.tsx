@@ -13,6 +13,7 @@ export function AbstractCell({children, cellStyles, header, as, key}: AbstractCe
       $width={cellStyles?.width}
       $minWidth={cellStyles?.minWidth}
       $maxWidth={cellStyles?.maxWidth}
+      $whiteSpace={cellStyles?.whiteSpace}
       scope={'col'}>
       {children}
     </Cell>

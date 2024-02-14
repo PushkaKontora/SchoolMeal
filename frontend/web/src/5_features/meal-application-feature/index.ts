@@ -1,1 +1,2 @@
-export * from '../../6_entities/meal-request/ui/meal-request-list';
+export * from './ui/meal-application-form';
+export * from './ui/default-inputs';

@@ -5,9 +5,11 @@ import {ReactTableWrapper} from '../../../../../7_shared/lib/react-table-wrapper
 
 export function MealRequestList(props: MealRequestListProps) {
   const table = useReactTable({
-    data: props.data,
+    data: props.data || [],
     columns: createColumns(
-      props.headerViewData, props.cells.mealPlanHeader),
+      props.headerViewData,
+      props.cells.mealPlanHeader,
+      props.cells.cancelledBadge),
     getCoreRowModel: getCoreRowModel(),
     meta: {
       updateData: (rowIndex, columnId, value) => {

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import {CSSProperties} from 'react';
 
 export const ParentContainer = styled.div<{
   $sidebarWidth: string
@@ -19,5 +20,11 @@ export const Content = styled.div<{
   height: 100%;
   
   flex: 1;
-  padding-left: ${props => props.$sidebarWidth}
+  padding-left: ${props => props.$sidebarWidth};
+`;
+
+export const ContentBody = styled.div<{
+  $padding: CSSProperties['padding']
+}>`
+  padding: ${props => props.$padding};
 `;
