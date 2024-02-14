@@ -4,10 +4,10 @@ from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID as UUID_DB
 from sqlalchemy.orm import Mapped, declarative_base
 
+from app.db.base import Base
 from app.feedbacks.domain.canteen import Canteen
 from app.feedbacks.domain.feedback import Feedback
 from app.feedbacks.domain.text import FeedbackText
-from app.shared.db.base import Base
 
 
 FeedbacksBase = declarative_base(cls=Base)

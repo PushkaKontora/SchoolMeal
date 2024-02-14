@@ -38,8 +38,8 @@ def test_editing_before_deadline(school_class: SchoolClass, now_: time) -> None:
             school_class=school_class, pupils=[feeding, not_feeding, period_not_feeding], on_date=now().date()
         )
 
-        not_feeding.resume_mealtime(Mealtime.DINNER)
-        feeding.cancel_mealtime(Mealtime.DINNER)
+        not_feeding.resume_on_mealtime(Mealtime.DINNER)
+        feeding.cancel_on_mealtime(Mealtime.DINNER)
 
         editing = request.edit([not_feeding, feeding, period_not_feeding])
 
@@ -54,7 +54,7 @@ def test_editing_after_deadline(school_class: SchoolClass, now_: time) -> None:
 
         request = Request.submit_to_canteen(school_class=school_class, pupils=[not_feeding], on_date=now().date())
 
-        not_feeding.resume_mealtime(Mealtime.DINNER)
+        not_feeding.resume_on_mealtime(Mealtime.DINNER)
 
         editing = request.edit([not_feeding])
 

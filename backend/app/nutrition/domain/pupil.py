@@ -36,22 +36,22 @@ class Pupil:
     def does_eat(self, day: Day, mealtime: Mealtime) -> bool:
         return mealtime in self.mealtimes and day not in self.cancellation
 
-    def resume_nutrition_on_day(self, day: Day) -> Ok["Pupil"]:
+    def resume_on_day(self, day: Day) -> Ok["Pupil"]:
         self.cancellation.exclude(day)
 
         return Ok(self)
 
-    def cancel_nutrition_for_period(self, period: Period) -> Ok["Pupil"]:
+    def cancel_for_period(self, period: Period) -> Ok["Pupil"]:
         self.cancellation.insert(period)
 
         return Ok(self)
 
-    def resume_mealtime(self, mealtime: Mealtime) -> Ok["Pupil"]:
+    def resume_on_mealtime(self, mealtime: Mealtime) -> Ok["Pupil"]:
         self.mealtimes.add(mealtime)
 
         return Ok(self)
 
-    def cancel_mealtime(self, mealtime: Mealtime) -> Ok["Pupil"]:
+    def cancel_on_mealtime(self, mealtime: Mealtime) -> Ok["Pupil"]:
         if mealtime in self.mealtimes:
             self.mealtimes.remove(mealtime)
 

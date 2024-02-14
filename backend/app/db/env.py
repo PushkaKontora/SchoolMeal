@@ -6,11 +6,9 @@ from sqlalchemy import MetaData, engine_from_config, pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from app.feedbacks.infrastructure.db.models import FeedbacksBase
 from app.nutrition.infrastructure.db.models import NutritionBase
 from app.shared.db.settings import DatabaseSettings
 from app.shared.db.utils import create_database, exists_database, wait_connect
-from app.users.infrastructure.db.models import UsersBase
 
 
 POSTGRES_INDEXES_NAMING_CONVENTION = {
@@ -28,7 +26,7 @@ database = DatabaseSettings()
 config: Config = context.config
 config.set_main_option("sqlalchemy.url", database.url)
 
-bases = [FeedbacksBase, NutritionBase, UsersBase]
+bases = [NutritionBase]
 target_metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)
 
 for base in bases:

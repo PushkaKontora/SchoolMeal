@@ -5,7 +5,7 @@ from sqlalchemy import Boolean, Column, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID as UUID_DB
 from sqlalchemy.orm import Mapped, declarative_base
 
-from app.shared.db.base import Base
+from app.migrations.base import Base
 from app.users.domain.email import Email
 from app.users.domain.login import Login
 from app.users.domain.names import FirstName, LastName

@@ -2,17 +2,18 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
 from pydantic import BaseModel
+from result import Result
 
 
 class Command(BaseModel, ABC):
     pass
 
 
-TCommand = TypeVar("TCommand", bound=Command)
-TResult = TypeVar("TResult")
+TCommand = TypeVar("TCommand")
+TError = TypeVar("TError")
 
 
-class ICommandHandler(Generic[TCommand, TResult], ABC):
+class ICommandHandler(Generic[TCommand, TError], ABC):
     @abstractmethod
-    async def handle(self, command: TCommand) -> TResult:
+    async def handle(self, command: TCommand) -> Result[None, TError]:
         raise NotImplementedError
