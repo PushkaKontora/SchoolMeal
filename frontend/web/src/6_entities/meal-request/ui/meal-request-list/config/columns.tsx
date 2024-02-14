@@ -6,15 +6,15 @@ import {ValueBadgeCell} from '../../../../../7_shared/ui/v2/table';
 import {HeaderViewData} from '../model/header-view-data.ts';
 import {CheckboxCell} from '../../../../../7_shared/ui/v2/table';
 import {setBalanceValueBadgeType} from '../lib/cell-utils.ts';
-import {IMealPlanHeaderView} from '../model/element-types.ts';
+import {ICancelledNutritionView, IMealPlanHeaderView} from '../model/element-types.ts';
 import {updateCellData} from '../../../../../7_shared/lib/react-table-wrapper';
-import {CancelledNutritionBadgeCell} from '../../../../pupil';
 
 export const columnHelper = createColumnHelper<MealRequestRowViewData>();
 
 export const createColumns = (
   headerView: HeaderViewData,
-  MealPlanHeader: IMealPlanHeaderView
+  MealPlanHeader: IMealPlanHeaderView,
+  CancelledBadge: ICancelledNutritionView
 )
   : ColumnDef<MealRequestRowViewData, any>[] => [
   columnHelper.accessor(originalRow => getFullName(originalRow), {
@@ -24,12 +24,16 @@ export const createColumns = (
       text={'ФИО'}
       key={props.header.id}
       cellStyles={{
-        width: '20%'
+        width: '1%',
+        whiteSpace: 'nowrap'
       }}
     />,
     cell: props => <TextCell
       key={props.cell.id}
-      text={props.getValue()}/>
+      text={props.getValue()}
+      cellStyles={{
+        whiteSpace: 'nowrap'
+      }}/>
   }),
   columnHelper.accessor('cancelledMeal', {
     header: props => (
@@ -38,9 +42,8 @@ export const createColumns = (
         header/>
     ),
     cell: props => (
-      <CancelledNutritionBadgeCell
+      <CancelledBadge
         key={props.cell.id}
-        text={'снят родителем'}
         cancelled={props.cell.getValue()}/>
     )
   }),

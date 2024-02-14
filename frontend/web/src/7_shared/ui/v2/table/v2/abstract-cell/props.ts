@@ -4,6 +4,7 @@ export type AbstractCellStyles = {
   width?: CSSProperties['width'];
   minWidth?: CSSProperties['minWidth'];
   maxWidth?: CSSProperties['maxWidth'];
+  whiteSpace?: CSSProperties['whiteSpace'];
   height?: CSSProperties['height'];
   backgroundColor?: CSSProperties['backgroundColor'];
   fontFamily?: CSSProperties['fontFamily'];

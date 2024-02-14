@@ -18,6 +18,8 @@ export function ButtonPrimary(props: ButtonPrimaryProps) {
       $fontFamily={props.fontFamily}
       $paddingVertical={props.paddingVertical}
       $paddingHorizontal={props.paddingHorizontal}
+      $width={props.width}
+      $height={props.height}
       onClick={props.onPress}
       disabled={disabled}>
       {props.title}

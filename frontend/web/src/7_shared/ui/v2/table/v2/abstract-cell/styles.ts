@@ -11,7 +11,8 @@ export const Cell = styled.td<{
   $header: boolean,
   $backgroundColor: string,
   $fontFamily: string,
-  $height: string
+  $height: string,
+  $whiteSpace: string
 }>`
   width: ${props => props.$width || 'auto'};
   min-width: ${props => props.$minWidth || 0};
@@ -22,4 +23,6 @@ export const Cell = styled.td<{
   background-color: ${props => props.$backgroundColor || (props.$header ? '#F5F5F5' : '#00000000')};
   font-family: ${props => props.$fontFamily || 'inherit'};
   border-bottom: 1px solid #EAEAEA;
+  
+  white-space: ${props => props.$whiteSpace};
 `;
