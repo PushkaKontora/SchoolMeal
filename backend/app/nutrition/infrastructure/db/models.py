@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from uuid import UUID
 
-from sqlalchemy import ARRAY, Date, DateTime, ForeignKey, Integer, MetaData, String
+from sqlalchemy import ARRAY, Date, DateTime, ForeignKey, Integer, MetaData
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -9,8 +9,7 @@ from app.db.base import DictMixin
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import Pupil, PupilID
 from app.nutrition.domain.request import Request
-from app.nutrition.domain.school import School, SchoolName
-from app.nutrition.domain.school_class import ClassID, Literal, Number, SchoolClass, TeacherID
+from app.nutrition.domain.school_class import ClassID, SchoolClass
 from app.nutrition.domain.times import Period, Timeline
 
 
@@ -18,56 +17,24 @@ class NutritionBase(DeclarativeBase, DictMixin):
     metadata = MetaData(schema="nutrition")
 
 
-class SchoolDB(NutritionBase):
-    __tablename__ = "school"
-
-    name: Mapped[str] = mapped_column(primary_key=True)
-
-    def __init__(self, name: str) -> None:
-        super().__init__()
-
-        self.name = name
-
-    def to_model(self) -> School:
-        return School(name=SchoolName(self.name))
-
-
 class SchoolClassDB(NutritionBase):
     __tablename__ = "school_class"
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
-    teacher_id: Mapped[UUID | None] = mapped_column()
-    number: Mapped[int] = mapped_column()
-    literal: Mapped[str] = mapped_column(String(1))
     mealtimes: Mapped[list[int]] = mapped_column(ARRAY(Integer, dimensions=1))
 
-    def __init__(self, id_: UUID, teacher_id: UUID | None, number: int, literal: str, mealtimes: list[int]) -> None:
+    def __init__(self, id_: UUID, mealtimes: list[int]) -> None:
         super().__init__()
 
         self.id = id_
-        self.teacher_id = teacher_id
-        self.number = number
-        self.literal = literal
         self.mealtimes = mealtimes
 
     def to_model(self) -> SchoolClass:
-        return SchoolClass(
-            id=ClassID(self.id),
-            teacher_id=TeacherID(self.teacher_id) if self.teacher_id else None,
-            number=Number(self.number),
-            literal=Literal(self.literal),
-            mealtimes=set(Mealtime(mealtime) for mealtime in self.mealtimes),
-        )
+        return SchoolClass(id=ClassID(self.id), mealtimes=set(Mealtime(mealtime) for mealtime in self.mealtimes))
 
     @classmethod
     def from_model(cls, school_class: SchoolClass) -> "SchoolClassDB":
-        return cls(
-            id_=school_class.id.value,
-            teacher_id=school_class.teacher_id,
-            number=school_class.number.value,
-            literal=school_class.literal.value,
-            mealtimes=[mealtime.value for mealtime in school_class.mealtimes],
-        )
+        return cls(id_=school_class.id.value, mealtimes=[mealtime.value for mealtime in school_class.mealtimes])
 
 
 class PupilDB(NutritionBase):

@@ -4,9 +4,9 @@ import freezegun
 import pytest
 
 from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.pupil import Pupil, PupilID, PupilName
+from app.nutrition.domain.pupil import Pupil, PupilID
 from app.nutrition.domain.request import CannotSentRequestAfterDeadline, Request
-from app.nutrition.domain.school_class import ClassID, Literal, Number, SchoolClass
+from app.nutrition.domain.school_class import ClassID, SchoolClass
 from app.nutrition.domain.times import Day, Period, Timeline, now, yekaterinburg
 
 
@@ -52,7 +52,7 @@ def test_submitting_to_canteen_after_deadline(school_class: SchoolClass, now_: t
 
         error = submitting.unwrap_err()
         assert isinstance(error, CannotSentRequestAfterDeadline)
-        assert error.deadline == datetime(2023, 10, 1, hour=22, tzinfo=yekaterinburg)
+        assert error.deadline == time(hour=22, tzinfo=yekaterinburg)
 
 
 def test_submitting_to_canteen_with_overrides(school_class: SchoolClass) -> None:
@@ -74,22 +74,13 @@ def test_submitting_to_canteen_with_overrides(school_class: SchoolClass) -> None
 
 @pytest.fixture
 def school_class() -> SchoolClass:
-    return SchoolClass(
-        id=ClassID.generate(),
-        teacher_id=None,
-        number=Number(11),
-        literal=Literal("А"),
-        mealtimes={Mealtime.DINNER},
-    )
+    return SchoolClass(id=ClassID.generate(), mealtimes={Mealtime.DINNER})
 
 
 def _create_pupil(class_id: ClassID, mealtimes: set[Mealtime], periods: list[Period]) -> Pupil:
     return Pupil(
         id=PupilID.generate(),
         class_id=class_id,
-        last_name=PupilName("Пупкин"),
-        first_name=PupilName("Вася"),
-        patronymic=None,
         mealtimes=mealtimes,
         preferential_until=None,
         cancellation=Timeline.from_iterable(periods),

@@ -1,7 +1,7 @@
 import pytest
 
 from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.pupil import Pupil, PupilID, PupilName
+from app.nutrition.domain.pupil import Pupil, PupilID
 from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.times import Day, Timeline, now
 
@@ -57,9 +57,6 @@ def pupil() -> Pupil:
     return Pupil(
         id=PupilID.generate(),
         class_id=ClassID.generate(),
-        last_name=PupilName("Пупкин"),
-        first_name=PupilName("Вася"),
-        patronymic=None,
         mealtimes={Mealtime.DINNER},
         preferential_until=None,
         cancellation=Timeline(),
