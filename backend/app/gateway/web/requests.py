@@ -1,10 +1,9 @@
-from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Body, status
+from fastapi import APIRouter, status
 from result import Err
 
-from app.gateway.dto import SubmitRequestIn
+from app.gateway.web.dto import SubmitRequestIn
 from app.nutrition.application import commands
 from app.nutrition.application.errors import NotFoundSchoolClass
 from app.nutrition.domain.pupil import PupilID
@@ -25,7 +24,7 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     responses=responses.NOT_FOUND | responses.BAD_REQUEST,
 )
-async def submit_request_to_canteen(class_id: UUID, body: Annotated[SubmitRequestIn, Body()]) -> OKSchema:
+async def submit_request_to_canteen(class_id: UUID, body: SubmitRequestIn) -> OKSchema:
     try:
         class_id_ = ClassID(class_id)
         overrides = {PupilID(override.pupil_id): override.mealtimes for override in body.overrides}

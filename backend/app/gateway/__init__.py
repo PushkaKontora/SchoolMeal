@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from .pupils import router as pupils
-from .requests import router as requests
+from app.gateway.mobile import router as mobile
+from app.gateway.web import router as web
 
 
 router = APIRouter()
 
-router.include_router(pupils, tags=["Ученики"])
-router.include_router(requests, tags=["Заявки"])
+router.include_router(mobile, tags=["Mobile API"])
+router.include_router(web, tags=["Web API"])

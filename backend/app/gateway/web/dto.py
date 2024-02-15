@@ -13,8 +13,3 @@ class OverridenPupilIn(BaseModel):
 class SubmitRequestIn(BaseModel):
     on_date: date
     overrides: list[OverridenPupilIn]
-
-
-class MealtimeTogglerIn(BaseModel):
-    mealtime: Mealtime
-    enabled: bool
