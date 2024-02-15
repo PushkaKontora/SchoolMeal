@@ -7,7 +7,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.db.base import DictMixin
 from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.pupil import Pupil, PupilID, PupilName
+from app.nutrition.domain.pupil import Pupil, PupilID
 from app.nutrition.domain.request import Request
 from app.nutrition.domain.school import School, SchoolName
 from app.nutrition.domain.school_class import ClassID, Literal, Number, SchoolClass, TeacherID
@@ -75,9 +75,6 @@ class PupilDB(NutritionBase):
 
     id: Mapped[str] = mapped_column(primary_key=True)
     class_id: Mapped[UUID] = mapped_column(ForeignKey(SchoolClassDB.id))
-    last_name: Mapped[str] = mapped_column()
-    first_name: Mapped[str] = mapped_column()
-    patronymic: Mapped[str | None] = mapped_column()
     mealtimes: Mapped[list[int]] = mapped_column(ARRAY(Integer, dimensions=1))
     preferential_until: Mapped[date | None] = mapped_column()
     cancellation: Mapped[list[tuple[date, date]]] = mapped_column(ARRAY(item_type=Date, dimensions=2))
@@ -86,9 +83,6 @@ class PupilDB(NutritionBase):
         self,
         id_: str,
         class_id: UUID,
-        last_name: str,
-        first_name: str,
-        patronymic: str | None,
         mealtimes: list[int],
         preferential_until: date | None,
         cancellation: list[tuple[date, date]],
@@ -97,9 +91,6 @@ class PupilDB(NutritionBase):
 
         self.id = id_
         self.class_id = class_id
-        self.last_name = last_name
-        self.first_name = first_name
-        self.patronymic = patronymic
         self.mealtimes = mealtimes
         self.preferential_until = preferential_until
         self.cancellation = cancellation
@@ -113,9 +104,6 @@ class PupilDB(NutritionBase):
         return Pupil(
             id=PupilID(self.id),
             class_id=ClassID(self.class_id),
-            last_name=PupilName(self.last_name),
-            first_name=PupilName(self.first_name),
-            patronymic=PupilName(self.patronymic) if self.patronymic else None,
             mealtimes={Mealtime(mealtime) for mealtime in self.mealtimes},
             preferential_until=self.preferential_until,
             cancellation=cancellation,
@@ -126,9 +114,6 @@ class PupilDB(NutritionBase):
         return cls(
             id_=pupil.id.value,
             class_id=pupil.class_id.value,
-            last_name=pupil.last_name,
-            first_name=pupil.first_name,
-            patronymic=pupil.patronymic,
             mealtimes=[mealtime.value for mealtime in pupil.mealtimes],
             preferential_until=pupil.preferential_until,
             cancellation=[(period.start, period.end) for period in pupil.cancellation],
