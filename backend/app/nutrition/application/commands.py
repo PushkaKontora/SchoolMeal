@@ -44,31 +44,18 @@ async def cancel_for_period(
 
 
 @inject
-async def resume_on_mealtime(
-    pupil_id: PupilID, mealtime: Mealtime, pupils: IPupilDAO = Provide[NutritionContainer.pupil_dao]
+async def resume_or_cancel_mealtimes_at_pupil(
+    pupil_id: PupilID, mealtimes: dict[Mealtime, bool], pupil_dao: IPupilDAO = Provide[NutritionContainer.pupil_dao]
 ) -> Result[None, NotFoundPupil]:
-    pupil = await pupils.get_by_id(pupil_id)
+    pupil = await pupil_dao.get_by_id(pupil_id)
 
     if not pupil:
         return Err(NotFoundPupil())
 
-    pupil.resume_on_mealtime(mealtime)
-    await pupils.update(pupil)
+    for mealtime, resumed in mealtimes.items():
+        (pupil.resume_on_mealtime if resumed else pupil.cancel_from_mealtime)(mealtime)
 
-    return Ok(None)
-
-
-@inject
-async def cancel_from_mealtime(
-    pupil_id: PupilID, mealtime: Mealtime, pupils: IPupilDAO = Provide[NutritionContainer.pupil_dao]
-) -> Result[None, NotFoundPupil]:
-    pupil = await pupils.get_by_id(pupil_id)
-
-    if not pupil:
-        return Err(NotFoundPupil())
-
-    pupil.cancel_from_mealtime(mealtime)
-    await pupils.update(pupil)
+    await pupil_dao.update(pupil)
 
     return Ok(None)
 

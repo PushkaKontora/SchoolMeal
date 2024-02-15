@@ -4,9 +4,9 @@ from typing import Annotated
 from fastapi import APIRouter, Body, Path, status
 from result import Err
 
+from app.gateway.dto import MealtimeTogglerIn
 from app.nutrition.application import commands
 from app.nutrition.application.errors import NotFoundPupil
-from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import PupilID
 from app.nutrition.domain.times import Day, Period
 from app.shared.exceptions import DomainException
@@ -66,47 +66,30 @@ async def cancel_for_period(
     return cancelling.map(lambda _: OKSchema()).unwrap()
 
 
-@router.post(
-    "/{pupil_id}/resume-mealtime",
-    summary="Поставить ученика на приём пищи",
+@router.patch(
+    "/{pupil_id}/mealtimes",
+    summary="Поставить или снять приёмы пищи у ученика",
     status_code=status.HTTP_200_OK,
     responses=responses.NOT_FOUND,
 )
-async def resume_on_mealtime(
-    pupil_id_dto: Annotated[str, Path(alias="pupil_id")], mealtime: Annotated[Mealtime, Body(embed=True)]
+async def resume_or_cancel_mealtimes_at_pupil(
+    pupil_id: str, togglers: Annotated[list[MealtimeTogglerIn], Body()]
 ) -> OKSchema:
     try:
-        pupil_id = PupilID(pupil_id_dto)
+        pupil_id_ = PupilID(pupil_id)
     except DomainException as error:
         raise UnprocessableEntityError(error.message)
 
-    resuming = await commands.resume_on_mealtime(pupil_id, mealtime)
+    if not togglers:
+        return OKSchema()
+
+    resuming = await commands.resume_or_cancel_mealtimes_at_pupil(
+        pupil_id=pupil_id_,
+        mealtimes={toggler.mealtime: toggler.enabled for toggler in togglers},
+    )
 
     match resuming:
         case Err(NotFoundPupil()):
-            raise NotFoundError(f"Не найден ученик с id={pupil_id.value}")
+            raise NotFoundError(f"Не найден ученик с id={pupil_id}")
 
     return resuming.map(lambda _: OKSchema()).unwrap()
-
-
-@router.post(
-    "/{pupil_id}/cancel-mealtime",
-    summary="Снять ученика с приёма пищи",
-    status_code=status.HTTP_200_OK,
-    responses=responses.NOT_FOUND,
-)
-async def cancel_from_mealtime(
-    pupil_id_dto: Annotated[str, Path(alias="pupil_id")], mealtime: Annotated[Mealtime, Body(embed=True)]
-) -> OKSchema:
-    try:
-        pupil_id = PupilID(pupil_id_dto)
-    except DomainException as error:
-        raise UnprocessableEntityError(error.message)
-
-    cancelling = await commands.cancel_from_mealtime(pupil_id, mealtime)
-
-    match cancelling:
-        case Err(NotFoundPupil()):
-            raise NotFoundError(f"Не найден ученик с id={pupil_id.value}")
-
-    return cancelling.map(lambda _: OKSchema()).unwrap()

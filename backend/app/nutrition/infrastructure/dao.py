@@ -1,4 +1,3 @@
-from datetime import date
 from typing import AsyncContextManager, Callable
 
 from sqlalchemy import select, update
@@ -59,9 +58,13 @@ class AlchemyRequestDAO(IRequestDAO):
         async with self._session_factory() as session:
             request_db = RequestDB.from_model(request)
 
-            query = insert(RequestDB).values(request_db.dict()).on_conflict_do_update(
-                index_elements=[RequestDB.class_id, RequestDB.on_date],
-                set_=request_db.dict(),
+            query = (
+                insert(RequestDB)
+                .values(request_db.dict())
+                .on_conflict_do_update(
+                    index_elements=[RequestDB.class_id, RequestDB.on_date],
+                    set_=request_db.dict(),
+                )
             )
             await session.execute(query)
             await session.commit()
