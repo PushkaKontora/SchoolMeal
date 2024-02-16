@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
 from app.gateway import router
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.db.container import DatabaseContainer
@@ -19,7 +20,9 @@ database.alchemy_config.from_pydantic(AlchemySettings())
 nutrition = NutritionContainer(session=database.session)
 nutrition.object_storage_config.from_pydantic(LocalObjectsStorageSettings())
 
-for container in [nutrition]:
+feedbacks = FeedbacksContainer(session=database.session)
+
+for container in [nutrition, feedbacks]:
     container.check_dependencies()
 
 

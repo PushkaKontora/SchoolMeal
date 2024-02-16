@@ -1,28 +1,26 @@
-from contextlib import nullcontext
-
 import pytest
 
-from app.feedbacks.domain.text import ExceededMaxLengthFeedbackText, FeedbackText, InsufficientMinLengthFeedbackText
+from app.feedbacks.domain.feedback import FeedbackText
+from app.shared.exceptions import DomainException
 
 
-def test_correct_feedback_text():
-    text = """
-Лучшая столовая.
-Большое спасибо Кристине Юрьевне за приятную атмосферу - уют, чистота и приятная обстановка.
-С любовью, М
-"""
+def test_empty_text() -> None:
+    with pytest.raises(DomainException) as error:
+        FeedbackText("")
 
-    feedback_text = FeedbackText(text)
-    assert feedback_text.value == text
+    assert error.value.message == "Текст не должен быть пустым"
 
 
-@pytest.mark.parametrize("length", [0, 1, 255, 256])
-def test_length_of_feedback_text(length: int):
-    error = nullcontext()
-    if length > 255:
-        error = pytest.raises(ExceededMaxLengthFeedbackText)
-    if length == 0:
-        error = pytest.raises(InsufficientMinLengthFeedbackText)
+@pytest.mark.parametrize("length", [1, 255])
+def test_correct_text(length: int) -> None:
+    expected = "a" * length
+    text = FeedbackText(expected)
 
-    with error:
-        FeedbackText("a" * length)
+    assert text.value == expected
+
+
+def test_big_text() -> None:
+    with pytest.raises(DomainException) as error:
+        FeedbackText("a" * 256)
+
+    assert error.value.message == "Текст отзыва превысил допустимую длину - 255 символов"
