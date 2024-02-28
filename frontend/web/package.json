@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vite --config src/1_app/config/vite.config.ts",
+    "build": "vite build --config src/1_app/config/vite.config.ts",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -20,19 +20,22 @@
     "react-router-dom": "^6.12.1",
     "reactjs-popup": "^2.0.5",
     "redux": "^4.2.1",
-    "sass": "^1.63.3"
+    "sass": "^1.63.3",
+    "vite-plugin-svgr": "^4.2.0"
   },
   "devDependencies": {
-    "@types/react-dom": "^18.2.4",
-    "@typescript-eslint/eslint-plugin": "^5.59.0",
-    "@typescript-eslint/parser": "^5.59.0",
-    "@vitejs/plugin-react": "^4.0.0",
-    "eslint": "^8.52.0",
+    "@types/node": "^20.11.19",
+    "@types/react": "^18.2.56",
+    "@types/react-dom": "^18.2.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.3.4",
+    "eslint-plugin-react-refresh": "^0.4.5",
     "react-hook-form": "^7.44.3",
-    "styled-components": "^6.0.0-rc.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.3.9"
+    "styled-components": "^6.1.8",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.4"
   }
 }
