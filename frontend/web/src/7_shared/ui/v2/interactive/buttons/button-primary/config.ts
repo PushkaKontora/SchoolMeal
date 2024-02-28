@@ -12,7 +12,6 @@ export const DEFAULT_STYLES: CSSProperties = {
 };
 
 export const DefaultStyles = styled.button`
-  padding: 14px;
   font-weight: 500;
   font-size: 14px;
   background-color: #EC662A;

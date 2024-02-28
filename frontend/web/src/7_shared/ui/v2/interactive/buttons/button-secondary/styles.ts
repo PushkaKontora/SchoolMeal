@@ -10,8 +10,11 @@ export const ButtonContainer = styled.button<ButtonSecondaryStyles>`
   border-radius: ${DEFAULT_STYLES.borderRadius};
   font-weight: ${DEFAULT_STYLES.fontWeight};
   font-family: ${DEFAULT_STYLES.fontFamily};
-
-  border: 0;
+  border: 1px solid ${props => props.textColor || DEFAULT_STYLES.borderColor};
+  
+  box-sizing: border-box;
+  width: ${props => props.width};
+  height: ${props => props.height};
   
   &:disabled {
     background-color: #F3F6F9;

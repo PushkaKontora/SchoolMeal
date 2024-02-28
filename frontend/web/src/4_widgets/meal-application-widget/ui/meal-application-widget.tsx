@@ -6,7 +6,8 @@ export function MealApplicationWidget(props: MealApplicationWidgetProps) {
   return (
     <Container>
       <DefaultInputs
-        selected={props.selected}
+        date={props.date}
+        selectedClassIndex={props.selectedClassIndex}
         classNames={props.classNames}
         onClassSelect={props.onClassSelect}
         onDateSelect={props.onDateSelect}/>

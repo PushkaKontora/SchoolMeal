@@ -12,7 +12,7 @@ export function MealPlanHeaderCell({title, price, ...props}: MealPlanHeaderCellP
           {title}
         </Title>
         <Price>
-          {price}
+          {price.toFixed(2)}
         </Price>
       </Container>
     </AbstractCell>

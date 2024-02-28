@@ -1,11 +1,12 @@
-import {CSSProperties, PropsWithChildren, ReactElement} from 'react';
+import {CSSProperties, PropsWithChildren} from 'react';
+import {PropsWithSidebar} from '../types/props-with-sidebar.ts';
 
 export type ContentStyles = {
   padding: CSSProperties['padding']
 }
 
 export type SidebarWithContentProps = {
-  sidebar: ReactElement,
   sidebarWidth?: string,
   contentStyles?: ContentStyles
-} & PropsWithChildren;
+} & PropsWithChildren
+  & PropsWithSidebar;

@@ -23,3 +23,9 @@ export const Header = styled.div`
 export const StatusContainer = styled.div`
   flex: 1;
 `;
+
+export const Buttons = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+`;

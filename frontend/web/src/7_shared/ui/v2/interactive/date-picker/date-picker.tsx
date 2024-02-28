@@ -1,19 +1,24 @@
 import {DatePickerProps} from './props.ts';
 import {ArrowButton, Container, DateTitle} from './styles.ts';
 
-import {ChevronLeft} from './icons/date-picker-chevron-left.svg';
+import {formatDate, getNextDate, getPreviousDate} from './lib.ts';
+
+import ChevronLeft from './assets/chevron-left.svg?react';
+import ChevronRight from './assets/chevron-right.svg?react';
 
 export function DatePicker(props: DatePickerProps) {
   return (
     <Container $width={props.styles?.width}>
-      <ArrowButton>
+      <ArrowButton
+        onClick={() => props.onDateChange(getPreviousDate(props.currentDate))}>
         <ChevronLeft/>
       </ArrowButton>
       <DateTitle>
-
+        {formatDate(props.currentDate)}
       </DateTitle>
-      <ArrowButton>
-
+      <ArrowButton
+        onClick={() => props.onDateChange(getNextDate(props.currentDate))}>
+        <ChevronRight/>
       </ArrowButton>
     </Container>
   );

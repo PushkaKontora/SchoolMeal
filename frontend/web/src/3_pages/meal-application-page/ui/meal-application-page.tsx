@@ -1,4 +1,4 @@
-import {Sidebar, SidebarWithContent} from '../../../7_shared/ui/v2/sidebar';
+import {SidebarWithContent} from '../../../7_shared/ui/v2/sidebar';
 import {PageStyles} from '../styles/page-styles.ts';
 import {MealApplicationWidget} from '../../../4_widgets/meal-application-widget';
 import {updateDataState} from '../../../7_shared/lib/react-table-wrapper';
@@ -13,16 +13,16 @@ import {
   usePrepareMealRequestMutation
 } from '../../../7_shared/api';
 import {useEffect, useState} from 'react';
-import {getDefaultDate} from '../lib/get-default-date.ts';
 import {skipToken} from '@reduxjs/toolkit/query';
 import {dateToISOWithoutTime} from '../../../7_shared/lib/date';
 import {combineTableData, createClassNames, createHeaders} from '../lib/adapters.ts';
 import {MealRequestRowViewData} from '../../../6_entities/meal-request';
 import {OverridenPupil} from '../../../7_shared/model/pupil.ts';
+import {MealApplicationPageProps} from '../model/props.ts';
 
-export function MealApplicationPage() {
+export function MealApplicationPage(props: MealApplicationPageProps) {
   const [classIndex, setClassIndex] = useState<number>(0);
-  const [date, setDate] = useState(new Date('2024-02-15'));
+  const [date, setDate] = useState(new Date());
 
   const [tableData, setTableData]
     = useState<MealRequestRowViewData[]>([]);
@@ -60,17 +60,18 @@ export function MealApplicationPage() {
   return (
     <PageStyles>
       <SidebarWithContent
-        sidebar={<Sidebar/>}
+        sidebar={props.sidebar}
         contentStyles={{
           padding: '48px 40px 0 40px'
         }}>
         <TitleWidget
           title={'Подать заявку'}/>
         <MealApplicationWidget
-          selected={classIndex}
+          selectedClassIndex={classIndex}
           classNames={createClassNames(classes)}
           onClassSelect={(index) => setClassIndex(index)}
-          onDateSelect={() => {return;}}
+          date={date}
+          onDateSelect={(date) => setDate(date)}
           data={tableData}
           updateData={(rowIndex, columnId, value) => {
             const pupilView = tableData[rowIndex];

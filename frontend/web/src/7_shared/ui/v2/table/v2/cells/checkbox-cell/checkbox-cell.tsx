@@ -3,14 +3,15 @@ import {Container} from './styles.ts';
 import {AbstractCell} from '../../abstract-cell';
 import {Checkbox} from '../../../../interactive/check-box';
 
-export function CheckboxCell({children, cellStyles, header, as, key, ...props}: CheckboxCellProps) {
+export function CheckboxCell({children, cellStyles, header, as, key, styles, ...props}: CheckboxCellProps) {
   return (
     <AbstractCell
       header={header}
       as={as}
       key={key}
       cellStyles={cellStyles}>
-      <Container>
+      <Container
+        $justifyContent={styles?.justifyContent}>
         <Checkbox
           {...props}/>
         {children}
