@@ -10,5 +10,10 @@ export const DEFAULT_STYLES: CSSProperties = {
   height: '100%',
 
   position: 'fixed',
-  boxSizing: 'border-box'
+  boxSizing: 'border-box',
+
+  display: 'flex',
+  flexDirection: 'column',
+
+  fontFamily: 'Inter'
 };

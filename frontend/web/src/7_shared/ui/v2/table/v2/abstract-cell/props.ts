@@ -8,6 +8,7 @@ export type AbstractCellStyles = {
   height?: CSSProperties['height'];
   backgroundColor?: CSSProperties['backgroundColor'];
   fontFamily?: CSSProperties['fontFamily'];
+  justifyContext?: CSSProperties['justifyContent'];
 }
 
 export type AbstractCellProps = PropsWithChildren

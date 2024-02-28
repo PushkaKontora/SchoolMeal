@@ -15,3 +15,7 @@ export const Container = styled.div`
 export const TabSelectorContainer = styled.div`
   flex: 1;
 `;
+
+export const DatePickerContainer = styled.div`
+  
+`;

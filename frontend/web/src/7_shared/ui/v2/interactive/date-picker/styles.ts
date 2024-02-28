@@ -11,11 +11,12 @@ export const Container = styled.div<{
   flex-direction: row;
   box-sizing: border-box;
   
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
   
   background-color: #F5F5F5;
+  border-radius: 6px;
 `;
 
 export const ArrowButton = styled.button`
@@ -28,6 +29,7 @@ export const ArrowButton = styled.button`
 
   background-color: #2C2C2C;
   border-radius: 50%;
+  border: none;
 
   transition: background-color 1s;
 
@@ -45,5 +47,5 @@ export const DateTitle = styled.div`
   font-size: 14px;
   line-height: 16px;
   
-  text-transform: capitalize;
+  text-transform: uppercase;
 `;

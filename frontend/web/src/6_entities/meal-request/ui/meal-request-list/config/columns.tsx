@@ -1,11 +1,9 @@
 import {ColumnDef, createColumnHelper} from '@tanstack/react-table';
 import {MealRequestRowViewData} from '../model/meal-request-row-view-data.ts';
-import {getFullName, getTotalCost} from '../lib/mappers.ts';
+import {getFullName} from '../lib/mappers.ts';
 import {AbstractCell, TextCell} from '../../../../../7_shared/ui/v2/table';
-import {ValueBadgeCell} from '../../../../../7_shared/ui/v2/table';
 import {HeaderViewData} from '../model/header-view-data.ts';
 import {CheckboxCell} from '../../../../../7_shared/ui/v2/table';
-import {setBalanceValueBadgeType} from '../lib/cell-utils.ts';
 import {ICancelledNutritionView, IMealPlanHeaderView} from '../model/element-types.ts';
 import {updateCellData} from '../../../../../7_shared/lib/react-table-wrapper';
 
@@ -47,6 +45,7 @@ export const createColumns = (
         cancelled={props.cell.getValue()}/>
     )
   }),
+  /*
   columnHelper.accessor('balance', {
     header: props => (
       <TextCell
@@ -72,6 +71,7 @@ export const createColumns = (
         }}/>
     )
   }),
+   */
   columnHelper.accessor('breakfast', {
     header: props => <MealPlanHeader
       key={props.header.id}
@@ -103,8 +103,12 @@ export const createColumns = (
       key={props.cell.id}
       disabled={false}
       checked={props.getValue()}
+      cellStyles={{
+        width: '430px'
+      }}
       onChange={() => updateCellData(props, !props.getValue())}/>
   }),
+  /*
   columnHelper.accessor(originalRow => getTotalCost(originalRow, headerView), {
     id: 'totalCost',
     header: props => (
@@ -133,4 +137,5 @@ export const createColumns = (
         }}/>
     )
   })
+   */
 ];
