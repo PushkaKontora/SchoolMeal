@@ -4,6 +4,7 @@ import freezegun
 import pytest
 
 from app.nutrition.domain.mealtime import Mealtime
+from app.nutrition.domain.personal_info import FullName
 from app.nutrition.domain.pupil import Pupil, PupilID
 from app.nutrition.domain.request import CannotSentRequestAfterDeadline, Request
 from app.nutrition.domain.school_class import ClassID, SchoolClass
@@ -72,15 +73,11 @@ def test_submitting_to_canteen_with_overrides(school_class: SchoolClass) -> None
     assert request.mealtimes == {Mealtime.DINNER: {not_feeding.id, included.id}}
 
 
-@pytest.fixture
-def school_class() -> SchoolClass:
-    return SchoolClass(id=ClassID.generate(), mealtimes={Mealtime.DINNER})
-
-
 def _create_pupil(class_id: ClassID, mealtimes: set[Mealtime], periods: list[Period]) -> Pupil:
     return Pupil(
         id=PupilID.generate(),
         class_id=class_id,
+        name=FullName.create(last="Петров", first="Василий"),
         mealtimes=mealtimes,
         preferential_until=None,
         cancellation=Timeline.from_iterable(periods),

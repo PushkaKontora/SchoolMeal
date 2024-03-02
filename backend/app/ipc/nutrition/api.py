@@ -27,3 +27,7 @@ class INutritionAPI(ABC):
         self, class_id: UUID, on_date: date, overrides: set[Override]
     ) -> Result[None, str]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def attach_pupil_to_parent(self, parent_id: UUID, pupil_id: str) -> Result[None, str]:
+        raise NotImplementedError

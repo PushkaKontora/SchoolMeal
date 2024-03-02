@@ -4,11 +4,11 @@ from pydantic import BaseModel
 
 from src.data.menu import Food, Menu
 from src.data.schools import School
-from src.db import Bool, Database, Date, Integer, Null, String
+from src.db import Array, Database, Date, Integer, Null, String
 
 
 class Data(BaseModel):
-    schools: list[School]
+    school: School
     menus: list[Menu]
     foods: list[Food]
 
@@ -31,124 +31,77 @@ class SchemaInitializer(ABC):
         raise NotImplementedError
 
 
-class FeedbacksSchemaInitializer(SchemaInitializer):
-    @property
-    def schema(self) -> str:
-        return "feedbacks"
-
-    def clear(self) -> None:
-        for table in ["canteen"]:
-            self._database.truncate(self.schema, table)
-
-    def push(self, data: Data) -> None:
-        for school in data.schools:
-            self._database.insert(self.schema, "canteen", data={"id": String(school.id)})
-
-
-class NutritionSchemaInitializer(SchemaInitializer):
+class NutritionInitializer(SchemaInitializer):
     @property
     def schema(self) -> str:
         return "nutrition"
 
     def clear(self) -> None:
-        for table in [
-            "school",
-            "school_class",
-            "pupil",
-            "food",
-            "menu",
-            *[f"{mealtime}_food" for mealtime in ["breakfast", "dinner", "snacks"]],
-        ]:
+        for table in ["school", "school_class", "teacher", "parent", "pupil", "request"]:
             self._database.truncate(self.schema, table)
 
     def push(self, data: Data) -> None:
-        self._push_schools(data.schools)
-        self._push_foods(data.foods)
-        self._push_menus(data.menus)
+        school = data.school
 
-    def _push_foods(self, foods: list[Food]) -> None:
-        for food in foods:
+        self._database.insert(
+            schema=self.schema,
+            table="school",
+            data={
+                "id": Integer(1),
+                "name": String(school.name),
+            },
+        )
+
+        self._database.insert(
+            schema=self.schema,
+            table="teacher",
+            data={
+                "id": String(school.teacher.id),
+                "last_name": String(school.teacher.last_name),
+                "first_name": String(school.teacher.first_name),
+                "patronymic": String(school.teacher.patronymic),
+            },
+        )
+
+        self._database.insert(
+            schema=self.schema,
+            table="parent",
+            data={
+                "id": String(school.parent.id),
+                "last_name": String(school.parent.last_name),
+                "first_name": String(school.parent.first_name),
+                "patronymic": Null(),
+                "email": String(school.parent.email),
+                "phone": String(school.parent.phone),
+                "children": Array(tuple()),
+            },
+        )
+
+        for school_class in data.school.school_classes:
             self._database.insert(
-                self.schema,
-                "food",
+                schema=self.schema,
+                table="school_class",
                 data={
-                    "id": String(food.id),
-                    "name": String(food.name),
-                    "description": String(food.description),
-                    "calories": Integer(food.calories),
-                    "proteins": Integer(food.proteins),
-                    "fats": Integer(food.fats),
-                    "carbohydrates": Integer(food.carbohydrates),
-                    "price": Integer(food.price),
-                    "photo": String(food.photo),
-                    "weight": Integer(food.weight),
+                    "id": String(school_class.id),
+                    "teacher_id": String(school.teacher.id),
+                    "number": Integer(school_class.number),
+                    "literal": String(school_class.literal),
+                    "mealtimes": Array(tuple(Integer(v) for v in school_class.mealtimes)),
                 },
             )
 
-    def _push_menus(self, menus: list[Menu]) -> None:
-        def __push_relative(menu_id: str, mealtime_: str, foods_: list[Food]) -> None:
-            for food in foods_:
+            for pupil in school_class.pupils:
                 self._database.insert(
-                    self.schema,
-                    f"{mealtime_}_food",
+                    schema=self.schema,
+                    table="pupil",
                     data={
-                        "menu_id": String(menu_id),
-                        "food_id": String(food.id),
+                        "id": String(pupil.id),
+                        "class_id": String(school_class.id),
+                        "last_name": String(pupil.last_name),
+                        "first_name": String(pupil.first_name),
+                        "patronymic": String(pupil.patronymic) if pupil.patronymic else Null(),
+                        "mealtimes": Array(tuple(Integer(v) for v in pupil.mealtimes)),
+                        "preferential_until": Date(pupil.preferential_until) if pupil.preferential_until else Null(),
+                        "cancellation": Array(tuple()),
                     },
                 )
-
-        for menu in menus:
-            self._database.insert(
-                self.schema,
-                "menu",
-                data={
-                    "id": String(menu.id),
-                    "school_class_type": Integer(menu.class_type),
-                    "on_date": Date(menu.on_date),
-                },
-            )
-
-            for mealtime, foods in [["breakfast", menu.breakfast], ["dinner", menu.dinner], ["snacks", menu.snacks]]:
-                __push_relative(menu_id=menu.id, mealtime_=mealtime, foods_=foods)
-
-    def _push_schools(self, schools: list[School]) -> None:
-        for school in schools:
-            self._database.insert(
-                self.schema,
-                "school",
-                data={
-                    "id": String(school.id),
-                    "name": String(school.name),
-                },
-            )
-
-            for school_class in school.school_classes:
-                self._database.insert(
-                    self.schema,
-                    "school_class",
-                    data={
-                        "id": String(school_class.id),
-                        "school_id": String(school.id),
-                        "number": Integer(school_class.number),
-                        "literal": String(school_class.literal),
-                    },
-                )
-
-                for pupil in school_class.pupils:
-                    meal_plan, certificate = pupil.meal_plan, pupil.preferential_certificate
-
-                    self._database.insert(
-                        self.schema,
-                        "pupil",
-                        data={
-                            "id": String(pupil.id),
-                            "last_name": String(pupil.last_name),
-                            "first_name": String(pupil.first_name),
-                            "patronymic": String(pupil.patronymic) if pupil.patronymic else Null(),
-                            "has_breakfast": Bool(meal_plan.has_breakfast),
-                            "has_dinner": Bool(meal_plan.has_dinner),
-                            "has_snacks": Bool(meal_plan.has_snacks),
-                            "preferential_certificate_ends_at": Date(certificate.ends_at) if certificate else Null(),
-                            "school_class_id": String(school_class.id),
-                        },
-                    )

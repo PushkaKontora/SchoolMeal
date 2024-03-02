@@ -4,6 +4,7 @@ from result import Ok, do
 from app.gateway.dependencies import NutritionAPIDep
 from app.gateway.mobile.dto import CancelPupilForPeriodIn, ResumePupilOnDayIn, UpdateMealtimesIn
 from app.shared.fastapi import responses
+from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.errors import BadRequest
 from app.shared.fastapi.schemas import OKSchema
 
@@ -50,7 +51,7 @@ async def cancel_pupil_for_period(
     "/{pupil_id}/mealtimes",
     summary="Поставить или снять приёмы пищи у ученика",
     status_code=status.HTTP_200_OK,
-    responses=responses.NOT_FOUND,
+    responses=responses.BAD_REQUEST,
 )
 async def update_mealtimes_at_pupil(pupil_id: str, body: UpdateMealtimesIn, nutrition_api: NutritionAPIDep) -> OKSchema:
     return do(
@@ -60,5 +61,23 @@ async def update_mealtimes_at_pupil(pupil_id: str, body: UpdateMealtimesIn, nutr
             breakfast=body.breakfast,
             dinner=body.dinner,
             snacks=body.snacks,
+        )
+    ).unwrap_or_raise(BadRequest)
+
+
+@router.post(
+    "/{pupil_id}/attach",
+    summary="Закрепить ребёнка за родителем",
+    status_code=status.HTTP_200_OK,
+    responses=responses.BAD_REQUEST,
+)
+async def attach_pupil_to_parent(
+    pupil_id: str, authorized_user: AuthorizedUserDep, nutrition_api: NutritionAPIDep
+) -> OKSchema:
+    return do(
+        Ok(OKSchema())
+        for _ in await nutrition_api.attach_pupil_to_parent(
+            parent_id=authorized_user.id,
+            pupil_id=pupil_id,
         )
     ).unwrap_or_raise(BadRequest)

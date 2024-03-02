@@ -5,6 +5,7 @@ from datetime import date
 from result import Ok
 
 from app.nutrition.domain.mealtime import Mealtime
+from app.nutrition.domain.personal_info import FullName
 from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.times import Day, Period, Timeline
 
@@ -22,6 +23,7 @@ class PupilID:
 class Pupil:
     id: PupilID
     class_id: ClassID
+    name: FullName
     mealtimes: set[Mealtime]
     preferential_until: date | None
     cancellation: Timeline

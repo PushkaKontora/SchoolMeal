@@ -108,12 +108,12 @@ T = TypeVar("T", bound=DBObject)
 
 @dataclass(eq=True, frozen=True, repr=False)
 class Array(DBObject, Generic[T]):
-    value: tuple[T]
+    value: tuple[T, ...]
 
     def __str__(self) -> str:
         _values = ",".join(str(v) for v in self.value)
 
-        return "{" + _values + "}"
+        return "'{" + _values + "}'"
 
 
 @dataclass(eq=True, frozen=True, repr=False)

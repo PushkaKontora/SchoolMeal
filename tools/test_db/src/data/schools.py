@@ -1,21 +1,17 @@
-import itertools
+import itertools as it
+import random
 import secrets
-import time
 from datetime import date, datetime, timedelta, timezone
-from uuid import uuid4
+from enum import IntEnum
+from uuid import UUID, uuid4
 
-import names
 from pydantic import BaseModel
 
 
-class MealPlan(BaseModel):
-    has_breakfast: bool
-    has_dinner: bool
-    has_snacks: bool
-
-
-class PreferentialCertificate(BaseModel):
-    ends_at: date
+class Mealtime(IntEnum):
+    BREAKFAST = 0
+    DINNER = 10
+    SNACKS = 20
 
 
 class Pupil(BaseModel):
@@ -23,59 +19,84 @@ class Pupil(BaseModel):
     last_name: str
     first_name: str
     patronymic: str | None
-    meal_plan: MealPlan
-    preferential_certificate: PreferentialCertificate | None
+    preferential_until: date | None
+    mealtimes: set[Mealtime]
 
 
 class SchoolClass(BaseModel):
     id: str
     number: int
     literal: str
+    mealtimes: set[Mealtime]
     pupils: list["Pupil"]
+
+
+class Teacher(BaseModel):
+    id: str
+    last_name: str
+    first_name: str
+    patronymic: str
+
+
+class Parent(BaseModel):
+    id: str
+    last_name: str
+    first_name: str
+    email: str
+    phone: str
 
 
 class School(BaseModel):
     id: str
     name: str
+    teacher: Teacher
     school_classes: list[SchoolClass]
+    parent: Parent
 
 
-def generate_schools(amount: int = 1) -> list[School]:
-    return [
-        School(
-            id=str(uuid4()),
-            name=f"school #{time.time()}",
-            school_classes=_generate_school_classes(),
-        )
-        for _ in range(amount)
-    ]
+def generate_school() -> School:
+    return School(
+        id=str(uuid4()),
+        name="МБОУ СОШ №1337",
+        school_classes=_generate_school_classes(),
+        teacher=Teacher(id=str(uuid4()), last_name="Лыкова", first_name="Агафья", patronymic="Андреевна"),
+        parent=Parent(
+            id=str(UUID("844c4372-52eb-4452-b314-728583ee5fbf")),
+            last_name="Кузьмин",
+            first_name="Кузьмич",
+            email="serious_kys@gmail.com",
+            phone="8005553535",
+        ),
+    )
 
 
 def _generate_school_classes() -> list[SchoolClass]:
-    return [SchoolClass(id=str(uuid4()), number=i, literal="A", pupils=_generate_pupils()) for i in range(1, 12)]
+    mealtimes = it.cycle([*it.combinations(Mealtime, r=3), *it.combinations(Mealtime, r=2)])
+
+    return [
+        SchoolClass(id=str(uuid4()), number=i, literal="A", pupils=_generate_pupils(), mealtimes=set(next(mealtimes)))
+        for i in range(1, 12)
+    ]
 
 
-def _generate_pupils(amount: int = 30) -> list[Pupil]:
-    gets_patronymic = itertools.cycle([names.get_first_name, lambda: None])
+def _generate_pupils(amount: int = 5) -> list[Pupil]:
+    last_names = ("Петров", "Cидоров", "Перов", "Самков", "Лыков", "Голендухин")
+    first_names = ("Василий", "Дмитрий", "Илья", "Никита", "Владимир", "Пётр")
+    patronymics = ("Евгеньевич", "Юрьевич", "Дмитриевич", "Владимирович", None)
 
-    meal_plans = itertools.cycle(
-        MealPlan(has_breakfast=b, has_dinner=d, has_snacks=s) for b, d, s in itertools.product([False, True], repeat=3)
-    )
+    mealtimes = it.cycle([*it.combinations(Mealtime, r=1), *it.combinations(Mealtime, r=2)])
 
     now = datetime.now(timezone.utc).now()
-    past, future = now - timedelta(days=30), now + timedelta(days=30)
-    certificates = itertools.cycle(
-        [PreferentialCertificate(ends_at=past), PreferentialCertificate(ends_at=future), None]
-    )
+    preferential_until_dates = it.cycle([now - timedelta(days=30), now + timedelta(days=30), None])
 
     return [
         Pupil(
             id=secrets.token_hex(10),
-            last_name=names.get_last_name(),
-            first_name=names.get_first_name(),
-            patronymic=next(gets_patronymic)(),
-            meal_plan=next(meal_plans),
-            preferential_certificate=next(certificates),
+            last_name=random.choice(last_names),
+            first_name=random.choice(first_names),
+            patronymic=random.choice(patronymics),
+            mealtimes=set(next(mealtimes)),
+            preferential_until=next(preferential_until_dates),
         )
         for _ in range(amount)
     ]

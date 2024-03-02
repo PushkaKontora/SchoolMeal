@@ -1,9 +1,17 @@
-import pytest
+import re
 
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import Pupil, PupilID
-from app.nutrition.domain.school_class import ClassID
-from app.nutrition.domain.times import Day, Timeline, now
+from app.nutrition.domain.times import Day, now
+
+
+def test_generating_id() -> None:
+    regex = re.compile(r"[a-z\d]{20}")
+
+    for _ in range(1000):
+        pupil_id = PupilID.generate().value
+
+        assert regex.fullmatch(pupil_id), pupil_id
 
 
 def test_cancelling_mealtime_where_pupil_eats(pupil: Pupil) -> None:
@@ -50,14 +58,3 @@ def test_pupil_eats(pupil: Pupil) -> None:
     eating = pupil.does_eat(day=Day.today(), mealtime=Mealtime.DINNER)
 
     assert eating
-
-
-@pytest.fixture
-def pupil() -> Pupil:
-    return Pupil(
-        id=PupilID.generate(),
-        class_id=ClassID.generate(),
-        mealtimes={Mealtime.DINNER},
-        preferential_until=None,
-        cancellation=Timeline(),
-    )

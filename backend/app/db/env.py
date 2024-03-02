@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from app.db.settings import DatabaseSettings
 from app.db.utils import create_database, exists_database, wait_connect
 from app.feedbacks.infrastructure.db.models import FeedbacksBase
-from app.nutrition.infrastructure.db.models import NutritionBase
+from app.nutrition.infrastructure.db import NutritionBase
 
 
 POSTGRES_INDEXES_NAMING_CONVENTION = {
