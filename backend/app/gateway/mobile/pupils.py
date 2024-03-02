@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from result import Err, as_result
 
 from app.gateway.mobile.dto import CancelForPeriodIn, MealtimeTogglerIn, ResumeOnDayIn
-from app.nutrition.application import commands
+from app.nutrition.application import services
 from app.nutrition.application.errors import NotFoundPupil
 from app.nutrition.domain.pupil import PupilID
 from app.nutrition.domain.times import Day, Period
@@ -24,7 +24,7 @@ async def resume_on_day(pupil_id: str, body: ResumeOnDayIn) -> OKSchema:
     id_ = as_result(ValueError)(lambda x: PupilID(x))(pupil_id).unwrap_or_raise(UnprocessableEntity)
     day = as_result(ValueError)(lambda x: Day(x))(body.day).unwrap_or_raise(UnprocessableEntity)
 
-    resuming = await commands.resume_on_day(pupil_id=id_, day=day)
+    resuming = await services.resume_on_day(pupil_id=id_, day=day)
 
     match resuming:
         case Err(NotFoundPupil()):
@@ -45,7 +45,7 @@ async def cancel_for_period(pupil_id: str, body: CancelForPeriodIn) -> OKSchema:
         UnprocessableEntity
     )
 
-    cancelling = await commands.cancel_for_period(pupil_id=id_, period=period)
+    cancelling = await services.cancel_for_period(pupil_id=id_, period=period)
 
     match cancelling:
         case Err(NotFoundPupil()):
@@ -66,7 +66,7 @@ async def resume_or_cancel_mealtimes_at_pupil(pupil_id: str, togglers: list[Meal
     if not togglers:
         return OKSchema()
 
-    resuming = await commands.resume_or_cancel_mealtimes_at_pupil(
+    resuming = await services.resume_or_cancel_mealtimes_at_pupil(
         pupil_id=id_,
         mealtimes={toggler.mealtime: toggler.enabled for toggler in togglers},
     )

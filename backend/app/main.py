@@ -6,7 +6,7 @@ from app.gateway import router
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.db.container import DatabaseContainer
 from app.shared.db.settings import AlchemySettings, DatabaseSettings
-from app.shared.fastapi.errors import default_handler, unprocessable_entity_handler, UnprocessableEntity
+from app.shared.fastapi.errors import UnprocessableEntity, default_handler, unprocessable_entity_handler
 from app.shared.fastapi.settings import FastAPIConfig
 from app.shared.objects_storage.local import LocalObjectsStorageSettings
 

@@ -4,7 +4,7 @@ from fastapi import APIRouter, status
 from result import Err, as_result
 
 from app.gateway.web.dto import SubmitRequestIn
-from app.nutrition.application import commands
+from app.nutrition.application import services
 from app.nutrition.application.errors import NotFoundSchoolClass
 from app.nutrition.domain.pupil import PupilID
 from app.nutrition.domain.request import CannotSentRequestAfterDeadline
@@ -29,7 +29,7 @@ async def submit_request_to_canteen(class_id: UUID, body: SubmitRequestIn) -> OK
         body.overrides
     ).unwrap_or_raise(UnprocessableEntity)
 
-    submitting = await commands.submit_request_to_canteen(class_id=id_, on_date=body.on_date, overrides=overrides)
+    submitting = await services.submit_request_to_canteen(class_id=id_, on_date=body.on_date, overrides=overrides)
 
     match submitting:
         case Err(NotFoundSchoolClass()):

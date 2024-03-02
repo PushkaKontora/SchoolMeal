@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from pydantic import BaseModel
 from result import as_result
 
-from app.feedbacks.application import commands
+from app.feedbacks.application import services
 from app.feedbacks.domain.feedback import FeedbackText, UserID
 from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
@@ -27,6 +27,6 @@ async def leave_feedback_about_work_of_canteen(body: FeedbackTextIn, authorized_
     text = as_result(ValueError)(lambda x: FeedbackText(x))(body.text).unwrap_or_raise(UnprocessableEntity)
     user_id = as_result(ValueError)(lambda x: UserID(x))(authorized_user.id).unwrap_or_raise(UnprocessableEntity)
 
-    leaving = await commands.leave_feedback_about_work_of_canteen(user_id, text)
+    leaving = await services.leave_feedback_about_work_of_canteen(user_id, text)
 
     return leaving.map(lambda _: OKSchema()).unwrap()
