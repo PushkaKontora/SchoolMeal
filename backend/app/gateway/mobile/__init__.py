@@ -7,5 +7,5 @@ from .pupils import router as pupils
 router = APIRouter(prefix="/mobile")
 
 
-router.include_router(pupils, tags=["Ученики"])
-router.include_router(feedbacks, tags=["Отзывы"])
+router.include_router(pupils)
+router.include_router(feedbacks)
