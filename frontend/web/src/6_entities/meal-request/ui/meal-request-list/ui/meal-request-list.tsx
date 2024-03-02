@@ -7,6 +7,7 @@ export function MealRequestList(props: MealRequestListProps) {
   const table = useReactTable({
     data: props.data || [],
     columns: createColumns(
+      props.tableData,
       props.headerViewData,
       props.cells.mealPlanHeader,
       props.cells.cancelledBadge),

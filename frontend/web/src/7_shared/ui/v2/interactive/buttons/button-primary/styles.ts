@@ -16,6 +16,8 @@ export const ButtonContainer = styled(DefaultStyles)<ButtonPrimaryShadowedStyles
   height: ${props => props.$height};
   border-width: 0;
 
+  cursor: pointer;
+  
   &:hover {
     background-color: #e57645;
     transition: 0.3s linear;

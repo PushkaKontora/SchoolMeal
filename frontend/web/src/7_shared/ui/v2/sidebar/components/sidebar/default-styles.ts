@@ -1,5 +1,5 @@
 import {CSSProperties} from 'react';
-import {SIDEBAR_WIDTH} from '../config/config.ts';
+import {SIDEBAR_WIDTH} from '../../config/config.ts';
 
 export const DEFAULT_STYLES: CSSProperties = {
   backgroundColor: '#2C2C2C',

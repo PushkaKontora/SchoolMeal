@@ -14,8 +14,4 @@ export function AppNavigator() {
       <AppRouter />
     </BrowserRouter>
   );
-
-  /*return (
-    <MealApplicationPage/>
-  );*/
 }

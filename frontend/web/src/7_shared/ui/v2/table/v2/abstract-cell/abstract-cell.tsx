@@ -1,7 +1,7 @@
 import {AbstractCellProps} from './props.ts';
 import {Cell} from './styles.ts';
 
-export function AbstractCell({children, cellStyles, header, as, key}: AbstractCellProps) {
+export function AbstractCell({children, cellStyles, header, as, key, showContent}: AbstractCellProps) {
   return (
     <Cell
       key={key}
@@ -15,7 +15,11 @@ export function AbstractCell({children, cellStyles, header, as, key}: AbstractCe
       $maxWidth={cellStyles?.maxWidth}
       $whiteSpace={cellStyles?.whiteSpace}
       scope={'col'}>
-      {children}
+      <div style={{
+        visibility: (showContent ?? true) ? 'visible' : 'hidden'
+      }}>
+        {children}
+      </div>
     </Cell>
   );
 }

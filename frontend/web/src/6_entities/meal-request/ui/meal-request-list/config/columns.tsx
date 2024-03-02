@@ -6,10 +6,12 @@ import {HeaderViewData} from '../model/header-view-data.ts';
 import {CheckboxCell} from '../../../../../7_shared/ui/v2/table';
 import {ICancelledNutritionView, IMealPlanHeaderView} from '../model/element-types.ts';
 import {updateCellData} from '../../../../../7_shared/lib/react-table-wrapper';
+import {TableViewData} from '../model/table-view-data.ts';
 
 export const columnHelper = createColumnHelper<MealRequestRowViewData>();
 
 export const createColumns = (
+  tableData: TableViewData,
   headerView: HeaderViewData,
   MealPlanHeader: IMealPlanHeaderView,
   CancelledBadge: ICancelledNutritionView
@@ -76,36 +78,39 @@ export const createColumns = (
     header: props => <MealPlanHeader
       key={props.header.id}
       title={'Завтрак'}
+      showContent={tableData.hasBreakfast}
       price={headerView.prices.breakfast}/>,
     cell: props => <CheckboxCell
       key={props.cell.id}
-      disabled={false}
+      disabled={!tableData.editable}
       checked={props.getValue()}
+      showContent={tableData.hasBreakfast}
       onChange={() => updateCellData(props, !props.getValue())}/>
   }),
   columnHelper.accessor('dinner', {
     header: props => <MealPlanHeader
       key={props.header.id}
       title={'Обед'}
+      showContent={tableData.hasDinner}
       price={headerView.prices.dinner}/>,
     cell: props => <CheckboxCell
       key={props.cell.id}
-      disabled={false}
+      disabled={!tableData.editable}
       checked={props.getValue()}
+      showContent={tableData.hasDinner}
       onChange={() => updateCellData(props, !props.getValue())}/>
   }),
   columnHelper.accessor('snacks', {
     header: props => <MealPlanHeader
       key={props.header.id}
       title={'Полдник'}
+      showContent={tableData.hasSnacks}
       price={headerView.prices.snacks}/>,
     cell: props => <CheckboxCell
       key={props.cell.id}
-      disabled={false}
+      disabled={!tableData.editable}
       checked={props.getValue()}
-      cellStyles={{
-        width: '430px'
-      }}
+      showContent={tableData.hasSnacks}
       onChange={() => updateCellData(props, !props.getValue())}/>
   }),
   /*
