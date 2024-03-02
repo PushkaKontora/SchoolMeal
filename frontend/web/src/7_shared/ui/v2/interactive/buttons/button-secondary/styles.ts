@@ -16,6 +16,8 @@ export const ButtonContainer = styled.button<ButtonSecondaryStyles>`
   width: ${props => props.width};
   height: ${props => props.height};
   
+  cursor: pointer;
+  
   &:disabled {
     background-color: #F3F6F9;
     color: #B4B4B4;

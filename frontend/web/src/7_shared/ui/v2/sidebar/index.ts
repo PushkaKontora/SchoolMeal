@@ -1,2 +1,2 @@
-export * from './sidebar';
-export * from './sidebar-with-content';
+export * from './components/sidebar';
+export * from './components/sidebar-with-content';

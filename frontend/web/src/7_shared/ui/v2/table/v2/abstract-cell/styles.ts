@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import {CSSProperties} from 'react';
 
 export const Row = styled.tr`
   width: 100%;

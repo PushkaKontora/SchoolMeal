@@ -22,7 +22,7 @@ export function MealApplicationForm(props: MealApplicationFormProps) {
                 title={'Отмена'}
                 width={'150px'}
                 height={'40px'}
-                onPress={() => {return;}}/>
+                onPress={props.onCancel}/>
             )
           }
           <ButtonPrimary
@@ -37,12 +37,14 @@ export function MealApplicationForm(props: MealApplicationFormProps) {
         <MealRequestList
           data={props.data}
           updateData={props.updateData}
+          tableData={props.tableData}
           headerViewData={props.headerViewData}
           cells={{
             mealPlanHeader: props => (
               <MealPlanHeaderCell
                 key={props.key}
                 title={props.title}
+                showContent={props.showContent}
                 price={props.price}/>
             ),
             cancelledBadge: props => (

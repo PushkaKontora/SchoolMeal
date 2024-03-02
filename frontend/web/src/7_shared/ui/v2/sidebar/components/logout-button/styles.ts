@@ -5,6 +5,8 @@ export const ButtonContainer =
   styled(SidebarIconedButtonContainer)`
     background-color: #333333;
     margin-top: 8px;
+    
+    flex-direction: row-reverse;
   `;
 
 export const ButtonText

@@ -5,6 +5,9 @@ export function LogoutButton(props: LogoutButtonProps) {
   return (
     <ButtonContainer
       onClick={props.onClick}>
+      {
+        props?.icon
+      }
       <ButtonText>
         {props.accountName}
       </ButtonText>

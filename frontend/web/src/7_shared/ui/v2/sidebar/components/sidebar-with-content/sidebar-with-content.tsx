@@ -1,6 +1,6 @@
 import {Content, ContentBody, ParentContainer} from './styles.ts';
 import {SidebarWithContentProps} from './props.ts';
-import {SIDEBAR_WIDTH} from '../config/config.ts';
+import {SIDEBAR_WIDTH} from '../../config/config.ts';
 
 export function SidebarWithContent(props: SidebarWithContentProps) {
   return (

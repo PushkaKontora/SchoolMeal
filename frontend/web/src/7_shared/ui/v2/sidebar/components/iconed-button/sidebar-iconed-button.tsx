@@ -6,6 +6,9 @@ export function SidebarIconedButton(props: SidebarIconedButtonProps) {
     <SidebarIconedButtonContainer
       onClick={props.onClick}
       active={props.active}>
+      {
+        props?.icon
+      }
       <SidebarIconedButtonText>
         <div>
           {props.text}

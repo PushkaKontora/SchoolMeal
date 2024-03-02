@@ -14,10 +14,12 @@ export function MealApplicationWidget(props: MealApplicationWidgetProps) {
       <MealApplicationForm
         data={props.data}
         updateData={props.updateData}
+        tableData={props.tableData}
         headerViewData={props.headerViewData}
         status={props.status}
         buttonTitles={props.buttonTitles}
-        onSend={props.onSend}/>
+        onSend={props.onSend}
+        onCancel={props.onCancel}/>
     </Container>
   );
 }

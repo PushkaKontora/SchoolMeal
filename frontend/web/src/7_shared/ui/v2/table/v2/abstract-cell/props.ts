@@ -16,5 +16,6 @@ export type AbstractCellProps = PropsWithChildren
   key: string;
   header?: boolean;
   as?: string;
+  showContent?: boolean;
   cellStyles?: AbstractCellStyles
 };

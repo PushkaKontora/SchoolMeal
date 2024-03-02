@@ -18,9 +18,10 @@ import {dateToISOWithoutTime} from '../../../7_shared/lib/date';
 import {combineTableData, createClassNames, createHeaders} from '../lib/adapters.ts';
 import {MealRequestRowViewData} from '../../../6_entities/meal-request';
 import {OverridenPupil} from '../../../7_shared/model/pupil.ts';
-import {MealApplicationPageProps} from '../model/props.ts';
+import {AppSidebar} from '../../../4_widgets/app-sidebar';
+import {isListEditable} from '../../../5_features/meal-application-feature';
 
-export function MealApplicationPage(props: MealApplicationPageProps) {
+export function MealApplicationPage() {
   const [classIndex, setClassIndex] = useState<number>(0);
   const [date, setDate] = useState(new Date());
 
@@ -28,6 +29,11 @@ export function MealApplicationPage(props: MealApplicationPageProps) {
     = useState<MealRequestRowViewData[]>([]);
   const [overridenPupils, setOverridenPupils]
     = useState<{[pupilId: OverridenPupil['id']]: OverridenPupil}>({});
+
+  const [mealRequestFormStatus, setMealRequestFormStatus]
+    = useState<MealRequestStatus | undefined>(undefined);
+  const [prevTableData, setPrevTableData]
+    = useState<MealRequestRowViewData[]>([]);
 
   const {data: currentUser}
     = useGetCurrentUserQuery();
@@ -57,10 +63,33 @@ export function MealApplicationPage(props: MealApplicationPageProps) {
     }
   }, [date, planningRequest, pupils, isPupilsFetching, isPlanningReportFetching]);
 
+  useEffect(() => {
+    if (!isPlanningReportFetching) {
+      setMealRequestFormStatus(temp_mapStatus(planningRequest?.status));
+    }
+  }, [planningRequest, isPlanningReportFetching]);
+
+  const temp_mapStatus = (status?: MealRequestStatus) => {
+    switch (status) {
+    case undefined:
+      return MealRequestStatus.NotApplied;
+    case MealRequestStatus.Edit:
+      return MealRequestStatus.Applied;
+    case MealRequestStatus.Applied:
+      return MealRequestStatus.Edit;
+    default:
+      return status;
+    }
+  };
+
   return (
     <PageStyles>
       <SidebarWithContent
-        sidebar={props.sidebar}
+        sidebar={(
+          <AppSidebar
+            selectedItemIndex={1}
+            currentUser={currentUser}/>
+        )}
         contentStyles={{
           padding: '48px 40px 0 40px'
         }}>
@@ -73,6 +102,12 @@ export function MealApplicationPage(props: MealApplicationPageProps) {
           date={date}
           onDateSelect={(date) => setDate(date)}
           data={tableData}
+          tableData={{
+            editable: isListEditable(mealRequestFormStatus),
+            hasBreakfast: classes?.[classIndex].breakfast,
+            hasDinner: classes?.[classIndex].dinner,
+            hasSnacks: classes?.[classIndex].snacks
+          }}
           updateData={(rowIndex, columnId, value) => {
             const pupilView = tableData[rowIndex];
             const pupil = pupils?.[rowIndex];
@@ -93,14 +128,19 @@ export function MealApplicationPage(props: MealApplicationPageProps) {
             updateDataState(setTableData, rowIndex, columnId, value);
           }}
           headerViewData={createHeaders(menu)}
-          status={planningRequest?.status || MealRequestStatus.NotApplied}
+          status={mealRequestFormStatus || MealRequestStatus.NotApplied}
           buttonTitles={{
             [MealRequestStatus.Applied]: 'Редактировать',
             [MealRequestStatus.Edit]: 'Сохранить изменения',
             [MealRequestStatus.NotApplied]: 'Отправить заявку'
           }}
+          onCancel={() => {
+            setMealRequestFormStatus(temp_mapStatus(planningRequest?.status));
+            setTableData(prevTableData);
+            setOverridenPupils({});
+          }}
           onSend={() => {
-            switch (planningRequest?.status) {
+            switch (mealRequestFormStatus) {
             case MealRequestStatus.NotApplied:
             case MealRequestStatus.Edit:
               if (classes) {
@@ -112,7 +152,8 @@ export function MealApplicationPage(props: MealApplicationPageProps) {
               }
               break;
             case MealRequestStatus.Applied:
-
+              setPrevTableData(tableData);
+              setMealRequestFormStatus(MealRequestStatus.Edit);
               break;
             }
           }}/>
