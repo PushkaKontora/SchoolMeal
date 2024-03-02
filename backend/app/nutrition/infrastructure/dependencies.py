@@ -1,26 +1,17 @@
-from pathlib import Path
+from dependency_injector import providers
+from dependency_injector.containers import DeclarativeContainer
 
-from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
-from dependency_injector.providers import Configuration, Dependency, Factory, Singleton
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.nutrition import application
+from app.nutrition.infrastructure.api import NutritionAPI
 from app.nutrition.infrastructure.dao import AlchemyPupilDAO, AlchemyRequestDAO, AlchemySchoolClassDAO
-from app.shared.objects_storage.local import LocalObjectsStorage
 
 
 class NutritionContainer(DeclarativeContainer):
-    wiring_config = WiringConfiguration(packages=[application])
+    alchemy = providers.DependenciesContainer()
 
-    object_storage_config = Configuration(strict=True)
+    pupil_dao = providers.Singleton(AlchemyPupilDAO, session_factory=alchemy.session.provider)
+    school_class_dao = providers.Singleton(AlchemySchoolClassDAO, session_factory=alchemy.session.provider)
+    request_dao = providers.Singleton(AlchemyRequestDAO, session_factory=alchemy.session.provider)
 
-    session = Dependency(instance_of=AsyncSession)
-
-    objects_storage = Singleton(
-        LocalObjectsStorage,
-        base_path=Factory(Path, object_storage_config.base_path),
+    api = providers.Singleton(
+        NutritionAPI, pupil_dao=pupil_dao, school_class_dao=school_class_dao, request_dao=request_dao
     )
-
-    pupil_dao = Singleton(AlchemyPupilDAO, session_factory=session.provider)
-    school_class_dao = Singleton(AlchemySchoolClassDAO, session_factory=session.provider)
-    request_dao = Singleton(AlchemyRequestDAO, session_factory=session.provider)

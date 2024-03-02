@@ -1,14 +1,13 @@
 from dependency_injector import providers
-from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
-from sqlalchemy.ext.asyncio import AsyncSession
+from dependency_injector.containers import DeclarativeContainer
 
-from app.feedbacks import application
-from app.feedbacks.infrastructure.dao import AlchemyFeedbackRepository
+from app.feedbacks.infrastructure.api import FeedbacksAPI
+from app.feedbacks.infrastructure.dao.feedback_repository import AlchemyFeedbackRepository
 
 
 class FeedbacksContainer(DeclarativeContainer):
-    wiring_config = WiringConfiguration(packages=[application])
+    alchemy = providers.DependenciesContainer()
 
-    session = providers.Dependency(instance_of=AsyncSession)
+    feedback_repository = providers.Singleton(AlchemyFeedbackRepository, session_factory=alchemy.session.provider)
 
-    feedback_repository = providers.Singleton(AlchemyFeedbackRepository, session_factory=session.provider)
+    api = providers.Singleton(FeedbacksAPI, feedback_repository=feedback_repository)

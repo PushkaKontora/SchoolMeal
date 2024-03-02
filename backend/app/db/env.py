@@ -6,10 +6,10 @@ from sqlalchemy import MetaData, engine_from_config, pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from app.db.settings import DatabaseSettings
+from app.db.utils import create_database, exists_database, wait_connect
 from app.feedbacks.infrastructure.db.models import FeedbacksBase
 from app.nutrition.infrastructure.db.models import NutritionBase
-from app.shared.db.settings import DatabaseSettings
-from app.shared.db.utils import create_database, exists_database, wait_connect
 
 
 POSTGRES_INDEXES_NAMING_CONVENTION = {

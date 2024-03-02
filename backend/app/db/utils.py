@@ -5,7 +5,7 @@ from loguru import logger
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.shared.db.settings import DatabaseSettings
+from app.db.settings import DatabaseSettings
 
 
 async def exists_database(settings: DatabaseSettings) -> bool:

@@ -2,14 +2,9 @@ from datetime import date
 
 from pydantic import BaseModel
 
-from app.nutrition.domain.mealtime import Mealtime
-
-
-class OverriddenPupilIn(BaseModel):
-    pupil_id: str
-    mealtimes: set[Mealtime]
+from app.ipc.nutrition.dto import Override
 
 
 class SubmitRequestIn(BaseModel):
     on_date: date
-    overrides: list[OverriddenPupilIn]
+    overrides: set[Override]
