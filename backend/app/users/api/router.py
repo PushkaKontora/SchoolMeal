@@ -2,7 +2,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Response, status
 
 from app.shared.fastapi import responses
-from app.shared.fastapi.errors import AuthorizationError, BadRequestError, NotFoundError, UnprocessableEntityError
+from app.shared.fastapi.errors import BadRequest, Forbidden, NotFound, UnprocessableEntity
 from app.shared.fastapi.schemas import AuthorizedUser, OKSchema
 from app.users.api.schemas import AccessTokenOut, CredentialIn, ParentRegistrationForm, UserOut
 from app.users.api.tokens import AccessTokenDep, RefreshTokenDep, delete_refresh_from_cookies, set_refresh_in_cookies
@@ -32,7 +32,7 @@ async def authorize(
     try:
         user = await users_service.authorize(access_token)
     except Exception as error:
-        raise AuthorizationError from error
+        raise Forbidden from error
 
     user_out = AuthorizedUser(
         id=user.id,
@@ -61,7 +61,7 @@ async def authenticate(
         )
 
     except IncorrectLoginOrPassword as error:
-        raise BadRequestError("Неверный логин или пароль") from error
+        raise BadRequest("Неверный логин или пароль") from error
 
     set_refresh_in_cookies(response, refresh_token, secret)
 
@@ -81,10 +81,10 @@ async def logout(
         await users_service.logout(access_token)
 
     except SignatureIsBroken as error:
-        raise UnprocessableEntityError("Сигнатура токена повреждена") from error
+        raise UnprocessableEntity("Сигнатура токена повреждена") from error
 
     except TokenHasExpired as error:
-        raise UnprocessableEntityError("Время жизни токена истекло") from error
+        raise UnprocessableEntity("Время жизни токена истекло") from error
 
     delete_refresh_from_cookies(response)
 
@@ -108,13 +108,13 @@ async def refresh_tokens(
         access, refresh = await users_service.refresh_session(refresh_token)
 
     except SessionIsAlreadyRevoked as error:
-        raise BadRequestError("Сессия уже была отозвана") from error
+        raise BadRequest("Сессия уже была отозвана") from error
 
     except SignatureIsBroken as error:
-        raise UnprocessableEntityError("Сигнатура токена повреждена") from error
+        raise UnprocessableEntity("Сигнатура токена повреждена") from error
 
     except TokenHasExpired as error:
-        raise UnprocessableEntityError("Время жизни токена истекло") from error
+        raise UnprocessableEntity("Время жизни токена истекло") from error
 
     set_refresh_in_cookies(response, refresh, secret)
 
@@ -141,46 +141,46 @@ async def register_parent(
         )
 
     except FirstNameContainsNotCyrillicCharacters as error:
-        raise BadRequestError("Имя должно содержать только символы кириллицы") from error
+        raise BadRequest("Имя должно содержать только символы кириллицы") from error
 
     except LastNameContainsNotCyrillicCharacters as error:
-        raise BadRequestError("Фамилия должна содержать только символы кириллицы") from error
+        raise BadRequest("Фамилия должна содержать только символы кириллицы") from error
 
     except phone.InvalidPhoneFormat as error:
-        raise BadRequestError(f"Неверный формат телефона. Ожидался {phone.EXAMPLE}") from error
+        raise BadRequest(f"Неверный формат телефона. Ожидался {phone.EXAMPLE}") from error
 
     except InvalidEmailFormat as error:
-        raise BadRequestError("Неверный формат адреса электронной почты") from error
+        raise BadRequest("Неверный формат адреса электронной почты") from error
 
     except passwords.PasswordIsEmpty as error:
-        raise BadRequestError("Пароль не может быть пустым") from error
+        raise BadRequest("Пароль не может быть пустым") from error
 
     except passwords.PasswordIsShort as error:
-        raise BadRequestError(f"Слишком короткий пароль. Минимальная длина - {passwords.MIN_LENGTH}") from error
+        raise BadRequest(f"Слишком короткий пароль. Минимальная длина - {passwords.MIN_LENGTH}") from error
 
     except passwords.PasswordIsLong as error:
-        raise BadRequestError(f"Слишком длинный пароль. Максимальная длина - {passwords.MAX_LENGTH}") from error
+        raise BadRequest(f"Слишком длинный пароль. Максимальная длина - {passwords.MAX_LENGTH}") from error
 
     except passwords.PasswordDoesntContainUpperLetter as error:
-        raise BadRequestError("Пароль должен содержать заглавную букву") from error
+        raise BadRequest("Пароль должен содержать заглавную букву") from error
 
     except passwords.PasswordDoesntContainLowerLetter as error:
-        raise BadRequestError("Пароль должен содержать строчную букву") from error
+        raise BadRequest("Пароль должен содержать строчную букву") from error
 
     except passwords.PasswordMustContainOnlyASCIILetter as error:
-        raise BadRequestError("Пароль должен содержать кириллицу или латиницу") from error
+        raise BadRequest("Пароль должен содержать кириллицу или латиницу") from error
 
     except passwords.PasswordDoesntContainDigit as error:
-        raise BadRequestError("Пароль должен содержать цифру") from error
+        raise BadRequest("Пароль должен содержать цифру") from error
 
     except passwords.PasswordMustNotContainSpaces as error:
-        raise BadRequestError("Пароль не должен содержать пробелы") from error
+        raise BadRequest("Пароль не должен содержать пробелы") from error
 
     except passwords.PasswordContainsUnavailableSpecialCharacter as error:
-        raise BadRequestError("Пароль содержит недопустимые спецсимволы") from error
+        raise BadRequest("Пароль содержит недопустимые спецсимволы") from error
 
     except PhoneBelongsToAnotherParent as error:
-        raise BadRequestError("Телефон уже привязан к другому родителю") from error
+        raise BadRequest("Телефон уже привязан к другому родителю") from error
 
     return OKSchema()
 
@@ -199,12 +199,12 @@ async def get_user_by_access_token(
         user = await users_service.get_user_by_access_token(access_token)
 
     except SignatureIsBroken as error:
-        raise UnprocessableEntityError("Сигнатура токена повреждена") from error
+        raise UnprocessableEntity("Сигнатура токена повреждена") from error
 
     except TokenHasExpired as error:
-        raise UnprocessableEntityError("Время жизни токена истекло") from error
+        raise UnprocessableEntity("Время жизни токена истекло") from error
 
     except NotFoundUser as error:
-        raise NotFoundError("Не был найден найден пользователь, для которого был выпущен токен") from error
+        raise NotFound("Не был найден найден пользователь, для которого был выпущен токен") from error
 
     return UserOut.from_model(user)

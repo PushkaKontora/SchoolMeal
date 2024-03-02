@@ -3,7 +3,6 @@ from datetime import date
 import pytest
 
 from app.nutrition.domain.times import Day, Period, Timeline
-from app.shared.exceptions import DomainException
 
 
 RowDates = tuple[int, int]
@@ -20,7 +19,7 @@ def test_valid_period(start: int, end: int) -> None:
 
 
 def test_invalid_period() -> None:
-    with pytest.raises(DomainException):
+    with pytest.raises(ValueError):
         _create_period(2, 1)
 
 

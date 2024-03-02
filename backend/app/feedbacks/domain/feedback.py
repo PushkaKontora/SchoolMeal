@@ -5,8 +5,6 @@ from uuid import UUID, uuid4
 
 from result import Ok, Result
 
-from app.shared.exceptions import DomainException
-
 
 UserID = NewType("UserID", UUID)
 
@@ -33,10 +31,10 @@ class FeedbackText:
 
     def __post_init__(self) -> None:
         if len(self.value) == 0:
-            raise DomainException("Текст не должен быть пустым")
+            raise ValueError("Текст не должен быть пустым")
 
         if len(self.value) > self._MAX_LENGTH:
-            raise DomainException(f"Текст отзыва превысил допустимую длину - {self._MAX_LENGTH} символов")
+            raise ValueError(f"Текст отзыва превысил допустимую длину - {self._MAX_LENGTH} символов")
 
 
 @dataclass

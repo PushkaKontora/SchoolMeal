@@ -3,8 +3,6 @@ from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
 from typing import Iterable, Iterator, Optional
 
-from app.shared.exceptions import DomainException
-
 
 yekaterinburg = timezone(offset=timedelta(hours=5), name="Yekaterinburg")
 
@@ -24,7 +22,7 @@ class Period:
 
     def __post_init__(self) -> None:
         if self.start > self.end:
-            raise DomainException("Дата начала периода не может быть больше даты окончания")
+            raise ValueError("Дата начала периода не может быть больше даты окончания")
 
     def intersects(self, other: "Period") -> Optional["Period"]:
         max_start, min_end = max(self.start, other.start), min(self.end, other.end)
@@ -42,13 +40,13 @@ class Day(Period):
 
     def __gt__(self, other: object) -> bool:
         if not isinstance(other, Day):
-            raise DomainException(f"Ожидался справа операнд {Day.__name__}, но был получен {other.__class__.__name__}")
+            raise ValueError(f"Ожидался справа операнд {Day.__name__}, но был получен {other.__class__.__name__}")
 
         return self.start > other.start
 
     def __lt__(self, other: object) -> bool:
         if not isinstance(other, Day):
-            raise DomainException(f"Ожидался справа операнд {Day.__name__}, но был получен {other.__class__.__name__}")
+            raise ValueError(f"Ожидался справа операнд {Day.__name__}, но был получен {other.__class__.__name__}")
 
         return self.start < other.start
 
@@ -117,7 +115,7 @@ class Timeline(Iterable[Period]):
 
     def __contains__(self, item: object) -> bool:
         if not isinstance(item, Day):
-            raise DomainException(f"Ожидался тип {Day.__name__}, но был получен {item.__class__.__name__}")
+            raise ValueError(f"Ожидался тип {Day.__name__}, но был получен {item.__class__.__name__}")
 
         idx = self._find_intersection_index(item)
 

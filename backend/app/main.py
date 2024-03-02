@@ -6,7 +6,7 @@ from app.gateway import router
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.db.container import DatabaseContainer
 from app.shared.db.settings import AlchemySettings, DatabaseSettings
-from app.shared.fastapi.errors import default_handler
+from app.shared.fastapi.errors import default_handler, unprocessable_entity_handler, UnprocessableEntity
 from app.shared.fastapi.settings import FastAPIConfig
 from app.shared.objects_storage.local import LocalObjectsStorageSettings
 
@@ -37,5 +37,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_exception_handler(UnprocessableEntity, unprocessable_entity_handler)
 app.add_exception_handler(Exception, default_handler)
 app.include_router(router)

@@ -1,14 +1,13 @@
 from fastapi import APIRouter, status
-from result import Err
+from result import Err, as_result
 
 from app.gateway.mobile.dto import CancelForPeriodIn, MealtimeTogglerIn, ResumeOnDayIn
 from app.nutrition.application import commands
 from app.nutrition.application.errors import NotFoundPupil
 from app.nutrition.domain.pupil import PupilID
 from app.nutrition.domain.times import Day, Period
-from app.shared.exceptions import DomainException
 from app.shared.fastapi import responses
-from app.shared.fastapi.errors import NotFoundError, UnprocessableEntityError
+from app.shared.fastapi.errors import NotFound, UnprocessableEntity
 from app.shared.fastapi.schemas import OKSchema
 
 
@@ -22,17 +21,14 @@ router = APIRouter(prefix="/pupils")
     responses=responses.NOT_FOUND,
 )
 async def resume_on_day(pupil_id: str, body: ResumeOnDayIn) -> OKSchema:
-    try:
-        pupil_id_ = PupilID(pupil_id)
-        day = Day(body.day)
-    except DomainException as error:
-        raise UnprocessableEntityError(error.message)
+    id_ = as_result(ValueError)(lambda x: PupilID(x))(pupil_id).unwrap_or_raise(UnprocessableEntity)
+    day = as_result(ValueError)(lambda x: Day(x))(body.day).unwrap_or_raise(UnprocessableEntity)
 
-    resuming = await commands.resume_on_day(pupil_id=pupil_id_, day=day)
+    resuming = await commands.resume_on_day(pupil_id=id_, day=day)
 
     match resuming:
         case Err(NotFoundPupil()):
-            raise NotFoundError(f"Не найден ученик с id={pupil_id}")
+            raise NotFound(f"Не найден ученик с id={pupil_id}")
 
     return resuming.map(lambda _: OKSchema()).unwrap()
 
@@ -44,17 +40,16 @@ async def resume_on_day(pupil_id: str, body: ResumeOnDayIn) -> OKSchema:
     responses=responses.NOT_FOUND,
 )
 async def cancel_for_period(pupil_id: str, body: CancelForPeriodIn) -> OKSchema:
-    try:
-        pupil_id_ = PupilID(pupil_id)
-        period = Period(start=body.start, end=body.end)
-    except DomainException as error:
-        raise UnprocessableEntityError(error.message)
+    id_ = as_result(ValueError)(lambda x: PupilID(x))(pupil_id).unwrap_or_raise(UnprocessableEntity)
+    period = as_result(ValueError)(lambda x: Period(start=x[0], end=x[1]))((body.start, body.end)).unwrap_or_raise(
+        UnprocessableEntity
+    )
 
-    cancelling = await commands.cancel_for_period(pupil_id_, period)
+    cancelling = await commands.cancel_for_period(pupil_id=id_, period=period)
 
     match cancelling:
         case Err(NotFoundPupil()):
-            raise NotFoundError(f"Не найден ученик с id={pupil_id}")
+            raise NotFound(f"Не найден ученик с id={pupil_id}")
 
     return cancelling.map(lambda _: OKSchema()).unwrap()
 
@@ -66,21 +61,18 @@ async def cancel_for_period(pupil_id: str, body: CancelForPeriodIn) -> OKSchema:
     responses=responses.NOT_FOUND,
 )
 async def resume_or_cancel_mealtimes_at_pupil(pupil_id: str, togglers: list[MealtimeTogglerIn]) -> OKSchema:
-    try:
-        pupil_id_ = PupilID(pupil_id)
-    except DomainException as error:
-        raise UnprocessableEntityError(error.message)
+    id_ = as_result(ValueError)(lambda x: PupilID(x))(pupil_id).unwrap_or_raise(UnprocessableEntity)
 
     if not togglers:
         return OKSchema()
 
     resuming = await commands.resume_or_cancel_mealtimes_at_pupil(
-        pupil_id=pupil_id_,
+        pupil_id=id_,
         mealtimes={toggler.mealtime: toggler.enabled for toggler in togglers},
     )
 
     match resuming:
         case Err(NotFoundPupil()):
-            raise NotFoundError(f"Не найден ученик с id={pupil_id}")
+            raise NotFound(f"Не найден ученик с id={pupil_id}")
 
     return resuming.map(lambda _: OKSchema()).unwrap()

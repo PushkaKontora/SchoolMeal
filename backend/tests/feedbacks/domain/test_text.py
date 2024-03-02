@@ -1,14 +1,13 @@
 import pytest
 
 from app.feedbacks.domain.feedback import FeedbackText
-from app.shared.exceptions import DomainException
 
 
 def test_empty_text() -> None:
-    with pytest.raises(DomainException) as error:
+    with pytest.raises(ValueError) as error:
         FeedbackText("")
 
-    assert error.value.message == "Текст не должен быть пустым"
+    assert str(error.value) == "Текст не должен быть пустым"
 
 
 @pytest.mark.parametrize("length", [1, 255])
@@ -20,7 +19,7 @@ def test_correct_text(length: int) -> None:
 
 
 def test_big_text() -> None:
-    with pytest.raises(DomainException) as error:
+    with pytest.raises(ValueError) as error:
         FeedbackText("a" * 256)
 
-    assert error.value.message == "Текст отзыва превысил допустимую длину - 255 символов"
+    assert str(error.value) == "Текст отзыва превысил допустимую длину - 255 символов"
