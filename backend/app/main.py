@@ -1,16 +1,24 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.container import ApplicationContainer
+from app.db.container import AlchemyORM
 from app.db.settings import DatabaseSettings
+from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
 from app.gateway import router
+from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.fastapi.errors import UnprocessableEntity, default_handler, unprocessable_entity_handler
 from app.shared.fastapi.settings import FastAPIConfig
 
 
-container = ApplicationContainer()
-container.database_config.from_pydantic(DatabaseSettings())
-container.wire()
+alchemy = AlchemyORM()
+alchemy.config.from_pydantic(DatabaseSettings())
+
+nutrition = NutritionContainer(alchemy=alchemy)
+feedbacks = FeedbacksContainer(alchemy=alchemy)
+
+for module in [nutrition, feedbacks]:
+    module.check_dependencies()
+    module.wire()
 
 settings = FastAPIConfig()
 app = FastAPI(

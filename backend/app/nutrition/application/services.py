@@ -17,36 +17,38 @@ from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.times import Day, Period
 
 
-async def resume_on_day(pupil_id: PupilID, day: Day, pupil_dao: IPupilRepository) -> Result[None, NotFoundPupil]:
-    pupil = await pupil_dao.get_by_id(pupil_id)
+async def resume_pupil_on_day(
+    pupil_id: PupilID, day: Day, pupil_repository: IPupilRepository
+) -> Result[None, NotFoundPupil]:
+    pupil = await pupil_repository.get_by_id(pupil_id)
 
     if not pupil:
         return Err(NotFoundPupil())
 
-    pupil.resume_on_day(day)
-    await pupil_dao.merge(pupil)
+    resuming = pupil.resume_on_day(day)
+    await pupil_repository.merge(resuming.unwrap())
 
     return Ok(None)
 
 
-async def cancel_for_period(
-    pupil_id: PupilID, period: Period, pupil_dao: IPupilRepository
+async def cancel_pupil_for_period(
+    pupil_id: PupilID, period: Period, pupil_repository: IPupilRepository
 ) -> Result[None, NotFoundPupil]:
-    pupil = await pupil_dao.get_by_id(pupil_id)
+    pupil = await pupil_repository.get_by_id(pupil_id)
 
     if not pupil:
         return Err(NotFoundPupil())
 
-    pupil.cancel_for_period(period)
-    await pupil_dao.merge(pupil)
+    cancelling = pupil.cancel_for_period(period)
+    await pupil_repository.merge(cancelling.unwrap())
 
     return Ok(None)
 
 
 async def resume_or_cancel_mealtimes_at_pupil(
-    pupil_id: PupilID, mealtimes: dict[Mealtime, bool], pupil_dao: IPupilRepository
+    pupil_id: PupilID, mealtimes: dict[Mealtime, bool], pupil_repository: IPupilRepository
 ) -> Result[None, NotFoundPupil]:
-    pupil = await pupil_dao.get_by_id(pupil_id)
+    pupil = await pupil_repository.get_by_id(pupil_id)
 
     if not pupil:
         return Err(NotFoundPupil())
@@ -54,7 +56,7 @@ async def resume_or_cancel_mealtimes_at_pupil(
     for mealtime, resumed in mealtimes.items():
         (pupil.resume_on_mealtime if resumed else pupil.cancel_from_mealtime)(mealtime)
 
-    await pupil_dao.merge(pupil)
+    await pupil_repository.merge(pupil)
 
     return Ok(None)
 
@@ -63,22 +65,22 @@ async def submit_request_to_canteen(
     class_id: ClassID,
     on_date: date,
     overrides: dict[PupilID, set[Mealtime]],
-    school_class_dao: ISchoolClassRepository,
-    pupil_dao: IPupilRepository,
-    request_dao: IRequestRepository,
+    class_repository: ISchoolClassRepository,
+    pupil_repository: IPupilRepository,
+    request_repository: IRequestRepository,
 ) -> Result[None, NotFoundSchoolClass | CannotSentRequestAfterDeadline]:
-    school_class = await school_class_dao.get_by_id(class_id)
+    school_class = await class_repository.get_by_id(class_id)
 
     if not school_class:
         return Err(NotFoundSchoolClass())
 
-    pupils = await pupil_dao.all_by_class_id(class_id=school_class.id)
+    pupils = await pupil_repository.all_by_class_id(class_id=school_class.id)
     submitting = Request.submit_to_canteen(school_class, pupils, overrides, on_date)
 
     if isinstance(submitting, Err):
         return submitting
 
-    await request_dao.merge(request=submitting.unwrap())
+    await request_repository.merge(request=submitting.unwrap())
 
     return Ok(None)
 
