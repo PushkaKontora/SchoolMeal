@@ -1,29 +1,56 @@
-from datetime import date
+from contextlib import nullcontext
+from datetime import date, datetime, time
 
+import freezegun
 import pytest
 
-from app.nutrition.domain.times import Day, Period, Timeline
+from app.nutrition.domain.time import (
+    Day,
+    Period,
+    Timeline,
+    get_submitting_deadline_within_day,
+    has_submitting_deadline_come,
+    yekaterinburg,
+)
 
 
-RowDates = tuple[int, int]
+RowPeriod = tuple[int, int]
 
 
-@pytest.mark.parametrize(["start", "end"], [[2, 2], [2, 3]])
-def test_valid_period(start: int, end: int) -> None:
+def test_get_submitting_deadline_within_day() -> None:
+    day = date(2023, 10, 11)
+
+    deadline = get_submitting_deadline_within_day(day)
+
+    assert deadline.date() == day
+    assert deadline.timetz() == time(hour=22, minute=0, second=0, tzinfo=yekaterinburg)
+
+
+@pytest.mark.parametrize(
+    ["time_", "is_deadline"],
+    [
+        (time(hour=19, minute=59), False),
+        (time(hour=22, minute=0), True),
+        (time(hour=22, minute=0, second=1), True),
+    ],
+)
+def test_has_deadline_submitting_come(time_: time, is_deadline: bool) -> None:
+    with freezegun.freeze_time(datetime.combine(date.today(), time_, tzinfo=yekaterinburg)):
+        assert has_submitting_deadline_come(date.today()) == is_deadline
+
+
+@pytest.mark.parametrize(["start", "end", "is_ok"], [[2, 1, False], [2, 2, True], [2, 3, True]])
+def test_period(start: int, end: int, is_ok: bool) -> None:
     starts_at, ends_at = _create_date(start), _create_date(end)
 
-    period = Period(start=starts_at, end=ends_at)
+    with nullcontext() if is_ok else pytest.raises(ValueError):
+        period = Period(start=starts_at, end=ends_at)
 
-    assert period.start == starts_at
-    assert period.end == ends_at
-
-
-def test_invalid_period() -> None:
-    with pytest.raises(ValueError):
-        _create_period(2, 1)
+        assert period.start == starts_at
+        assert period.end == ends_at
 
 
-def test_valid_day() -> None:
+def test_day() -> None:
     day = Day(date(2023, 10, 23))
 
     assert day.start == day.end
@@ -53,7 +80,18 @@ def test_day_le() -> None:
     assert Day(date(2023, 1, 2)) <= Day(date(2023, 1, 3))
 
 
-RowPeriod = tuple[int, int]
+@pytest.mark.parametrize(
+    ["start", "end", "expected"],
+    [
+        (1, 1, [1]),
+        (1, 3, [1, 2, 3]),
+    ],
+)
+def test_period_iterator(start: int, end: int, expected: list[int]) -> None:
+    period = _create_period(start_day=start, end_day=end)
+
+    for i, day in enumerate(period):
+        assert day.day == expected[i]
 
 
 @pytest.mark.parametrize(
@@ -139,7 +177,7 @@ def _create_period(start_day: int, end_day: int) -> Period:
     )
 
 
-def _to_row_period(period: Period | None) -> RowDates | None:
+def _to_row_period(period: Period | None) -> RowPeriod | None:
     return (period.start.day, period.end.day) if period else None
 
 

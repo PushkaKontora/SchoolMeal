@@ -14,7 +14,7 @@ from app.nutrition.domain.request import Request, Status
 from app.nutrition.domain.school import School, SchoolName
 from app.nutrition.domain.school_class import ClassID, Literal, Number, SchoolClass
 from app.nutrition.domain.teacher import Teacher, TeacherID
-from app.nutrition.domain.times import Period, Timeline
+from app.nutrition.domain.time import Period, Timeline
 
 
 class NutritionBase(DeclarativeBase, DictMixin):

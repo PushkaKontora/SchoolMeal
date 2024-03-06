@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import date, datetime, time
+from datetime import date, time
 from enum import IntEnum, unique
 
 from result import Err, Ok, Result
@@ -7,7 +7,7 @@ from result import Err, Ok, Result
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import PupilID
 from app.nutrition.domain.school_class import ClassID
-from app.nutrition.domain.times import combine, now, yekaterinburg
+from app.nutrition.domain.time import get_submitting_deadline_within_day, has_submitting_deadline_come
 
 
 class CannotSubmitAfterDeadline:
@@ -34,13 +34,9 @@ class Request:
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
-    @property
-    def deadline(self) -> datetime:
-        return combine(self.on_date, time(hour=22, tzinfo=yekaterinburg))
-
     def submit_manually(self) -> Result["Request", CannotSubmitAfterDeadline]:
-        if now() >= self.deadline:
-            return Err(CannotSubmitAfterDeadline(deadline=self.deadline.timetz()))
+        if has_submitting_deadline_come(self.on_date):
+            return Err(CannotSubmitAfterDeadline(deadline=get_submitting_deadline_within_day(self.on_date).timetz()))
 
         self.status = Status.SUBMITTED
 

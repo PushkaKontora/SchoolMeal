@@ -6,7 +6,7 @@ from app.nutrition.domain.personal_info import Email, FullName, Phone
 from app.nutrition.domain.pupil import Pupil, PupilID
 from app.nutrition.domain.school_class import ClassID, Literal, Number, SchoolClass
 from app.nutrition.domain.teacher import Teacher, TeacherID
-from app.nutrition.domain.times import Timeline
+from app.nutrition.domain.time import Timeline
 
 
 @pytest.fixture

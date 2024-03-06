@@ -9,21 +9,25 @@ from app.nutrition.application.dao import (
 from app.nutrition.application.errors import NotFoundParent, NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.parent import ParentID, PupilIsAlreadyAttached
-from app.nutrition.domain.pupil import PupilID
+from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
 from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request, Status
 from app.nutrition.domain.school_class import ClassID
-from app.nutrition.domain.times import Day, Period
+from app.nutrition.domain.time import Day, Period
 
 
 async def resume_pupil_on_day(
     pupil_id: PupilID, day: Day, pupil_repository: IPupilRepository
-) -> Result[None, NotFoundPupil]:
+) -> Result[None, NotFoundPupil | CannotResumeAfterDeadline]:
     pupil = await pupil_repository.get_by_id(pupil_id)
 
     if not pupil:
         return Err(NotFoundPupil())
 
     resuming = pupil.resume_on_day(day)
+
+    if isinstance(resuming, Err):
+        return resuming
+
     await pupil_repository.merge(resuming.unwrap())
 
     return Ok(None)
@@ -31,13 +35,17 @@ async def resume_pupil_on_day(
 
 async def cancel_pupil_for_period(
     pupil_id: PupilID, period: Period, pupil_repository: IPupilRepository
-) -> Result[None, NotFoundPupil]:
+) -> Result[None, NotFoundPupil | CannotCancelAfterDeadline]:
     pupil = await pupil_repository.get_by_id(pupil_id)
 
     if not pupil:
         return Err(NotFoundPupil())
 
     cancelling = pupil.cancel_for_period(period)
+
+    if isinstance(cancelling, Err):
+        return cancelling
+
     await pupil_repository.merge(cancelling.unwrap())
 
     return Ok(None)

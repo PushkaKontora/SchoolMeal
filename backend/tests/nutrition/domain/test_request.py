@@ -5,7 +5,7 @@ import pytest
 
 from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request, Status
 from app.nutrition.domain.school_class import ClassID
-from app.nutrition.domain.times import yekaterinburg
+from app.nutrition.domain.time import yekaterinburg
 
 
 @pytest.mark.parametrize("now_", [time(hour=21, tzinfo=yekaterinburg), time(hour=21, second=59, tzinfo=yekaterinburg)])

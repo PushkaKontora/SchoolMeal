@@ -11,12 +11,16 @@ def now() -> datetime:
     return datetime.now(tz=yekaterinburg)
 
 
-def combine(day: date, time_: time) -> datetime:
-    return datetime.combine(day, time_, tzinfo=yekaterinburg)
+def get_submitting_deadline_within_day(day: date) -> datetime:
+    return datetime.combine(day, time(hour=22, tzinfo=yekaterinburg))
+
+
+def has_submitting_deadline_come(day: date) -> bool:
+    return now() >= get_submitting_deadline_within_day(day)
 
 
 @dataclass(frozen=True, eq=True)
-class Period:
+class Period(Iterable[date]):
     start: date
     end: date
 
@@ -31,6 +35,13 @@ class Period:
 
     def __repr__(self) -> str:
         return f"({self.start.strftime('%d.%m.%Y')}, {self.end.strftime('%d.%m.%Y')})"
+
+    def __iter__(self) -> Iterator[date]:
+        current = self.start
+
+        while current <= self.end:
+            yield current
+            current += timedelta(days=1)
 
 
 @dataclass(frozen=True, eq=True)

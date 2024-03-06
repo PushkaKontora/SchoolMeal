@@ -1,11 +1,9 @@
-from abc import ABC
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass(frozen=True)
-class APIError(ABC):
+class APIError(BaseModel):
     message: str
 
 
-class ValidationError(APIError):
+class DomainValidationError(APIError):
     pass

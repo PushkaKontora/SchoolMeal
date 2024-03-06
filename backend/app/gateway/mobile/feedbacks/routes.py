@@ -6,7 +6,7 @@ from app.feedbacks.api.dto import LeaveFeedbackAboutCanteenIn
 from app.gateway import responses
 from app.gateway.errors import UnprocessableEntity
 from app.gateway.mobile.feedbacks.dto import LeaveFeedbackAboutCanteenBody
-from app.shared.api.errors import ValidationError
+from app.shared.api.errors import DomainValidationError
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.schemas import OKSchema
 
@@ -26,7 +26,7 @@ async def leave_feedback_about_canteen(
     command = LeaveFeedbackAboutCanteenIn(user_id=authorized_user.id, text=body.text)
 
     match await feedbacks_api.leave_feedback_about_canteen(command):
-        case Err(ValidationError(message=message)):
+        case Err(DomainValidationError(message=message)):
             raise UnprocessableEntity(message)
 
     return OKSchema()

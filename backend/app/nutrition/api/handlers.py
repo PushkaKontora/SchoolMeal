@@ -9,7 +9,6 @@ from app.nutrition.api.dto import (
     SubmitRequestToCanteenIn,
     UpdateMealtimesAtPupilIn,
 )
-from app.nutrition.api.errors import NotFoundSchoolClassWithID
 from app.nutrition.application import services
 from app.nutrition.application.dao import (
     IParentRepository,
@@ -19,23 +18,26 @@ from app.nutrition.application.dao import (
 )
 from app.nutrition.application.errors import NotFoundParent, NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain.parent import ParentID, PupilIsAlreadyAttached
-from app.nutrition.domain.pupil import PupilID
+from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
 from app.nutrition.domain.request import CannotSubmitAfterDeadline
 from app.nutrition.domain.school_class import ClassID
-from app.nutrition.domain.times import Day, Period
+from app.nutrition.domain.time import Day, Period
 from app.nutrition.infrastructure.dependencies import NutritionContainer
-from app.shared.api.errors import ValidationError
+from app.shared.api.errors import DomainValidationError
 
 
 @inject
 async def resume_pupil_on_day(
     command: ResumePupilOnDayIn, pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository]
-) -> Result[None, errors.NotFoundPupilWithID]:
+) -> Result[None, errors.NotFoundPupilWithID | errors.CannotResumeAfterDeadline]:
     pupil_id, day = PupilID(command.pupil_id), Day(command.day)
 
     match await services.resume_pupil_on_day(pupil_id, day, pupil_repository):
         case Err(NotFoundPupil()):
             return Err(errors.NotFoundPupilWithID(pupil_id.value))
+
+        case Err(CannotResumeAfterDeadline(deadline=deadline)):
+            return Err(errors.CannotResumeAfterDeadline(deadline))
 
     return Ok(None)
 
@@ -44,16 +46,19 @@ async def resume_pupil_on_day(
 async def cancel_pupil_for_period(
     command: CancelPupilForPeriodIn,
     pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
-) -> Result[None, ValidationError | errors.NotFoundPupilWithID]:
+) -> Result[None, DomainValidationError | errors.NotFoundPupilWithID | errors.CannotCancelAfterDeadline]:
     try:
         pupil_id = PupilID(command.pupil_id)
         period = Period(start=command.start, end=command.end)
     except ValueError as error:
-        return Err(ValidationError(str(error)))
+        return Err(DomainValidationError(message=str(error)))
 
     match await services.cancel_pupil_for_period(pupil_id, period, pupil_repository):
         case Err(NotFoundPupil()):
             return Err(errors.NotFoundPupilWithID(pupil_id.value))
+
+        case Err(CannotCancelAfterDeadline(deadline=deadline)):
+            return Err(errors.CannotCancelAfterDeadline(deadline))
 
     return Ok(None)
 
@@ -90,7 +95,7 @@ async def submit_request_to_canteen(
         class_id, day, overrides, class_repository, pupil_repository, request_repository
     ):
         case Err(NotFoundSchoolClass()):
-            return Err(NotFoundSchoolClassWithID(class_id.value))
+            return Err(errors.NotFoundSchoolClassWithID(class_id.value))
 
         case Err(CannotSubmitAfterDeadline(deadline=deadline)):
             return Err(errors.CannotSentRequestAfterDeadline(day.value, deadline))

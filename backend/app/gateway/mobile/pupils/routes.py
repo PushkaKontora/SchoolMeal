@@ -11,8 +11,14 @@ from app.nutrition.api.dto import (
     ResumePupilOnDayIn,
     UpdateMealtimesAtPupilIn,
 )
-from app.nutrition.api.errors import NotFoundParentWithID, NotFoundPupilWithID, PupilIsAlreadyAttached
-from app.shared.api.errors import ValidationError
+from app.nutrition.api.errors import (
+    CannotCancelAfterDeadline,
+    CannotResumeAfterDeadline,
+    NotFoundParentWithID,
+    NotFoundPupilWithID,
+    PupilIsAlreadyAttached,
+)
+from app.shared.api.errors import DomainValidationError
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.schemas import OKSchema
 
@@ -33,6 +39,9 @@ async def resume_pupil_on_day(pupil_id: str, body: ResumePupilOnDayBody) -> OKSc
         case Err(NotFoundPupilWithID(message=message)):
             raise NotFound(message)
 
+        case Err(CannotResumeAfterDeadline(message=message)):
+            raise BadRequest(message)
+
     return OKSchema()
 
 
@@ -46,11 +55,14 @@ async def cancel_pupil_for_period(pupil_id: str, body: CancelPupilForPeriodBody)
     command = CancelPupilForPeriodIn(pupil_id=pupil_id, start=body.start, end=body.end)
 
     match nutrition_api.cancel_pupil_for_period(command):
-        case Err(ValidationError(message=message)):
+        case Err(DomainValidationError(message=message)):
             raise UnprocessableEntity(message)
 
         case Err(NotFoundPupilWithID(message=message)):
             raise NotFound(message)
+
+        case Err(CannotCancelAfterDeadline(message=message)):
+            raise BadRequest(message)
 
     return OKSchema()
 
