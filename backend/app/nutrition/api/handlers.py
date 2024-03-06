@@ -20,7 +20,7 @@ from app.nutrition.application.dao import (
 from app.nutrition.application.errors import NotFoundParent, NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain.parent import ParentID, PupilIsAlreadyAttached
 from app.nutrition.domain.pupil import PupilID
-from app.nutrition.domain.request import CannotSentRequestAfterDeadline
+from app.nutrition.domain.request import CannotSubmitAfterDeadline
 from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.times import Day, Period
 from app.nutrition.infrastructure.dependencies import NutritionContainer
@@ -84,16 +84,16 @@ async def submit_request_to_canteen(
     overrides = {
         PupilID(override.id): set(dto.to_model() for dto in override.mealtimes) for override in command.overrides
     }
-    on_date = command.on_date
+    day = Day(command.on_date)
 
     match await services.submit_request_to_canteen(
-        class_id, on_date, overrides, class_repository, pupil_repository, request_repository
+        class_id, day, overrides, class_repository, pupil_repository, request_repository
     ):
         case Err(NotFoundSchoolClass()):
             return Err(NotFoundSchoolClassWithID(class_id.value))
 
-        case Err(CannotSentRequestAfterDeadline(deadline=deadline)):
-            return Err(errors.CannotSentRequestAfterDeadline(on_date, deadline))
+        case Err(CannotSubmitAfterDeadline(deadline=deadline)):
+            return Err(errors.CannotSentRequestAfterDeadline(day.value, deadline))
 
     return Ok(None)
 

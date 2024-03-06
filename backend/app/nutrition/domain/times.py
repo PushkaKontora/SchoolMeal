@@ -38,17 +38,21 @@ class Day(Period):
     def __init__(self, value: date) -> None:
         super().__init__(start=value, end=value)
 
+    @property
+    def value(self) -> date:
+        return self.start
+
     def __gt__(self, other: object) -> bool:
         if not isinstance(other, Day):
             raise ValueError(f"Ожидался справа операнд {Day.__name__}, но был получен {other.__class__.__name__}")
 
-        return self.start > other.start
+        return self.value > other.value
 
     def __lt__(self, other: object) -> bool:
         if not isinstance(other, Day):
             raise ValueError(f"Ожидался справа операнд {Day.__name__}, но был получен {other.__class__.__name__}")
 
-        return self.start < other.start
+        return self.value < other.value
 
     def __le__(self, other: object) -> bool:
         return not self.__gt__(other)

@@ -1,18 +1,24 @@
 from dataclasses import dataclass
 from datetime import date, datetime, time
-from typing import Iterable
+from enum import IntEnum, unique
 
 from result import Err, Ok, Result
 
 from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.pupil import Pupil, PupilID
-from app.nutrition.domain.school_class import ClassID, SchoolClass
-from app.nutrition.domain.times import Day, combine, now
+from app.nutrition.domain.pupil import PupilID
+from app.nutrition.domain.school_class import ClassID
+from app.nutrition.domain.times import combine, now, yekaterinburg
 
 
-class CannotSentRequestAfterDeadline:
+class CannotSubmitAfterDeadline:
     def __init__(self, deadline: time) -> None:
         self.deadline = deadline
+
+
+@unique
+class Status(IntEnum):
+    PREFILLED = 0
+    SUBMITTED = 1
 
 
 @dataclass
@@ -20,7 +26,7 @@ class Request:
     class_id: ClassID
     on_date: date
     mealtimes: dict[Mealtime, set[PupilID]]
-    created_at: datetime
+    status: Status
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, Request) and (self.class_id, self.on_date) == (other.class_id, other.on_date)
@@ -28,32 +34,14 @@ class Request:
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
-    @classmethod
-    def submit_to_canteen(
-        cls, school_class: SchoolClass, pupils: Iterable[Pupil], overrides: dict[PupilID, set[Mealtime]], on_date: date
-    ) -> Result["Request", CannotSentRequestAfterDeadline]:
-        deadline = combine(on_date, time(hour=22))
+    @property
+    def deadline(self) -> datetime:
+        return combine(self.on_date, time(hour=22, tzinfo=yekaterinburg))
 
-        if now() >= deadline:
-            return Err(CannotSentRequestAfterDeadline(deadline=deadline.timetz()))
+    def submit_manually(self) -> Result["Request", CannotSubmitAfterDeadline]:
+        if now() >= self.deadline:
+            return Err(CannotSubmitAfterDeadline(deadline=self.deadline.timetz()))
 
-        mealtimes: dict[Mealtime, set[PupilID]] = {mealtime_: set() for mealtime_ in school_class.mealtimes}
+        self.status = Status.SUBMITTED
 
-        for pupil in pupils:
-            for mealtime, request in mealtimes.items():
-                eats = pupil.does_eat(day=Day(on_date), mealtime=mealtime)
-
-                if pupil.id in overrides:
-                    eats = mealtime in overrides[pupil.id]
-
-                if eats:
-                    request.add(pupil.id)
-
-        return Ok(
-            cls(
-                class_id=school_class.id,
-                on_date=on_date,
-                mealtimes=mealtimes,
-                created_at=now(),
-            )
-        )
+        return Ok(self)

@@ -1,5 +1,3 @@
-from datetime import date
-
 from result import Err, Ok, Result
 
 from app.nutrition.application.dao import (
@@ -12,7 +10,7 @@ from app.nutrition.application.errors import NotFoundParent, NotFoundPupil, NotF
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.parent import ParentID, PupilIsAlreadyAttached
 from app.nutrition.domain.pupil import PupilID
-from app.nutrition.domain.request import CannotSentRequestAfterDeadline, Request
+from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request, Status
 from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.times import Day, Period
 
@@ -63,26 +61,56 @@ async def resume_or_cancel_mealtimes_at_pupil(
 
 async def submit_request_to_canteen(
     class_id: ClassID,
-    on_date: date,
+    day: Day,
     overrides: dict[PupilID, set[Mealtime]],
     class_repository: ISchoolClassRepository,
     pupil_repository: IPupilRepository,
     request_repository: IRequestRepository,
-) -> Result[None, NotFoundSchoolClass | CannotSentRequestAfterDeadline]:
+) -> Result[None, NotFoundSchoolClass | CannotSubmitAfterDeadline]:
+    prefilling = await prefill_request(class_id, day, overrides, class_repository, pupil_repository)
+    submitting = prefilling.and_then(lambda request: request.submit_manually())
+
+    if isinstance(submitting, Err):
+        return submitting
+
+    await request_repository.merge(submitting.unwrap())
+
+    return Ok(None)
+
+
+async def prefill_request(
+    class_id: ClassID,
+    day: Day,
+    overrides: dict[PupilID, set[Mealtime]],
+    class_repository: ISchoolClassRepository,
+    pupil_repository: IPupilRepository,
+) -> Result[Request, NotFoundSchoolClass]:
     school_class = await class_repository.get_by_id(class_id)
 
     if not school_class:
         return Err(NotFoundSchoolClass())
 
     pupils = await pupil_repository.all_by_class_id(class_id=school_class.id)
-    submitting = Request.submit_to_canteen(school_class, pupils, overrides, on_date)
 
-    if isinstance(submitting, Err):
-        return submitting
+    mealtimes: dict[Mealtime, set[PupilID]] = {mealtime_: set() for mealtime_ in school_class.mealtimes}
+    for pupil in pupils:
+        for mealtime, request_ in mealtimes.items():
+            eats = pupil.does_eat(day, mealtime)
 
-    await request_repository.merge(request=submitting.unwrap())
+            if pupil.id in overrides:
+                eats = mealtime in overrides[pupil.id]
 
-    return Ok(None)
+            if eats:
+                request_.add(pupil.id)
+
+    return Ok(
+        Request(
+            class_id=school_class.id,
+            on_date=day.value,
+            mealtimes=mealtimes,
+            status=Status.PREFILLED,
+        )
+    )
 
 
 async def attach_child_to_parent(

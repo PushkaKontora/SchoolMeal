@@ -1,7 +1,7 @@
-from datetime import date, datetime
+from datetime import date
 from uuid import UUID
 
-from sqlalchemy import ARRAY, Date, DateTime, ForeignKey, Integer, MetaData, String
+from sqlalchemy import ARRAY, Date, ForeignKey, Integer, MetaData, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -10,7 +10,7 @@ from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.parent import Parent, ParentID
 from app.nutrition.domain.personal_info import Email, FullName, Phone
 from app.nutrition.domain.pupil import Pupil, PupilID
-from app.nutrition.domain.request import Request
+from app.nutrition.domain.request import Request, Status
 from app.nutrition.domain.school import School, SchoolName
 from app.nutrition.domain.school_class import ClassID, Literal, Number, SchoolClass
 from app.nutrition.domain.teacher import Teacher, TeacherID
@@ -179,15 +179,15 @@ class RequestDB(NutritionBase):
     class_id: Mapped[UUID] = mapped_column(ForeignKey(SchoolClassDB.id), primary_key=True)
     on_date: Mapped[date] = mapped_column(primary_key=True)
     mealtimes: Mapped[dict[int, list[str]]] = mapped_column(JSONB)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    status: Mapped[int] = mapped_column()
 
-    def __init__(self, class_id: UUID, on_date: date, mealtimes: dict[int, list[str]], created_at: datetime) -> None:
+    def __init__(self, class_id: UUID, on_date: date, mealtimes: dict[int, list[str]], status: int) -> None:
         super().__init__()
 
         self.class_id = class_id
         self.on_date = on_date
         self.mealtimes = mealtimes
-        self.created_at = created_at
+        self.status = status
 
     def to_model(self) -> Request:
         return Request(
@@ -197,7 +197,7 @@ class RequestDB(NutritionBase):
                 Mealtime(mealtime): {PupilID(id_) for id_ in pupil_ids}
                 for mealtime, pupil_ids in self.mealtimes.items()
             },
-            created_at=self.created_at,
+            status=Status(self.status),
         )
 
     @classmethod
@@ -208,7 +208,7 @@ class RequestDB(NutritionBase):
             mealtimes={
                 mealtime.value: [id_.value for id_ in pupil_ids] for mealtime, pupil_ids in request.mealtimes.items()
             },
-            created_at=request.created_at,
+            status=request.status.value,
         )
 
 

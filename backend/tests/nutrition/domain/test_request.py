@@ -3,35 +3,22 @@ from datetime import date, datetime, time
 import freezegun
 import pytest
 
-from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.personal_info import FullName
-from app.nutrition.domain.pupil import Pupil, PupilID
-from app.nutrition.domain.request import CannotSentRequestAfterDeadline, Request
-from app.nutrition.domain.school_class import ClassID, SchoolClass
-from app.nutrition.domain.times import Day, Period, Timeline, now, yekaterinburg
+from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request, Status
+from app.nutrition.domain.school_class import ClassID
+from app.nutrition.domain.times import yekaterinburg
 
 
 @pytest.mark.parametrize("now_", [time(hour=21, tzinfo=yekaterinburg), time(hour=21, second=59, tzinfo=yekaterinburg)])
-def test_submitting_to_canteen_before_deadline(school_class: SchoolClass, now_: time) -> None:
-    with freezegun.freeze_time(datetime.combine(date(2023, 10, 1), now_)):
-        not_feeding = _create_pupil(class_id=school_class.id, mealtimes={Mealtime.BREAKFAST}, periods=[])
-        period_not_feeding = _create_pupil(class_id=school_class.id, mealtimes={Mealtime.DINNER}, periods=[Day.today()])
-        outsider = _create_pupil(class_id=ClassID.generate(), mealtimes={Mealtime.DINNER}, periods=[])
-        feeding = _create_pupil(class_id=school_class.id, mealtimes={Mealtime.DINNER}, periods=[])
+def test_submitting_manually_to_canteen_before_deadline(now_: time) -> None:
+    on_date = date(2023, 10, 1)
 
-        submitting = Request.submit_to_canteen(
-            school_class=school_class,
-            pupils=[feeding, outsider, not_feeding, period_not_feeding],
-            overrides={},
-            on_date=now().date(),
-        )
+    with freezegun.freeze_time(datetime.combine(on_date, now_)):
+        request = _create_request(on_date)
+
+        submitting = request.submit_manually()
+
         assert submitting.is_ok()
-
-        request = submitting.unwrap()
-        assert request.class_id == school_class.id
-        assert request.mealtimes == {Mealtime.DINNER: {feeding.id, outsider.id}}
-        assert request.on_date == now().date()
-        assert request.created_at == now()
+        assert submitting.unwrap().status is Status.SUBMITTED
 
 
 @pytest.mark.parametrize(
@@ -42,43 +29,19 @@ def test_submitting_to_canteen_before_deadline(school_class: SchoolClass, now_: 
         time(hour=23, tzinfo=yekaterinburg),
     ],
 )
-def test_submitting_to_canteen_after_deadline(school_class: SchoolClass, now_: time) -> None:
-    with freezegun.freeze_time(datetime.combine(date(2023, 10, 1), now_)):
-        pupil = _create_pupil(class_id=school_class.id, mealtimes={Mealtime.DINNER}, periods=[])
+def test_submitting_manually_to_canteen_after_deadline(now_: time) -> None:
+    on_date = date(2023, 10, 1)
 
-        submitting = Request.submit_to_canteen(
-            school_class=school_class, pupils=[pupil], overrides={}, on_date=now().date()
-        )
+    with freezegun.freeze_time(datetime.combine(on_date, now_)):
+        request = _create_request(on_date)
+
+        submitting = request.submit_manually()
+
         assert submitting.is_err()
+        assert isinstance(submitting.unwrap_err(), CannotSubmitAfterDeadline)
 
-        error = submitting.unwrap_err()
-        assert isinstance(error, CannotSentRequestAfterDeadline)
-        assert error.deadline == time(hour=22, tzinfo=yekaterinburg)
-
-
-def test_submitting_to_canteen_with_overrides(school_class: SchoolClass) -> None:
-    not_feeding = _create_pupil(class_id=school_class.id, mealtimes=set(), periods=[])
-    included = _create_pupil(class_id=school_class.id, mealtimes={Mealtime.DINNER}, periods=[])
-    excluded = _create_pupil(class_id=school_class.id, mealtimes={Mealtime.DINNER}, periods=[])
-
-    submitting = Request.submit_to_canteen(
-        school_class=school_class,
-        pupils=[included, excluded, not_feeding],
-        overrides={not_feeding.id: set(Mealtime), excluded.id: set()},
-        on_date=date(3000, 1, 1),
-    )
-    assert submitting.is_ok()
-
-    request = submitting.unwrap()
-    assert request.mealtimes == {Mealtime.DINNER: {not_feeding.id, included.id}}
+        assert request.status is Status.PREFILLED
 
 
-def _create_pupil(class_id: ClassID, mealtimes: set[Mealtime], periods: list[Period]) -> Pupil:
-    return Pupil(
-        id=PupilID.generate(),
-        class_id=class_id,
-        name=FullName.create(last="Петров", first="Василий"),
-        mealtimes=mealtimes,
-        preferential_until=None,
-        cancellation=Timeline.from_iterable(periods),
-    )
+def _create_request(on_date: date) -> Request:
+    return Request(class_id=ClassID.generate(), on_date=on_date, mealtimes={}, status=Status.PREFILLED)
