@@ -3,12 +3,12 @@ from uuid import UUID
 from fastapi import APIRouter, status
 from result import Err
 
+from app.gateway import responses
+from app.gateway.errors import BadRequest, NotFound
 from app.gateway.web.requests.dto import SubmitRequestBody
 from app.nutrition.api import handlers as nutrition_api
 from app.nutrition.api.dto import SubmitRequestToCanteenIn
 from app.nutrition.api.errors import CannotSentRequestAfterDeadline, NotFoundSchoolClassWithID
-from app.shared.fastapi import responses
-from app.shared.fastapi.errors import BadRequest, NotFound
 from app.shared.fastapi.schemas import OKSchema
 
 

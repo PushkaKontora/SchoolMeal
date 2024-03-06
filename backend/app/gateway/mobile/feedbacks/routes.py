@@ -3,11 +3,11 @@ from result import Err
 
 from app.feedbacks.api import handlers as feedbacks_api
 from app.feedbacks.api.dto import LeaveFeedbackAboutCanteenIn
+from app.gateway import responses
+from app.gateway.errors import UnprocessableEntity
 from app.gateway.mobile.feedbacks.dto import LeaveFeedbackAboutCanteenBody
 from app.shared.api.errors import ValidationError
-from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
-from app.shared.fastapi.errors import UnprocessableEntity
 from app.shared.fastapi.schemas import OKSchema
 
 

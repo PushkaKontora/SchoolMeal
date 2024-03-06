@@ -5,8 +5,8 @@ from app.db.container import AlchemyORM
 from app.db.settings import DatabaseSettings
 from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
 from app.gateway import router
+from app.gateway.errors import UnprocessableEntity, default_handler, unprocessable_entity_handler
 from app.nutrition.infrastructure.dependencies import NutritionContainer
-from app.shared.fastapi.errors import UnprocessableEntity, default_handler, unprocessable_entity_handler
 from app.shared.fastapi.settings import FastAPIConfig
 
 

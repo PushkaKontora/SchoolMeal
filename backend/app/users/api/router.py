@@ -1,8 +1,8 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Response, status
 
-from app.shared.fastapi import responses
-from app.shared.fastapi.errors import BadRequest, Forbidden, NotFound, UnprocessableEntity
+from app.gateway import responses
+from app.gateway.errors import BadRequest, Forbidden, NotFound, UnprocessableEntity
 from app.shared.fastapi.schemas import AuthorizedUser, OKSchema
 from app.users.api.schemas import AccessTokenOut, CredentialIn, ParentRegistrationForm, UserOut
 from app.users.api.tokens import AccessTokenDep, RefreshTokenDep, delete_refresh_from_cookies, set_refresh_in_cookies

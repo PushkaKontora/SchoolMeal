@@ -1,6 +1,8 @@
 from fastapi import APIRouter, status
 from result import Err
 
+from app.gateway import responses
+from app.gateway.errors import BadRequest, NotFound, UnprocessableEntity
 from app.gateway.mobile.pupils.dto import CancelPupilForPeriodBody, ResumePupilOnDayBody, UpdateMealtimesBody
 from app.nutrition.api import handlers as nutrition_api
 from app.nutrition.api.dto import (
@@ -11,9 +13,7 @@ from app.nutrition.api.dto import (
 )
 from app.nutrition.api.errors import NotFoundParentWithID, NotFoundPupilWithID, PupilIsAlreadyAttached
 from app.shared.api.errors import ValidationError
-from app.shared.fastapi import responses
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
-from app.shared.fastapi.errors import BadRequest, NotFound, UnprocessableEntity
 from app.shared.fastapi.schemas import OKSchema
 
 
