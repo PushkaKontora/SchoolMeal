@@ -12,6 +12,7 @@ class ResumePupilOnDayBody(BaseModel):
 class CancelPupilForPeriodBody(BaseModel):
     start: date
     end: date
+    reason: str | None
 
 
 class UpdateMealtimesBody(BaseModel):
