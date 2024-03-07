@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.feedbacks.application.dao.feedbacks import IFeedbackRepository
 from app.feedbacks.domain.feedback import Feedback
-from app.feedbacks.infrastructure.db.models import FeedbackDB
+from app.feedbacks.infrastructure.db import FeedbackDB
 
 
 class AlchemyFeedbackRepository(IFeedbackRepository):
