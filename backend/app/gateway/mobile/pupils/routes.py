@@ -44,7 +44,7 @@ async def resume_pupil_on_day(pupil_id: str, body: ResumePupilOnDayBody) -> OKSc
     responses=responses.UNPROCESSABLE_ENTITY | responses.NOT_FOUND,
 )
 async def cancel_pupil_for_period(pupil_id: str, body: CancelPupilForPeriodBody) -> OKSchema:
-    match nutrition_api.cancel_pupil_for_period(pupil_id=pupil_id, start=body.start, end=body.end):
+    match await nutrition_api.cancel_pupil_for_period(pupil_id=pupil_id, start=body.start, end=body.end):
         case Err(DomainValidationError(message=message)):
             raise UnprocessableEntity(message)
 
@@ -64,7 +64,7 @@ async def cancel_pupil_for_period(pupil_id: str, body: CancelPupilForPeriodBody)
     responses=responses.NOT_FOUND,
 )
 async def update_mealtimes_at_pupil(pupil_id: str, body: UpdateMealtimesBody) -> OKSchema:
-    match nutrition_api.update_mealtimes_at_pupil(pupil_id=pupil_id, mealtimes=body.mealtimes):
+    match await nutrition_api.update_mealtimes_at_pupil(pupil_id=pupil_id, mealtimes=body.mealtimes):
         case Err(NotFoundPupilWithID(message=message)):
             raise NotFound(message)
 
@@ -78,7 +78,7 @@ async def update_mealtimes_at_pupil(pupil_id: str, body: UpdateMealtimesBody) ->
     responses=responses.BAD_REQUEST,
 )
 async def attach_pupil_to_parent(pupil_id: str, authorized_user: AuthorizedUserDep) -> OKSchema:
-    match nutrition_api.attach_pupil_to_parent(parent_id=authorized_user.id, pupil_id=pupil_id):
+    match await nutrition_api.attach_pupil_to_parent(parent_id=authorized_user.id, pupil_id=pupil_id):
         case Err(NotFoundParentWithID(message=message)):
             raise NotFound(message)
 
