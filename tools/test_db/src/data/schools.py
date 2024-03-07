@@ -74,13 +74,13 @@ def _generate_school_classes() -> list[SchoolClass]:
     mealtimes = it.cycle([*it.combinations(Mealtime, r=3), *it.combinations(Mealtime, r=2)])
 
     return [
-        SchoolClass(id=str(uuid4()), number=i, literal="A", pupils=_generate_pupils(), mealtimes=set(next(mealtimes)))
+        SchoolClass(id=str(uuid4()), number=i, literal="И", pupils=_generate_pupils(), mealtimes=set(next(mealtimes)))
         for i in range(1, 12)
     ]
 
 
 def _generate_pupils(amount: int = 5) -> list[Pupil]:
-    last_names = ("Петров", "Cидоров", "Перов", "Самков", "Лыков", "Голендухин")
+    last_names = ("Петров", "Сидоров", "Перов", "Самков", "Лыков", "Голендухин")
     first_names = ("Василий", "Дмитрий", "Илья", "Никита", "Владимир", "Пётр")
     patronymics = ("Евгеньевич", "Юрьевич", "Дмитриевич", "Владимирович", None)
 
