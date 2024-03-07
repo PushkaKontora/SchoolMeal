@@ -3,7 +3,7 @@ from typing import AsyncContextManager, Callable
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.nutrition.application.dao import IParentRepository
+from app.nutrition.application.dao.parents import IParentRepository
 from app.nutrition.domain.parent import Parent, ParentID
 from app.nutrition.infrastructure.db import ParentDB
 
@@ -28,8 +28,8 @@ class AlchemyParentRepository(IParentRepository):
             await session.execute(query)
             await session.commit()
 
-    async def get_by_id(self, id_: ParentID) -> Parent | None:
+    async def get(self, ident: ParentID) -> Parent | None:
         async with self._session_factory() as session:
-            parent_db = await session.get(ParentDB, ident=id_.value)
+            parent_db = await session.get(ParentDB, ident=ident.value)
 
             return parent_db.to_model() if parent_db else None

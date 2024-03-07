@@ -4,9 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.nutrition.application.dao import IPupilRepository
+from app.nutrition.application.dao.pupils import Filter, IPupilRepository
 from app.nutrition.domain.pupil import Pupil, PupilID
-from app.nutrition.domain.school_class import ClassID
 from app.nutrition.infrastructure.db import PupilDB
 
 
@@ -30,14 +29,16 @@ class AlchemyPupilRepository(IPupilRepository):
             await session.execute(query)
             await session.commit()
 
-    async def get_by_id(self, id_: PupilID) -> Pupil | None:
+    async def get(self, ident: PupilID) -> Pupil | None:
         async with self._session_factory() as session:
-            pupil_db = await session.get(PupilDB, ident=id_.value)
+            pupil_db = await session.get(PupilDB, ident=ident.value)
 
             return pupil_db.to_model() if pupil_db else None
 
-    async def all_by_class_id(self, class_id: ClassID) -> list[Pupil]:
-        query = select(PupilDB).where(PupilDB.class_id == class_id.value)
+    async def all(self, spec: Filter | None = None) -> list[Pupil]:
+        query = select(PupilDB)
 
         async with self._session_factory() as session:
-            return [pupil_db.to_model() for pupil_db in (await session.scalars(query)).all()]
+            pupils = (pupil_db.to_model() for pupil_db in (await session.scalars(query)).all())
+
+            return list(filter(lambda x: spec.is_satisfied_by(x), pupils) if spec else pupils)

@@ -3,12 +3,10 @@ from datetime import date
 from dependency_injector.wiring import Provide, inject
 from result import Err, Ok, Result
 
-from app.nutrition.application.dao import (
-    IParentRepository,
-    IPupilRepository,
-    IRequestRepository,
-    ISchoolClassRepository,
-)
+from app.nutrition.application.dao.parents import IParentRepository
+from app.nutrition.application.dao.pupils import IPupilRepository, PupilByClassID
+from app.nutrition.application.dao.requests import IRequestRepository
+from app.nutrition.application.dao.school_classes import ISchoolClassRepository
 from app.nutrition.application.errors import NotFoundParent, NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.parent import ParentID, PupilIsAlreadyAttached
@@ -24,7 +22,7 @@ from app.nutrition.infrastructure.dependencies import NutritionContainer
 async def resume_pupil_on_day(
     pupil_id: PupilID, day: Day, pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository]
 ) -> Result[None, NotFoundPupil | CannotResumeAfterDeadline]:
-    pupil = await pupil_repository.get_by_id(pupil_id)
+    pupil = await pupil_repository.get(pupil_id)
 
     if not pupil:
         return Err(NotFoundPupil())
@@ -43,7 +41,7 @@ async def resume_pupil_on_day(
 async def cancel_pupil_for_period(
     pupil_id: PupilID, period: Period, pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository]
 ) -> Result[None, NotFoundPupil | CannotCancelAfterDeadline]:
-    pupil = await pupil_repository.get_by_id(pupil_id)
+    pupil = await pupil_repository.get(pupil_id)
 
     if not pupil:
         return Err(NotFoundPupil())
@@ -64,7 +62,7 @@ async def resume_or_cancel_mealtimes_at_pupil(
     mealtimes: dict[Mealtime, bool],
     pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
 ) -> Result[None, NotFoundPupil]:
-    pupil = await pupil_repository.get_by_id(pupil_id)
+    pupil = await pupil_repository.get(pupil_id)
 
     if not pupil:
         return Err(NotFoundPupil())
@@ -86,12 +84,12 @@ async def submit_request_to_canteen(
     pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
     request_repository: IRequestRepository = Provide[NutritionContainer.request_repository],
 ) -> Result[None, NotFoundSchoolClass | CannotSubmitAfterDeadline]:
-    school_class = await class_repository.get_by_id(class_id)
+    school_class = await class_repository.get(class_id)
 
     if not school_class:
         return Err(NotFoundSchoolClass())
 
-    pupils = await pupil_repository.all_by_class_id(class_id=school_class.id)
+    pupils = await pupil_repository.all(PupilByClassID(school_class.id))
 
     request = prefill_request(school_class, pupils, on_date, overrides)
     submitting = request.submit_manually()
@@ -111,10 +109,10 @@ async def attach_child_to_parent(
     parent_repository: IParentRepository = Provide[NutritionContainer.parent_repository],
     pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
 ) -> Result[None, NotFoundParent | NotFoundPupil | PupilIsAlreadyAttached]:
-    if not (parent := await parent_repository.get_by_id(id_=parent_id)):
+    if not (parent := await parent_repository.get(parent_id)):
         return Err(NotFoundParent())
 
-    if not (pupil := await pupil_repository.get_by_id(id_=pupil_id)):
+    if not (pupil := await pupil_repository.get(pupil_id)):
         return Err(NotFoundPupil())
 
     attaching = parent.attach_child(pupil)

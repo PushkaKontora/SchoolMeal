@@ -2,7 +2,7 @@ from typing import AsyncContextManager, Callable
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.feedbacks.application.dao import IFeedbackRepository
+from app.feedbacks.application.dao.feedbacks import IFeedbackRepository
 from app.feedbacks.domain.feedback import Feedback
 from app.feedbacks.infrastructure.db.models import FeedbackDB
 

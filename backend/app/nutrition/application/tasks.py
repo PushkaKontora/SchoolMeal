@@ -2,7 +2,9 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from dependency_injector.wiring import Provide, inject
 
-from app.nutrition.application.dao import IPupilRepository, IRequestRepository, ISchoolClassRepository
+from app.nutrition.application.dao.pupils import IPupilRepository, PupilByClassID
+from app.nutrition.application.dao.requests import IRequestRepository
+from app.nutrition.application.dao.school_classes import ISchoolClassRepository
 from app.nutrition.domain.services import prefill_request
 from app.nutrition.domain.time import SUBMITTING_DEADLINE, now
 from app.nutrition.infrastructure.dependencies import NutritionContainer
@@ -27,10 +29,10 @@ async def save_drafts_of_requests_everyday(
     today = now().date()
 
     for school_class in await class_repository.all():
-        if await request_repository.exists_by_class_id_and_date(class_id=school_class.id, on_date=today):
+        if await request_repository.exists(class_id=school_class.id, on_date=today):
             continue
 
-        pupils = await pupil_repository.all_by_class_id(class_id=school_class.id)
+        pupils = await pupil_repository.all(PupilByClassID(school_class.id))
 
         request = prefill_request(school_class, pupils, on_date=today, overrides={})
         await request_repository.add(request)

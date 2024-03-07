@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.nutrition.application.dao import IRequestRepository
+from app.nutrition.application.dao.requests import IRequestRepository
 from app.nutrition.domain.request import Request
 from app.nutrition.domain.school_class import ClassID
 from app.nutrition.infrastructure.db import RequestDB
@@ -38,7 +38,7 @@ class AlchemyRequestRepository(IRequestRepository):
             await session.execute(query)
             await session.commit()
 
-    async def exists_by_class_id_and_date(self, class_id: ClassID, on_date: date) -> bool:
+    async def exists(self, class_id: ClassID, on_date: date) -> bool:
         query = (
             select(1)
             .select_from(RequestDB)
