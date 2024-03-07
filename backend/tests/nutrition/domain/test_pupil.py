@@ -6,7 +6,7 @@ import pytest
 
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, Pupil, PupilID
-from app.nutrition.domain.time import Day, Period, now, yekaterinburg
+from app.nutrition.domain.time import YEKATERINBURG, Day, Period, now
 
 
 def test_generating_id() -> None:
@@ -45,7 +45,7 @@ def test_cancelling_mealtime_where_pupil_does_not_eat(pupil: Pupil) -> None:
 def test_cancelling_for_period(pupil: Pupil, now_: datetime, deadline: datetime | None) -> None:
     period = Period(start=date(2023, 1, 2), end=date(2023, 5, 5))
 
-    with freezegun.freeze_time(now_.astimezone(yekaterinburg)):
+    with freezegun.freeze_time(now_.astimezone(YEKATERINBURG)):
         cancelling = pupil.cancel_for_period(period)
 
         if not deadline:
@@ -56,7 +56,7 @@ def test_cancelling_for_period(pupil: Pupil, now_: datetime, deadline: datetime 
 
         error = cancelling.unwrap_err()
         assert isinstance(error, CannotCancelAfterDeadline)
-        assert error.deadline == deadline.astimezone(yekaterinburg)
+        assert error.deadline == deadline.astimezone(YEKATERINBURG)
 
 
 @pytest.mark.parametrize(
@@ -70,7 +70,7 @@ def test_cancelling_for_period(pupil: Pupil, now_: datetime, deadline: datetime 
     ],
 )
 def test_resuming_on_day(pupil: Pupil, now_: datetime, has_deadline_come: bool) -> None:
-    now_in_yekaterinburg = now_.astimezone(yekaterinburg)
+    now_in_yekaterinburg = now_.astimezone(YEKATERINBURG)
 
     day = Day(date(2023, 1, 2))
 
@@ -85,7 +85,7 @@ def test_resuming_on_day(pupil: Pupil, now_: datetime, has_deadline_come: bool) 
 
         error = resuming.unwrap_err()
         assert isinstance(error, CannotResumeAfterDeadline)
-        assert error.deadline == datetime.combine(day.value, time(hour=22, tzinfo=yekaterinburg))
+        assert error.deadline == datetime.combine(day.value, time(hour=22, tzinfo=YEKATERINBURG))
 
 
 def test_resuming_mealtime_where_pupil_does_not_eat(pupil: Pupil) -> None:

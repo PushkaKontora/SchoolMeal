@@ -2,7 +2,6 @@ from fastapi import APIRouter, status
 from result import Err
 
 from app.feedbacks.api import handlers as feedbacks_api
-from app.feedbacks.api.dto import LeaveFeedbackAboutCanteenIn
 from app.gateway import responses
 from app.gateway.errors import UnprocessableEntity
 from app.gateway.mobile.feedbacks.dto import LeaveFeedbackAboutCanteenBody
@@ -23,9 +22,7 @@ router = APIRouter()
 async def leave_feedback_about_canteen(
     body: LeaveFeedbackAboutCanteenBody, authorized_user: AuthorizedUserDep
 ) -> OKSchema:
-    command = LeaveFeedbackAboutCanteenIn(user_id=authorized_user.id, text=body.text)
-
-    match await feedbacks_api.leave_feedback_about_canteen(command):
+    match await feedbacks_api.leave_feedback_about_canteen(user_id=authorized_user.id, text=body.text):
         case Err(DomainValidationError(message=message)):
             raise UnprocessableEntity(message)
 

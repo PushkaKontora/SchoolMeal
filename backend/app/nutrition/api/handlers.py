@@ -1,40 +1,26 @@
-from dependency_injector.wiring import Provide, inject
+from datetime import date
+from uuid import UUID
+
 from result import Err, Ok, Result
 
 from app.nutrition.api import errors
-from app.nutrition.api.dto import (
-    AttachPupilToParentIn,
-    CancelPupilForPeriodIn,
-    ResumePupilOnDayIn,
-    SubmitRequestToCanteenIn,
-    UpdateMealtimesAtPupilIn,
-)
+from app.nutrition.api.dto import MealtimeDTO, ResumedPupilIn
 from app.nutrition.application import services
-from app.nutrition.application.dao import (
-    IParentRepository,
-    IPupilRepository,
-    IRequestRepository,
-    ISchoolClassRepository,
-)
 from app.nutrition.application.errors import NotFoundParent, NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain.parent import ParentID, PupilIsAlreadyAttached
 from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
 from app.nutrition.domain.request import CannotSubmitAfterDeadline
 from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.time import Day, Period
-from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.api.errors import DomainValidationError
 
 
-@inject
 async def resume_pupil_on_day(
-    command: ResumePupilOnDayIn, pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository]
+    pupil_id: str, day: date
 ) -> Result[None, errors.NotFoundPupilWithID | errors.CannotResumeAfterDeadline]:
-    pupil_id, day = PupilID(command.pupil_id), Day(command.day)
-
-    match await services.resume_pupil_on_day(pupil_id, day, pupil_repository):
+    match await services.resume_pupil_on_day(pupil_id=PupilID(pupil_id), day=Day(day)):
         case Err(NotFoundPupil()):
-            return Err(errors.NotFoundPupilWithID(pupil_id.value))
+            return Err(errors.NotFoundPupilWithID(pupil_id))
 
         case Err(CannotResumeAfterDeadline(deadline=deadline)):
             return Err(errors.CannotResumeAfterDeadline(deadline))
@@ -42,20 +28,17 @@ async def resume_pupil_on_day(
     return Ok(None)
 
 
-@inject
 async def cancel_pupil_for_period(
-    command: CancelPupilForPeriodIn,
-    pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
+    pupil_id: str, start: date, end: date
 ) -> Result[None, DomainValidationError | errors.NotFoundPupilWithID | errors.CannotCancelAfterDeadline]:
     try:
-        pupil_id = PupilID(command.pupil_id)
-        period = Period(start=command.start, end=command.end)
+        period = Period(start=start, end=end)
     except ValueError as error:
         return Err(DomainValidationError(message=str(error)))
 
-    match await services.cancel_pupil_for_period(pupil_id, period, pupil_repository):
+    match await services.cancel_pupil_for_period(pupil_id=PupilID(pupil_id), period=period):
         case Err(NotFoundPupil()):
-            return Err(errors.NotFoundPupilWithID(pupil_id.value))
+            return Err(errors.NotFoundPupilWithID(pupil_id))
 
         case Err(CannotCancelAfterDeadline(deadline=deadline)):
             return Err(errors.CannotCancelAfterDeadline(deadline))
@@ -63,60 +46,44 @@ async def cancel_pupil_for_period(
     return Ok(None)
 
 
-@inject
 async def update_mealtimes_at_pupil(
-    command: UpdateMealtimesAtPupilIn,
-    pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
+    pupil_id: str, mealtimes: dict[MealtimeDTO, bool]
 ) -> Result[None, errors.NotFoundPupilWithID]:
-    pupil_id = PupilID(command.pupil_id)
-    mealtimes = {mealtime.to_model(): value for mealtime, value in command.mealtimes.items()}
-
-    match await services.resume_or_cancel_mealtimes_at_pupil(pupil_id, mealtimes, pupil_repository):
+    match await services.resume_or_cancel_mealtimes_at_pupil(
+        pupil_id=PupilID(pupil_id), mealtimes={mealtime.to_model(): value for mealtime, value in mealtimes.items()}
+    ):
         case Err(NotFoundPupil()):
-            return Err(errors.NotFoundPupilWithID(pupil_id.value))
+            return Err(errors.NotFoundPupilWithID(pupil_id))
 
     return Ok(None)
 
 
-@inject
 async def submit_request_to_canteen(
-    command: SubmitRequestToCanteenIn,
-    class_repository: ISchoolClassRepository = Provide[NutritionContainer.class_repository],
-    pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
-    request_repository: IRequestRepository = Provide[NutritionContainer.request_repository],
+    class_id: UUID, on_date: date, overrides: set[ResumedPupilIn]
 ) -> Result[None, errors.NotFoundSchoolClassWithID | errors.CannotSentRequestAfterDeadline]:
-    class_id = ClassID(command.class_id)
-    overrides = {
-        PupilID(override.id): set(dto.to_model() for dto in override.mealtimes) for override in command.overrides
-    }
-    day = Day(command.on_date)
-
     match await services.submit_request_to_canteen(
-        class_id, day, overrides, class_repository, pupil_repository, request_repository
+        class_id=ClassID(class_id),
+        on_date=on_date,
+        overrides={PupilID(override.id): set(dto.to_model() for dto in override.mealtimes) for override in overrides},
     ):
         case Err(NotFoundSchoolClass()):
-            return Err(errors.NotFoundSchoolClassWithID(class_id.value))
+            return Err(errors.NotFoundSchoolClassWithID(class_id))
 
         case Err(CannotSubmitAfterDeadline(deadline=deadline)):
-            return Err(errors.CannotSentRequestAfterDeadline(day.value, deadline))
+            return Err(errors.CannotSentRequestAfterDeadline(on_date, deadline))
 
     return Ok(None)
 
 
-@inject
 async def attach_pupil_to_parent(
-    command: AttachPupilToParentIn,
-    parent_repository: IParentRepository = Provide[NutritionContainer.parent_repository],
-    pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
+    parent_id: UUID, pupil_id: str
 ) -> Result[None, errors.NotFoundParentWithID | errors.NotFoundPupilWithID | errors.PupilIsAlreadyAttached]:
-    parent_id, pupil_id = ParentID(command.parent_id), PupilID(command.pupil_id)
-
-    match await services.attach_child_to_parent(parent_id, pupil_id, parent_repository, pupil_repository):
+    match await services.attach_child_to_parent(parent_id=ParentID(parent_id), pupil_id=PupilID(pupil_id)):
         case Err(NotFoundParent()):
-            return Err(errors.NotFoundParentWithID(parent_id.value))
+            return Err(errors.NotFoundParentWithID(parent_id))
 
         case Err(NotFoundPupil()):
-            return Err(errors.NotFoundPupilWithID(pupil_id.value))
+            return Err(errors.NotFoundPupilWithID(pupil_id))
 
         case Err(PupilIsAlreadyAttached()):
             return Err(errors.PupilIsAlreadyAttached())

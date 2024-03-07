@@ -7,7 +7,6 @@ from app.gateway import responses
 from app.gateway.errors import BadRequest, NotFound
 from app.gateway.web.requests.dto import SubmitRequestBody
 from app.nutrition.api import handlers as nutrition_api
-from app.nutrition.api.dto import SubmitRequestToCanteenIn
 from app.nutrition.api.errors import CannotSentRequestAfterDeadline, NotFoundSchoolClassWithID
 from app.shared.fastapi.schemas import OKSchema
 
@@ -22,9 +21,9 @@ router = APIRouter()
     responses=responses.NOT_FOUND | responses.BAD_REQUEST,
 )
 async def submit_request_to_canteen(class_id: UUID, body: SubmitRequestBody) -> OKSchema:
-    command = SubmitRequestToCanteenIn(class_id=class_id, on_date=body.on_date, overrides=body.overrides)
-
-    match await nutrition_api.submit_request_to_canteen(command):
+    match await nutrition_api.submit_request_to_canteen(
+        class_id=class_id, on_date=body.on_date, overrides=body.overrides
+    ):
         case Err(NotFoundSchoolClassWithID(message=message)):
             raise NotFound(message)
 

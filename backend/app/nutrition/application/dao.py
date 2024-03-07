@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import date
 
 from app.nutrition.domain.parent import Parent, ParentID
 from app.nutrition.domain.pupil import Pupil, PupilID
@@ -25,10 +26,22 @@ class ISchoolClassRepository(ABC):
     async def get_by_id(self, id_: ClassID) -> SchoolClass | None:
         raise NotImplementedError
 
+    @abstractmethod
+    async def all(self) -> list[SchoolClass]:
+        raise NotImplementedError
+
 
 class IRequestRepository(ABC):
     @abstractmethod
+    async def add(self, request: Request) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def merge(self, request: Request) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def exists_by_class_id_and_date(self, class_id: ClassID, on_date: date) -> bool:
         raise NotImplementedError
 
 

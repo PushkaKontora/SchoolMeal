@@ -1,3 +1,6 @@
+from contextlib import asynccontextmanager
+from typing import AsyncIterator
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,23 +9,34 @@ from app.db.settings import DatabaseSettings
 from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
 from app.gateway import router
 from app.gateway.errors import UnprocessableEntity, default_handler, unprocessable_entity_handler
+from app.nutrition.application.tasks import scheduler as nutrition_scheduler
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.fastapi.settings import FastAPIConfig
 
 
-alchemy = AlchemyORM()
-alchemy.config.from_pydantic(DatabaseSettings())
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    alchemy = AlchemyORM()
+    alchemy.config.from_pydantic(DatabaseSettings())
 
-nutrition = NutritionContainer(alchemy=alchemy)
-feedbacks = FeedbacksContainer(alchemy=alchemy)
+    nutrition = NutritionContainer(alchemy=alchemy)
+    feedbacks = FeedbacksContainer(alchemy=alchemy)
 
-for module in [nutrition, feedbacks]:
-    module.check_dependencies()
-    module.wire()
+    for module in [nutrition, feedbacks]:
+        module.check_dependencies()
+        module.wire()
+
+    nutrition_scheduler.start()
+
+    yield
+
+    nutrition_scheduler.shutdown()
+
 
 settings = FastAPIConfig()
 app = FastAPI(
     docs_url="/docs" if settings.show_swagger_ui else None,
+    lifespan=lifespan,
 )
 
 app.add_middleware(

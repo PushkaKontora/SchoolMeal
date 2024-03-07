@@ -1,5 +1,6 @@
 from typing import AsyncContextManager, Callable
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.nutrition.application.dao import ISchoolClassRepository
@@ -16,3 +17,11 @@ class AlchemySchoolClassRepository(ISchoolClassRepository):
             class_db = await session.get(SchoolClassDB, ident=id_.value)
 
             return class_db.to_model() if class_db else None
+
+    async def all(self) -> list[SchoolClass]:
+        query = select(SchoolClassDB)
+
+        async with self._session_factory() as session:
+            classes_db = (await session.scalars(query)).all()
+
+            return [class_db.to_model() for class_db in classes_db]

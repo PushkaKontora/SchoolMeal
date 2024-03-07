@@ -4,15 +4,16 @@ from datetime import date, datetime, time, timedelta, timezone
 from typing import Iterable, Iterator, Optional
 
 
-yekaterinburg = timezone(offset=timedelta(hours=5), name="Yekaterinburg")
+YEKATERINBURG = timezone(offset=timedelta(hours=5), name="Yekaterinburg")
+SUBMITTING_DEADLINE = time(hour=22, tzinfo=YEKATERINBURG)
 
 
 def now() -> datetime:
-    return datetime.now(tz=yekaterinburg)
+    return datetime.now(tz=YEKATERINBURG)
 
 
 def get_submitting_deadline_within_day(day: date) -> datetime:
-    return datetime.combine(day, time(hour=22, tzinfo=yekaterinburg))
+    return datetime.combine(day, SUBMITTING_DEADLINE)
 
 
 def has_submitting_deadline_come(day: date) -> bool:

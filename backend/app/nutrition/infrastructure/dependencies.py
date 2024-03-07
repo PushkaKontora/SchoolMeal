@@ -1,7 +1,6 @@
 from dependency_injector import providers
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
-from app.nutrition import api
 from app.nutrition.infrastructure.dao.parent_repositories import AlchemyParentRepository
 from app.nutrition.infrastructure.dao.pupil_repositories import AlchemyPupilRepository
 from app.nutrition.infrastructure.dao.request_repositories import AlchemyRequestRepository
@@ -9,7 +8,7 @@ from app.nutrition.infrastructure.dao.school_class_repositories import AlchemySc
 
 
 class NutritionContainer(DeclarativeContainer):
-    wiring_config = WiringConfiguration(packages=[api], auto_wire=False)
+    wiring_config = WiringConfiguration(from_package="app.nutrition", packages=[".application"], auto_wire=False)
 
     alchemy = providers.DependenciesContainer()
 

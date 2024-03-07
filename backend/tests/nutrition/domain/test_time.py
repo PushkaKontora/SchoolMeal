@@ -5,12 +5,12 @@ import freezegun
 import pytest
 
 from app.nutrition.domain.time import (
+    YEKATERINBURG,
     Day,
     Period,
     Timeline,
     get_submitting_deadline_within_day,
     has_submitting_deadline_come,
-    yekaterinburg,
 )
 
 
@@ -23,7 +23,7 @@ def test_get_submitting_deadline_within_day() -> None:
     deadline = get_submitting_deadline_within_day(day)
 
     assert deadline.date() == day
-    assert deadline.timetz() == time(hour=22, minute=0, second=0, tzinfo=yekaterinburg)
+    assert deadline.timetz() == time(hour=22, minute=0, second=0, tzinfo=YEKATERINBURG)
 
 
 @pytest.mark.parametrize(
@@ -35,7 +35,7 @@ def test_get_submitting_deadline_within_day() -> None:
     ],
 )
 def test_has_deadline_submitting_come(time_: time, is_deadline: bool) -> None:
-    with freezegun.freeze_time(datetime.combine(date.today(), time_, tzinfo=yekaterinburg)):
+    with freezegun.freeze_time(datetime.combine(date.today(), time_, tzinfo=YEKATERINBURG)):
         assert has_submitting_deadline_come(date.today()) == is_deadline
 
 

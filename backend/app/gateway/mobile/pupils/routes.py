@@ -5,12 +5,6 @@ from app.gateway import responses
 from app.gateway.errors import BadRequest, NotFound, UnprocessableEntity
 from app.gateway.mobile.pupils.dto import CancelPupilForPeriodBody, ResumePupilOnDayBody, UpdateMealtimesBody
 from app.nutrition.api import handlers as nutrition_api
-from app.nutrition.api.dto import (
-    AttachPupilToParentIn,
-    CancelPupilForPeriodIn,
-    ResumePupilOnDayIn,
-    UpdateMealtimesAtPupilIn,
-)
 from app.nutrition.api.errors import (
     CannotCancelAfterDeadline,
     CannotResumeAfterDeadline,
@@ -33,9 +27,7 @@ router = APIRouter(prefix="/pupils")
     responses=responses.NOT_FOUND,
 )
 async def resume_pupil_on_day(pupil_id: str, body: ResumePupilOnDayBody) -> OKSchema:
-    command = ResumePupilOnDayIn(pupil_id=pupil_id, day=body.day)
-
-    match await nutrition_api.resume_pupil_on_day(command):
+    match await nutrition_api.resume_pupil_on_day(pupil_id=pupil_id, day=body.day):
         case Err(NotFoundPupilWithID(message=message)):
             raise NotFound(message)
 
@@ -52,9 +44,7 @@ async def resume_pupil_on_day(pupil_id: str, body: ResumePupilOnDayBody) -> OKSc
     responses=responses.UNPROCESSABLE_ENTITY | responses.NOT_FOUND,
 )
 async def cancel_pupil_for_period(pupil_id: str, body: CancelPupilForPeriodBody) -> OKSchema:
-    command = CancelPupilForPeriodIn(pupil_id=pupil_id, start=body.start, end=body.end)
-
-    match nutrition_api.cancel_pupil_for_period(command):
+    match nutrition_api.cancel_pupil_for_period(pupil_id=pupil_id, start=body.start, end=body.end):
         case Err(DomainValidationError(message=message)):
             raise UnprocessableEntity(message)
 
@@ -74,9 +64,7 @@ async def cancel_pupil_for_period(pupil_id: str, body: CancelPupilForPeriodBody)
     responses=responses.NOT_FOUND,
 )
 async def update_mealtimes_at_pupil(pupil_id: str, body: UpdateMealtimesBody) -> OKSchema:
-    command = UpdateMealtimesAtPupilIn(pupil_id=pupil_id, mealtimes=body.mealtimes)
-
-    match nutrition_api.update_mealtimes_at_pupil(command):
+    match nutrition_api.update_mealtimes_at_pupil(pupil_id=pupil_id, mealtimes=body.mealtimes):
         case Err(NotFoundPupilWithID(message=message)):
             raise NotFound(message)
 
@@ -90,9 +78,7 @@ async def update_mealtimes_at_pupil(pupil_id: str, body: UpdateMealtimesBody) ->
     responses=responses.BAD_REQUEST,
 )
 async def attach_pupil_to_parent(pupil_id: str, authorized_user: AuthorizedUserDep) -> OKSchema:
-    command = AttachPupilToParentIn(parent_id=authorized_user.id, pupil_id=pupil_id)
-
-    match nutrition_api.attach_pupil_to_parent(command):
+    match nutrition_api.attach_pupil_to_parent(parent_id=authorized_user.id, pupil_id=pupil_id):
         case Err(NotFoundParentWithID(message=message)):
             raise NotFound(message)
 

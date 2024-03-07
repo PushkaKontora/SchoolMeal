@@ -5,10 +5,10 @@ import pytest
 
 from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request, Status
 from app.nutrition.domain.school_class import ClassID
-from app.nutrition.domain.time import yekaterinburg
+from app.nutrition.domain.time import YEKATERINBURG
 
 
-@pytest.mark.parametrize("now_", [time(hour=21, tzinfo=yekaterinburg), time(hour=21, second=59, tzinfo=yekaterinburg)])
+@pytest.mark.parametrize("now_", [time(hour=21, tzinfo=YEKATERINBURG), time(hour=21, second=59, tzinfo=YEKATERINBURG)])
 def test_submitting_manually_to_canteen_before_deadline(now_: time) -> None:
     on_date = date(2023, 10, 1)
 
@@ -24,9 +24,9 @@ def test_submitting_manually_to_canteen_before_deadline(now_: time) -> None:
 @pytest.mark.parametrize(
     "now_",
     [
-        time(hour=22, second=0, tzinfo=yekaterinburg),
-        time(hour=22, second=1, tzinfo=yekaterinburg),
-        time(hour=23, tzinfo=yekaterinburg),
+        time(hour=22, second=0, tzinfo=YEKATERINBURG),
+        time(hour=22, second=1, tzinfo=YEKATERINBURG),
+        time(hour=23, tzinfo=YEKATERINBURG),
     ],
 )
 def test_submitting_manually_to_canteen_after_deadline(now_: time) -> None:

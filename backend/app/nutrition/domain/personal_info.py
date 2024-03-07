@@ -19,7 +19,9 @@ class Name:
             raise ValueError(f"Превышено максимальное количество символов - {self._MAX_LENGTH}")
 
         if not self._REGEX.fullmatch(self.value):
-            raise ValueError("Первая буква должна быть в верхнем регистре, остальные - в нижнем регистре")
+            raise ValueError(
+                "Первая буква имени должна быть кириллицей в верхнем регистре, остальные - в нижнем регистре"
+            )
 
     @classmethod
     def create(cls, value: str) -> "Name":
