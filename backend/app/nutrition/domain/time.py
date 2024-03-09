@@ -12,6 +12,10 @@ def now() -> datetime:
     return datetime.now(tz=YEKATERINBURG)
 
 
+def today() -> date:
+    return now().date()
+
+
 def get_submitting_deadline_within_day(day: date) -> datetime:
     return datetime.combine(day, SUBMITTING_DEADLINE)
 

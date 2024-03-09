@@ -17,12 +17,12 @@ class Pupil:
     id: PupilID
     name: FullName
     class_id: ClassID
-    parents: set[ParentID]
+    parent_ids: set[ParentID]
 
     def attach_to_parent(self, parent: Parent) -> Result["Pupil", ParentIsAlreadyAttached]:
-        if parent.id in self.parents:
+        if parent.id in self.parent_ids:
             return Err(ParentIsAlreadyAttached())
 
-        self.parents.add(parent.id)
+        self.parent_ids.add(parent.id)
 
         return Ok(self)

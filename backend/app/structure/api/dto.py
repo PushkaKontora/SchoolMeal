@@ -1,0 +1,85 @@
+from typing import Any, Callable
+from uuid import UUID
+
+from pydantic import BaseModel
+
+from app.shared.api.dto import Filters
+from app.shared.domain.personal_info import FullName
+from app.shared.domain.school_class import ClassID
+from app.shared.specifications import Specification
+from app.structure.application.dao.pupils import PupilByParentID
+from app.structure.application.dao.school_classes import ClassByIDs
+from app.structure.domain.parent import ParentID
+from app.structure.domain.pupil import Pupil
+from app.structure.domain.school import School
+from app.structure.domain.school_class import SchoolClass
+
+
+class PupilFilters(Filters[Pupil]):
+    parent_id: UUID | None = None
+
+    def _build_map(self) -> dict[str, Callable[[Any], Specification[Pupil]]]:
+        return {
+            "parent_id": lambda x: PupilByParentID(ParentID(x)),
+        }
+
+
+class ClassesFilters(Filters[SchoolClass]):
+    ids: set[UUID] | None = None
+
+    def _build_map(self) -> dict[str, Callable[[Any], Specification[SchoolClass]]]:
+        return {
+            "ids": lambda x: ClassByIDs({ClassID(class_id) for class_id in x}),
+        }
+
+
+class FullNameOut(BaseModel):
+    last: str
+    first: str
+    patronymic: str | None
+
+    @classmethod
+    def from_model(cls, name: FullName) -> "FullNameOut":
+        return cls(
+            last=name.last.value, first=name.first.value, patronymic=name.patronymic.value if name.patronymic else None
+        )
+
+
+class PupilOut(BaseModel):
+    id: str
+    name: FullNameOut
+    class_id: UUID
+    parent_ids: list[UUID]
+
+    @classmethod
+    def from_model(cls, pupil: Pupil) -> "PupilOut":
+        return cls(
+            id=pupil.id.value,
+            name=FullNameOut.from_model(pupil.name),
+            class_id=pupil.class_id.value,
+            parent_ids=[parent_id.value for parent_id in pupil.parent_ids],
+        )
+
+
+class SchoolOut(BaseModel):
+    name: str
+
+    @classmethod
+    def from_model(cls, school: School) -> "SchoolOut":
+        return cls(name=school.name.value)
+
+
+class SchoolClassOut(BaseModel):
+    id: UUID
+    teacher_id: UUID
+    number: int
+    literal: str
+
+    @classmethod
+    def from_model(cls, school_class: SchoolClass) -> "SchoolClassOut":
+        return cls(
+            id=school_class.id.value,
+            teacher_id=school_class.teacher_id.value,
+            number=school_class.number.value,
+            literal=school_class.literal.value,
+        )

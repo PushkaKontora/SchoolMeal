@@ -1,10 +1,11 @@
 from typing import AsyncContextManager, Callable
 
-from sqlalchemy import delete
+from sqlalchemy import delete, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.shared.domain.pupil import PupilID
+from app.shared.specifications import Specification
 from app.structure.application.dao.pupils import IPupilRepository
 from app.structure.domain.pupil import Pupil
 from app.structure.infrastructure.db import PupilDB, PupilParentAssociation
@@ -13,6 +14,14 @@ from app.structure.infrastructure.db import PupilDB, PupilParentAssociation
 class AlchemyPupilRepository(IPupilRepository):
     def __init__(self, session_factory: Callable[[], AsyncContextManager[AsyncSession]]) -> None:
         self._session_factory = session_factory
+
+    async def all(self, spec: Specification[Pupil] | None = None) -> list[Pupil]:
+        query = select(PupilDB)
+
+        async with self._session_factory() as session:
+            pupils = (pupil_db.to_model() for pupil_db in (await session.scalars(query)).all())
+
+            return list(filter(lambda x: spec.is_satisfied_by(x), pupils) if spec else pupils)
 
     async def get(self, ident: PupilID) -> Pupil | None:
         async with self._session_factory() as session:

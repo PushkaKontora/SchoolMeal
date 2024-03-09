@@ -22,7 +22,7 @@ def school_class(teacher: Teacher) -> SchoolClass:
 @pytest.fixture
 def pupil(school_class: SchoolClass) -> Pupil:
     return Pupil(
-        id=PupilID.generate(), name=FullName.create("Петров", "Василий"), class_id=school_class.id, parents=set()
+        id=PupilID.generate(), name=FullName.create("Петров", "Василий"), class_id=school_class.id, parent_ids=set()
     )
 
 

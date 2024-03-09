@@ -4,14 +4,31 @@ from result import Err
 from app.gateway import responses
 from app.gateway.errors import BadRequest, NotFound, UnprocessableEntity
 from app.gateway.mobile.pupils.dto import CancelPupilForPeriodBody, ResumePupilOnDayBody, UpdateMealtimesBody
-from app.nutrition.api import errors as nutrition_errors, handlers as nutrition_api
+from app.gateway.mobile.pupils.view import ChildSummaryOut
+from app.nutrition.api import dto as nutrition_dto, errors as nutrition_errors, handlers as nutrition_api
 from app.shared.api.errors import DomainValidationError
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
 from app.shared.fastapi.schemas import OKSchema
-from app.structure.api import errors as structure_errors, handlers as structure_api
+from app.structure.api import dto as structure_dto, errors as structure_errors, handlers as structure_api
 
 
 router = APIRouter(prefix="/pupils")
+
+
+@router.get(
+    "",
+    summary="Получить список детей пользователя",
+    status_code=status.HTTP_200_OK,
+)
+async def get_children(user: AuthorizedUserDep) -> list[ChildSummaryOut]:
+    pupils = await structure_api.get_pupils(filters=structure_dto.PupilFilters(parent_id=user.id))
+    school = await structure_api.get_school_info()
+    classes = await structure_api.get_classes(
+        filters=structure_dto.ClassesFilters(ids={pupil.class_id for pupil in pupils})
+    )
+    meals = await nutrition_api.get_pupils(filters=nutrition_dto.PupilFilters(ids={pupil.id for pupil in pupils}))
+
+    return ChildSummaryOut.create_many(pupils, meals, school, classes)
 
 
 @router.post(

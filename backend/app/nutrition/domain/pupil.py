@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import date, datetime
+from enum import IntEnum, unique
 
 from result import Err, Ok, Result
 
@@ -10,6 +11,7 @@ from app.nutrition.domain.time import (
     Timeline,
     get_submitting_deadline_within_day,
     has_submitting_deadline_come,
+    today,
 )
 from app.shared.domain.pupil import PupilID
 from app.shared.domain.school_class import ClassID
@@ -25,6 +27,12 @@ class CannotCancelAfterDeadline:
         self.deadline = deadline
 
 
+@unique
+class NutritionStatus(IntEnum):
+    PAID = 0
+    PREFERENTIAL = 1
+
+
 @dataclass
 class Pupil:
     id: PupilID
@@ -32,6 +40,13 @@ class Pupil:
     mealtimes: set[Mealtime]
     preferential_until: date | None
     cancelled_periods: Timeline
+
+    @property
+    def nutrition(self) -> NutritionStatus:
+        if self.preferential_until and today() <= self.preferential_until:
+            return NutritionStatus.PREFERENTIAL
+
+        return NutritionStatus.PAID
 
     def does_eat(self, day: Day, mealtime: Mealtime) -> bool:
         return mealtime in self.mealtimes and day not in self.cancelled_periods

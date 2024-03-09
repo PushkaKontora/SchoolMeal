@@ -115,7 +115,7 @@ class PupilDB(StructureBase):
             id=PupilID(self.id),
             class_id=ClassID(self.class_id),
             name=FullName.create(last=self.last_name, first=self.first_name, patronymic=self.patronymic),
-            parents={ParentID(parent.id) for parent in self.parents},
+            parent_ids={ParentID(parent.id) for parent in self.parents},
         )
 
     @classmethod
@@ -161,4 +161,4 @@ class PupilParentAssociation(StructureBase):
 
     @classmethod
     def from_model(cls, pupil: Pupil) -> list["PupilParentAssociation"]:
-        return [cls(pupil_id=pupil.id.value, parent_id=parent_id.value) for parent_id in pupil.parents]
+        return [cls(pupil_id=pupil.id.value, parent_id=parent_id.value) for parent_id in pupil.parent_ids]
