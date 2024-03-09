@@ -29,6 +29,15 @@ async def get_pupils(
 
 
 @inject
+async def get_pupil(
+    pupil_id: str, pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository]
+) -> PupilOut | None:
+    pupil = await pupil_repository.get(ident=PupilID(pupil_id))
+
+    return PupilOut.from_model(pupil) if pupil else None
+
+
+@inject
 async def resume_pupil_on_day(
     pupil_id: str, day: date, pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository]
 ) -> Result[None, errors.NotFoundPupilWithID | errors.CannotResumeAfterDeadline]:

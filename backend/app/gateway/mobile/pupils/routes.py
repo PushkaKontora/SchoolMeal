@@ -31,6 +31,20 @@ async def get_children(user: AuthorizedUserDep) -> list[ChildSummaryOut]:
     return ChildSummaryOut.create_many(pupils, meals, school, classes)
 
 
+@router.get(
+    "/{pupil_id}",
+    summary="Получить информацию о питании ребёнка",
+    status_code=status.HTTP_200_OK,
+)
+async def get_child(pupil_id: str) -> nutrition_api.PupilOut:
+    pupil = await nutrition_api.get_pupil(pupil_id)
+
+    if not pupil:
+        raise NotFound(f"Не найден ученик с id={pupil_id}")
+
+    return pupil
+
+
 @router.post(
     "/{pupil_id}/resume",
     summary="Поставить ученика на питание на день",
