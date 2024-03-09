@@ -1,7 +1,7 @@
 """create_feedbacks_schema
 
 Revision ID: 25153ec6ba38
-Revises: d61ef53f01cb
+Revises:
 Create Date: 2024-03-09 04:28:13.436099
 
 """
@@ -13,7 +13,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "25153ec6ba38"
-down_revision: Union[str, None] = "d61ef53f01cb"
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

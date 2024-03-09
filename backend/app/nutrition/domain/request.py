@@ -5,7 +5,7 @@ from enum import IntEnum, unique
 from result import Err, Ok, Result
 
 from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.pupil import PupilID
+from app.nutrition.domain.pupil import NutritionStatus, Pupil, PupilID
 from app.nutrition.domain.time import get_submitting_deadline_within_day, has_submitting_deadline_come
 from app.shared.domain.school_class import ClassID
 
@@ -22,10 +22,28 @@ class RequestStatus(IntEnum):
 
 
 @dataclass
+class Declaration:
+    pupil_id: PupilID
+    mealtimes: set[Mealtime]
+    nutrition: NutritionStatus
+
+    def __hash__(self) -> int:
+        return hash(self.pupil_id)
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Declaration) and self.pupil_id == other.pupil_id
+
+    @classmethod
+    def declare(cls, pupil: Pupil) -> "Declaration":
+        return cls(pupil_id=pupil.id, mealtimes=pupil.mealtimes, nutrition=pupil.nutrition)
+
+
+@dataclass
 class Request:
     class_id: ClassID
     on_date: date
-    mealtimes: dict[Mealtime, set[PupilID]]
+    mealtimes: set[Mealtime]
+    declarations: set[Declaration]
     status: RequestStatus
 
     @property

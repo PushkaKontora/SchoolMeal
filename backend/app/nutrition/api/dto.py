@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from app.nutrition.application.dao.pupils import PupilByIDs
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import NutritionStatus, Pupil
-from app.nutrition.domain.request import Request, RequestStatus
+from app.nutrition.domain.request import Declaration, Request, RequestStatus
 from app.nutrition.domain.time import Period
 from app.shared.api.dto import Filters
 from app.shared.domain.pupil import PupilID
@@ -110,10 +110,31 @@ class PupilOut(BaseModel):
         )
 
 
+class DeclarationOut(BaseModel):
+    pupil_id: str
+    mealtimes: set[MealtimeDTO]
+    status: NutritionStatusOut
+
+    def __hash__(self) -> int:
+        return hash(self.pupil_id)
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, DeclarationOut) and self.pupil_id == other.pupil_id
+
+    @classmethod
+    def from_model(cls, declaration: Declaration) -> "DeclarationOut":
+        return cls(
+            pupil_id=declaration.pupil_id.value,
+            mealtimes={MealtimeDTO.from_model(mealtime) for mealtime in declaration.mealtimes},
+            status=NutritionStatusOut.from_model(declaration.nutrition),
+        )
+
+
 class RequestOut(BaseModel):
     class_id: UUID
     on_date: date
-    mealtimes: dict[MealtimeDTO, set[str]]
+    mealtimes: set[MealtimeDTO]
+    declarations: set[DeclarationOut]
     status: RequestStatusDTO
     can_be_resubmitted: bool
 
@@ -122,10 +143,8 @@ class RequestOut(BaseModel):
         return cls(
             class_id=request.class_id.value,
             on_date=request.on_date,
-            mealtimes={
-                MealtimeDTO.from_model(mealtime): {id_.value for id_ in pupil_ids}
-                for mealtime, pupil_ids in request.mealtimes.items()
-            },
+            mealtimes={MealtimeDTO.from_model(mealtime) for mealtime in request.mealtimes},
+            declarations={DeclarationOut.from_model(declaration) for declaration in request.declarations},
             status=RequestStatusDTO.from_model(request.status),
             can_be_resubmitted=request.can_be_resubmitted_yet,
         )

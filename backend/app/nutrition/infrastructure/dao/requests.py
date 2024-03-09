@@ -1,13 +1,13 @@
 from datetime import date
 from typing import AsyncContextManager, Callable
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.nutrition.application.dao.requests import IRequestRepository
 from app.nutrition.domain.request import Request
-from app.nutrition.infrastructure.db import RequestDB
+from app.nutrition.infrastructure.db import DeclarationDB, RequestDB
 from app.shared.domain.school_class import ClassID
 
 
@@ -23,19 +23,27 @@ class AlchemyRequestRepository(IRequestRepository):
             await session.commit()
 
     async def merge(self, request: Request) -> None:
-        request_db = RequestDB.from_model(request).dict()
+        request_db = RequestDB.from_model(request)
+        request_dict = request_db.dict()
 
-        query = (
+        upsert_request = (
             insert(RequestDB)
-            .values(request_db)
+            .values(request_dict)
             .on_conflict_do_update(
                 index_elements=[RequestDB.class_id, RequestDB.on_date],
-                set_=request_db,
+                set_=request_dict,
             )
+        )
+        delete_declarations = delete(DeclarationDB).where(
+            DeclarationDB.request_class_id == request_db.class_id, DeclarationDB.request_on_date == request_db.on_date
         )
 
         async with self._session_factory() as session:
-            await session.execute(query)
+            await session.execute(upsert_request)
+
+            await session.execute(delete_declarations)
+            session.add_all(request_db.declarations)
+
             await session.commit()
 
     async def exists(self, class_id: ClassID, on_date: date) -> bool:

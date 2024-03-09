@@ -1,14 +1,13 @@
 from datetime import date
 from uuid import UUID
 
-from sqlalchemy import ARRAY, Date, ForeignKey, Integer, MetaData
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import ARRAY, Date, ForeignKey, ForeignKeyConstraint, Integer, MetaData
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from app.db.base import DictMixin
 from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.pupil import Pupil, PupilID
-from app.nutrition.domain.request import Request, RequestStatus
+from app.nutrition.domain.pupil import NutritionStatus, Pupil, PupilID
+from app.nutrition.domain.request import Declaration, Request, RequestStatus
 from app.nutrition.domain.school_class import SchoolClass
 from app.nutrition.domain.time import Period, Timeline
 from app.shared.domain.school_class import ClassID
@@ -99,25 +98,28 @@ class RequestDB(NutritionBase):
 
     class_id: Mapped[UUID] = mapped_column(ForeignKey(SchoolClassDB.id), primary_key=True)
     on_date: Mapped[date] = mapped_column(primary_key=True)
-    mealtimes: Mapped[dict[str, list[str]]] = mapped_column(JSONB)
+    mealtimes: Mapped[list[int]] = mapped_column(ARRAY(Integer, dimensions=1))
     status: Mapped[int] = mapped_column()
 
-    def __init__(self, class_id: UUID, on_date: date, mealtimes: dict[str, list[str]], status: int) -> None:
+    declarations: Mapped[list["DeclarationDB"]] = relationship(lazy="selectin")
+
+    def __init__(
+        self, class_id: UUID, on_date: date, mealtimes: list[int], status: int, declarations: list["DeclarationDB"]
+    ) -> None:
         super().__init__()
 
         self.class_id = class_id
         self.on_date = on_date
         self.mealtimes = mealtimes
         self.status = status
+        self.declarations = declarations
 
     def to_model(self) -> Request:
         return Request(
             class_id=ClassID(self.class_id),
             on_date=self.on_date,
-            mealtimes={
-                Mealtime(int(mealtime)): {PupilID(id_) for id_ in pupil_ids}
-                for mealtime, pupil_ids in self.mealtimes.items()
-            },
+            mealtimes={Mealtime(mealtime) for mealtime in self.mealtimes},
+            declarations={declaration.to_model() for declaration in self.declarations},
             status=RequestStatus(self.status),
         )
 
@@ -126,9 +128,51 @@ class RequestDB(NutritionBase):
         return cls(
             class_id=request.class_id.value,
             on_date=request.on_date,
-            mealtimes={
-                str(mealtime.value): [id_.value for id_ in pupil_ids]
-                for mealtime, pupil_ids in request.mealtimes.items()
-            },
+            mealtimes=[mealtime.value for mealtime in request.mealtimes],
+            declarations=[DeclarationDB.from_model(request, declaration) for declaration in request.declarations],
             status=request.status.value,
+        )
+
+
+class DeclarationDB(NutritionBase):
+    __tablename__ = "declaration"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    pupil_id: Mapped[str] = mapped_column(ForeignKey(PupilDB.id))
+    mealtimes: Mapped[list[int]] = mapped_column(ARRAY(Integer, dimensions=1))
+    nutrition: Mapped[int] = mapped_column()
+
+    request_class_id: Mapped[UUID] = mapped_column()
+    request_on_date: Mapped[date] = mapped_column()
+
+    __table_args__ = (
+        ForeignKeyConstraint([request_class_id, request_on_date], [RequestDB.class_id, RequestDB.on_date]),
+    )
+
+    def __init__(
+        self, request_class_id: UUID, request_on_date: date, pupil_id: str, mealtimes: list[int], nutrition: int
+    ) -> None:
+        super().__init__()
+
+        self.request_class_id = request_class_id
+        self.request_on_date = request_on_date
+        self.pupil_id = pupil_id
+        self.mealtimes = mealtimes
+        self.nutrition = nutrition
+
+    def to_model(self) -> Declaration:
+        return Declaration(
+            pupil_id=PupilID(self.pupil_id),
+            mealtimes={Mealtime(mealtime) for mealtime in self.mealtimes},
+            nutrition=NutritionStatus(self.nutrition),
+        )
+
+    @classmethod
+    def from_model(cls, request: Request, declaration: Declaration) -> "DeclarationDB":
+        return cls(
+            pupil_id=declaration.pupil_id.value,
+            mealtimes=[mealtime.value for mealtime in declaration.mealtimes],
+            nutrition=declaration.nutrition.value,
+            request_class_id=request.class_id.value,
+            request_on_date=request.on_date,
         )

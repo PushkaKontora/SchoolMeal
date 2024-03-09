@@ -1,4 +1,3 @@
-import itertools as it
 from typing import Annotated
 from uuid import UUID
 
@@ -34,7 +33,7 @@ async def get_or_prefill_request(
 
     request = prefilling.unwrap()
     pupils = await structure_api.get_pupils(
-        filters=structure_dto.PupilFilters(ids=set(it.chain.from_iterable(request.mealtimes.values())))
+        filters=structure_dto.PupilFilters(ids=set(declaration.pupil_id for declaration in request.declarations))
     )
 
     return PrefilledRequestOut.create(request, pupils)

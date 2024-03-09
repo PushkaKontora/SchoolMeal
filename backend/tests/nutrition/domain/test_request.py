@@ -44,4 +44,10 @@ def test_submitting_manually_to_canteen_after_deadline(now_: time) -> None:
 
 
 def _create_request(on_date: date) -> Request:
-    return Request(class_id=ClassID.generate(), on_date=on_date, mealtimes={}, status=RequestStatus.PREFILLED)
+    return Request(
+        class_id=ClassID.generate(),
+        on_date=on_date,
+        mealtimes=set(),
+        declarations=set(),
+        status=RequestStatus.PREFILLED,
+    )

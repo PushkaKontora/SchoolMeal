@@ -98,10 +98,13 @@ def test_pupil_does_not_eat_when_mealtime_is_cancelled(pupil: Pupil) -> None:
     assert not eating
 
 
+@freezegun.freeze_time(datetime(2023, 10, 10, hour=10, tzinfo=YEKATERINBURG))
 def test_pupil_does_not_eat_when_pupil_is_cancelled_for_period(pupil: Pupil) -> None:
-    today = Day.today()
+    day = Day.today()
 
-    eating = pupil.cancel_for_period(today).and_then(lambda x: x.does_eat(day=today, mealtime=Mealtime.DINNER))
+    pupil.cancel_for_period(day)
+
+    eating = pupil.does_eat(day, mealtime=Mealtime.DINNER)
 
     assert not eating
 
