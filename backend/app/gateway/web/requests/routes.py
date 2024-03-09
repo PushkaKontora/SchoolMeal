@@ -8,7 +8,7 @@ from app.gateway import responses
 from app.gateway.errors import BadRequest, NotFound
 from app.gateway.web.requests.dto import GetOrPrefillRequestParams, SubmitRequestBody
 from app.gateway.web.requests.view import PrefilledRequestOut
-from app.nutrition.api import errors as nutrition_errors, handlers as nutrition_api
+from app.nutrition.api import dto as nutrition_dto, errors as nutrition_errors, handlers as nutrition_api
 from app.shared.fastapi.schemas import OKSchema
 from app.structure.api import dto as structure_dto, handlers as structure_api
 
@@ -35,8 +35,11 @@ async def get_or_prefill_request(
     pupils = await structure_api.get_pupils(
         filters=structure_dto.PupilFilters(ids=set(declaration.pupil_id for declaration in request.declarations))
     )
+    nutrition_pupils = await nutrition_api.get_pupils(
+        filters=nutrition_dto.PupilFilters(ids={pupil.id for pupil in pupils})
+    )
 
-    return PrefilledRequestOut.create(request, pupils)
+    return PrefilledRequestOut.create(request, pupils, nutrition_pupils)
 
 
 @router.post(
