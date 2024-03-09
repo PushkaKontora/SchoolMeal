@@ -3,19 +3,17 @@ from datetime import date
 from dependency_injector.wiring import Provide, inject
 from result import Err, Ok, Result
 
-from app.nutrition.application.dao.parents import IParentRepository
 from app.nutrition.application.dao.pupils import IPupilRepository, PupilByClassID
 from app.nutrition.application.dao.requests import IRequestRepository
 from app.nutrition.application.dao.school_classes import ISchoolClassRepository
-from app.nutrition.application.errors import NotFoundParent, NotFoundPupil, NotFoundSchoolClass
+from app.nutrition.application.errors import NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.parent import ParentID, PupilIsAlreadyAttached
 from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
 from app.nutrition.domain.request import CannotSubmitAfterDeadline
-from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.services import prefill_request
 from app.nutrition.domain.time import Day, Period
 from app.nutrition.infrastructure.dependencies import NutritionContainer
+from app.shared.domain.school_class import ClassID
 
 
 @inject
@@ -100,26 +98,3 @@ async def submit_request_to_canteen(
     await request_repository.merge(submitting.unwrap())
 
     return Ok(None)
-
-
-@inject
-async def attach_child_to_parent(
-    parent_id: ParentID,
-    pupil_id: PupilID,
-    parent_repository: IParentRepository = Provide[NutritionContainer.parent_repository],
-    pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
-) -> Result[None, NotFoundParent | NotFoundPupil | PupilIsAlreadyAttached]:
-    if not (parent := await parent_repository.get(parent_id)):
-        return Err(NotFoundParent())
-
-    if not (pupil := await pupil_repository.get(pupil_id)):
-        return Err(NotFoundPupil())
-
-    attaching = parent.attach_child(pupil)
-
-    if isinstance(attaching, Err):
-        return attaching
-
-    await parent_repository.merge(parent)
-
-    return Ok(attaching.unwrap())

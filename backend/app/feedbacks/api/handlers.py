@@ -3,8 +3,9 @@ from uuid import UUID
 from result import Err, Ok, Result
 
 from app.feedbacks.application import services
-from app.feedbacks.domain.feedback import FeedbackText, UserID
+from app.feedbacks.domain.feedback import FeedbackText
 from app.shared.api.errors import DomainValidationError
+from app.shared.domain.user import UserID
 
 
 async def leave_feedback_about_canteen(user_id: UUID, text: str) -> Result[None, DomainValidationError]:

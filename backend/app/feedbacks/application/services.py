@@ -2,8 +2,9 @@ from dependency_injector.wiring import Provide, inject
 from result import Ok, Result
 
 from app.feedbacks.application.dao.feedbacks import IFeedbackRepository
-from app.feedbacks.domain.feedback import Feedback, FeedbackText, UserID
+from app.feedbacks.domain.feedback import Feedback, FeedbackText
 from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
+from app.shared.domain.user import UserID
 
 
 @inject

@@ -3,7 +3,7 @@ from loguru import logger
 from src.data.menu import generate_foods, generate_menus
 from src.data.schools import generate_school
 from src.db import Connection, DatabaseSettings
-from src.schemas import Data, NutritionInitializer, SchemaInitializer
+from src.schemas import Data, NutritionInitializer, SchemaInitializer, StructureInitializer
 
 
 def main() -> None:
@@ -16,6 +16,7 @@ def main() -> None:
     connection = Connection(settings=DatabaseSettings())
 
     initializers: list[type[SchemaInitializer]] = [
+        StructureInitializer,
         NutritionInitializer,
     ]
 

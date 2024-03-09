@@ -1,12 +1,10 @@
 from dataclasses import dataclass
 from enum import IntEnum, unique
-from typing import NewType
 from uuid import UUID, uuid4
 
 from result import Ok, Result
 
-
-UserID = NewType("UserID", UUID)
+from app.shared.domain.user import UserID
 
 
 @dataclass(frozen=True)

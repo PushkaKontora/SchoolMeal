@@ -2,7 +2,7 @@ from contextlib import nullcontext
 
 import pytest
 
-from app.nutrition.domain.school_class import Literal, Number
+from app.structure.domain.school_class import Literal, Number
 
 
 @pytest.mark.parametrize(

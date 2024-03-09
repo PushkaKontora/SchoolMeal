@@ -1,21 +1,11 @@
-import re
 from datetime import date, datetime, time
 
 import freezegun
 import pytest
 
 from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, Pupil, PupilID
+from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, Pupil
 from app.nutrition.domain.time import YEKATERINBURG, Day, Period, now
-
-
-def test_generating_id() -> None:
-    regex = re.compile(r"[a-z\d]{20}")
-
-    for _ in range(1000):
-        pupil_id = PupilID.generate().value
-
-        assert regex.fullmatch(pupil_id), pupil_id
 
 
 def test_cancelling_mealtime_where_pupil_eats(pupil: Pupil) -> None:

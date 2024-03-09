@@ -38,5 +38,5 @@ class FeedbackDB(FeedbacksBase):
     @classmethod
     def from_model(cls, feedback: Feedback) -> "FeedbackDB":
         return FeedbackDB(
-            id_=feedback.id.value, type_=feedback.type.value, user_id=feedback.user_id, text=feedback.text.value
+            id_=feedback.id.value, type_=feedback.type.value, user_id=feedback.user_id.value, text=feedback.text.value
         )

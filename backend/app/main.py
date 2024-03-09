@@ -12,6 +12,7 @@ from app.gateway.errors import UnprocessableEntity, default_handler, unprocessab
 from app.nutrition.application.tasks import scheduler as nutrition_scheduler
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.fastapi.settings import FastAPIConfig
+from app.structure.infrastructure.dependencies import StructureContainer
 
 
 @asynccontextmanager
@@ -21,8 +22,9 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
     nutrition = NutritionContainer(alchemy=alchemy)
     feedbacks = FeedbacksContainer(alchemy=alchemy)
+    structure = StructureContainer(alchemy=alchemy)
 
-    for module in [nutrition, feedbacks]:
+    for module in [nutrition, feedbacks, structure]:
         module.check_dependencies()
         module.wire()
 

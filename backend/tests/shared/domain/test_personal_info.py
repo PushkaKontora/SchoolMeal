@@ -2,7 +2,7 @@ from contextlib import nullcontext
 
 import pytest
 
-from app.nutrition.domain.personal_info import Email, FullName, Name, Phone
+from app.shared.domain.personal_info import Email, FullName, Name, Phone
 
 
 @pytest.mark.parametrize(

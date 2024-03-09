@@ -6,8 +6,8 @@ from result import Err, Ok, Result
 
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import PupilID
-from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.time import get_submitting_deadline_within_day, has_submitting_deadline_come
+from app.shared.domain.school_class import ClassID
 
 
 class CannotSubmitAfterDeadline:
@@ -27,12 +27,6 @@ class Request:
     on_date: date
     mealtimes: dict[Mealtime, set[PupilID]]
     status: Status
-
-    def __eq__(self, other: object) -> bool:
-        return isinstance(other, Request) and (self.class_id, self.on_date) == (other.class_id, other.on_date)
-
-    def __ne__(self, other: object) -> bool:
-        return not self.__eq__(other)
 
     def submit_manually(self) -> Result["Request", CannotSubmitAfterDeadline]:
         if has_submitting_deadline_come(self.on_date):

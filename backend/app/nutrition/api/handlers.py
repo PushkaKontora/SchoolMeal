@@ -6,13 +6,12 @@ from result import Err, Ok, Result
 from app.nutrition.api import errors
 from app.nutrition.api.dto import MealtimeDTO, ResumedPupilIn
 from app.nutrition.application import services
-from app.nutrition.application.errors import NotFoundParent, NotFoundPupil, NotFoundSchoolClass
-from app.nutrition.domain.parent import ParentID, PupilIsAlreadyAttached
+from app.nutrition.application.errors import NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
 from app.nutrition.domain.request import CannotSubmitAfterDeadline
-from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.time import Day, Period
 from app.shared.api.errors import DomainValidationError
+from app.shared.domain.school_class import ClassID
 
 
 async def resume_pupil_on_day(
@@ -60,7 +59,7 @@ async def update_mealtimes_at_pupil(
 
 async def submit_request_to_canteen(
     class_id: UUID, on_date: date, overrides: set[ResumedPupilIn]
-) -> Result[None, errors.NotFoundSchoolClassWithID | errors.CannotSentRequestAfterDeadline]:
+) -> Result[None, errors.NotFoundSchoolClassWithID | errors.CannotSendRequestAfterDeadline]:
     match await services.submit_request_to_canteen(
         class_id=ClassID(class_id),
         on_date=on_date,
@@ -70,22 +69,6 @@ async def submit_request_to_canteen(
             return Err(errors.NotFoundSchoolClassWithID(class_id))
 
         case Err(CannotSubmitAfterDeadline(deadline=deadline)):
-            return Err(errors.CannotSentRequestAfterDeadline(on_date, deadline))
-
-    return Ok(None)
-
-
-async def attach_pupil_to_parent(
-    parent_id: UUID, pupil_id: str
-) -> Result[None, errors.NotFoundParentWithID | errors.NotFoundPupilWithID | errors.PupilIsAlreadyAttached]:
-    match await services.attach_child_to_parent(parent_id=ParentID(parent_id), pupil_id=PupilID(pupil_id)):
-        case Err(NotFoundParent()):
-            return Err(errors.NotFoundParentWithID(parent_id))
-
-        case Err(NotFoundPupil()):
-            return Err(errors.NotFoundPupilWithID(pupil_id))
-
-        case Err(PupilIsAlreadyAttached()):
-            return Err(errors.PupilIsAlreadyAttached())
+            return Err(errors.CannotSendRequestAfterDeadline(on_date, deadline))
 
     return Ok(None)

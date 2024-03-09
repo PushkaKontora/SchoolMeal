@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-from app.nutrition.domain.school_class import ClassID, SchoolClass
+from app.nutrition.domain.school_class import SchoolClass
+from app.shared.domain.school_class import ClassID
 from app.shared.specification import Specification
 
 

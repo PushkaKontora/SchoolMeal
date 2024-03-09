@@ -6,8 +6,7 @@ from result import Err
 from app.gateway import responses
 from app.gateway.errors import BadRequest, NotFound
 from app.gateway.web.requests.dto import SubmitRequestBody
-from app.nutrition.api import handlers as nutrition_api
-from app.nutrition.api.errors import CannotSentRequestAfterDeadline, NotFoundSchoolClassWithID
+from app.nutrition.api import errors as nutrition_errors, handlers as nutrition_api
 from app.shared.fastapi.schemas import OKSchema
 
 
@@ -24,10 +23,10 @@ async def submit_request_to_canteen(class_id: UUID, body: SubmitRequestBody) -> 
     match await nutrition_api.submit_request_to_canteen(
         class_id=class_id, on_date=body.on_date, overrides=body.overrides
     ):
-        case Err(NotFoundSchoolClassWithID(message=message)):
+        case Err(nutrition_errors.NotFoundSchoolClassWithID(message=message)):
             raise NotFound(message)
 
-        case Err(CannotSentRequestAfterDeadline(message=message)):
+        case Err(nutrition_errors.CannotSendRequestAfterDeadline(message=message)):
             raise BadRequest(message)
 
     return OKSchema()

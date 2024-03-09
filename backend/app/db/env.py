@@ -10,6 +10,7 @@ from app.db.settings import DatabaseSettings
 from app.db.utils import create_database, exists_database, wait_connect
 from app.feedbacks.infrastructure.db import FeedbacksBase
 from app.nutrition.infrastructure.db import NutritionBase
+from app.structure.infrastructure.db import StructureBase
 
 
 POSTGRES_INDEXES_NAMING_CONVENTION = {
@@ -27,7 +28,7 @@ database = DatabaseSettings()
 config: Config = context.config
 config.set_main_option("sqlalchemy.url", database.url)
 
-bases = [NutritionBase, FeedbacksBase]
+bases = [StructureBase, NutritionBase, FeedbacksBase]
 target_metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)
 
 for base in bases:

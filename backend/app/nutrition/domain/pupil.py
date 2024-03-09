@@ -1,12 +1,9 @@
-import secrets
 from dataclasses import dataclass
 from datetime import date, datetime
 
 from result import Err, Ok, Result
 
 from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.personal_info import FullName
-from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.time import (
     Day,
     Period,
@@ -14,6 +11,8 @@ from app.nutrition.domain.time import (
     get_submitting_deadline_within_day,
     has_submitting_deadline_come,
 )
+from app.shared.domain.pupil import PupilID
+from app.shared.domain.school_class import ClassID
 
 
 class CannotResumeAfterDeadline:
@@ -26,32 +25,22 @@ class CannotCancelAfterDeadline:
         self.deadline = deadline
 
 
-@dataclass(frozen=True)
-class PupilID:
-    value: str
-
-    @classmethod
-    def generate(cls) -> "PupilID":
-        return cls(secrets.token_hex(10))
-
-
 @dataclass
 class Pupil:
     id: PupilID
     class_id: ClassID
-    name: FullName
     mealtimes: set[Mealtime]
     preferential_until: date | None
-    cancellation: Timeline
+    cancelled_periods: Timeline
 
     def does_eat(self, day: Day, mealtime: Mealtime) -> bool:
-        return mealtime in self.mealtimes and day not in self.cancellation
+        return mealtime in self.mealtimes and day not in self.cancelled_periods
 
     def resume_on_day(self, day: Day) -> Result["Pupil", CannotResumeAfterDeadline]:
         if has_submitting_deadline_come(day.value):
             return Err(CannotResumeAfterDeadline(deadline=get_submitting_deadline_within_day(day.value)))
 
-        self.cancellation.exclude(day)
+        self.cancelled_periods.exclude(day)
 
         return Ok(self)
 
@@ -62,7 +51,7 @@ class Pupil:
 
             return Err(CannotCancelAfterDeadline(deadline=get_submitting_deadline_within_day(day)))
 
-        self.cancellation.insert(period)
+        self.cancelled_periods.insert(period)
 
         return Ok(self)
 

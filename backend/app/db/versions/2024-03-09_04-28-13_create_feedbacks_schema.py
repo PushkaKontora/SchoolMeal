@@ -1,8 +1,8 @@
 """create_feedbacks_schema
 
-Revision ID: ba086e4526f8
-Revises: a2b9eadc7fc1
-Create Date: 2024-02-16 04:58:16.579945
+Revision ID: 25153ec6ba38
+Revises: d61ef53f01cb
+Create Date: 2024-03-09 04:28:13.436099
 
 """
 from typing import Sequence, Union
@@ -12,14 +12,15 @@ from alembic import op
 
 
 # revision identifiers, used by Alembic.
-revision: str = "ba086e4526f8"
-down_revision: Union[str, None] = None
+revision: str = "25153ec6ba38"
+down_revision: Union[str, None] = "d61ef53f01cb"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
     op.execute("CREATE SCHEMA feedbacks")
+
     op.create_table(
         "feedback",
         sa.Column("id", sa.Uuid(), nullable=False),
