@@ -9,11 +9,12 @@ from app.shared.domain.pupil import PupilID
 from app.shared.domain.school_class import ClassID
 from app.shared.specifications import Specification
 from app.structure.application.dao.pupils import PupilByIDs, PupilByParentID
-from app.structure.application.dao.school_classes import ClassByIDs
+from app.structure.application.dao.school_classes import ClassByIDs, ClassByTeacherID
 from app.structure.domain.parent import ParentID
 from app.structure.domain.pupil import Pupil
 from app.structure.domain.school import School
 from app.structure.domain.school_class import SchoolClass
+from app.structure.domain.teacher import TeacherID
 
 
 class PupilFilters(Filters[Pupil]):
@@ -29,10 +30,12 @@ class PupilFilters(Filters[Pupil]):
 
 class ClassesFilters(Filters[SchoolClass]):
     ids: set[UUID] | None = None
+    teacher_id: UUID | None = None
 
     def _build_map(self) -> dict[str, Callable[[Any], Specification[SchoolClass]]]:
         return {
             "ids": lambda x: ClassByIDs({ClassID(class_id) for class_id in x}),
+            "teacher_id": lambda x: ClassByTeacherID(TeacherID(x)),
         }
 
 
