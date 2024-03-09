@@ -32,3 +32,14 @@ def test_number(value: int, is_ok: bool) -> None:
         number = Number(value)
 
         assert number.value == value
+
+
+def test_number_ordering() -> None:
+    a, b = Number(1), Number(11)
+
+    assert a == a
+    assert a < b
+    assert a <= a
+    assert not a > b
+    assert not a >= b
+    assert a != b

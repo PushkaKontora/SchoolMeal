@@ -16,7 +16,7 @@ class Literal:
             raise ValueError("Буква класса должны быть заглавной кириллицей")
 
 
-@dataclass(frozen=True, eq=True)
+@dataclass(frozen=True, eq=True, order=True)
 class Number:
     value: int
 

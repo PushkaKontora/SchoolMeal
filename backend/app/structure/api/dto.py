@@ -1,3 +1,4 @@
+from enum import Enum, unique
 from typing import Any, Callable
 from uuid import UUID
 
@@ -9,12 +10,18 @@ from app.shared.domain.pupil import PupilID
 from app.shared.domain.school_class import ClassID
 from app.shared.specifications import Specification
 from app.structure.application.dao.pupils import PupilByIDs, PupilByParentID
-from app.structure.application.dao.school_classes import ClassByIDs, ClassByTeacherID
+from app.structure.application.dao.school_classes import ClassByIDs, ClassByNumberRange, ClassByTeacherID
 from app.structure.domain.parent import ParentID
 from app.structure.domain.pupil import Pupil
 from app.structure.domain.school import School
-from app.structure.domain.school_class import SchoolClass
+from app.structure.domain.school_class import Number, SchoolClass
 from app.structure.domain.teacher import TeacherID
+
+
+@unique
+class SchoolClassType(str, Enum):
+    PRIMARY = "primary"
+    HIGH = "high"
 
 
 class PupilFilters(Filters[Pupil]):
@@ -31,11 +38,15 @@ class PupilFilters(Filters[Pupil]):
 class ClassesFilters(Filters[SchoolClass]):
     ids: set[UUID] | None = None
     teacher_id: UUID | None = None
+    class_type: SchoolClassType | None = None
 
     def _build_map(self) -> dict[str, Callable[[Any], Specification[SchoolClass]]]:
         return {
             "ids": lambda x: ClassByIDs({ClassID(class_id) for class_id in x}),
             "teacher_id": lambda x: ClassByTeacherID(TeacherID(x)),
+            "class_type": lambda x: ClassByNumberRange(start=Number(1), end=Number(4))
+            if x is SchoolClassType.PRIMARY
+            else ClassByNumberRange(start=Number(5), end=Number(11)),
         }
 
 

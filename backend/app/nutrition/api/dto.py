@@ -15,6 +15,7 @@ from app.shared.domain.pupil import PupilID
 from app.shared.specifications import Specification
 
 
+@unique
 class MealtimeDTO(str, Enum):
     BREAKFAST = "breakfast"
     DINNER = "dinner"

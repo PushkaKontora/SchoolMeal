@@ -1,10 +1,11 @@
+from collections import Counter
 from datetime import date
 from uuid import UUID
 
 from pydantic import BaseModel
 
 from app.nutrition.api import dto as nutrition_dto
-from app.nutrition.api.dto import MealtimeDTO, PeriodOut, RequestStatusDTO
+from app.nutrition.api.dto import MealtimeDTO, NutritionStatusOut, PeriodOut, RequestStatusDTO
 from app.structure.api import dto as structure_dto
 
 
@@ -81,3 +82,77 @@ class PrefilledRequestOut(BaseModel):
             left, right = (mid + 1, right) if day > current.end else (left, mid)
 
         return False
+
+
+class PortionsOut(BaseModel):
+    paid: int
+    preferential: int
+    total: int
+
+    @classmethod
+    def create(cls, paid: int, preferential: int) -> "PortionsOut":
+        return cls(paid=paid, preferential=preferential, total=paid + preferential)
+
+
+class ClassPortionsOut(BaseModel):
+    id: UUID
+    number: int
+    literal: str
+    portions: dict[MealtimeDTO, PortionsOut]
+
+    @classmethod
+    def create(
+        cls, school_class: structure_dto.SchoolClassOut, request: nutrition_dto.RequestOut | None
+    ) -> "ClassPortionsOut":
+        portions: dict[MealtimeDTO, PortionsOut] = {}
+
+        if request:
+            totals = {mealtime: Counter[NutritionStatusOut]() for mealtime in request.mealtimes}
+
+            for declaration in request.declarations:
+                for mealtime in declaration.mealtimes:
+                    totals[mealtime][declaration.status] += 1
+
+            portions = {
+                mealtime: PortionsOut.create(
+                    paid=totals[mealtime][NutritionStatusOut.PAID],
+                    preferential=totals[mealtime][NutritionStatusOut.PREFERENTIAL],
+                )
+                for mealtime in request.mealtimes
+            }
+
+        return cls(id=school_class.id, number=school_class.number, literal=school_class.literal, portions=portions)
+
+
+class PortionsReportOut(BaseModel):
+    school_classes: list[ClassPortionsOut]
+    totals: dict[MealtimeDTO, PortionsOut]
+
+    @classmethod
+    def create(
+        cls, school_classes: list[structure_dto.SchoolClassOut], requests: list[nutrition_dto.RequestOut]
+    ) -> "PortionsReportOut":
+        reports: list[ClassPortionsOut] = []
+        totals: dict[MealtimeDTO, Counter[NutritionStatusOut]] = {mealtime: Counter() for mealtime in MealtimeDTO}
+
+        request_by_class_id = {request.class_id: request for request in requests}
+
+        for school_class in school_classes:
+            report = ClassPortionsOut.create(school_class, request=request_by_class_id.get(school_class.id))
+
+            for mealtime, portions in report.portions.items():
+                totals[mealtime][NutritionStatusOut.PAID] += portions.paid
+                totals[mealtime][NutritionStatusOut.PREFERENTIAL] += portions.preferential
+
+            reports.append(report)
+
+        return cls(
+            school_classes=reports,
+            totals={
+                mealtime: PortionsOut.create(
+                    paid=totals[mealtime][NutritionStatusOut.PAID],
+                    preferential=totals[mealtime][NutritionStatusOut.PREFERENTIAL],
+                )
+                for mealtime in MealtimeDTO
+            },
+        )

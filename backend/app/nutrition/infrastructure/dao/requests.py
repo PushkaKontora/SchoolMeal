@@ -9,6 +9,7 @@ from app.nutrition.application.dao.requests import IRequestRepository
 from app.nutrition.domain.request import Request
 from app.nutrition.infrastructure.db import DeclarationDB, RequestDB
 from app.shared.domain.school_class import ClassID
+from app.shared.specifications import Specification
 
 
 class AlchemyRequestRepository(IRequestRepository):
@@ -64,3 +65,11 @@ class AlchemyRequestRepository(IRequestRepository):
             request_db = await session.get(RequestDB, ident=(class_id.value, on_date))
 
             return request_db.to_model() if request_db else None
+
+    async def all(self, spec: Specification[Request] | None = None) -> list[Request]:
+        query = select(RequestDB)
+
+        async with self._session_factory() as session:
+            requests = (request_db.to_model() for request_db in (await session.scalars(query)).all())
+
+            return list(filter(lambda x: spec.is_satisfied_by(x), requests) if spec else requests)

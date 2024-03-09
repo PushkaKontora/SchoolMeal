@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from app.shared.domain.school_class import ClassID
 from app.shared.specifications import Specification
-from app.structure.domain.school_class import SchoolClass
+from app.structure.domain.school_class import Number, SchoolClass
 from app.structure.domain.teacher import TeacherID
 
 
@@ -20,6 +20,15 @@ class ClassByTeacherID(Specification[SchoolClass]):
 
     def is_satisfied_by(self, candidate: SchoolClass) -> bool:
         return candidate.teacher_id == self._teacher_id
+
+
+class ClassByNumberRange(Specification[SchoolClass]):
+    def __init__(self, start: Number, end: Number) -> None:
+        self._start = start
+        self._end = end
+
+    def is_satisfied_by(self, candidate: SchoolClass) -> bool:
+        return self._start <= candidate.number <= self._end
 
 
 class ISchoolClassRepository(ABC):

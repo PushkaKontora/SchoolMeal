@@ -8,11 +8,11 @@ from app.nutrition.api import errors
 from app.nutrition.api.dto import MealtimeDTO, PupilFilters, PupilOut, RequestOut, ResumedPupilIn
 from app.nutrition.application import services
 from app.nutrition.application.dao.pupils import IPupilRepository
-from app.nutrition.application.dao.requests import IRequestRepository
+from app.nutrition.application.dao.requests import IRequestRepository, RequestByDate, RequestByStatus
 from app.nutrition.application.dao.school_classes import ISchoolClassRepository
 from app.nutrition.application.errors import NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
-from app.nutrition.domain.request import CannotSubmitAfterDeadline
+from app.nutrition.domain.request import CannotSubmitAfterDeadline, RequestStatus
 from app.nutrition.domain.time import Day, Period
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.api.errors import DomainValidationError
@@ -61,6 +61,16 @@ async def get_or_prefill_request(
         request = prefilling.unwrap()
 
     return Ok(RequestOut.from_model(request))
+
+
+@inject
+async def get_submitted_requests_on_date(
+    on_date: date,
+    request_repository: IRequestRepository = Provide[NutritionContainer.request_repository],
+) -> list[RequestOut]:
+    requests = await request_repository.all(spec=RequestByDate(on_date) & RequestByStatus(RequestStatus.SUBMITTED))
+
+    return [RequestOut.from_model(request) for request in requests]
 
 
 @inject
