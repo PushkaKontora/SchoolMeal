@@ -5,9 +5,10 @@ from pydantic import BaseModel
 
 from app.shared.api.dto import Filters
 from app.shared.domain.personal_info import FullName
+from app.shared.domain.pupil import PupilID
 from app.shared.domain.school_class import ClassID
 from app.shared.specifications import Specification
-from app.structure.application.dao.pupils import PupilByParentID
+from app.structure.application.dao.pupils import PupilByIDs, PupilByParentID
 from app.structure.application.dao.school_classes import ClassByIDs
 from app.structure.domain.parent import ParentID
 from app.structure.domain.pupil import Pupil
@@ -16,10 +17,12 @@ from app.structure.domain.school_class import SchoolClass
 
 
 class PupilFilters(Filters[Pupil]):
+    ids: set[str] | None = None
     parent_id: UUID | None = None
 
     def _build_map(self) -> dict[str, Callable[[Any], Specification[Pupil]]]:
         return {
+            "ids": lambda x: PupilByIDs({PupilID(pupil_id) for pupil_id in x}),
             "parent_id": lambda x: PupilByParentID(ParentID(x)),
         }
 

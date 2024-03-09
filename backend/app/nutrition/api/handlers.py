@@ -5,7 +5,7 @@ from dependency_injector.wiring import Provide, inject
 from result import Err, Ok, Result
 
 from app.nutrition.api import errors
-from app.nutrition.api.dto import MealtimeDTO, PupilFilters, PupilOut, ResumedPupilIn
+from app.nutrition.api.dto import MealtimeDTO, PupilFilters, PupilOut, RequestOut, ResumedPupilIn
 from app.nutrition.application import services
 from app.nutrition.application.dao.pupils import IPupilRepository
 from app.nutrition.application.dao.requests import IRequestRepository
@@ -35,6 +35,32 @@ async def get_pupil(
     pupil = await pupil_repository.get(ident=PupilID(pupil_id))
 
     return PupilOut.from_model(pupil) if pupil else None
+
+
+@inject
+async def get_or_prefill_request(
+    class_id: UUID,
+    on_date: date,
+    class_repository: ISchoolClassRepository = Provide[NutritionContainer.class_repository],
+    pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
+    request_repository: IRequestRepository = Provide[NutritionContainer.request_repository],
+) -> Result[RequestOut, errors.NotFoundSchoolClassWithID]:
+    class_id_ = ClassID(class_id)
+
+    request = await request_repository.get(class_id_, on_date)
+
+    if not request:
+        prefilling = await services.prefill_request(
+            class_id_, on_date, overrides={}, class_repository=class_repository, pupil_repository=pupil_repository
+        )
+
+        match prefilling:
+            case Err(NotFoundSchoolClass()):
+                return Err(errors.NotFoundSchoolClassWithID(class_id))
+
+        request = prefilling.unwrap()
+
+    return Ok(RequestOut.from_model(request))
 
 
 @inject

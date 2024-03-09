@@ -3,7 +3,7 @@ from typing import Iterable
 
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import Pupil, PupilID
-from app.nutrition.domain.request import Request, Status
+from app.nutrition.domain.request import Request, RequestStatus
 from app.nutrition.domain.school_class import SchoolClass
 from app.nutrition.domain.time import Day
 
@@ -31,5 +31,5 @@ def prefill_request(
         class_id=school_class.id,
         on_date=day.value,
         mealtimes=mealtimes,
-        status=Status.PREFILLED,
+        status=RequestStatus.PREFILLED,
     )

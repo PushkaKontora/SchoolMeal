@@ -6,10 +6,10 @@ from app.nutrition.application.dao.pupils import IPupilRepository, PupilByClassI
 from app.nutrition.application.dao.requests import IRequestRepository
 from app.nutrition.application.dao.school_classes import ISchoolClassRepository
 from app.nutrition.application.errors import NotFoundPupil, NotFoundSchoolClass
+from app.nutrition.domain import services
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
-from app.nutrition.domain.request import CannotSubmitAfterDeadline
-from app.nutrition.domain.services import prefill_request
+from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request
 from app.nutrition.domain.time import Day, Period
 from app.shared.domain.school_class import ClassID
 
@@ -76,15 +76,9 @@ async def submit_request_to_canteen(
     pupil_repository: IPupilRepository,
     request_repository: IRequestRepository,
 ) -> Result[None, NotFoundSchoolClass | CannotSubmitAfterDeadline]:
-    school_class = await class_repository.get(class_id)
-
-    if not school_class:
-        return Err(NotFoundSchoolClass())
-
-    pupils = await pupil_repository.all(PupilByClassID(school_class.id))
-
-    request = prefill_request(school_class, pupils, on_date, overrides)
-    submitting = request.submit_manually()
+    submitting = (await prefill_request(class_id, on_date, overrides, class_repository, pupil_repository)).and_then(
+        lambda x: x.submit_manually()
+    )
 
     if isinstance(submitting, Err):
         return submitting
@@ -92,3 +86,20 @@ async def submit_request_to_canteen(
     await request_repository.merge(submitting.unwrap())
 
     return Ok(None)
+
+
+async def prefill_request(
+    class_id: ClassID,
+    on_date: date,
+    overrides: dict[PupilID, set[Mealtime]],
+    class_repository: ISchoolClassRepository,
+    pupil_repository: IPupilRepository,
+) -> Result[Request, NotFoundSchoolClass]:
+    school_class = await class_repository.get(class_id)
+
+    if not school_class:
+        return Err(NotFoundSchoolClass())
+
+    pupils = await pupil_repository.all(PupilByClassID(school_class.id))
+
+    return Ok(services.prefill_request(school_class, pupils, on_date, overrides))

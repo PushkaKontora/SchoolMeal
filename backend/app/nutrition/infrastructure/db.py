@@ -8,7 +8,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from app.db.base import DictMixin
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import Pupil, PupilID
-from app.nutrition.domain.request import Request, Status
+from app.nutrition.domain.request import Request, RequestStatus
 from app.nutrition.domain.school_class import SchoolClass
 from app.nutrition.domain.time import Period, Timeline
 from app.shared.domain.school_class import ClassID
@@ -99,10 +99,10 @@ class RequestDB(NutritionBase):
 
     class_id: Mapped[UUID] = mapped_column(ForeignKey(SchoolClassDB.id), primary_key=True)
     on_date: Mapped[date] = mapped_column(primary_key=True)
-    mealtimes: Mapped[dict[int, list[str]]] = mapped_column(JSONB)
+    mealtimes: Mapped[dict[str, list[str]]] = mapped_column(JSONB)
     status: Mapped[int] = mapped_column()
 
-    def __init__(self, class_id: UUID, on_date: date, mealtimes: dict[int, list[str]], status: int) -> None:
+    def __init__(self, class_id: UUID, on_date: date, mealtimes: dict[str, list[str]], status: int) -> None:
         super().__init__()
 
         self.class_id = class_id
@@ -115,10 +115,10 @@ class RequestDB(NutritionBase):
             class_id=ClassID(self.class_id),
             on_date=self.on_date,
             mealtimes={
-                Mealtime(mealtime): {PupilID(id_) for id_ in pupil_ids}
+                Mealtime(int(mealtime)): {PupilID(id_) for id_ in pupil_ids}
                 for mealtime, pupil_ids in self.mealtimes.items()
             },
-            status=Status(self.status),
+            status=RequestStatus(self.status),
         )
 
     @classmethod
@@ -127,7 +127,8 @@ class RequestDB(NutritionBase):
             class_id=request.class_id.value,
             on_date=request.on_date,
             mealtimes={
-                mealtime.value: [id_.value for id_ in pupil_ids] for mealtime, pupil_ids in request.mealtimes.items()
+                str(mealtime.value): [id_.value for id_ in pupil_ids]
+                for mealtime, pupil_ids in request.mealtimes.items()
             },
             status=request.status.value,
         )

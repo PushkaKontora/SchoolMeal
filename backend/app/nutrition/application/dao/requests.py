@@ -17,3 +17,7 @@ class IRequestRepository(ABC):
     @abstractmethod
     async def exists(self, class_id: ClassID, on_date: date) -> bool:
         raise NotImplementedError
+
+    @abstractmethod
+    async def get(self, class_id: ClassID, on_date: date) -> Request | None:
+        raise NotImplementedError

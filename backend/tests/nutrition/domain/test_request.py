@@ -3,7 +3,7 @@ from datetime import date, datetime, time
 import freezegun
 import pytest
 
-from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request, Status
+from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request, RequestStatus
 from app.nutrition.domain.time import YEKATERINBURG
 from app.shared.domain.school_class import ClassID
 
@@ -18,7 +18,7 @@ def test_submitting_manually_to_canteen_before_deadline(now_: time) -> None:
         submitting = request.submit_manually()
 
         assert submitting.is_ok()
-        assert submitting.unwrap().status is Status.SUBMITTED
+        assert submitting.unwrap().status is RequestStatus.SUBMITTED
 
 
 @pytest.mark.parametrize(
@@ -40,8 +40,8 @@ def test_submitting_manually_to_canteen_after_deadline(now_: time) -> None:
         assert submitting.is_err()
         assert isinstance(submitting.unwrap_err(), CannotSubmitAfterDeadline)
 
-        assert request.status is Status.PREFILLED
+        assert request.status is RequestStatus.PREFILLED
 
 
 def _create_request(on_date: date) -> Request:
-    return Request(class_id=ClassID.generate(), on_date=on_date, mealtimes={}, status=Status.PREFILLED)
+    return Request(class_id=ClassID.generate(), on_date=on_date, mealtimes={}, status=RequestStatus.PREFILLED)

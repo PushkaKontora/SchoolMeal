@@ -1,5 +1,5 @@
 from datetime import date
-from enum import Enum
+from enum import Enum, unique
 from typing import Any, Callable
 from uuid import UUID
 
@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from app.nutrition.application.dao.pupils import PupilByIDs
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import NutritionStatus, Pupil
+from app.nutrition.domain.request import Request, RequestStatus
 from app.nutrition.domain.time import Period
 from app.shared.api.dto import Filters
 from app.shared.domain.pupil import PupilID
@@ -44,6 +45,19 @@ class NutritionStatusOut(str, Enum):
         return {
             NutritionStatus.PAID: cls.PAID,
             NutritionStatus.PREFERENTIAL: cls.PREFERENTIAL,
+        }[status]
+
+
+@unique
+class RequestStatusDTO(str, Enum):
+    PREFILLED = "prefilled"
+    SUBMITTED = "submitted"
+
+    @classmethod
+    def from_model(cls, status: RequestStatus) -> "RequestStatusDTO":
+        return {
+            RequestStatus.PREFILLED: cls.PREFILLED,
+            RequestStatus.SUBMITTED: cls.SUBMITTED,
         }[status]
 
 
@@ -93,4 +107,25 @@ class PupilOut(BaseModel):
             preferential_until=pupil.preferential_until,
             cancelled_periods=[PeriodOut.from_model(period) for period in pupil.cancelled_periods],
             nutrition=NutritionStatusOut.from_model(pupil.nutrition),
+        )
+
+
+class RequestOut(BaseModel):
+    class_id: UUID
+    on_date: date
+    mealtimes: dict[MealtimeDTO, set[str]]
+    status: RequestStatusDTO
+    can_be_resubmitted: bool
+
+    @classmethod
+    def from_model(cls, request: Request) -> "RequestOut":
+        return cls(
+            class_id=request.class_id.value,
+            on_date=request.on_date,
+            mealtimes={
+                MealtimeDTO.from_model(mealtime): {id_.value for id_ in pupil_ids}
+                for mealtime, pupil_ids in request.mealtimes.items()
+            },
+            status=RequestStatusDTO.from_model(request.status),
+            can_be_resubmitted=request.can_be_resubmitted_yet,
         )

@@ -50,3 +50,9 @@ class AlchemyRequestRepository(IRequestRepository):
             result = await session.scalar(query)
 
             return bool(result)
+
+    async def get(self, class_id: ClassID, on_date: date) -> Request | None:
+        async with self._session_factory() as session:
+            request_db = await session.get(RequestDB, ident=(class_id.value, on_date))
+
+            return request_db.to_model() if request_db else None

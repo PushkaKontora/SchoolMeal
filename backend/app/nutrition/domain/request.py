@@ -16,7 +16,7 @@ class CannotSubmitAfterDeadline:
 
 
 @unique
-class Status(IntEnum):
+class RequestStatus(IntEnum):
     PREFILLED = 0
     SUBMITTED = 1
 
@@ -26,12 +26,16 @@ class Request:
     class_id: ClassID
     on_date: date
     mealtimes: dict[Mealtime, set[PupilID]]
-    status: Status
+    status: RequestStatus
+
+    @property
+    def can_be_resubmitted_yet(self) -> bool:
+        return not has_submitting_deadline_come(self.on_date)
 
     def submit_manually(self) -> Result["Request", CannotSubmitAfterDeadline]:
         if has_submitting_deadline_come(self.on_date):
             return Err(CannotSubmitAfterDeadline(deadline=get_submitting_deadline_within_day(self.on_date).timetz()))
 
-        self.status = Status.SUBMITTED
+        self.status = RequestStatus.SUBMITTED
 
         return Ok(self)
