@@ -20,6 +20,16 @@ class Specification(Generic[T], ABC):
         return _NotSpecification(self)
 
 
+class TrueSpecification(Specification[T]):
+    def is_satisfied_by(self, candidate: T) -> bool:
+        return True
+
+
+class FalseSpecification(Specification[T]):
+    def is_satisfied_by(self, candidate: T) -> bool:
+        return False
+
+
 class _AndSpecification(Specification[T]):
     def __init__(self, left: Specification[T], right: Specification[T]) -> None:
         self._left = left

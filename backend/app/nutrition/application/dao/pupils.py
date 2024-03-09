@@ -2,14 +2,18 @@ from abc import ABC, abstractmethod
 
 from app.nutrition.domain.pupil import Pupil, PupilID
 from app.shared.domain.school_class import ClassID
-from app.shared.specification import Specification
+from app.shared.specifications import Specification
 
 
-class Filter(Specification[Pupil], ABC):
-    pass
+class PupilByIDs(Specification[Pupil]):
+    def __init__(self, ids: set[PupilID]) -> None:
+        self._ids = ids
+
+    def is_satisfied_by(self, candidate: Pupil) -> bool:
+        return candidate.id in self._ids
 
 
-class PupilByClassID(Filter):
+class PupilByClassID(Specification[Pupil]):
     def __init__(self, class_id: ClassID) -> None:
         self._class_id = class_id
 
@@ -27,5 +31,5 @@ class IPupilRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def all(self, spec: Filter) -> list[Pupil]:
+    async def all(self, spec: Specification[Pupil] | None = None) -> list[Pupil]:
         raise NotImplementedError

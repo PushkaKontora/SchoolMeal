@@ -1,6 +1,5 @@
 from datetime import date
 
-from dependency_injector.wiring import Provide, inject
 from result import Err, Ok, Result
 
 from app.nutrition.application.dao.pupils import IPupilRepository, PupilByClassID
@@ -12,13 +11,11 @@ from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAf
 from app.nutrition.domain.request import CannotSubmitAfterDeadline
 from app.nutrition.domain.services import prefill_request
 from app.nutrition.domain.time import Day, Period
-from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.domain.school_class import ClassID
 
 
-@inject
 async def resume_pupil_on_day(
-    pupil_id: PupilID, day: Day, pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository]
+    pupil_id: PupilID, day: Day, pupil_repository: IPupilRepository
 ) -> Result[None, NotFoundPupil | CannotResumeAfterDeadline]:
     pupil = await pupil_repository.get(pupil_id)
 
@@ -35,9 +32,8 @@ async def resume_pupil_on_day(
     return Ok(None)
 
 
-@inject
 async def cancel_pupil_for_period(
-    pupil_id: PupilID, period: Period, pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository]
+    pupil_id: PupilID, period: Period, pupil_repository: IPupilRepository
 ) -> Result[None, NotFoundPupil | CannotCancelAfterDeadline]:
     pupil = await pupil_repository.get(pupil_id)
 
@@ -54,11 +50,10 @@ async def cancel_pupil_for_period(
     return Ok(None)
 
 
-@inject
 async def resume_or_cancel_mealtimes_at_pupil(
     pupil_id: PupilID,
     mealtimes: dict[Mealtime, bool],
-    pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
+    pupil_repository: IPupilRepository,
 ) -> Result[None, NotFoundPupil]:
     pupil = await pupil_repository.get(pupil_id)
 
@@ -73,14 +68,13 @@ async def resume_or_cancel_mealtimes_at_pupil(
     return Ok(None)
 
 
-@inject
 async def submit_request_to_canteen(
     class_id: ClassID,
     on_date: date,
     overrides: dict[PupilID, set[Mealtime]],
-    class_repository: ISchoolClassRepository = Provide[NutritionContainer.class_repository],
-    pupil_repository: IPupilRepository = Provide[NutritionContainer.pupil_repository],
-    request_repository: IRequestRepository = Provide[NutritionContainer.request_repository],
+    class_repository: ISchoolClassRepository,
+    pupil_repository: IPupilRepository,
+    request_repository: IRequestRepository,
 ) -> Result[None, NotFoundSchoolClass | CannotSubmitAfterDeadline]:
     school_class = await class_repository.get(class_id)
 

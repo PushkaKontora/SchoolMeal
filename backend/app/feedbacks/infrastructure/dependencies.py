@@ -5,7 +5,9 @@ from app.feedbacks.infrastructure.dao.feedbacks import AlchemyFeedbackRepository
 
 
 class FeedbacksContainer(DeclarativeContainer):
-    wiring_config = WiringConfiguration(from_package="app.feedbacks", packages=[".application"], auto_wire=False)
+    wiring_config = WiringConfiguration(
+        from_package="app.feedbacks", packages=[".api", ".application"], auto_wire=False
+    )
 
     alchemy = providers.DependenciesContainer()
 

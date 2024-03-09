@@ -3,11 +3,6 @@ from datetime import date
 
 from app.nutrition.domain.request import Request
 from app.shared.domain.school_class import ClassID
-from app.shared.specification import Specification
-
-
-class Filter(Specification[Request], ABC):
-    pass
 
 
 class IRequestRepository(ABC):

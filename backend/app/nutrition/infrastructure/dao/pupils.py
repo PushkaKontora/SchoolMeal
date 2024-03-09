@@ -4,9 +4,10 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.nutrition.application.dao.pupils import Filter, IPupilRepository
+from app.nutrition.application.dao.pupils import IPupilRepository
 from app.nutrition.domain.pupil import Pupil, PupilID
 from app.nutrition.infrastructure.db import PupilDB
+from app.shared.specifications import Specification
 
 
 class AlchemyPupilRepository(IPupilRepository):
@@ -35,7 +36,7 @@ class AlchemyPupilRepository(IPupilRepository):
 
             return pupil_db.to_model() if pupil_db else None
 
-    async def all(self, spec: Filter | None = None) -> list[Pupil]:
+    async def all(self, spec: Specification[Pupil] | None = None) -> list[Pupil]:
         query = select(PupilDB)
 
         async with self._session_factory() as session:

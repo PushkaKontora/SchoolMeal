@@ -3,10 +3,11 @@ from typing import AsyncContextManager, Callable
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.nutrition.application.dao.school_classes import Filter, ISchoolClassRepository
+from app.nutrition.application.dao.school_classes import ISchoolClassRepository
 from app.nutrition.domain.school_class import SchoolClass
 from app.nutrition.infrastructure.db import SchoolClassDB
 from app.shared.domain.school_class import ClassID
+from app.shared.specifications import Specification
 
 
 class AlchemySchoolClassRepository(ISchoolClassRepository):
@@ -19,7 +20,7 @@ class AlchemySchoolClassRepository(ISchoolClassRepository):
 
             return class_db.to_model() if class_db else None
 
-    async def all(self, spec: Filter | None = None) -> list[SchoolClass]:
+    async def all(self, spec: Specification[SchoolClass] | None = None) -> list[SchoolClass]:
         query = select(SchoolClassDB)
 
         async with self._session_factory() as session:

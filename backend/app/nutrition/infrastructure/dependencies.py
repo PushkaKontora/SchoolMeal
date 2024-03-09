@@ -7,7 +7,9 @@ from app.nutrition.infrastructure.dao.school_classes import AlchemySchoolClassRe
 
 
 class NutritionContainer(DeclarativeContainer):
-    wiring_config = WiringConfiguration(from_package="app.nutrition", packages=[".application"], auto_wire=False)
+    wiring_config = WiringConfiguration(
+        from_package="app.nutrition", packages=[".api", ".application"], auto_wire=False
+    )
 
     alchemy = providers.DependenciesContainer()
 

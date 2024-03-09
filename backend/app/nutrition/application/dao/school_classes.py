@@ -2,11 +2,7 @@ from abc import ABC, abstractmethod
 
 from app.nutrition.domain.school_class import SchoolClass
 from app.shared.domain.school_class import ClassID
-from app.shared.specification import Specification
-
-
-class Filter(Specification[SchoolClass], ABC):
-    pass
+from app.shared.specifications import Specification
 
 
 class ISchoolClassRepository(ABC):
@@ -15,5 +11,5 @@ class ISchoolClassRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def all(self, spec: Filter | None = None) -> list[SchoolClass]:
+    async def all(self, spec: Specification[SchoolClass] | None = None) -> list[SchoolClass]:
         raise NotImplementedError
