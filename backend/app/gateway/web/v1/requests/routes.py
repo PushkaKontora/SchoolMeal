@@ -6,12 +6,12 @@ from result import Err
 
 from app.gateway import responses
 from app.gateway.errors import BadRequest, NotFound
-from app.gateway.web.requests.dto import (
+from app.gateway.web.v1.requests.dto import (
     GetOrPrefillRequestParams,
     GetPortionReportBySubmittedRequestsParams,
     SubmitRequestBody,
 )
-from app.gateway.web.requests.view import PortionsReportOut, PrefilledRequestOut
+from app.gateway.web.v1.requests.view import PortionsReportOut, PrefilledRequestOut
 from app.nutrition.api import dto as nutrition_dto, errors as nutrition_errors, handlers as nutrition_api
 from app.shared.fastapi.schemas import OKSchema
 from app.structure.api import dto as structure_dto, handlers as structure_api

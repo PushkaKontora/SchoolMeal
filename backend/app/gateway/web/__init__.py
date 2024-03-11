@@ -1,10 +1,8 @@
 from fastapi import APIRouter
 
-from .requests.routes import router as requests
-from .school_classes.routes import router as school_classes
+from .v1 import router as v1
 
 
-router = APIRouter(prefix="/web")
+router = APIRouter()
 
-router.include_router(requests)
-router.include_router(school_classes)
+router.include_router(v1, prefix="/v1", tags=["Web API v1"])

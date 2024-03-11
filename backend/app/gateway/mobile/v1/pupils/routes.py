@@ -3,8 +3,8 @@ from result import Err
 
 from app.gateway import responses
 from app.gateway.errors import BadRequest, NotFound, UnprocessableEntity
-from app.gateway.mobile.pupils.dto import CancelPupilForPeriodBody, ResumePupilOnDayBody, UpdateMealtimesBody
-from app.gateway.mobile.pupils.view import ChildSummaryOut
+from app.gateway.mobile.v1.pupils.dto import CancelPupilForPeriodBody, ResumePupilOnDayBody, UpdateMealtimesBody
+from app.gateway.mobile.v1.pupils.view import ChildSummaryOut
 from app.nutrition.api import dto as nutrition_dto, errors as nutrition_errors, handlers as nutrition_api
 from app.shared.api.errors import DomainValidationError
 from app.shared.fastapi.dependencies.headers import AuthorizedUserDep

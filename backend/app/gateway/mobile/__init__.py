@@ -1,11 +1,8 @@
 from fastapi import APIRouter
 
-from .feedbacks.routes import router as feedbacks
-from .pupils.routes import router as pupils
+from .v1 import router as v1
 
 
-router = APIRouter(prefix="/mobile")
+router = APIRouter()
 
-
-router.include_router(pupils)
-router.include_router(feedbacks)
+router.include_router(v1, prefix="/v1", tags=["Mobile API v1"])
