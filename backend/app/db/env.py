@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from app.db.settings import DatabaseSettings
 from app.db.utils import create_database, exists_database, wait_connect
 from app.feedbacks.infrastructure.db import FeedbacksBase
+from app.identity.infrastructure.db import IdentityBase
 from app.nutrition.infrastructure.db import NutritionBase
 from app.structure.infrastructure.db import StructureBase
 
@@ -28,11 +29,11 @@ database = DatabaseSettings()
 config: Config = context.config
 config.set_main_option("sqlalchemy.url", database.url)
 
-bases = [StructureBase, NutritionBase, FeedbacksBase]
+SCHEMAS = (StructureBase, NutritionBase, FeedbacksBase, IdentityBase)
 target_metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)
 
-for base in bases:
-    for table in base.metadata.tables.values():
+for schema in SCHEMAS:
+    for table in schema.metadata.tables.values():
         table.to_metadata(target_metadata)
 
 
@@ -64,13 +65,7 @@ def do_run_migrations(connection: Connection) -> None:
 async def run_migrations_online() -> None:
     configuration = config.get_section(config.config_ini_section)
 
-    connectable = AsyncEngine(
-        engine_from_config(
-            configuration,
-            poolclass=pool.NullPool,
-            future=True,
-        )  # type: ignore
-    )
+    connectable = AsyncEngine(engine_from_config(configuration, poolclass=pool.NullPool, future=True))  # type: ignore
 
     await wait_connect(database)
 

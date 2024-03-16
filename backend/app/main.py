@@ -9,6 +9,7 @@ from app.db.settings import DatabaseSettings
 from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
 from app.gateway import router
 from app.gateway.errors import UnprocessableEntity, default_handler, unprocessable_entity_handler
+from app.identity.infrastructure.dependencies import IdentityContainer
 from app.nutrition.application.tasks import scheduler as nutrition_scheduler
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.fastapi.settings import FastAPIConfig
@@ -20,11 +21,14 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     alchemy = AlchemyORM()
     alchemy.config.from_pydantic(DatabaseSettings())
 
-    nutrition = NutritionContainer(alchemy=alchemy)
-    feedbacks = FeedbacksContainer(alchemy=alchemy)
-    structure = StructureContainer(alchemy=alchemy)
+    modules = (
+        NutritionContainer(alchemy=alchemy),
+        FeedbacksContainer(alchemy=alchemy),
+        StructureContainer(alchemy=alchemy),
+        IdentityContainer(alchemy=alchemy),
+    )
 
-    for module in [nutrition, feedbacks, structure]:
+    for module in modules:
         module.check_dependencies()
         module.wire()
 
