@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
+from apscheduler.schedulers.base import BaseScheduler
+from dependency_injector.containers import DeclarativeContainer
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -9,6 +11,7 @@ from app.db.settings import DatabaseSettings
 from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
 from app.gateway import router
 from app.gateway.errors import UnprocessableEntity, default_handler, unprocessable_entity_handler
+from app.identity.application.tasks import scheduler as identity_scheduler
 from app.identity.infrastructure.dependencies import IdentityContainer
 from app.nutrition.application.tasks import scheduler as nutrition_scheduler
 from app.nutrition.infrastructure.dependencies import NutritionContainer
@@ -21,22 +24,25 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     alchemy = AlchemyORM()
     alchemy.config.from_pydantic(DatabaseSettings())
 
-    modules = (
+    modules: list[DeclarativeContainer] = [
         NutritionContainer(alchemy=alchemy),
         FeedbacksContainer(alchemy=alchemy),
         StructureContainer(alchemy=alchemy),
         IdentityContainer(alchemy=alchemy),
-    )
+    ]
+    schedulers: list[BaseScheduler] = [nutrition_scheduler, identity_scheduler]
 
     for module in modules:
         module.check_dependencies()
         module.wire()
 
-    nutrition_scheduler.start()
+    for scheduler in schedulers:
+        scheduler.start()
 
     yield
 
-    nutrition_scheduler.shutdown()
+    for scheduler in schedulers:
+        scheduler.shutdown()
 
 
 settings = FastAPIConfig()

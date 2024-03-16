@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
 from uuid import UUID
 
 from app.identity.domain.credentials import Login
@@ -32,4 +33,8 @@ class ISessionRepository(ABC):
 
     @abstractmethod
     async def remove_all_by_user_id(self, user_id: UserID) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete_all_expired(self, beginning_with: datetime) -> None:
         raise NotImplementedError

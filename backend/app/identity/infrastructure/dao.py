@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import AsyncContextManager, Callable
 from uuid import UUID
 
@@ -59,6 +60,12 @@ class AlchemySessionRepository(ISessionRepository):
 
     async def remove_all_by_user_id(self, user_id: UserID) -> None:
         query = delete(SessionDB).where(SessionDB.user_id == user_id.value)
+
+        async with self._session_factory() as session:
+            await session.execute(query)
+
+    async def delete_all_expired(self, beginning_with: datetime) -> None:
+        query = delete(SessionDB).where(SessionDB.expires_in >= beginning_with)
 
         async with self._session_factory() as session:
             await session.execute(query)
