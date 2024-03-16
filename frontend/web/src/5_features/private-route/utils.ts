@@ -1,7 +1,7 @@
 import {RoleOrAny} from './types';
-import {User} from '../../6_entities/user';
+import {User} from '../../7_shared/model/user.ts';
 
-export function isRoleMatching(requiredRole: RoleOrAny, user: User | undefined | null) {
+export function isRoleMatching(requiredRole: RoleOrAny, user: User | undefined) {
   return requiredRole === user?.role ||
     (requiredRole === 'any' && user);
 }

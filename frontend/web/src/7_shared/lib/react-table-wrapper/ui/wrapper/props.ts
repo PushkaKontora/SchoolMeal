@@ -7,5 +7,6 @@ export type TableStyles = {
 
 export type ReactTableWrapperProps<T> = {
   table: Table<T>,
-  styles?: TableStyles
+  styles?: TableStyles,
+  footerAtTop?: boolean
 }

@@ -17,6 +17,8 @@ export function LoginWidget() {
     const response: { data: TokenResponse } = await signIn(data);
     await AuthTokenService.saveAuthToken(response.data);
     dispatch(setAuthorized(true));
+
+
   };
 
   return (

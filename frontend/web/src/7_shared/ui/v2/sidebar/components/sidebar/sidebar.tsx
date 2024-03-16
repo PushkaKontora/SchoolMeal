@@ -9,8 +9,11 @@ export function Sidebar(props: SidebarProps) {
     <SidebarContainer>
       <Logo/>
       <SidebarItemList>
-        {props.items.map(item =>
-          <SidebarIconedButton {...item}/>)}
+        {props.items.map((item, index) =>
+          <SidebarIconedButton
+            {...item}
+            active={item.active || props.selectedItemIndex == index}
+          />)}
       </SidebarItemList>
       <SidebarBottomActions>
         {props.actionItems.map(item =>

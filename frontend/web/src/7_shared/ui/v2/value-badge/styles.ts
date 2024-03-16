@@ -20,4 +20,6 @@ export const BadgeContainer = styled.div<{
   
   border-radius: 4px;
   width: ${props => props.$width || 'auto'};
+
+  display: inline-block;
 `;

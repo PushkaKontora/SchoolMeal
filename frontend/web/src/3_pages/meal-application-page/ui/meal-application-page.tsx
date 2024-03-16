@@ -1,4 +1,3 @@
-import {SidebarWithContent} from '../../../7_shared/ui/v2/sidebar';
 import {PageStyles} from '../styles/page-styles.ts';
 import {MealApplicationWidget} from '../../../4_widgets/meal-application-widget';
 import {updateDataState} from '../../../7_shared/lib/react-table-wrapper';
@@ -18,7 +17,6 @@ import {dateToISOWithoutTime} from '../../../7_shared/lib/date';
 import {combineTableData, createClassNames, createHeaders} from '../lib/adapters.ts';
 import {MealRequestRowViewData} from '../../../6_entities/meal-request';
 import {OverridenPupil} from '../../../7_shared/model/pupil.ts';
-import {AppSidebar} from '../../../4_widgets/app-sidebar';
 import {isListEditable} from '../../../5_features/meal-application-feature';
 
 export function MealApplicationPage() {
@@ -84,80 +82,70 @@ export function MealApplicationPage() {
 
   return (
     <PageStyles>
-      <SidebarWithContent
-        sidebar={(
-          <AppSidebar
-            selectedItemIndex={1}
-            currentUser={currentUser}/>
-        )}
-        contentStyles={{
-          padding: '48px 40px 0 40px'
-        }}>
-        <TitleWidget
-          title={'Подать заявку'}/>
-        <MealApplicationWidget
-          selectedClassIndex={classIndex}
-          classNames={createClassNames(classes)}
-          onClassSelect={(index) => setClassIndex(index)}
-          date={date}
-          onDateSelect={(date) => setDate(date)}
-          data={tableData}
-          tableData={{
-            editable: isListEditable(mealRequestFormStatus),
-            hasBreakfast: classes?.[classIndex].breakfast,
-            hasDinner: classes?.[classIndex].dinner,
-            hasSnacks: classes?.[classIndex].snacks
-          }}
-          updateData={(rowIndex, columnId, value) => {
-            const pupilView = tableData[rowIndex];
-            const pupil = pupils?.[rowIndex];
-            setOverridenPupils(prev => {
-              if (pupil) {
-                prev[pupil.id] = {
-                  id: pupil.id,
-                  breakfast: pupilView.breakfast,
-                  dinner: pupilView.dinner,
-                  snacks: pupilView.snacks,
-                  [columnId]: value
-                };
-              }
-
-              return prev;
-            });
-
-            updateDataState(setTableData, rowIndex, columnId, value);
-          }}
-          headerViewData={createHeaders(menu)}
-          status={mealRequestFormStatus || MealRequestStatus.NotApplied}
-          buttonTitles={{
-            [MealRequestStatus.Applied]: 'Редактировать',
-            [MealRequestStatus.Edit]: 'Сохранить изменения',
-            [MealRequestStatus.NotApplied]: 'Отправить заявку'
-          }}
-          onCancel={() => {
-            setMealRequestFormStatus(temp_mapStatus(planningRequest?.status));
-            setTableData(prevTableData);
-            setOverridenPupils({});
-          }}
-          onSend={() => {
-            switch (mealRequestFormStatus) {
-            case MealRequestStatus.NotApplied:
-            case MealRequestStatus.Edit:
-              if (classes) {
-                prepareReport({
-                  class_id: classes[classIndex].id,
-                  on_date: dateToISOWithoutTime(date),
-                  overriden_pupils: Object.values(overridenPupils)
-                });
-              }
-              break;
-            case MealRequestStatus.Applied:
-              setPrevTableData(tableData);
-              setMealRequestFormStatus(MealRequestStatus.Edit);
-              break;
+      <TitleWidget
+        title={'Подать заявку'}/>
+      <MealApplicationWidget
+        selectedClassIndex={classIndex}
+        classNames={createClassNames(classes)}
+        onClassSelect={(index) => setClassIndex(index)}
+        date={date}
+        onDateSelect={(date) => setDate(date)}
+        data={tableData}
+        tableData={{
+          editable: isListEditable(mealRequestFormStatus),
+          hasBreakfast: classes?.[classIndex].breakfast,
+          hasDinner: classes?.[classIndex].dinner,
+          hasSnacks: classes?.[classIndex].snacks
+        }}
+        updateData={(rowIndex, columnId, value) => {
+          const pupilView = tableData[rowIndex];
+          const pupil = pupils?.[rowIndex];
+          setOverridenPupils(prev => {
+            if (pupil) {
+              prev[pupil.id] = {
+                id: pupil.id,
+                breakfast: pupilView.breakfast,
+                dinner: pupilView.dinner,
+                snacks: pupilView.snacks,
+                [columnId]: value
+              };
             }
-          }}/>
-      </SidebarWithContent>
+
+            return prev;
+          });
+
+          updateDataState(setTableData, rowIndex, columnId, value);
+        }}
+        headerViewData={createHeaders(menu)}
+        status={mealRequestFormStatus || MealRequestStatus.NotApplied}
+        buttonTitles={{
+          [MealRequestStatus.Applied]: 'Редактировать',
+          [MealRequestStatus.Edit]: 'Сохранить изменения',
+          [MealRequestStatus.NotApplied]: 'Отправить заявку'
+        }}
+        onCancel={() => {
+          setMealRequestFormStatus(temp_mapStatus(planningRequest?.status));
+          setTableData(prevTableData);
+          setOverridenPupils({});
+        }}
+        onSend={() => {
+          switch (mealRequestFormStatus) {
+          case MealRequestStatus.NotApplied:
+          case MealRequestStatus.Edit:
+            if (classes) {
+              prepareReport({
+                class_id: classes[classIndex].id,
+                on_date: dateToISOWithoutTime(date),
+                overriden_pupils: Object.values(overridenPupils)
+              });
+            }
+            break;
+          case MealRequestStatus.Applied:
+            setPrevTableData(tableData);
+            setMealRequestFormStatus(MealRequestStatus.Edit);
+            break;
+          }
+        }}/>
     </PageStyles>
   );
 }

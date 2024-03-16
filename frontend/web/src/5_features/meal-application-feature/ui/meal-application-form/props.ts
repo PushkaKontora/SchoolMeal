@@ -1,7 +1,7 @@
 import {HeaderViewData, MealRequestRowViewData} from '../../../../6_entities/meal-request';
 import {MealRequestStatus} from '../../../../7_shared/model/meal-request-status.ts';
 import {CSSProperties} from 'react';
-import {TableViewData} from '../../../../6_entities/meal-request/ui/meal-request-list/model/table-view-data.ts';
+import {TableViewData} from '../../../../6_entities/meal-request/ui/meal-request-application-list/model/table-view-data.ts';
 
 export type TableStyles = {
   height?: CSSProperties['height']
