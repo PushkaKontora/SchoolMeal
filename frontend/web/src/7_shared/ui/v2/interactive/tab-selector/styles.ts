@@ -5,6 +5,8 @@ export const Container = styled.div`
   
   flex-direction: row;
   gap: 8px;
+  
+  align-items: center;
 `;
 
 export const Tab = styled.button<{

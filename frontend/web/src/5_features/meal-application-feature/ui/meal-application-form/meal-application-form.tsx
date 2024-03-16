@@ -1,5 +1,5 @@
 import {Buttons, Container, Header, StatusContainer, TableContainer} from './styles.ts';
-import {MealRequestList, MealRequestStatusBadge} from '../../../../6_entities/meal-request';
+import {MealRequestApplicationList, MealRequestStatusBadge} from '../../../../6_entities/meal-request';
 import {MealApplicationFormProps} from './props.ts';
 import {MealPlanHeaderCell} from '../../../../6_entities/meal-plan/ui/meal-plan-header-cell';
 import {CancelledNutritionBadgeCell} from '../../../../6_entities/pupil';
@@ -34,7 +34,7 @@ export function MealApplicationForm(props: MealApplicationFormProps) {
         </Buttons>
       </Header>
       <TableContainer>
-        <MealRequestList
+        <MealRequestApplicationList
           data={props.data}
           updateData={props.updateData}
           tableData={props.tableData}
@@ -44,8 +44,7 @@ export function MealApplicationForm(props: MealApplicationFormProps) {
               <MealPlanHeaderCell
                 key={props.key}
                 title={props.title}
-                showContent={props.showContent}
-                price={props.price}/>
+                showContent={props.showContent}/>
             ),
             cancelledBadge: props => (
               <CancelledNutritionBadgeCell

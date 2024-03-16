@@ -1,8 +1,8 @@
 import {AbstractCell} from '../../../../7_shared/ui/v2/table';
 import {MealPlanHeaderCellProps} from './props.ts';
-import {Container, Price, Title} from './styles.ts';
+import {Container, Title} from './styles.ts';
 
-export function MealPlanHeaderCell({title, price, ...props}: MealPlanHeaderCellProps) {
+export function MealPlanHeaderCell({title, ...props}: MealPlanHeaderCellProps) {
   return (
     <AbstractCell
       {...props}
@@ -11,9 +11,6 @@ export function MealPlanHeaderCell({title, price, ...props}: MealPlanHeaderCellP
         <Title>
           {title}
         </Title>
-        <Price>
-          {price.toFixed(2)}
-        </Price>
       </Container>
     </AbstractCell>
   );

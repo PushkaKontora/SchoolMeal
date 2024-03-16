@@ -5,7 +5,7 @@ export const SidebarContainer = styled.section`
   ${{...DEFAULT_STYLES}}
 `;
 
-export const SidebarItemList = styled.div`
+export const SidebarItemList = styled.nav`
   margin-top: 32px;
   
   display: flex;

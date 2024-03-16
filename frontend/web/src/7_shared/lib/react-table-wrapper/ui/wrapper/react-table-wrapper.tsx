@@ -1,6 +1,7 @@
 import {ReactTableWrapperProps} from './props.ts';
 import {flexRender} from '@tanstack/react-table';
 import {TableContainer} from './styles.ts';
+import {getFooters} from '../../lib/get-footers.tsx';
 
 export function ReactTableWrapper<T>({table, ...props}: ReactTableWrapperProps<T>) {
   return (
@@ -23,6 +24,11 @@ export function ReactTableWrapper<T>({table, ...props}: ReactTableWrapperProps<T
       </thead>
       <tbody>
         {
+          props.footerAtTop && (
+            getFooters(table)
+          )
+        }
+        {
           table.getRowModel().rows.map(row => (
             <tr key={row.id}>
               {
@@ -33,6 +39,11 @@ export function ReactTableWrapper<T>({table, ...props}: ReactTableWrapperProps<T
               }
             </tr>
           ))
+        }
+        {
+          !props.footerAtTop && (
+            getFooters(table)
+          )
         }
       </tbody>
     </TableContainer>

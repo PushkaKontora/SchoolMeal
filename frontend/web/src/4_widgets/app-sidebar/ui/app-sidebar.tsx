@@ -1,21 +1,21 @@
 import {Sidebar} from '../../../7_shared/ui/v2/sidebar';
-import {getAccountName} from '../../../2_processes/role-sidebar/lib/account-name.ts';
 import {AppSidebarProps} from '../model/props.ts';
-import {ACTION_ITEMS, ITEMS} from '../const/items.tsx';
 
 import ExitIcon from '../assets/exit.svg?react';
+import {ACTION_ITEMS} from '../const/action-items.tsx';
+import {getFullName} from '../../../6_entities/user';
 
 export function AppSidebar(props: AppSidebarProps) {
   return (
     <Sidebar
       selectedItemIndex={props.selectedItemIndex}
-      items={ITEMS}
+      items={props.items}
       actionItems={ACTION_ITEMS}
       logoutButtonProps={{
         icon: (
           <ExitIcon/>
         ),
-        accountName: getAccountName(props.currentUser),
+        accountName: getFullName(props.currentUser),
         onClick: () => {return;}
       }}/>
   );

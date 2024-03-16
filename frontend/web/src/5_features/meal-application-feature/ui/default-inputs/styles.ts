@@ -13,7 +13,10 @@ export const Container = styled.div`
 `;
 
 export const TabSelectorContainer = styled.div`
+  display: flex;
   flex: 1;
+  
+  align-items: center;
 `;
 
 export const DatePickerContainer = styled.div`

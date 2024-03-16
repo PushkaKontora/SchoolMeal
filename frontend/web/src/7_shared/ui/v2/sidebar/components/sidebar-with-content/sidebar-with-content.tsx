@@ -1,6 +1,7 @@
-import {Content, ContentBody, ParentContainer} from './styles.ts';
+import {Content, ParentContainer} from './styles.ts';
 import {SidebarWithContentProps} from './props.ts';
 import {SIDEBAR_WIDTH} from '../../config/config.ts';
+import {PaddingArea} from '../../../markup/padding-area';
 
 export function SidebarWithContent(props: SidebarWithContentProps) {
   return (
@@ -9,10 +10,10 @@ export function SidebarWithContent(props: SidebarWithContentProps) {
       {props.sidebar}
       <Content
         $sidebarWidth={props.sidebarWidth || SIDEBAR_WIDTH}>
-        <ContentBody
-          $padding={props.contentStyles?.padding}>
+        <PaddingArea
+          padding={props.contentStyles?.padding}>
           {props.children}
-        </ContentBody>
+        </PaddingArea>
       </Content>
     </ParentContainer>
   );

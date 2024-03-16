@@ -3,5 +3,5 @@ import {RoleOrAny} from './types';
 
 export type PrivateRouteProps = {
   requiredRole: RoleOrAny,
-  redirectTo?: string
+  redirectTo: string
 } & PropsWithChildren;

@@ -15,7 +15,7 @@ export function ValueBadge({value, type, ...props}: ValueBadgeProps) {
       $margin={styles?.margin}
       $fontFamily={styles?.fontFamily}
       $width={styles?.width}>
-      {value && (Number(value) > 0) ? value : '-'}
+      {value && (Number(value) > 0) ? value : '\u00A0\u0336\u00A0'}
     </BadgeContainer>
   );
 }

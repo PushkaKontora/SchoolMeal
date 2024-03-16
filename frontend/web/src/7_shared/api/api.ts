@@ -9,6 +9,9 @@ import {OverridenPupil, Pupil, } from '../model/pupil.ts';
 import {Menu} from '../model/menu.ts';
 import {UniversalResponse} from './types.ts';
 import {User} from '../model/user.ts';
+import {MealRequest} from '../model/meal-request.ts';
+import {ClassType} from '../model/class-type.ts';
+import {BaseQueryArg} from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 
 export const Api = createApi({
   reducerPath: 'api',
@@ -71,6 +74,15 @@ export const Api = createApi({
         body: body
       }),
       invalidatesTags: ['PlanningReport']
+    }),
+    getReport: builder.query<MealRequest, {
+      class_type: ClassType,
+      on_date: string
+    }>({
+      query: (params) => ({
+        url: 'requests/report',
+        params: params
+      })
     })
   })
 });
@@ -81,5 +93,6 @@ export const {
   useGetMenuQuery,
   useGetPlanningMealRequestQuery,
   usePrepareMealRequestMutation,
-  useGetCurrentUserQuery
+  useGetCurrentUserQuery,
+  useGetReportQuery
 } = Api;

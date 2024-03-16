@@ -1,10 +1,17 @@
 import {Route, Routes} from 'react-router-dom';
-import {NO_AUTH_ROUTES} from '../../../7_shared/config/routes/no-auth-routes';
+import {NO_AUTH_ROUTES} from '../../../3_pages/routing';
 import {LoginPage} from '../../../3_pages/login-page';
-import {CANTEEN_STAFF_ROUTES, TEACHER_ROUTES} from '../../../7_shared/config/routes/auth-routes';
-import {PrivateRoute} from '../../../5_features/private-route';
+import {CANTEEN_STAFF_ROUTES, TEACHER_ROUTES} from '../../../3_pages/routing';
+import {PrivateRoute, PrivateRouteProps} from '../../../5_features/private-route';
 import {Role} from '../../../7_shared/model/role';
 import {MealApplicationPage} from '../../../3_pages/meal-application-page';
+import {MealRequestMonitorPage} from '../../../3_pages/meal-request-monitor-page/ui/meal-request-monitor-page.tsx';
+
+const DefaultPrivateRoute = (props: Omit<PrivateRouteProps, 'redirectTo'>) => (
+  <PrivateRoute
+    {...props}
+    redirectTo={NO_AUTH_ROUTES.login}/>
+);
 
 export function AppRouter() {
   return (
@@ -14,20 +21,37 @@ export function AppRouter() {
         element={<LoginPage/>}/>
 
       <Route
-        path={CANTEEN_STAFF_ROUTES.applications}
+        path={CANTEEN_STAFF_ROUTES.Requests}
         element={
-          <PrivateRoute
+          <DefaultPrivateRoute
             requiredRole={Role.canteen_staff}>
-            {null}
-          </PrivateRoute>
+            <MealRequestMonitorPage/>
+          </DefaultPrivateRoute>
+        }/>
+
+      <Route
+        path={TEACHER_ROUTES.MyClasses}
+        element={
+          <DefaultPrivateRoute
+            requiredRole={Role.teacher}>
+            {'Мои классы'}
+          </DefaultPrivateRoute>
         }/>
       <Route
-        path={TEACHER_ROUTES.apply}
+        path={TEACHER_ROUTES.ApplyRequest}
         element={
-          <PrivateRoute
+          <DefaultPrivateRoute
             requiredRole={Role.teacher}>
             <MealApplicationPage/>
-          </PrivateRoute>
+          </DefaultPrivateRoute>
+        }/>
+      <Route
+        path={TEACHER_ROUTES.History}
+        element={
+          <DefaultPrivateRoute
+            requiredRole={Role.teacher}>
+            {'История заявок'}
+          </DefaultPrivateRoute>
         }/>
     </Routes>
   );
