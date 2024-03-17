@@ -1,7 +1,8 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import Cookie
+from fastapi import Cookie, Depends
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from starlette.responses import Response
 
 from app.gateway.auth.v1.view import AccessTokenOut
@@ -29,4 +30,9 @@ def clear_cookies(response: Response) -> Response:
     return response
 
 
+def _get_access_token(authorization: Annotated[HTTPAuthorizationCredentials, Depends(HTTPBearer())]) -> str:
+    return authorization.credentials
+
+
+AccessTokenDep = Annotated[str, Depends(_get_access_token)]
 RefreshTokenDep = Annotated[UUID, Cookie(alias=_COOKIE_NAME, include_in_schema=False)]

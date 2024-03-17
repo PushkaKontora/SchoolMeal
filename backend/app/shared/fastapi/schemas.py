@@ -1,8 +1,8 @@
-from enum import Enum
 from uuid import UUID
 
 from pydantic import BaseModel, Field
 
+from app.identity.domain.user import Role
 from app.shared.fastapi.utils import camelize_snakecase
 
 
@@ -20,13 +20,6 @@ class HTTPError(BaseModel):
     detail: str = Field(example="Сообщение ошибки")
 
 
-class RoleOut(str, Enum):
-    PARENT = "parent"
-    TEACHER = "teacher"
-    MEAL_ORGANIZER = "meal_organizer"
-    CANTEEN_STAFF = "canteen_staff"
-
-
 class AuthorizedUser(BaseModel):
     id: UUID
-    role: RoleOut
+    role: Role

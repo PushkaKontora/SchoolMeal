@@ -4,14 +4,23 @@ from ipaddress import IPv4Address
 from uuid import UUID, uuid4
 
 import jwt
+from pydantic import BaseModel, ValidationError
 
-from app.identity.domain.user import User
+from app.identity.domain.user import Role, User
 from app.shared.domain.user import UserID
 
 
 @dataclass(frozen=True, eq=True)
 class Secret:
     value: str
+
+
+class Payload(BaseModel):
+    jti: UUID
+    user_id: UUID
+    role: Role
+    iat: float
+    exp: float
 
 
 @dataclass(frozen=True, eq=True)
@@ -33,6 +42,27 @@ class AccessToken:
         }
 
         return AccessToken(jwt.encode(payload, key=secret.value, algorithm=cls._ALGORITHM))
+
+    @classmethod
+    def decode(cls, token: str, secret: Secret) -> Payload | None:
+        try:
+            payload = jwt.decode(
+                token,
+                key=secret.value,
+                algorithms=[cls._ALGORITHM],
+                options={"require": ["jti", "user_id", "role", "iat", "exp"]},
+            )
+
+            return Payload(
+                jti=payload["jti"],
+                user_id=payload["user_id"],
+                role=payload["role"],
+                iat=payload["iat"],
+                exp=payload["exp"],
+            )
+
+        except (jwt.InvalidTokenError, jwt.ExpiredSignatureError, ValidationError):
+            return None
 
 
 @dataclass(frozen=True, eq=True)

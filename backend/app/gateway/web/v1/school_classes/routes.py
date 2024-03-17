@@ -1,17 +1,12 @@
 from typing import Annotated
-from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
-from pydantic import BaseModel
 
+from app.gateway.web.v1.school_classes.dto import GetSchoolClassesParams
 from app.structure.api import dto as structure_dto, handlers as structure_api
 
 
 router = APIRouter()
-
-
-class GetSchoolClassesParams(BaseModel):
-    teacher_id: UUID | None = None
 
 
 @router.get(

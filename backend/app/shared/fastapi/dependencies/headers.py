@@ -6,7 +6,7 @@ from app.shared.fastapi.schemas import AuthorizedUser
 
 
 def _get_authenticated_user(
-    x_user: str = Header(example={"id": "844c4372-52eb-4452-b314-728583ee5fbf", "role": "parent"})
+    x_user: str = Header(example={"id": "844c4372-52eb-4452-b314-728583ee5fbf", "role": 0})
 ) -> AuthorizedUser:
     return AuthorizedUser.parse_raw(x_user)
 
