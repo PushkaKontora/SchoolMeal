@@ -4,18 +4,25 @@ from uuid import UUID
 from app.identity.application.authorizations.abc import IAuthorization
 from app.identity.application.dao import ISessionRepository, IUserRepository
 from app.identity.application.dto import AuthenticationIn, RefreshTokensIn, SessionOut
+from app.identity.application.limiters import IBruteForceLimiter
 from app.identity.domain.jwt import AccessToken, Fingerprint, Payload, Secret, Session
 from app.identity.domain.rest import Method
 from app.identity.domain.user import User
 
 
 async def authenticate(
-    dto: AuthenticationIn, user_repository: IUserRepository, session_repository: ISessionRepository
+    dto: AuthenticationIn,
+    user_repository: IUserRepository,
+    session_repository: ISessionRepository,
+    limiter: IBruteForceLimiter,
 ) -> SessionOut | None:
     user = await user_repository.get_by_login(dto.login)
 
-    if not user or not user.password.verify(dto.password):
+    if not user or not user.password.verify(dto.password) or limiter.is_ip_banned(dto.ip):
+        limiter.increase_attempts(dto.ip)
         return None
+
+    limiter.reset(dto.ip)
 
     return await _open_session(
         user, ip=dto.ip, fingerprint=dto.fingerprint, secret=dto.secret, session_repository=session_repository

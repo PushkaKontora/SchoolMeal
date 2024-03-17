@@ -10,6 +10,7 @@ from app.identity.application import services
 from app.identity.application.authorizations.abc import IAuthorization
 from app.identity.application.dao import ISessionRepository, IUserRepository
 from app.identity.application.dto import AuthenticationIn, RefreshTokensIn
+from app.identity.application.limiters import IBruteForceLimiter
 from app.identity.domain.credentials import Login, Password
 from app.identity.domain.jwt import Fingerprint, Payload, Secret
 from app.identity.domain.rest import Method
@@ -27,6 +28,7 @@ async def authenticate(
     config: JWTConfig = Provide[IdentityContainer.jwt_config],
     user_repository: IUserRepository = Provide[IdentityContainer.user_repository],
     session_repository: ISessionRepository = Provide[IdentityContainer.session_repository],
+    limiter: IBruteForceLimiter = Provide[IdentityContainer.limiter],
 ) -> Result[SessionOut, DomainValidationError | errors.NotAuthenticated]:
     try:
         login_ = Login(login)
@@ -37,7 +39,7 @@ async def authenticate(
         return Err(DomainValidationError(message=str(error)))
 
     dto = AuthenticationIn(login=login_, password=password_, ip=ip, fingerprint=fingerprint_, secret=secret)
-    session = await services.authenticate(dto, user_repository, session_repository)
+    session = await services.authenticate(dto, user_repository, session_repository, limiter)
 
     if not session:
         return Err(errors.NotAuthenticated())
