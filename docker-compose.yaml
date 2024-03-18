@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  postgres-server:
+  postgres:
     image: peroovy/school_meal:postgres
     healthcheck:
       test: pg_isready -U ${DB_USER} -p ${DB_PORT} -d ${DB_NAME}
@@ -22,7 +22,7 @@ services:
     image: peroovy/school_meal:app
     container_name: school_meal_app
     depends_on:
-      postgres-server:
+      postgres:
         condition: service_healthy
     environment:
       JWT_SECRET: ${JWT_SECRET}
