@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from enum import IntEnum, unique
 
-from app.identity.domain.credentials import HashedPassword, Login
 from app.shared.domain.personal_info import FullName
 from app.shared.domain.user import UserID
+from app.user_management.domain.credentials import HashedPassword, Login
 
 
 @unique

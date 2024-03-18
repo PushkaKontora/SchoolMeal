@@ -4,8 +4,8 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dependency_injector.wiring import Provide, inject
 
-from app.identity.application.dao import ISessionRepository
-from app.identity.infrastructure.dependencies import IdentityContainer
+from app.user_management.application.dao import ISessionRepository
+from app.user_management.infrastructure.dependencies import IdentityContainer
 
 
 scheduler = AsyncIOScheduler()

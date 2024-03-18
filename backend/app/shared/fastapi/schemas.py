@@ -2,8 +2,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from app.identity.domain.user import Role
 from app.shared.fastapi.utils import camelize_snakecase
+from app.user_management.domain.user import Role
 
 
 class FrontendModel(BaseModel):

@@ -1,10 +1,10 @@
 import re
 from functools import lru_cache
 
-from app.identity.application.authorizations.abc import IAuthorization
-from app.identity.domain.jwt import Payload
-from app.identity.domain.rest import Method
-from app.identity.domain.user import Role
+from app.user_management.application.authorizations.abc import IAuthorization
+from app.user_management.domain.jwt import Payload
+from app.user_management.domain.rest import Method
+from app.user_management.domain.user import Role
 
 
 class RoleAuthorization(IAuthorization):

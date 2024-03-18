@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from app.identity.domain.jwt import Payload
-from app.identity.domain.rest import Method
+from app.user_management.domain.jwt import Payload
+from app.user_management.domain.rest import Method
 
 
 class IAuthorization(ABC):

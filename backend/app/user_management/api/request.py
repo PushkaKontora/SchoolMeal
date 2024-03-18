@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import Depends, Header
 
-from app.identity.domain.rest import Method
+from app.user_management.domain.rest import Method
 
 
 def _get_request_uri(uri: Annotated[str, Header(alias="X-Original-URI", include_in_schema=False)]) -> str:

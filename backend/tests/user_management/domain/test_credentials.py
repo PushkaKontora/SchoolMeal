@@ -2,7 +2,7 @@ from contextlib import nullcontext
 
 import pytest
 
-from app.identity.domain.credentials import Login, Password
+from app.user_management.domain.credentials import Login, Password
 
 
 @pytest.mark.parametrize(

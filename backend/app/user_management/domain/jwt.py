@@ -6,8 +6,8 @@ from uuid import UUID, uuid4
 import jwt
 from pydantic import BaseModel, ValidationError
 
-from app.identity.domain.user import Role, User
 from app.shared.domain.user import UserID
+from app.user_management.domain.user import Role, User
 
 
 @dataclass(frozen=True, eq=True)

@@ -5,7 +5,7 @@ from fastapi import Cookie, Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from starlette.responses import Response
 
-from app.identity.domain.jwt import Session
+from app.user_management.domain.jwt import Session
 
 
 _COOKIE_NAME = "refresh"

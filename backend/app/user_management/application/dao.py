@@ -2,10 +2,10 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from uuid import UUID
 
-from app.identity.domain.credentials import Login
-from app.identity.domain.jwt import Session
-from app.identity.domain.user import User
 from app.shared.domain.user import UserID
+from app.user_management.domain.credentials import Login
+from app.user_management.domain.jwt import Session
+from app.user_management.domain.user import User
 
 
 class IUserRepository(ABC):

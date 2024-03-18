@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.identity.domain.jwt import AccessToken
+from app.user_management.domain.jwt import AccessToken
 
 
 class LoginBody(BaseModel):

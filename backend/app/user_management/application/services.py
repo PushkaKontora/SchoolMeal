@@ -1,13 +1,13 @@
 from ipaddress import IPv4Address
 from uuid import UUID
 
-from app.identity.application.authorizations.abc import IAuthorization
-from app.identity.application.dao import ISessionRepository, IUserRepository
-from app.identity.application.dto import AuthenticationIn, RefreshTokensIn
-from app.identity.application.limiters import IBruteForceLimiter
-from app.identity.domain.jwt import AccessToken, Fingerprint, Payload, Secret, Session
-from app.identity.domain.rest import Method
-from app.identity.domain.user import User
+from app.user_management.application.authorizations.abc import IAuthorization
+from app.user_management.application.dao import ISessionRepository, IUserRepository
+from app.user_management.application.dto import AuthenticationIn, RefreshTokensIn
+from app.user_management.application.limiters import IBruteForceLimiter
+from app.user_management.domain.jwt import AccessToken, Fingerprint, Payload, Secret, Session
+from app.user_management.domain.rest import Method
+from app.user_management.domain.user import User
 
 
 async def authenticate(

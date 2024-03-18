@@ -3,8 +3,8 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from app.identity.domain.credentials import Login, Password
-from app.identity.domain.jwt import Fingerprint, Secret
+from app.user_management.domain.credentials import Login, Password
+from app.user_management.domain.jwt import Fingerprint, Secret
 
 
 class AuthenticationIn(BaseModel):

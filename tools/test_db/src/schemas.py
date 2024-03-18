@@ -107,10 +107,10 @@ class NutritionInitializer(SchemaInitializer):
                 )
 
 
-class IdentityInitializer(SchemaInitializer):
+class UserManagementInitializer(SchemaInitializer):
     @property
     def schema(self) -> str:
-        return "identity"
+        return "user_management"
 
     def clear(self) -> None:
         for table in ["session", "user"]:

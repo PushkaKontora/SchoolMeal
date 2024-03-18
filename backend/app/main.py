@@ -10,14 +10,14 @@ from app.db.container import AlchemyORM
 from app.db.settings import DatabaseSettings
 from app.feedbacks.api import router as feedbacks_api
 from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
-from app.identity.api import router as identity_api
-from app.identity.application.tasks import scheduler as identity_scheduler
-from app.identity.infrastructure.dependencies import IdentityContainer
 from app.nutrition.api import router as nutrition_api
 from app.nutrition.application.tasks import scheduler as nutrition_scheduler
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.api.errors import UnprocessableEntity, default_handler, unprocessable_entity_handler
 from app.shared.fastapi.settings import FastAPIConfig
+from app.user_management.api import router as identity_api
+from app.user_management.application.tasks import scheduler as identity_scheduler
+from app.user_management.infrastructure.dependencies import IdentityContainer
 
 
 @asynccontextmanager
@@ -62,6 +62,6 @@ app.add_middleware(
 app.add_exception_handler(UnprocessableEntity, unprocessable_entity_handler)
 app.add_exception_handler(Exception, default_handler)
 
-app.include_router(identity_api, prefix="/users", tags=["Identity API"])
-app.include_router(nutrition_api, prefix="/nutrition", tags=["Nutrition API"])
-app.include_router(feedbacks_api, prefix="/feedbacks", tags=["Feedbacks API"])
+app.include_router(identity_api, prefix="/user-management", tags=["User Management"])
+app.include_router(nutrition_api, prefix="/nutrition", tags=["Nutrition"])
+app.include_router(feedbacks_api, prefix="/feedbacks", tags=["Feedbacks"])

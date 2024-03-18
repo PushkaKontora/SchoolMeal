@@ -6,12 +6,12 @@ from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.functions import count
 
-from app.identity.application.dao import ISessionRepository, IUserRepository
-from app.identity.domain.credentials import Login
-from app.identity.domain.jwt import Session
-from app.identity.domain.user import User
-from app.identity.infrastructure.db import SessionDB, UserDB
 from app.shared.domain.user import UserID
+from app.user_management.application.dao import ISessionRepository, IUserRepository
+from app.user_management.domain.credentials import Login
+from app.user_management.domain.jwt import Session
+from app.user_management.domain.user import User
+from app.user_management.infrastructure.db import SessionDB, UserDB
 
 
 class AlchemyUserRepository(IUserRepository):

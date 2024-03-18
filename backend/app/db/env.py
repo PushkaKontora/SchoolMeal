@@ -10,8 +10,8 @@ from sqlalchemy.orm import DeclarativeBase
 from app.db.settings import DatabaseSettings
 from app.db.utils import create_database, exists_database, wait_connect
 from app.feedbacks.infrastructure.db import FeedbacksBase
-from app.identity.infrastructure.db import IdentityBase
 from app.nutrition.infrastructure.db import NutritionBase
+from app.user_management.infrastructure.db import UserManagementBase
 
 
 POSTGRES_INDEXES_NAMING_CONVENTION = {
@@ -29,7 +29,7 @@ database = DatabaseSettings()
 config: Config = context.config
 config.set_main_option("sqlalchemy.url", database.url)
 
-SCHEMAS: list[type[DeclarativeBase]] = [NutritionBase, FeedbacksBase, IdentityBase]
+SCHEMAS: list[type[DeclarativeBase]] = [NutritionBase, FeedbacksBase, UserManagementBase]
 target_metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)
 
 for schema in SCHEMAS:

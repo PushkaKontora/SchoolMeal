@@ -4,7 +4,7 @@ from src.data.menu import generate_foods, generate_menus
 from src.data.schools import generate_school
 from src.data.users import generate_users
 from src.db import Connection, DatabaseSettings
-from src.schemas import Data, IdentityInitializer, NutritionInitializer, SchemaInitializer
+from src.schemas import Data, NutritionInitializer, SchemaInitializer, UserManagementInitializer
 
 
 def main() -> None:
@@ -19,7 +19,7 @@ def main() -> None:
 
     initializers: list[type[SchemaInitializer]] = [
         NutritionInitializer,
-        IdentityInitializer,
+        UserManagementInitializer,
     ]
 
     with connection as database:

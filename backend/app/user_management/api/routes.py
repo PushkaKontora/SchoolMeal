@@ -3,22 +3,22 @@ from typing import Annotated
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Body, Depends, Response, status
 
-from app.identity.api.client_ip import ClientIPDep
-from app.identity.api.request import RequestMethodDep, RequestURIDep
-from app.identity.api.schema import AccessTokenOut, LoginBody, RefreshBody
-from app.identity.api.tokens import AccessTokenDep, RefreshTokenDep, clear_cookies, set_session_in_cookie
-from app.identity.application import services
-from app.identity.application.authorizations.abc import IAuthorization
-from app.identity.application.dao import ISessionRepository, IUserRepository
-from app.identity.application.dto import AuthenticationIn, RefreshTokensIn
-from app.identity.application.limiters import IBruteForceLimiter
-from app.identity.domain.credentials import Login, Password
-from app.identity.domain.jwt import Fingerprint, Secret
-from app.identity.infrastructure.config import JWTConfig
-from app.identity.infrastructure.dependencies import IdentityContainer
 from app.shared.api import responses
 from app.shared.api.errors import BadRequest, Forbidden, UnprocessableEntity
 from app.shared.fastapi.schemas import AuthorizedUser, OKSchema
+from app.user_management.api.client_ip import ClientIPDep
+from app.user_management.api.request import RequestMethodDep, RequestURIDep
+from app.user_management.api.schema import AccessTokenOut, LoginBody, RefreshBody
+from app.user_management.api.tokens import AccessTokenDep, RefreshTokenDep, clear_cookies, set_session_in_cookie
+from app.user_management.application import services
+from app.user_management.application.authorizations.abc import IAuthorization
+from app.user_management.application.dao import ISessionRepository, IUserRepository
+from app.user_management.application.dto import AuthenticationIn, RefreshTokensIn
+from app.user_management.application.limiters import IBruteForceLimiter
+from app.user_management.domain.credentials import Login, Password
+from app.user_management.domain.jwt import Fingerprint, Secret
+from app.user_management.infrastructure.config import JWTConfig
+from app.user_management.infrastructure.dependencies import IdentityContainer
 
 
 router = APIRouter()

@@ -6,18 +6,18 @@ from sqlalchemy import DateTime, ForeignKey, MetaData
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.db.base import DictMixin
-from app.identity.domain.credentials import HashedPassword, Login
-from app.identity.domain.jwt import Fingerprint, RefreshToken, Session
-from app.identity.domain.user import Role, User
 from app.shared.domain.personal_info import FullName
 from app.shared.domain.user import UserID
+from app.user_management.domain.credentials import HashedPassword, Login
+from app.user_management.domain.jwt import Fingerprint, RefreshToken, Session
+from app.user_management.domain.user import Role, User
 
 
-class IdentityBase(DeclarativeBase, DictMixin):
-    metadata = MetaData(schema="identity")
+class UserManagementBase(DeclarativeBase, DictMixin):
+    metadata = MetaData(schema="user_management")
 
 
-class UserDB(IdentityBase):
+class UserDB(UserManagementBase):
     __tablename__ = "user"
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
@@ -70,7 +70,7 @@ class UserDB(IdentityBase):
         )
 
 
-class SessionDB(IdentityBase):
+class SessionDB(UserManagementBase):
     __tablename__ = "session"
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
