@@ -22,7 +22,7 @@ async def wait_connect(settings: DatabaseSettings) -> None:
 
     while True:
         try:
-            logger.info(f"Подключение к БД {settings}")
+            logger.info("Подключение к БД")
             async with engine.connect():
                 logger.success("Подключение к БД установлено")
                 return
@@ -31,10 +31,9 @@ async def wait_connect(settings: DatabaseSettings) -> None:
             logger.success("Подключение к БД установлено, но отсутствует БД")
             return
 
-        except Exception as error:
-            logger.error(f"Не удалось подключиться к БД {settings} - {error}")
-
-        await sleep(10)
+        except Exception:
+            logger.error("Не удалось подключиться к БД")
+            await sleep(10)
 
 
 async def create_database(settings: DatabaseSettings) -> None:

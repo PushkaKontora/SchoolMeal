@@ -1,10 +1,10 @@
 import asyncio
 
 from alembic import context
-from alembic.config import Config
-from sqlalchemy import MetaData, engine_from_config, pool
+from alembic.context import config
+from sqlalchemy import MetaData, pool
 from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.ext.asyncio import async_engine_from_config
 from sqlalchemy.orm import DeclarativeBase
 
 from app.db.settings import DatabaseSettings
@@ -24,10 +24,6 @@ POSTGRES_INDEXES_NAMING_CONVENTION = {
 
 
 database = DatabaseSettings()
-
-
-config: Config = context.config
-config.set_main_option("sqlalchemy.url", database.url)
 
 SCHEMAS: list[type[DeclarativeBase]] = [NutritionBase, FeedbacksBase, UserManagementBase]
 target_metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)
@@ -49,6 +45,22 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
+async def run_migrations_online() -> None:
+    connectable = async_engine_from_config(
+        config.get_section(config.config_ini_section, {}) | {"sqlalchemy.url": database.url},
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
+
+    await wait_connect(database)
+
+    if not await exists_database(database):
+        await create_database(database)
+
+    async with connectable.connect() as connection:
+        await connection.run_sync(do_run_migrations)
+
+
 def do_run_migrations(connection: Connection) -> None:
     context.configure(
         connection=connection,
@@ -60,20 +72,6 @@ def do_run_migrations(connection: Connection) -> None:
 
     with context.begin_transaction():
         context.run_migrations()
-
-
-async def run_migrations_online() -> None:
-    configuration = config.get_section(config.config_ini_section)
-
-    connectable = AsyncEngine(engine_from_config(configuration, poolclass=pool.NullPool, future=True))  # type: ignore
-
-    await wait_connect(database)
-
-    if not await exists_database(database):
-        await create_database(database)
-
-    async with connectable.connect() as connection:
-        await connection.run_sync(do_run_migrations)
 
 
 if context.is_offline_mode():
