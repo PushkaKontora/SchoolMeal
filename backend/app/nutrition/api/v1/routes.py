@@ -29,7 +29,7 @@ from app.nutrition.domain.time import Day, Period
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.api import responses
 from app.shared.api.errors import BadRequest, NotFound, UnprocessableEntity
-from app.shared.fastapi.schemas import OKSchema
+from app.shared.api.schemas import OKSchema
 
 
 router = APIRouter()

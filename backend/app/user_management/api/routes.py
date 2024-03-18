@@ -5,7 +5,7 @@ from fastapi import APIRouter, Body, Depends, Response, status
 
 from app.shared.api import responses
 from app.shared.api.errors import BadRequest, Forbidden, UnprocessableEntity
-from app.shared.fastapi.schemas import AuthorizedUser, OKSchema
+from app.shared.api.schemas import AuthorizedUser, OKSchema
 from app.user_management.api.client_ip import ClientIPDep
 from app.user_management.api.request import RequestMethodDep, RequestURIDep
 from app.user_management.api.schema import AccessTokenOut, LoginBody, RefreshBody

@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import Depends, Header
 
-from app.shared.fastapi.schemas import AuthorizedUser
+from app.shared.api.schemas import AuthorizedUser
 
 
 def _get_authenticated_user(

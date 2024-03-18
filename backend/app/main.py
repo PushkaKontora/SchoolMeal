@@ -14,7 +14,7 @@ from app.nutrition.api import router as nutrition_api
 from app.nutrition.application.tasks import scheduler as nutrition_scheduler
 from app.nutrition.infrastructure.dependencies import NutritionContainer
 from app.shared.api.errors import UnprocessableEntity, default_handler, unprocessable_entity_handler
-from app.shared.fastapi.settings import FastAPIConfig
+from app.shared.api.settings import FastAPIConfig
 from app.user_management.api import router as identity_api
 from app.user_management.application.tasks import scheduler as identity_scheduler
 from app.user_management.infrastructure.dependencies import IdentityContainer

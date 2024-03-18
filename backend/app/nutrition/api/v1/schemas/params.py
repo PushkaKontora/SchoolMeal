@@ -2,8 +2,6 @@ from datetime import date
 from typing import Any, Callable
 from uuid import UUID
 
-from pydantic import BaseModel
-
 from app.nutrition.api.v1.schemas.enums import SchoolClassTypeDTO
 from app.nutrition.application.dao.pupils import PupilByClassID, PupilByParentID
 from app.nutrition.application.dao.school_classes import ClassByTeacherID
@@ -11,16 +9,16 @@ from app.nutrition.domain.parent import ParentID
 from app.nutrition.domain.pupil import Pupil
 from app.nutrition.domain.school_class import ClassID, SchoolClass
 from app.nutrition.domain.teacher import TeacherID
-from app.shared.api.dto import Filters
+from app.shared.api.schemas import Filters, FrontendParams
 from app.shared.specifications import Specification
 
 
-class GetPortionsParams(BaseModel):
+class GetPortionsParams(FrontendParams):
     class_type: SchoolClassTypeDTO
     on_date: date
 
 
-class RequestIDParams(BaseModel):
+class RequestIDParams(FrontendParams):
     class_id: UUID
     on_date: date
 

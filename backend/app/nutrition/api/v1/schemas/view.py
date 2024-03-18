@@ -4,17 +4,16 @@ from enum import Enum, unique
 from typing import Iterable
 from uuid import UUID
 
-from pydantic import BaseModel
-
 from app.nutrition.api.v1.schemas.enums import MealtimeDTO, NutritionStatusDTO
 from app.nutrition.domain.pupil import NutritionStatus, Pupil
 from app.nutrition.domain.request import Request, RequestStatus
 from app.nutrition.domain.school_class import SchoolClass
 from app.nutrition.domain.time import Period
+from app.shared.api.schemas import FrontendBody
 
 
 @unique
-class RequestStatusOut(str, Enum):
+class RequestStatusOut(Enum):
     PREFILLED = "prefilled"
     SUBMITTED = "submitted"
 
@@ -26,7 +25,7 @@ class RequestStatusOut(str, Enum):
         }[status]
 
 
-class PeriodOut(BaseModel):
+class PeriodOut(FrontendBody):
     start: date
     end: date
 
@@ -35,7 +34,7 @@ class PeriodOut(BaseModel):
         return cls(start=period.start, end=period.end)
 
 
-class PupilOut(BaseModel):
+class PupilOut(FrontendBody):
     id: str
     class_id: UUID
     parent_ids: list[UUID]
@@ -63,7 +62,7 @@ class PupilOut(BaseModel):
         )
 
 
-class SchoolClassOut(BaseModel):
+class SchoolClassOut(FrontendBody):
     id: UUID
     teacher_id: UUID | None
     number: int
@@ -81,7 +80,7 @@ class SchoolClassOut(BaseModel):
         )
 
 
-class RequestOut(BaseModel):
+class RequestOut(FrontendBody):
     class_id: UUID
     on_date: date
     status: RequestStatusOut
@@ -108,7 +107,7 @@ class RequestOut(BaseModel):
         )
 
 
-class PortionsOut(BaseModel):
+class PortionsOut(FrontendBody):
     paid: int
     preferential: int
     total: int
@@ -118,7 +117,7 @@ class PortionsOut(BaseModel):
         return cls(paid=paid, preferential=preferential, total=paid + preferential)
 
 
-class ClassPortionsOut(BaseModel):
+class ClassPortionsOut(FrontendBody):
     id: UUID
     number: int
     literal: str
@@ -151,7 +150,7 @@ class ClassPortionsOut(BaseModel):
         )
 
 
-class PortionsReportOut(BaseModel):
+class PortionsReportOut(FrontendBody):
     school_classes: list[ClassPortionsOut]
     totals: dict[MealtimeDTO, PortionsOut]
 

@@ -1,5 +1,5 @@
-from pydantic import BaseModel
+from app.shared.api.schemas import FrontendBody
 
 
-class LeaveFeedbackAboutCanteenBody(BaseModel):
+class LeaveFeedbackAboutCanteenBody(FrontendBody):
     text: str

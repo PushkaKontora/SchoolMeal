@@ -8,9 +8,9 @@ from app.feedbacks.domain.feedback import FeedbackText
 from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
 from app.shared.api import responses
 from app.shared.api.errors import UnprocessableEntity
+from app.shared.api.headers import AuthorizedUserDep
+from app.shared.api.schemas import OKSchema
 from app.shared.domain.user import UserID
-from app.shared.fastapi.dependencies.headers import AuthorizedUserDep
-from app.shared.fastapi.schemas import OKSchema
 
 
 router = APIRouter()

@@ -1,12 +1,11 @@
 from datetime import date
 from uuid import UUID
 
-from pydantic import BaseModel
-
 from app.nutrition.api.v1.schemas.enums import MealtimeDTO
+from app.shared.api.schemas import FrontendBody
 
 
-class ResumedPupilIn(BaseModel):
+class ResumedPupilIn(FrontendBody):
     id: str
     mealtimes: set[MealtimeDTO]
 
@@ -17,21 +16,21 @@ class ResumedPupilIn(BaseModel):
         return isinstance(other, ResumedPupilIn) and self.id == other.id
 
 
-class SubmitRequestBody(BaseModel):
+class SubmitRequestBody(FrontendBody):
     class_id: UUID
     on_date: date
     overrides: set[ResumedPupilIn]
 
 
-class ResumePupilOnDayBody(BaseModel):
+class ResumePupilOnDayBody(FrontendBody):
     day: date
 
 
-class CancelPupilForPeriodBody(BaseModel):
+class CancelPupilForPeriodBody(FrontendBody):
     start: date
     end: date
     reason: str | None
 
 
-class UpdateMealtimesBody(BaseModel):
+class UpdateMealtimesBody(FrontendBody):
     mealtimes: dict[MealtimeDTO, bool]

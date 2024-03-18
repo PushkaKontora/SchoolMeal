@@ -1,19 +1,18 @@
-from pydantic import BaseModel
-
+from app.shared.api.schemas import FrontendBody
 from app.user_management.domain.jwt import AccessToken
 
 
-class LoginBody(BaseModel):
+class LoginBody(FrontendBody):
     login: str
     password: str
     fingerprint: str
 
 
-class RefreshBody(BaseModel):
+class RefreshBody(FrontendBody):
     fingerprint: str
 
 
-class AccessTokenOut(BaseModel):
+class AccessTokenOut(FrontendBody):
     token: str
 
     @classmethod
