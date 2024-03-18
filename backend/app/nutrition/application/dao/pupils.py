@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
+from app.nutrition.domain.parent import ParentID
 from app.nutrition.domain.pupil import Pupil, PupilID
-from app.shared.domain.school_class import ClassID
+from app.nutrition.domain.school_class import ClassID
 from app.shared.specifications import Specification
 
 
@@ -19,6 +20,14 @@ class PupilByClassID(Specification[Pupil]):
 
     def is_satisfied_by(self, candidate: Pupil) -> bool:
         return candidate.class_id == self._class_id
+
+
+class PupilByParentID(Specification[Pupil]):
+    def __init__(self, parent_id: ParentID) -> None:
+        self._parent_id = parent_id
+
+    def is_satisfied_by(self, candidate: Pupil) -> bool:
+        return self._parent_id in candidate.parent_ids
 
 
 class IPupilRepository(ABC):

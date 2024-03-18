@@ -9,46 +9,42 @@ from app.identity.domain.user import Role
 
 class RoleAuthorization(IAuthorization):
     _ENDPOINTS = {
-        "/mobile/v1/feedbacks": {
-            Method.POST: {Role.PARENT},
-        },
-        "/mobile/v1/pupils": {
-            Method.GET: {Role.PARENT},
-        },
-        "/mobile/v1/pupils/{pupil_id}": {
-            Method.GET: {Role.PARENT},
-        },
-        "/mobile/v1/pupils/{pupil_id}/resume": {
-            Method.POST: {Role.PARENT},
-        },
-        "/mobile/v1/pupils/{pupil_id}/cancel": {
-            Method.POST: {Role.PARENT},
-        },
-        "/mobile/v1/pupils/{pupil_id}/mealtimes": {
-            Method.PATCH: {Role.PARENT},
-        },
-        "/mobile/v1/pupils/{pupil_id}/attach": {
-            Method.POST: {Role.PARENT},
-        },
-        "/web/v1/school-classes/{class_id}/requests/prefill": {
+        "/nutrition/v1/school-classes": {
             Method.GET: {Role.TEACHER},
         },
-        "/web/v1/portions": {
-            Method.GET: {Role.STAFF},
+        "/nutrition/v1/pupils": {
+            Method.GET: {Role.PARENT, Role.TEACHER},
         },
-        "/web/v1/school-classes/{class_id}/requests": {
+        "/nutrition/v1/pupils/{pupil_id}": {
+            Method.GET: {Role.PARENT, Role.TEACHER},
+        },
+        "/nutrition/v1/pupils/{pupil_id}/resume": {
+            Method.POST: {Role.PARENT},
+        },
+        "/nutrition/v1/pupils/{pupil_id}/cancel": {
+            Method.POST: {Role.PARENT},
+        },
+        "/nutrition/v1/mealtimes": {
+            Method.PATCH: {Role.PARENT, Role.TEACHER},
+        },
+        "/nutrition/v1/requests": {
+            Method.GET: {Role.TEACHER},
             Method.POST: {Role.TEACHER},
         },
-        "/web/v1/school-classes": {
+        "/nutrition/v1/requests/prefill": {
             Method.GET: {Role.TEACHER},
+        },
+        "/nutrition/v1/portions": {
+            Method.GET: {Role.STAFF},
+        },
+        "/feedbacks/v1/feedbacks": {
+            Method.POST: {Role.PARENT},
         },
     }
 
     def authorize(self, payload: Payload, uri: str, method: Method) -> bool:
-        pattern = self._make_pattern(uri)
-
         for endpoint, methods in self._ENDPOINTS.items():
-            if not pattern.match(endpoint):
+            if not self._make_pattern(endpoint).match(uri):
                 continue
 
             return payload.role in methods.get(method, set())

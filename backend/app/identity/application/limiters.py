@@ -27,7 +27,9 @@ class BruteForceLimiter(IBruteForceLimiter):
         self._ips: defaultdict[IPv4Address, _Info] = defaultdict(lambda: _Info(attempts=0, banned_until=None))
 
     def is_ip_banned(self, ip: IPv4Address) -> bool:
-        return self._ips[ip].banned_until and self._now() <= self._ips[ip].banned_until
+        banned_until = self._ips[ip].banned_until
+
+        return banned_until is not None and self._now() <= banned_until
 
     def increase_attempts(self, ip: IPv4Address) -> None:
         info = self._ips[ip]

@@ -3,7 +3,7 @@ from uuid import UUID
 
 from app.identity.application.authorizations.abc import IAuthorization
 from app.identity.application.dao import ISessionRepository, IUserRepository
-from app.identity.application.dto import AuthenticationIn, RefreshTokensIn, SessionOut
+from app.identity.application.dto import AuthenticationIn, RefreshTokensIn
 from app.identity.application.limiters import IBruteForceLimiter
 from app.identity.domain.jwt import AccessToken, Fingerprint, Payload, Secret, Session
 from app.identity.domain.rest import Method
@@ -15,7 +15,7 @@ async def authenticate(
     user_repository: IUserRepository,
     session_repository: ISessionRepository,
     limiter: IBruteForceLimiter,
-) -> SessionOut | None:
+) -> tuple[AccessToken, Session] | None:
     user = await user_repository.get_by_login(dto.login)
 
     if not user or not user.password.verify(dto.password) or limiter.is_ip_banned(dto.ip):
@@ -31,7 +31,7 @@ async def authenticate(
 
 async def refresh_tokens(
     dto: RefreshTokensIn, session_repository: ISessionRepository, user_repository: IUserRepository
-) -> SessionOut | None:
+) -> tuple[AccessToken, Session] | None:
     session = await session_repository.pop(id_=dto.token)
 
     if not session:
@@ -61,7 +61,7 @@ def authorize(token: str, uri: str, method: Method, secret: Secret, authorizatio
 
 async def _open_session(
     user: User, ip: IPv4Address, fingerprint: Fingerprint, secret: Secret, session_repository: ISessionRepository
-) -> SessionOut:
+) -> tuple[AccessToken, Session]:
     access_token = AccessToken.generate(user, secret)
     session = Session.generate(user, ip, fingerprint)
 
@@ -70,9 +70,4 @@ async def _open_session(
 
     await session_repository.add(session)
 
-    return SessionOut(
-        access_token=access_token,
-        refresh_token=session.id,
-        expires_in=session.expires_in,
-        created_at=session.created_at,
-    )
+    return access_token, session

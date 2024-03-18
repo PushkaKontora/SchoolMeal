@@ -10,8 +10,8 @@ from app.nutrition.domain import services
 from app.nutrition.domain.mealtime import Mealtime
 from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
 from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request
+from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.time import Day, Period
-from app.shared.domain.school_class import ClassID
 
 
 async def resume_pupil_on_day(

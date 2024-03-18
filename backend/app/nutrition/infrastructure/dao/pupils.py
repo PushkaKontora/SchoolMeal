@@ -1,12 +1,12 @@
 from typing import AsyncContextManager, Callable
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.nutrition.application.dao.pupils import IPupilRepository
 from app.nutrition.domain.pupil import Pupil, PupilID
-from app.nutrition.infrastructure.db import PupilDB
+from app.nutrition.infrastructure.db import PupilDB, PupilParentAssociation
 from app.shared.specifications import Specification
 
 
@@ -15,19 +15,30 @@ class AlchemyPupilRepository(IPupilRepository):
         self._session_factory = session_factory
 
     async def merge(self, pupil: Pupil) -> None:
-        pupil_db = PupilDB.from_model(pupil).dict()
+        pupil_db = PupilDB.from_model(pupil)
+        pupil_dict = pupil_db.dict()
 
         query = (
             insert(PupilDB)
-            .values(pupil_db)
+            .values(pupil_dict)
             .on_conflict_do_update(
                 index_elements=[PupilDB.id],
-                set_=pupil_db,
+                set_=pupil_dict,
             )
         )
+        delete_parents = delete(PupilParentAssociation).where(PupilParentAssociation.pupil_id == pupil_db.id)
 
         async with self._session_factory() as session:
             await session.execute(query)
+
+            await session.execute(delete_parents)
+            session.add_all(
+                (
+                    PupilParentAssociation(pupil_id=pupil_db.id, parent_id=parent_id.value)
+                    for parent_id in pupil.parent_ids
+                )
+            )
+
             await session.commit()
 
     async def get(self, ident: PupilID) -> Pupil | None:

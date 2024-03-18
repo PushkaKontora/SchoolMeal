@@ -2,22 +2,24 @@ from loguru import logger
 
 from src.data.menu import generate_foods, generate_menus
 from src.data.schools import generate_school
+from src.data.users import generate_users
 from src.db import Connection, DatabaseSettings
-from src.schemas import Data, NutritionInitializer, SchemaInitializer, StructureInitializer
+from src.schemas import Data, IdentityInitializer, NutritionInitializer, SchemaInitializer
 
 
 def main() -> None:
     school = generate_school()
     foods = generate_foods()
     menus = generate_menus(foods)
-    data = Data(school=school, menus=menus, foods=foods)
+    users = generate_users()
+    data = Data(school=school, menus=menus, foods=foods, users=users)
     logger.success("Сгенерированы данные")
 
     connection = Connection(settings=DatabaseSettings())
 
     initializers: list[type[SchemaInitializer]] = [
-        StructureInitializer,
         NutritionInitializer,
+        IdentityInitializer,
     ]
 
     with connection as database:

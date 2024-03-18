@@ -1,11 +1,10 @@
-from datetime import datetime
 from ipaddress import IPv4Address
 from uuid import UUID
 
 from pydantic import BaseModel
 
 from app.identity.domain.credentials import Login, Password
-from app.identity.domain.jwt import AccessToken, Fingerprint, RefreshToken, Secret
+from app.identity.domain.jwt import Fingerprint, Secret
 
 
 class AuthenticationIn(BaseModel):
@@ -21,10 +20,3 @@ class RefreshTokensIn(BaseModel):
     ip: IPv4Address
     fingerprint: Fingerprint
     secret: Secret
-
-
-class SessionOut(BaseModel):
-    access_token: AccessToken
-    refresh_token: RefreshToken
-    expires_in: datetime
-    created_at: datetime

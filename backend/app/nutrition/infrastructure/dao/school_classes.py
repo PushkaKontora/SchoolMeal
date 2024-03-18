@@ -4,9 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.nutrition.application.dao.school_classes import ISchoolClassRepository
-from app.nutrition.domain.school_class import SchoolClass
+from app.nutrition.domain.school_class import ClassID, SchoolClass
 from app.nutrition.infrastructure.db import SchoolClassDB
-from app.shared.domain.school_class import ClassID
 from app.shared.specifications import Specification
 
 

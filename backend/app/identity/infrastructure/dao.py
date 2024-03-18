@@ -49,6 +49,7 @@ class AlchemySessionRepository(ISessionRepository):
 
         async with self._session_factory() as session:
             session_db = (await session.scalars(query)).one_or_none()
+            await session.commit()
 
             return session_db.to_model() if session_db else None
 
@@ -63,9 +64,11 @@ class AlchemySessionRepository(ISessionRepository):
 
         async with self._session_factory() as session:
             await session.execute(query)
+            await session.commit()
 
     async def delete_all_expired(self, beginning_with: datetime) -> None:
         query = delete(SessionDB).where(SessionDB.expires_in >= beginning_with)
 
         async with self._session_factory() as session:
             await session.execute(query)
+            await session.commit()

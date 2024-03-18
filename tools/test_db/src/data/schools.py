@@ -59,7 +59,12 @@ def generate_school() -> School:
         id=str(uuid4()),
         name="МБОУ СОШ №1337",
         school_classes=_generate_school_classes(),
-        teacher=Teacher(id=str(uuid4()), last_name="Лыкова", first_name="Агафья", patronymic="Андреевна"),
+        teacher=Teacher(
+            id=str("a5958f26-02f6-4e5f-b0f2-c26f847aa2f6"),
+            last_name="Лыкова",
+            first_name="Агафья",
+            patronymic="Андреевна",
+        ),
         parent=Parent(
             id=str(UUID("844c4372-52eb-4452-b314-728583ee5fbf")),
             last_name="Кузьмин",

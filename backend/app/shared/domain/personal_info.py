@@ -54,7 +54,7 @@ class Email:
             raise ValueError(f"Превышено максимальное количество символов - {self._MAX_LENGTH}")
 
         try:
-            validate_email(self.value, globally_deliverable=True)
+            validate_email(self.value)
         except EmailSyntaxError as error:
             raise ValueError("Неверный формат почты") from error
 

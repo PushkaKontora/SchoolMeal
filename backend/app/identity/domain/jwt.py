@@ -35,7 +35,7 @@ class AccessToken:
 
         payload = {
             "jti": str(uuid4()),
-            "user_id": str(user.id),
+            "user_id": str(user.id.value),
             "role": user.role.value,
             "iat": now.timestamp(),
             "exp": (now + timedelta(minutes=10)).timestamp(),
@@ -53,13 +53,7 @@ class AccessToken:
                 options={"require": ["jti", "user_id", "role", "iat", "exp"]},
             )
 
-            return Payload(
-                jti=payload["jti"],
-                user_id=payload["user_id"],
-                role=payload["role"],
-                iat=payload["iat"],
-                exp=payload["exp"],
-            )
+            return Payload.parse_obj(payload)
 
         except (jwt.InvalidTokenError, jwt.ExpiredSignatureError, ValidationError):
             return None

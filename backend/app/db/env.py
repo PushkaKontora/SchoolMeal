@@ -5,13 +5,13 @@ from alembic.config import Config
 from sqlalchemy import MetaData, engine_from_config, pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.orm import DeclarativeBase
 
 from app.db.settings import DatabaseSettings
 from app.db.utils import create_database, exists_database, wait_connect
 from app.feedbacks.infrastructure.db import FeedbacksBase
 from app.identity.infrastructure.db import IdentityBase
 from app.nutrition.infrastructure.db import NutritionBase
-from app.structure.infrastructure.db import StructureBase
 
 
 POSTGRES_INDEXES_NAMING_CONVENTION = {
@@ -29,7 +29,7 @@ database = DatabaseSettings()
 config: Config = context.config
 config.set_main_option("sqlalchemy.url", database.url)
 
-SCHEMAS = (StructureBase, NutritionBase, FeedbacksBase, IdentityBase)
+SCHEMAS: list[type[DeclarativeBase]] = [NutritionBase, FeedbacksBase, IdentityBase]
 target_metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)
 
 for schema in SCHEMAS:

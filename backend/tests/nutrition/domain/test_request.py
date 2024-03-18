@@ -4,8 +4,8 @@ import freezegun
 import pytest
 
 from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request, RequestStatus
+from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.time import YEKATERINBURG
-from app.shared.domain.school_class import ClassID
 
 
 @pytest.mark.parametrize("now_", [time(hour=21, tzinfo=YEKATERINBURG), time(hour=21, second=59, tzinfo=YEKATERINBURG)])

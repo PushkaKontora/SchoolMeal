@@ -1,3 +1,4 @@
+import secrets
 from dataclasses import dataclass
 from datetime import date, datetime
 from enum import IntEnum, unique
@@ -5,6 +6,8 @@ from enum import IntEnum, unique
 from result import Err, Ok, Result
 
 from app.nutrition.domain.mealtime import Mealtime
+from app.nutrition.domain.parent import ParentID
+from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.time import (
     Day,
     Period,
@@ -13,8 +16,7 @@ from app.nutrition.domain.time import (
     has_submitting_deadline_come,
     today,
 )
-from app.shared.domain.pupil import PupilID
-from app.shared.domain.school_class import ClassID
+from app.shared.domain.personal_info import FullName
 
 
 class CannotResumeAfterDeadline:
@@ -27,6 +29,15 @@ class CannotCancelAfterDeadline:
         self.deadline = deadline
 
 
+@dataclass(frozen=True, eq=True)
+class PupilID:
+    value: str
+
+    @classmethod
+    def generate(cls) -> "PupilID":
+        return cls(secrets.token_hex(10))
+
+
 @unique
 class NutritionStatus(IntEnum):
     PAID = 0
@@ -37,6 +48,8 @@ class NutritionStatus(IntEnum):
 class Pupil:
     id: PupilID
     class_id: ClassID
+    parent_ids: set[ParentID]
+    name: FullName
     mealtimes: set[Mealtime]
     preferential_until: date | None
     cancelled_periods: Timeline

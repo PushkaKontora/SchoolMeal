@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import date
 
 from app.nutrition.domain.request import Request, RequestStatus
-from app.shared.domain.school_class import ClassID
+from app.nutrition.domain.school_class import ClassID
 from app.shared.specifications import Specification
 
 

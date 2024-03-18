@@ -7,8 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.nutrition.application.dao.requests import IRequestRepository
 from app.nutrition.domain.request import Request
+from app.nutrition.domain.school_class import ClassID
 from app.nutrition.infrastructure.db import DeclarationDB, RequestDB
-from app.shared.domain.school_class import ClassID
 from app.shared.specifications import Specification
 
 
