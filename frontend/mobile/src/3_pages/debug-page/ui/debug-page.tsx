@@ -90,10 +90,6 @@ export function DebugPage({navigation}: PropsWithNavigation) {
 
         <Text>Экраны</Text>
         <ButtonPrimary title={'На главную'} onPress={toMain}/>
-        <ButtonPrimary title={'Питание'} onPress={toNutrition}/>
-
-        <Text>Модальные окна</Text>
-        <ButtonPrimary title={'Снять с питания (Календарь)'} onPress={showCalendar}/>
 
         <Text>Уведомления</Text>
         <ButtonPrimary title={'Положительное'}
