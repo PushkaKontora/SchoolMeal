@@ -16,7 +16,7 @@ from app.user_management.application.dao import ISessionRepository, IUserReposit
 from app.user_management.application.dto import AuthenticationIn, RefreshTokensIn
 from app.user_management.application.limiters import IBruteForceLimiter
 from app.user_management.domain.credentials import Login, Password
-from app.user_management.domain.jwt import Fingerprint, Secret
+from app.user_management.domain.jwt import Fingerprint
 from app.user_management.infrastructure.config import JWTConfig
 from app.user_management.infrastructure.dependencies import IdentityContainer
 
@@ -47,10 +47,12 @@ async def login(
     except ValueError as error:
         raise UnprocessableEntity(str(error)) from error
 
-    dto = AuthenticationIn(
-        login=login_, password=password, ip=ip, fingerprint=fingerprint, secret=Secret(config.secret)
+    result = await services.authenticate(
+        dto=AuthenticationIn(login=login_, password=password, ip=ip, fingerprint=fingerprint),
+        user_repository=user_repository,
+        session_repository=session_repository,
+        limiter=limiter,
     )
-    result = await services.authenticate(dto, user_repository, session_repository, limiter)
 
     if not result:
         raise BadRequest("Пользователь не был аутентифицирован")
@@ -59,7 +61,7 @@ async def login(
 
     set_session_in_cookie(response, session)
 
-    return AccessTokenOut.from_model(token)
+    return AccessTokenOut.from_model(token, secret=config.secret)
 
 
 @router.post(
@@ -83,8 +85,11 @@ async def refresh(
     except ValueError as error:
         raise UnprocessableEntity(str(error))
 
-    dto = RefreshTokensIn(token=token, ip=ip, fingerprint=fingerprint, secret=Secret(config.secret))
-    result = await services.refresh_tokens(dto, session_repository, user_repository)
+    result = await services.refresh_tokens(
+        dto=RefreshTokensIn(token=token, ip=ip, fingerprint=fingerprint),
+        session_repository=session_repository,
+        user_repository=user_repository,
+    )
 
     if not result:
         raise BadRequest("Сессия не была обновлена")
@@ -93,7 +98,7 @@ async def refresh(
 
     set_session_in_cookie(response, session)
 
-    return AccessTokenOut.from_model(access_token)
+    return AccessTokenOut.from_model(access_token, secret=config.secret)
 
 
 @router.post(
@@ -129,11 +134,12 @@ async def authorize(
     config: JWTConfig = Depends(Provide[IdentityContainer.jwt_config]),
     authorization: IAuthorization = Depends(Provide[IdentityContainer.authorization]),
 ) -> Response:
-    payload = services.authorize(token, uri, method, secret=Secret(config.secret), authorization=authorization)
+    access_token = services.authorize(token, uri, method, secret=config.secret, authorization=authorization)
 
-    if not payload:
+    if not access_token:
         raise Forbidden
 
+    payload = access_token.payload
     user = AuthorizedUser(id=payload.user_id, role=payload.role)
 
     return Response(status_code=status.HTTP_204_NO_CONTENT, headers={"X-User": user.json()})

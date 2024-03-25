@@ -2,7 +2,7 @@ import re
 from functools import lru_cache
 
 from app.user_management.application.authorizations.abc import IAuthorization
-from app.user_management.domain.jwt import Payload
+from app.user_management.domain.jwt import AccessToken
 from app.user_management.domain.rest import Method
 from app.user_management.domain.user import Role
 
@@ -42,12 +42,12 @@ class RoleAuthorization(IAuthorization):
         },
     }
 
-    def authorize(self, payload: Payload, uri: str, method: Method) -> bool:
+    def authorize(self, token: AccessToken, uri: str, method: Method) -> bool:
         for endpoint, methods in self._ENDPOINTS.items():
             if not self._make_pattern(endpoint).match(uri):
                 continue
 
-            return payload.role in methods.get(method, set())
+            return token.payload.role in methods.get(method, set())
 
         return False
 

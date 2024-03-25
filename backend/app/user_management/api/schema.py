@@ -16,5 +16,5 @@ class AccessTokenOut(FrontendBody):
     token: str
 
     @classmethod
-    def from_model(cls, token: AccessToken) -> "AccessTokenOut":
-        return cls(token=token.value)
+    def from_model(cls, token: AccessToken, secret: str) -> "AccessTokenOut":
+        return cls(token=token.encode(secret))

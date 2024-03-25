@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from ipaddress import IPv4Address
+from typing import Any, Optional
 from uuid import UUID, uuid4
 
 import jwt
@@ -10,50 +11,66 @@ from app.shared.domain.user import UserID
 from app.user_management.domain.user import Role, User
 
 
-@dataclass(frozen=True, eq=True)
-class Secret:
-    value: str
-
-
 class Payload(BaseModel):
     jti: UUID
-    user_id: UUID
-    role: Role
     iat: float
     exp: float
+    user_id: UUID
+    role: Role
+    last_name: str
+    first_name: str
+    patronymic: str | None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "jti": str(self.jti),
+            "iat": self.iat,
+            "exp": self.exp,
+            "user_id": str(self.user_id),
+            "role": self.role.value,
+            "last_name": self.last_name,
+            "first_name": self.first_name,
+            "patronymic": self.patronymic,
+        }
 
 
 @dataclass(frozen=True, eq=True)
 class AccessToken:
-    value: str
+    payload: Payload
 
     _ALGORITHM = "HS256"
 
+    def encode(self, secret: str) -> str:
+        return jwt.encode(payload=self.payload.to_dict(), key=secret, algorithm=self._ALGORITHM)
+
     @classmethod
-    def generate(cls, user: User, secret: Secret) -> "AccessToken":
+    def generate(cls, user: User) -> "AccessToken":
         now = datetime.now(timezone.utc)
 
-        payload = {
-            "jti": str(uuid4()),
-            "user_id": str(user.id.value),
-            "role": user.role.value,
-            "iat": now.timestamp(),
-            "exp": (now + timedelta(minutes=10)).timestamp(),
-        }
+        payload = Payload(
+            jti=uuid4(),
+            iat=now.timestamp(),
+            exp=(now + timedelta(minutes=10)).timestamp(),
+            user_id=user.id.value,
+            role=user.role,
+            last_name=user.name.last.value,
+            first_name=user.name.first.value,
+            patronymic=user.name.patronymic.value if user.name.patronymic else None,
+        )
 
-        return AccessToken(jwt.encode(payload, key=secret.value, algorithm=cls._ALGORITHM))
+        return AccessToken(payload)
 
     @classmethod
-    def decode(cls, token: str, secret: Secret) -> Payload | None:
+    def decode(cls, token: str, secret: str) -> Optional["AccessToken"]:
         try:
             payload = jwt.decode(
                 token,
-                key=secret.value,
+                key=secret,
                 algorithms=[cls._ALGORITHM],
-                options={"require": ["jti", "user_id", "role", "iat", "exp"]},
+                options={"require": ["jti", "iat", "exp", "user_id", "role", "last_name", "first_name", "patronymic"]},
             )
 
-            return Payload.parse_obj(payload)
+            return AccessToken(Payload.parse_obj(payload))
 
         except (jwt.InvalidTokenError, jwt.ExpiredSignatureError, ValidationError):
             return None

@@ -5,7 +5,7 @@ from app.user_management.application.authorizations.abc import IAuthorization
 from app.user_management.application.dao import ISessionRepository, IUserRepository
 from app.user_management.application.dto import AuthenticationIn, RefreshTokensIn
 from app.user_management.application.limiters import IBruteForceLimiter
-from app.user_management.domain.jwt import AccessToken, Fingerprint, Payload, Secret, Session
+from app.user_management.domain.jwt import AccessToken, Fingerprint, Session
 from app.user_management.domain.rest import Method
 from app.user_management.domain.user import User
 
@@ -24,9 +24,7 @@ async def authenticate(
 
     limiter.reset(dto.ip)
 
-    return await _open_session(
-        user, ip=dto.ip, fingerprint=dto.fingerprint, secret=dto.secret, session_repository=session_repository
-    )
+    return await _open_session(user, ip=dto.ip, fingerprint=dto.fingerprint, session_repository=session_repository)
 
 
 async def refresh_tokens(
@@ -43,26 +41,24 @@ async def refresh_tokens(
         await session_repository.remove_all_by_user_id(user_id=session.user_id)
         return None
 
-    return await _open_session(
-        user, ip=dto.ip, fingerprint=dto.fingerprint, secret=dto.secret, session_repository=session_repository
-    )
+    return await _open_session(user, ip=dto.ip, fingerprint=dto.fingerprint, session_repository=session_repository)
 
 
 async def logout(token: UUID, session_repository: ISessionRepository) -> None:
     await session_repository.pop(id_=token)
 
 
-def authorize(token: str, uri: str, method: Method, secret: Secret, authorization: IAuthorization) -> Payload | None:
-    if not (payload := AccessToken.decode(token, secret)):
+def authorize(token: str, uri: str, method: Method, secret: str, authorization: IAuthorization) -> AccessToken | None:
+    if not (access_token := AccessToken.decode(token, secret)):
         return None
 
-    return payload if authorization.authorize(payload, uri, method) else None
+    return access_token if authorization.authorize(access_token, uri, method) else None
 
 
 async def _open_session(
-    user: User, ip: IPv4Address, fingerprint: Fingerprint, secret: Secret, session_repository: ISessionRepository
+    user: User, ip: IPv4Address, fingerprint: Fingerprint, session_repository: ISessionRepository
 ) -> tuple[AccessToken, Session]:
-    access_token = AccessToken.generate(user, secret)
+    access_token = AccessToken.generate(user)
     session = Session.generate(user, ip, fingerprint)
 
     if await session_repository.count_by_user_id(user.id) >= 5:
