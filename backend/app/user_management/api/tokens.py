@@ -16,7 +16,7 @@ def set_session_in_cookie(response: Response, session: Session) -> Response:
         key=_COOKIE_NAME,
         value=str(session.id.value),
         expires=int(session.expires_in.timestamp()),
-        path="/api/users",
+        path="/api/user-management",
         httponly=True,
     )
 
