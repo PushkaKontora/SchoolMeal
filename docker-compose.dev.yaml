@@ -10,10 +10,10 @@ services:
   app:
     build:
       context: backend
-    environment:
-      SHOW_SWAGGER_UI: "true"
     ports:
       - "8000:8000"
+    environment:
+      SHOW_SWAGGER_UI: "true"
     volumes:
       - ./backend/app:/school_meal/app
 
