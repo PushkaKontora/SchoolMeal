@@ -1,8 +1,10 @@
-import {Role} from '../../../7_shared/model/role';
-
 export type JwtPayload = {
-  type: string,
-  user_id: number,
-  role: Role,
-  expires_in: number
+  jti: string,
+  user_id: string,
+  role: 1 | 2,
+  iat: number,
+  exp: number,
+  last_name: string,
+  first_name: string,
+  patronymic: string
 }

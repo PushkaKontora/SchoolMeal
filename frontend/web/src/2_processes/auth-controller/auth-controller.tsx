@@ -1,10 +1,13 @@
 import {useAppDispatch, useAppSelector} from '../../../store/hooks';
 import {useNavigate} from 'react-router-dom';
 import {useEffect, useRef} from 'react';
-import {useGetCurrentUserQuery} from '../../7_shared/api';
+import {useGetCurrentUserQuery} from '../../7_shared/api/deprecated/api.ts';
 import {checkToken} from './auth-script.ts';
 import {chooseRedirectRoute, NO_AUTH_ROUTES} from '../../3_pages/routing';
 
+/**
+ * @deprecated
+ */
 export function AuthController() {
   const authorized = useAppSelector((state) => state.auth.authorized);
   const {data: currentUser, refetch: refetchUser} = useGetCurrentUserQuery();

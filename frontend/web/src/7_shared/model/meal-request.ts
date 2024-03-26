@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export type MealRequest = {
   school_classes: MealRequestSchoolClass[],
   paid_total: number,
@@ -5,6 +8,9 @@ export type MealRequest = {
   total: number
 };
 
+/**
+ * @deprecated
+ */
 export type MealRequestSchoolClass = {
   id: string,
   initials: string,
@@ -13,6 +19,9 @@ export type MealRequestSchoolClass = {
   snacks: MealRequestMealPlan
 };
 
+/**
+ * @deprecated
+ */
 export type MealRequestMealPlan = {
   paid: number,
   preferential: number,

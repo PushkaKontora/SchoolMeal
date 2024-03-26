@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { addAuthHeader } from '../../../7_shared/api';
-import { BASE_BACKEND_URL } from '../../../7_shared/api/config';
+import { BASE_BACKEND_URL } from '../../../7_shared/api/deprecated/config.ts';
 import { AuthTokenService } from '../../../5_features/auth';
 import { SchoolClasses } from '../model/schoolClasses';
 import { PlanReport } from '../model/PlanReport';
@@ -15,7 +15,7 @@ export const NUTRITION_API = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_BACKEND_URL,
     prepareHeaders: async (headers) => {
-      const token = await AuthTokenService.getToken();
+      const token = await AuthTokenService.getAuthToken();
       if (token) {
         return addAuthHeader(headers, token);
       }

@@ -1,1 +1,0 @@
-export {entitiesMiddlewares} from './middlewares';

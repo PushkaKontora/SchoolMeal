@@ -1,12 +1,19 @@
-import {ConfigSettings, UniversalResponse} from '../../../7_shared/api';
+import {UniversalResponse} from '../../../7_shared/api/deprecated/api.ts';
 import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import {BASE_BACKEND_URL} from '../../../7_shared/api/config';
+import {BASE_BACKEND_URL} from '../../../7_shared/api/deprecated/config.ts';
 import {SignInBody, TokenResponse} from './types';
+import {ConfigSettings} from '../../../7_shared/api/deprecated/types.ts';
 
+/**
+ * @deprecated
+ */
 export enum Tags {
   User = 'User'
 }
 
+/**
+ * @deprecated
+ */
 export const CONFIG: ConfigSettings = {
   reducerPath: 'api/auth',
   baseQuery: fetchBaseQuery({

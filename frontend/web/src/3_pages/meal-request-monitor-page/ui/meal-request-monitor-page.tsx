@@ -1,7 +1,7 @@
 import {
   MealRequestMonitorWidget
 } from '../../../4_widgets/meal-request-monitor-widget/ui/meal-request-monitor-widget.tsx';
-import {useGetReportQuery} from '../../../7_shared/api';
+import {useGetReportQuery} from '../../../7_shared/api/deprecated/api.ts';
 import {dateToISOWithoutTime} from '../../../7_shared/lib/date';
 import {PageStyles} from './styles.ts';
 import {useState} from 'react';

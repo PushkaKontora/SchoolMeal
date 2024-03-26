@@ -3,7 +3,7 @@ import {AuthTokenService} from '../../5_features/auth';
 import {setAuthorized} from '../../5_features/auth/model/auth-slice/auth-slice.ts';
 
 export async function checkToken(dispatch: ReturnType<typeof useAppDispatch>) {
-  await AuthTokenService.getToken()
+  await AuthTokenService.getAuthToken()
     .then(async (value) => {
       const result = value !== null;
 

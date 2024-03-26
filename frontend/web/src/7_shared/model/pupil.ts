@@ -3,6 +3,9 @@ import {MealPlan} from './meal-plan.ts';
 import {CancellationPeriod} from './cancellation-period.ts';
 import {MealRequestStatus} from './meal-request-status.ts';
 
+/**
+ * @deprecated
+ */
 export type Pupil = {
   id: UUID,
   lastName: string,
@@ -15,6 +18,9 @@ export type Pupil = {
   status: MealRequestStatus
 }
 
+/**
+ * @deprecated
+ */
 export type PupilWithPlan = {
   id: UUID,
   last_name: string,
@@ -25,6 +31,9 @@ export type PupilWithPlan = {
   snacks: boolean
 }
 
+/**
+ * @deprecated
+ */
 export type OverridenPupil = {
   id: string,
   breakfast: boolean,

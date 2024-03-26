@@ -8,12 +8,12 @@ export function RoleSidebar(props: RoleSidebarProps) {
   const navigate = useNavigate();
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
-  const items = createItems(setSelectedItemIndex, navigate, props.currentUser);
+  const items = createItems(setSelectedItemIndex, navigate, props.userRole);
 
   return (
     <AppSidebar
       selectedItemIndex={selectedItemIndex}
-      currentUser={props.currentUser}
+      userName={props.userName}
       items={items}
     />
   );

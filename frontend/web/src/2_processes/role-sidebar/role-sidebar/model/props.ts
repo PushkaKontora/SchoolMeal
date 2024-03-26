@@ -1,5 +1,6 @@
-import {User} from '../../../../7_shared/model/user.ts';
+import {Role} from '../../../../5_features/auth';
 
 export type RoleSidebarProps = {
-  currentUser?: User
+  userRole?: Role,
+  userName?: string
 };

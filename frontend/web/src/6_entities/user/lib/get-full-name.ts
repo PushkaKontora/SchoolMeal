@@ -1,5 +1,6 @@
-import {User} from '../../../7_shared/model/user.ts';
-
-export function getFullName(user?: User) {
-  return `${user?.firstName ?? ''} ${user?.lastName ?? ''}`;
+export function getFullName(userName: {
+  firstName?: string,
+  lastName?: string
+}) {
+  return `${userName.firstName || ''} ${userName.lastName || ''}`;
 }

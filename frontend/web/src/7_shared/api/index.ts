@@ -1,7 +1,12 @@
-import {Api} from './api.ts';
+/*
+import {Api} from './deprecated/api.ts';
 
-export {addAuthHeader} from './procces-headers';
-export type {ConfigSettings, UniversalResponse} from './types';
+export {addAuthHeader} from './deprecated/procces-headers.ts';
+export type {ConfigSettings, UniversalResponse} from './deprecated/types.ts';
 
-export * from './api.ts';
-export const ApiMiddleware = Api.middleware;
+export * from './deprecated/api.ts';
+export config ApiMiddleware = Api.middleware;
+*/
+
+export {Api} from './infrastructure';
+export {API_MIDDLEWARES, API_REDUCERS} from './infrastructure';

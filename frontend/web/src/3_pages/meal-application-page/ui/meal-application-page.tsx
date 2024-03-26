@@ -10,7 +10,7 @@ import {
   useGetPupilsQuery,
   useGetTeacherSchoolClassesQuery,
   usePrepareMealRequestMutation
-} from '../../../7_shared/api';
+} from '../../../7_shared/api/deprecated/api.ts';
 import {useEffect, useState} from 'react';
 import {skipToken} from '@reduxjs/toolkit/query';
 import {dateToISOWithoutTime} from '../../../7_shared/lib/date';

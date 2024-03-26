@@ -1,5 +1,8 @@
 import {UUID} from './uuid.ts';
 
+/**
+ * @deprecated
+ */
 export type SchoolClass = {
   id: UUID,
   initials: {

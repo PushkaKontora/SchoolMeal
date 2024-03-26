@@ -1,5 +1,8 @@
 import {Role} from './role.ts';
 
+/**
+ * @deprecated
+ */
 export type User = {
   id: string,
   login: string,

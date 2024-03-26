@@ -2,10 +2,11 @@ import {Route, Routes} from 'react-router-dom';
 import {NO_AUTH_ROUTES} from '../../../3_pages/routing';
 import {LoginPage} from '../../../3_pages/login-page';
 import {CANTEEN_STAFF_ROUTES, TEACHER_ROUTES} from '../../../3_pages/routing';
-import {PrivateRoute, PrivateRouteProps} from '../../../5_features/private-route';
-import {Role} from '../../../7_shared/model/role';
+import {PrivateRoute, PrivateRouteProps} from '../../../3_pages/routing/private-route';
 import {MealApplicationPage} from '../../../3_pages/meal-application-page';
-import {MealRequestMonitorPage} from '../../../3_pages/meal-request-monitor-page/ui/meal-request-monitor-page.tsx';
+import {MealRequestMonitorPage} from '../../../3_pages/meal-request-monitor-page';
+import {Role} from '../../../5_features/auth';
+import {AppRouterProps} from './model/props.ts';
 
 const DefaultPrivateRoute = (props: Omit<PrivateRouteProps, 'redirectTo'>) => (
   <PrivateRoute
@@ -13,18 +14,18 @@ const DefaultPrivateRoute = (props: Omit<PrivateRouteProps, 'redirectTo'>) => (
     redirectTo={NO_AUTH_ROUTES.login}/>
 );
 
-export function AppRouter() {
+export function AppRouter(props: AppRouterProps) {
   return (
     <Routes>
       <Route
         path={NO_AUTH_ROUTES.login}
-        element={<LoginPage/>}/>
+        element={<LoginPage {...props.loginPageProps}/>}/>
 
       <Route
         path={CANTEEN_STAFF_ROUTES.Requests}
         element={
           <DefaultPrivateRoute
-            requiredRole={Role.canteen_staff}>
+            requiredRole={Role.staff}>
             <MealRequestMonitorPage/>
           </DefaultPrivateRoute>
         }/>

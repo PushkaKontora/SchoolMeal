@@ -1,28 +1,36 @@
 import {AUTH_TOKEN_NAME} from '../config/config';
-import {TokenPayload} from '../model/token-payload';
-import {JwtPayload} from '../model/jwt-payload';
-import {decodeToken, dropToken, getToken, saveToken} from '../../../7_shared/lib/token-manager';
+import {JwtPayload} from '../model/jwt-payload.ts';
+import jwtDecode from 'jwt-decode';
 
+// TODO: создать модуль Storage для localStorage
 export const AuthTokenService = {
-  async getToken() {
-    return getToken(AUTH_TOKEN_NAME);
+  getAuthToken() {
+    return localStorage.getItem(AUTH_TOKEN_NAME);
   },
 
-  async decodeAuthToken(): Promise<TokenPayload> {
-    const token = getToken(AUTH_TOKEN_NAME);
-
-    return decodeToken(token) as TokenPayload;
+  decodeAuthToken(token: string): JwtPayload | null {
+    if (token)
+      return jwtDecode(token) as JwtPayload;
+    return null;
   },
 
-  async saveAuthToken(token: TokenPayload) {
-    await saveToken(AUTH_TOKEN_NAME, token.accessToken);
+  getAndDecodeAuthToken(): JwtPayload | null {
+    const token = localStorage.getItem(AUTH_TOKEN_NAME);
+
+    if (token)
+      return jwtDecode(token) as JwtPayload;
+    return null;
   },
 
-  async deleteToken() {
-    await dropToken(AUTH_TOKEN_NAME);
+  saveAuthToken(token: string) {
+    localStorage.setItem(AUTH_TOKEN_NAME, token);
   },
 
-  async isAuthTokenExpired(decodedToken: JwtPayload) {
-    return (decodedToken.expires_in - Date.now()) < 0;
+  deleteAuthToken() {
+    localStorage.removeItem(AUTH_TOKEN_NAME);
+  },
+
+  isTokenExpired(payload: JwtPayload) {
+    return new Date(Date.now()) >= new Date(payload.exp * 1000);
   }
 };

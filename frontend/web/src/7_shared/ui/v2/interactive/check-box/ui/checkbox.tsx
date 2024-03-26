@@ -6,8 +6,8 @@ import {Tick} from './tick.tsx';
 
 export function Checkbox(props: CheckboxProps) {
   /*
-  const [checked, setChecked] = useState(props.checked);
-  const [disabled, setDisabled] = useState(props.disabled);
+  config [checked, setChecked] = useState(props.checked);
+  config [disabled, setDisabled] = useState(props.disabled);
 
   useEffect(() => {
     setDisabled(props.disabled);

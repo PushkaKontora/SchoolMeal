@@ -3,7 +3,6 @@ import {AppSidebarProps} from '../model/props.ts';
 
 import ExitIcon from '../assets/exit.svg?react';
 import {ACTION_ITEMS} from '../const/action-items.tsx';
-import {getFullName} from '../../../6_entities/user';
 
 export function AppSidebar(props: AppSidebarProps) {
   return (
@@ -15,7 +14,7 @@ export function AppSidebar(props: AppSidebarProps) {
         icon: (
           <ExitIcon/>
         ),
-        accountName: getFullName(props.currentUser),
+        accountName: props.userName || '',
         onClick: () => {return;}
       }}/>
   );
