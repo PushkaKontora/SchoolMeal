@@ -1,6 +1,6 @@
 import {AUTH_API} from './api/api';
 
-export {AuthTokenService} from './lib/auth-token-service';
+export {AuthTokenProcessor} from './lib/auth-token-processor.ts';
 
 export {AUTH_API} from './api/api';
 export type {TokenResponse} from './api/types';

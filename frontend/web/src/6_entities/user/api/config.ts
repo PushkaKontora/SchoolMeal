@@ -2,7 +2,7 @@ import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {BASE_BACKEND_URL} from '../../../7_shared/api/deprecated/config.ts';
 import {RegisterBody} from './types';
 import {User} from '../model/user';
-import {AuthTokenService} from '../../../5_features/auth';
+import {AuthTokenProcessor} from '../../../5_features/auth';
 import {ConfigSettings} from '../../../7_shared/api/deprecated/types.ts';
 import {addAuthHeader} from '../../../7_shared/api/deprecated/procces-headers.ts';
 
@@ -15,7 +15,7 @@ export const CONFIG: ConfigSettings = {
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_BACKEND_URL + '/users',
     prepareHeaders: async (headers) => {
-      const token = await AuthTokenService.getAuthToken();
+      const token = await AuthTokenProcessor.getAuthToken();
       if (token) {
         return addAuthHeader(headers, token);
       }

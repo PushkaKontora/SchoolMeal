@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
 export const BadgeContainer = styled.div<{
-  $backgroundColor: string,
-  $textColor: string,
-  $margin: string,
-  $fontFamily: string,
-  $width: string
+  $backgroundColor?: string,
+  $textColor?: string,
+  $margin?: string,
+  $fontFamily?: string,
+  $width?: string
 }>`
   background-color: ${props => props.$backgroundColor || '#F6F6F6'};
   color: ${props => props.$textColor || '#2C2C2C'};

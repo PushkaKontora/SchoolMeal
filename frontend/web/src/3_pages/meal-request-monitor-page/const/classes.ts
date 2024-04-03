@@ -1,4 +1,5 @@
-import {ClassType} from '../../../7_shared/model/class-type.ts';
+import {ClassType} from '../../../7_shared/api/implementations/v3/frontend-types/nutrition/portions.ts';
+
 
 export const CLASS_NAMES = ['1-4 классы', '5-11 классы'];
 

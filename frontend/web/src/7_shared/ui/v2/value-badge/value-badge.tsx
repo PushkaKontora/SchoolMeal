@@ -1,6 +1,6 @@
 import {BadgeContainer} from './styles';
 import {ValueBadgeProps} from './props';
-import {getStylesFromType} from './lib.ts';
+import {applyShowDashProp, getStylesFromType} from './lib.ts';
 
 export function ValueBadge({value, type, ...props}: ValueBadgeProps) {
   const styles = {
@@ -15,7 +15,7 @@ export function ValueBadge({value, type, ...props}: ValueBadgeProps) {
       $margin={styles?.margin}
       $fontFamily={styles?.fontFamily}
       $width={styles?.width}>
-      {value && (Number(value) > 0) ? value : '\u00A0\u0336\u00A0'}
+      {applyShowDashProp(props.showDash)(value) ? value : '\u00A0\u0336\u00A0'}
     </BadgeContainer>
   );
 }

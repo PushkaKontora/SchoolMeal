@@ -6,7 +6,7 @@ import {getFooters} from '../../lib/get-footers.tsx';
 export function ReactTableWrapper<T>({table, ...props}: ReactTableWrapperProps<T>) {
   return (
     <TableContainer
-      $width={props.styles?.width}>
+      $width={props.styles?.width || '100%'}>
       <thead>
         {
           table.getHeaderGroups().map(group => (

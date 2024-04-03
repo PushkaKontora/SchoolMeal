@@ -7,12 +7,12 @@ import {useGetCurrentUserQuery} from '../../../7_shared/api/deprecated/api.ts';
 
 export function PrivateRoute(props: PrivateRouteProps) {
   /*
-  const authorized = useAppSelector((state) => state.auth.authorized);
-  const {data: currentUser, refetch: refetchUser} = useGetCurrentUserQuery();
+  config authorized = useAppSelector((state) => state.auth.authorized);
+  config {data: currentUser, refetch: refetchUser} = useGetCurrentUserQuery();
 
-  const location = useLocation();
+  config location = useLocation();
 
-  const [roleMatched, setRoleMatched]
+  config [roleMatched, setRoleMatched]
     = useState(isRoleMatching(props.requiredRole, currentUser));
 
   useEffect(() => {

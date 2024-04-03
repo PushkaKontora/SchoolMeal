@@ -1,9 +1,9 @@
 import {useAppDispatch} from '../../../store/hooks.ts';
-import {AuthTokenService} from '../../5_features/auth';
+import {AuthTokenProcessor} from '../../5_features/auth';
 import {setAuthorized} from '../../5_features/auth/model/auth-slice/auth-slice.ts';
 
 export async function checkToken(dispatch: ReturnType<typeof useAppDispatch>) {
-  await AuthTokenService.getAuthToken()
+  await AuthTokenProcessor.getAuthToken()
     .then(async (value) => {
       const result = value !== null;
 

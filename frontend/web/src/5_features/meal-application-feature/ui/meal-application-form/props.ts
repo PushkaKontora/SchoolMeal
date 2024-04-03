@@ -1,7 +1,7 @@
-import {HeaderViewData, MealRequestRowViewData} from '../../../../6_entities/meal-request';
-import {MealRequestStatus} from '../../../../7_shared/model/meal-request-status.ts';
+import {MealRequestRowViewData} from '../../../../6_entities/meal-request';
 import {CSSProperties} from 'react';
-import {TableViewData} from '../../../../6_entities/meal-request/ui/meal-request-application-list/model/table-view-data.ts';
+import {TableViewData} from '../../../../6_entities/meal-request';
+import {MealApplicationFormStatus} from '../../../../6_entities/meal-request/model/meal-application-form-status.ts';
 
 export type TableStyles = {
   height?: CSSProperties['height']
@@ -11,10 +11,9 @@ export type MealApplicationFormProps = {
   data?: MealRequestRowViewData[],
   updateData: (rowIndex: number, columnId: string, value: unknown) => void,
   tableData: TableViewData,
-  headerViewData: HeaderViewData,
-  status: MealRequestStatus,
+  status: MealApplicationFormStatus,
   buttonTitles: {
-    [key in MealRequestStatus]: string
+    [key in MealApplicationFormStatus]: string
   },
   onCancel: () => void,
   onSend: () => void,

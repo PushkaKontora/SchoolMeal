@@ -11,5 +11,6 @@ export type ValueBadgeStyles = {
 export type ValueBadgeProps = {
   value?: string,
   type?: 'negative' | 'positive',
+  showDash?: 'standard' | boolean | ((value?: string) => boolean),
   styles?: ValueBadgeStyles
 };

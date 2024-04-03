@@ -1,16 +1,16 @@
 import {StatusValue} from '../model/types.ts';
-import {MealRequestStatus} from '../../../../../7_shared/model/meal-request-status.ts';
+import {MealApplicationFormStatus} from '../../../model/meal-application-form-status.ts';
 
-export const StatusValues: StatusValue<MealRequestStatus> = {
-  [MealRequestStatus.NotApplied]: {
+export const StatusValues: StatusValue<MealApplicationFormStatus> = {
+  [MealApplicationFormStatus.NotApplied]: {
     name: 'Заявка не подана',
     color: '#E9632C'
   },
-  [MealRequestStatus.Edit]: {
+  [MealApplicationFormStatus.Edit]: {
     name: 'Заявка на редактировании',
     color: '#FFDB20'
   },
-  [MealRequestStatus.Applied]: {
+  [MealApplicationFormStatus.Applied]: {
     name: 'Заявка подана',
     color: '#2FCB8F'
   },

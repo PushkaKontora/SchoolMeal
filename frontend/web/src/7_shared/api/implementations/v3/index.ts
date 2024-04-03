@@ -1,5 +1,10 @@
 import {AuthApi, useLoginMutation, useLogoutMutation, useRefreshMutation} from './rtk-query/auth-api.ts';
-import {Api, useGetSchoolClassesQuery} from './rtk-query/api.ts';
+import {
+  Api,
+  useGetNutritionRequestQuery, useGetPortionsQuery,
+  useGetSchoolClassesQuery, usePrefillNutritionRequestQuery,
+  useSendNutritionRequestMutation, useGetPupilsQuery
+} from './rtk-query/api.ts';
 import {Middleware} from '@reduxjs/toolkit';
 
 export const HooksV3 = {
@@ -8,7 +13,12 @@ export const HooksV3 = {
   useRefreshMutation,
   useLogoutMutation,
   // Api
-  useGetSchoolClassesQuery
+  useGetSchoolClassesQuery,
+  useGetNutritionRequestQuery,
+  useSendNutritionRequestMutation,
+  usePrefillNutritionRequestQuery,
+  useGetPortionsQuery,
+  useGetPupilsQuery
 };
 
 export type HooksTypeV3 = typeof HooksV3;

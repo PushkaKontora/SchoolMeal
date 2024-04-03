@@ -2,7 +2,6 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {initialState} from './consts';
 import {JwtPayload} from '../jwt-payload.ts';
 import {Role} from '../role.ts';
-import {RequestedAction} from './actions.ts';
 
 export const authSlice = createSlice({
   name: 'auth',

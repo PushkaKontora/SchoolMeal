@@ -1,7 +1,7 @@
-import {AuthTokenService, JwtPayload, Role} from '../../../5_features/auth';
-import {redirectByRole} from './redirect-by-role.ts';
+import {AuthTokenProcessor, JwtPayload, Role} from '../../../5_features/auth';
 import {authenticate} from '../../../5_features/auth/model/auth-slice';
 import {useAppDispatch} from '../../../../store/hooks.ts';
+import {redirectByRole} from './redirect-by-role.ts';
 
 export function checkRole(
   payload: JwtPayload,
@@ -18,9 +18,9 @@ export function checkRole(
 export function takeTokenAndCheckRole(
   dispatch: ReturnType<typeof useAppDispatch>
 ) : Promise<void> {
-  const payload = AuthTokenService.getAndDecodeAuthToken();
+  const payload = AuthTokenProcessor.getAndDecodeAuthToken();
 
-  if (payload && !AuthTokenService.isTokenExpired(payload)) {
+  if (payload && !AuthTokenProcessor.isTokenExpired(payload)) {
     checkRole(payload, dispatch);
     return Promise.resolve();
   } else {

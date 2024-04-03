@@ -4,7 +4,7 @@ import {SidebarAndContent} from '../../2_processes/role-sidebar/sidebar-and-cont
 import {RoleSidebar} from '../../2_processes/role-sidebar/role-sidebar/ui/role-sidebar.tsx';
 import {getFullName} from '../../6_entities/user';
 import {AppRouter} from '../../2_processes/routers/app-router';
-import {AuthTokenService} from '../../5_features/auth';
+import {AuthTokenProcessor} from '../../5_features/auth';
 
 export function AppBody() {
   const dispatch = useAppDispatch();
@@ -31,7 +31,7 @@ export function AppBody() {
         <AppRouter
           loginPageProps={{
             onSuccess: (response) => {
-              AuthTokenService.saveAuthToken(response.token);
+              AuthTokenProcessor.saveAuthToken(response.token);
               return takeTokenAndCheckRole(dispatch);
             }
           }}/>

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+import {CSSProperties} from 'react';
 
 export const TableContainer = styled.table<{
-  $width?: string
+  $width?: CSSProperties['width']
 }>`
   width: ${props => props.$width || '100%'};
   

@@ -6,8 +6,8 @@ export type TextCellStyles = {
   padding?: CSSProperties['padding']
 };
 
-export type TextCellProps = AbstractCellProps
-  & {
-  styles?: TextCellStyles,
+export type TextCellProps = {
+  cellProps: AbstractCellProps,
+  styles?: TextCellStyles;
   text: string
 };

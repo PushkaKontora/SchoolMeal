@@ -1,9 +1,10 @@
 import styled from 'styled-components';
+import {CSSProperties} from 'react';
 
 export const Container = styled.div<{
-  $header: boolean;
-  $justifyContent?: string;
-  $padding?: string;
+  $header?: boolean;
+  $justifyContent?: CSSProperties['justifyContent'];
+  $padding?: CSSProperties['padding'];
 }>`
   display: flex;
   justify-content: ${props => props.$justifyContent || 'flex-start'};

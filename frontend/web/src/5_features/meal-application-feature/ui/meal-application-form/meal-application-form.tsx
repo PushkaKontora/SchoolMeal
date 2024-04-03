@@ -1,11 +1,11 @@
 import {Buttons, Container, Header, StatusContainer, TableContainer} from './styles.ts';
 import {MealRequestApplicationList, MealRequestStatusBadge} from '../../../../6_entities/meal-request';
 import {MealApplicationFormProps} from './props.ts';
-import {MealPlanHeaderCell} from '../../../../6_entities/meal-plan/ui/meal-plan-header-cell';
+import {MealPlanHeaderCell} from '../../../../6_entities/meal-plan';
 import {CancelledNutritionBadgeCell} from '../../../../6_entities/pupil';
 import {ButtonPrimary} from '../../../../7_shared/ui/v2/interactive/buttons/button-primary';
-import {MealRequestStatus} from '../../../../7_shared/model/meal-request-status.ts';
 import {ButtonSecondary} from '../../../../7_shared/ui/v2/interactive/buttons/button-secondary';
+import {MealApplicationFormStatus} from '../../../../6_entities/meal-request/model/meal-application-form-status.ts';
 
 export function MealApplicationForm(props: MealApplicationFormProps) {
   return (
@@ -17,7 +17,7 @@ export function MealApplicationForm(props: MealApplicationFormProps) {
         </StatusContainer>
         <Buttons>
           {
-            props.status === MealRequestStatus.Edit && (
+            props.status === MealApplicationFormStatus.Edit && (
               <ButtonSecondary
                 title={'Отмена'}
                 width={'150px'}
@@ -38,7 +38,6 @@ export function MealApplicationForm(props: MealApplicationFormProps) {
           data={props.data}
           updateData={props.updateData}
           tableData={props.tableData}
-          headerViewData={props.headerViewData}
           cells={{
             mealPlanHeader: props => (
               <MealPlanHeaderCell

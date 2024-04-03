@@ -1,7 +1,7 @@
 export type MealPlanViewData = {
-  paid: number,
-  preferential: number,
-  total: number
+  paid?: number,
+  preferential?: number,
+  total?: number
 }
 
 export type MealRequestRowViewData = {

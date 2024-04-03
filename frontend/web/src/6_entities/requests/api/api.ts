@@ -1,7 +1,7 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
 import {fetchBaseQuery} from '@reduxjs/toolkit/dist/query/react';
 import {BASE_BACKEND_URL} from '../../../7_shared/api/deprecated/config.ts';
-import {AuthTokenService} from '../../../5_features/auth';
+import {AuthTokenProcessor} from '../../../5_features/auth';
 import {addAuthHeader} from '../../../7_shared/api';
 import {RequestReport, RequestReportIn} from './types.ts';
 
@@ -10,7 +10,7 @@ export const REQUESTS_API = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_BACKEND_URL + '/requests',
     prepareHeaders: async (headers) => {
-      const token = await AuthTokenService.getAuthToken();
+      const token = await AuthTokenProcessor.getAuthToken();
       if (token) {
         return addAuthHeader(headers, token);
       }

@@ -1,7 +1,7 @@
 import {MealRequestMonitorProps} from './props.ts';
 import {Container} from './styles.ts';
 import {MealRequestMonitorTable} from '../../../../6_entities/meal-request';
-import {MealPlanValueBadgeCell} from '../../../../6_entities/meal-plan/ui/meal-plan-value-badge';
+import {MealPlanValueBadgeCell} from '../../../../6_entities/meal-plan';
 
 export function MealRequestMonitor(props: MealRequestMonitorProps) {
   return (

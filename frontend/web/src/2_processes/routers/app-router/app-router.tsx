@@ -7,6 +7,7 @@ import {MealApplicationPage} from '../../../3_pages/meal-application-page';
 import {MealRequestMonitorPage} from '../../../3_pages/meal-request-monitor-page';
 import {Role} from '../../../5_features/auth';
 import {AppRouterProps} from './model/props.ts';
+import {NutritionClassListPage} from '../../../3_pages/nutrition-class-list-page';
 
 const DefaultPrivateRoute = (props: Omit<PrivateRouteProps, 'redirectTo'>) => (
   <PrivateRoute
@@ -35,7 +36,7 @@ export function AppRouter(props: AppRouterProps) {
         element={
           <DefaultPrivateRoute
             requiredRole={Role.teacher}>
-            {'Мои классы'}
+            <NutritionClassListPage/>
           </DefaultPrivateRoute>
         }/>
       <Route

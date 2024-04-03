@@ -2,10 +2,12 @@ import {RequestPlanReport} from '../../../7_shared/model/request-report.ts';
 import {Pupil} from '../../../7_shared/model/pupil.ts';
 import {HeaderViewData, MealRequestRowViewData} from '../../../6_entities/meal-request';
 import {isDateInAnyPeriods} from '../../../7_shared/lib/date-periods';
-import {dateToISOWithoutTime} from '../../../7_shared/lib/date';
 import {Menu} from '../../../7_shared/model/menu.ts';
 import {SchoolClasses} from '../../../6_entities/nutrition/model/schoolClasses.ts';
 
+/**
+ * @deprecated
+ */
 export function combineTableData(
   date: Date,
   planningReport?: RequestPlanReport,
@@ -28,13 +30,19 @@ export function combineTableData(
     breakfast: value.breakfast,
     dinner: value.dinner,
     snacks: value.snacks,
-    cancelledMeal: isDateInAnyPeriods(dateToISOWithoutTime(date),
+    cancelledMeal: false,
+    /*
+    cancelledMeal: isDateInAnyPeriods(date,
       pupilMap[value.id].cancellationPeriods
         .map((value) => [value.startsAt, value.endsAt])),
+     */
     balance: Number((400 * Math.random() - 200).toFixed(2))
   }));
 }
 
+/**
+ * @deprecated
+ */
 export function createHeaders(menu?: Menu): HeaderViewData {
   return {
     prices: {
@@ -45,6 +53,9 @@ export function createHeaders(menu?: Menu): HeaderViewData {
   };
 }
 
+/**
+ * @deprecated
+ */
 export function createClassNames(classes?: SchoolClasses[]) {
   if (!classes) {
     return [];

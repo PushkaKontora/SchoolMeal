@@ -2,18 +2,14 @@ import {TextCellProps} from './props.ts';
 import {Container} from './styles.ts';
 import {AbstractCell} from '../../abstract-cell';
 
-export function TextCell({cellStyles, styles, header, as, key, text, ...props}: TextCellProps) {
+export function TextCell({cellProps, styles, text}: TextCellProps) {
   return (
     <AbstractCell
-      header={header}
-      as={as}
-      key={key}
-      cellStyles={cellStyles}
-      {...props}>
+      {...cellProps}>
       <Container
         $justifyContent={styles?.justifyContent}
         $padding={styles?.padding}
-        $header={header}>
+        $header={cellProps.header}>
         {text}
       </Container>
     </AbstractCell>

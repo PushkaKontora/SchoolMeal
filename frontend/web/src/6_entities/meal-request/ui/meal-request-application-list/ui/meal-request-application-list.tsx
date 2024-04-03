@@ -8,7 +8,6 @@ export function MealRequestApplicationList(props: MealRequestListProps) {
     data: props.data || [],
     columns: createColumns(
       props.tableData,
-      props.headerViewData,
       props.cells.mealPlanHeader,
       props.cells.cancelledBadge),
     getCoreRowModel: getCoreRowModel(),

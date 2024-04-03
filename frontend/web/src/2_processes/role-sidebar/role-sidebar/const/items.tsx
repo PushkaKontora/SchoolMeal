@@ -1,7 +1,5 @@
-
 import HomeIcon from '../assets/my_classes.svg?react';
 import ApplyRequestIcon from '../assets/apply_request.svg?react';
-import RequestHistoryIcon from '../assets/request_history.svg?react';
 import {CANTEEN_STAFF_ROUTES, TEACHER_ROUTES} from '../../../../3_pages/routing';
 import {SidebarIconedButtonProps} from '../../../../7_shared/ui/v2/sidebar/components/iconed-button/props.ts';
 import {Role} from '../../../../5_features/auth';
@@ -20,12 +18,14 @@ export const ITEMS: {[role in Role]: SidebarIconedButtonProps[]} = {
       ),
       text: 'Подать заявку'
     },
+    /*
     {
       icon: (
         <RequestHistoryIcon/>
       ),
       text: 'История заявок'
     }
+     */
   ],
   [Role.staff]: [
     {

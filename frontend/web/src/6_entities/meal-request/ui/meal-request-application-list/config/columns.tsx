@@ -1,19 +1,17 @@
 import {ColumnDef, createColumnHelper} from '@tanstack/react-table';
-import {MealRequestRowViewData} from '../model/meal-request-row-view-data.ts';
-import {getFullName} from '../lib/mappers.ts';
+import {MealRequestRowViewData} from '../../../model/meal-request-row-view-data/meal-request-row-view-data.ts';
 import {TextCell} from '../../../../../7_shared/ui/v2/table';
-import {HeaderViewData} from '../model/header-view-data.ts';
 import {CheckboxCell} from '../../../../../7_shared/ui/v2/table';
 import {ICancelledNutritionView, IMealPlanHeaderView} from '../model/element-types.ts';
 import {updateCellData} from '../../../../../7_shared/lib/react-table-wrapper';
 import {TableViewData} from '../model/table-view-data.ts';
-import {AbstractCell} from '../../../../../7_shared/ui/v2/table/abstract-cell';
+import {AbstractCell} from '../../../../../7_shared/ui/v2/table';
+import {getFullName} from '../../../../user';
 
 export const columnHelper = createColumnHelper<MealRequestRowViewData>();
 
 export const createColumns = (
   tableData: TableViewData,
-  headerView: HeaderViewData,
   MealPlanHeader: IMealPlanHeaderView,
   CancelledBadge: ICancelledNutritionView
 )
@@ -21,19 +19,24 @@ export const createColumns = (
   columnHelper.accessor(originalRow => getFullName(originalRow), {
     id: 'fullName',
     header: props => <TextCell
-      header
       text={'ФИО'}
-      key={props.header.id}
-      cellStyles={{
-        width: '1%',
-        whiteSpace: 'nowrap'
+      cellProps={{
+        key: props.header.id,
+        header: true,
+        cellStyles: {
+          width: '1%',
+          whiteSpace: 'nowrap',
+        }
       }}
     />,
     cell: props => <TextCell
-      key={props.cell.id}
       text={props.getValue()}
-      cellStyles={{
-        whiteSpace: 'nowrap'
+      cellProps={{
+        key: props.cell.id,
+        header: true,
+        cellStyles: {
+          whiteSpace: 'nowrap'
+        }
       }}/>
   }),
   columnHelper.accessor('cancelledMeal', {
@@ -79,8 +82,7 @@ export const createColumns = (
     header: props => <MealPlanHeader
       key={props.header.id}
       title={'Завтрак'}
-      showContent={tableData.hasBreakfast}
-      price={headerView.prices.breakfast}/>,
+      showContent={tableData.hasBreakfast}/>,
     cell: props => <CheckboxCell
       key={props.cell.id}
       disabled={!tableData.editable}
@@ -92,8 +94,7 @@ export const createColumns = (
     header: props => <MealPlanHeader
       key={props.header.id}
       title={'Обед'}
-      showContent={tableData.hasDinner}
-      price={headerView.prices.dinner}/>,
+      showContent={tableData.hasDinner}/>,
     cell: props => <CheckboxCell
       key={props.cell.id}
       disabled={!tableData.editable}
@@ -105,8 +106,7 @@ export const createColumns = (
     header: props => <MealPlanHeader
       key={props.header.id}
       title={'Полдник'}
-      showContent={tableData.hasSnacks}
-      price={headerView.prices.snacks}/>,
+      showContent={tableData.hasSnacks}/>,
     cell: props => <CheckboxCell
       key={props.cell.id}
       disabled={!tableData.editable}

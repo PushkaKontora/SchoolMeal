@@ -3,7 +3,7 @@ import {JwtPayload} from '../model/jwt-payload.ts';
 import jwtDecode from 'jwt-decode';
 
 // TODO: создать модуль Storage для localStorage
-export const AuthTokenService = {
+export const AuthTokenProcessor = {
   getAuthToken() {
     return localStorage.getItem(AUTH_TOKEN_NAME);
   },
