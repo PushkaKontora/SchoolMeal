@@ -17,4 +17,5 @@ services:
     build:
       target: proxy
     volumes:
-      - ./frontend/web/nginx/:/etc/nginx/templates/
+      - ./frontend/web/nginx:/etc/nginx/templates
+      - ./certs:/etc/ssl/school_meal
