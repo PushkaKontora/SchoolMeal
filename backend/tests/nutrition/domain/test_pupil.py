@@ -35,7 +35,7 @@ def test_cancelling_mealtime_where_pupil_does_not_eat(pupil: Pupil) -> None:
 def test_cancelling_for_period(pupil: Pupil, now_: datetime, deadline: datetime | None) -> None:
     period = Period(start=date(2023, 1, 2), end=date(2023, 5, 5))
 
-    with freezegun.freeze_time(now_.astimezone(YEKATERINBURG)):
+    with freezegun.freeze_time(now_.replace(tzinfo=YEKATERINBURG)):
         cancelling = pupil.cancel_for_period(period)
 
         if not deadline:
@@ -46,7 +46,7 @@ def test_cancelling_for_period(pupil: Pupil, now_: datetime, deadline: datetime 
 
         error = cancelling.unwrap_err()
         assert isinstance(error, CannotCancelAfterDeadline)
-        assert error.deadline == deadline.astimezone(YEKATERINBURG)
+        assert error.deadline == deadline.replace(tzinfo=YEKATERINBURG)
 
 
 @pytest.mark.parametrize(
@@ -60,7 +60,7 @@ def test_cancelling_for_period(pupil: Pupil, now_: datetime, deadline: datetime 
     ],
 )
 def test_resuming_on_day(pupil: Pupil, now_: datetime, has_deadline_come: bool) -> None:
-    now_in_yekaterinburg = now_.astimezone(YEKATERINBURG)
+    now_in_yekaterinburg = now_.replace(tzinfo=YEKATERINBURG)
 
     day = Day(date(2023, 1, 2))
 
