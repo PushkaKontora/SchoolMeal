@@ -4,7 +4,6 @@ from typing import AsyncIterator
 from apscheduler.schedulers.base import BaseScheduler
 from dependency_injector.containers import DeclarativeContainer
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.container import AlchemyORM
 from app.db.settings import DatabaseSettings
@@ -52,13 +51,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 app.add_exception_handler(UnprocessableEntity, unprocessable_entity_handler)
 app.add_exception_handler(Exception, default_handler)
 

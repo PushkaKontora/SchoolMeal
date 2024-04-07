@@ -40,6 +40,8 @@ services:
     build:
       context: frontend/web
     container_name: school_meal_nginx
+    environment:
+      DOMAIN: ${DOMAIN}
     ports:
       - "80:80"
       - "443:443"

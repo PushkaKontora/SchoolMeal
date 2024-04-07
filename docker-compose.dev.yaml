@@ -17,4 +17,4 @@ services:
     build:
       target: proxy
     volumes:
-      - ./frontend/web/nginx:/etc/nginx/conf.d
+      - ./frontend/web/nginx/:/etc/nginx/templates/
