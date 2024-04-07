@@ -2,14 +2,10 @@ version: "3.9"
 
 services:
   postgres:
-    build:
-      context: postgres
     ports:
       - ${DB_PORT:-5432}:${DB_PORT:-5432}
 
   app:
-    build:
-      context: backend
     environment:
       SHOW_SWAGGER_UI: "true"
     ports:
@@ -19,7 +15,6 @@ services:
 
   nginx:
     build:
-      context: frontend/web
       target: proxy
     volumes:
       - ./frontend/web/nginx:/etc/nginx/conf.d
