@@ -17,7 +17,7 @@ from app.user_management.application.dto import AuthenticationIn, RefreshTokensI
 from app.user_management.application.limiters import IBruteForceLimiter
 from app.user_management.domain.credentials import Login, Password
 from app.user_management.domain.jwt import Fingerprint
-from app.user_management.infrastructure.config import JWTConfig
+from app.user_management.infrastructure.config import Config
 from app.user_management.infrastructure.dependencies import IdentityContainer
 
 
@@ -35,7 +35,7 @@ async def login(
     response: Response,
     body: Annotated[LoginBody, Body()],
     ip: ClientIPDep,
-    config: JWTConfig = Depends(Provide[IdentityContainer.jwt_config]),
+    config: Config = Depends(Provide[IdentityContainer.config]),
     user_repository: IUserRepository = Depends(Provide[IdentityContainer.user_repository]),
     session_repository: ISessionRepository = Depends(Provide[IdentityContainer.session_repository]),
     limiter: IBruteForceLimiter = Depends(Provide[IdentityContainer.limiter]),
@@ -59,9 +59,9 @@ async def login(
 
     token, session = result
 
-    set_session_in_cookie(response, session)
+    set_session_in_cookie(response, session, domain=config.domain)
 
-    return AccessTokenOut.from_model(token, secret=config.secret)
+    return AccessTokenOut.from_model(token, secret=config.jwt_secret)
 
 
 @router.post(
@@ -76,7 +76,7 @@ async def refresh(
     body: Annotated[RefreshBody, Body()],
     token: RefreshTokenDep,
     ip: ClientIPDep,
-    config: JWTConfig = Depends(Provide[IdentityContainer.jwt_config]),
+    config: Config = Depends(Provide[IdentityContainer.config]),
     user_repository: IUserRepository = Depends(Provide[IdentityContainer.user_repository]),
     session_repository: ISessionRepository = Depends(Provide[IdentityContainer.session_repository]),
 ) -> AccessTokenOut:
@@ -96,9 +96,9 @@ async def refresh(
 
     access_token, session = result
 
-    set_session_in_cookie(response, session)
+    set_session_in_cookie(response, session, domain=config.domain)
 
-    return AccessTokenOut.from_model(access_token, secret=config.secret)
+    return AccessTokenOut.from_model(access_token, secret=config.jwt_secret)
 
 
 @router.post(
@@ -131,10 +131,10 @@ async def authorize(
     token: AccessTokenDep,
     uri: RequestURIDep,
     method: RequestMethodDep,
-    config: JWTConfig = Depends(Provide[IdentityContainer.jwt_config]),
+    config: Config = Depends(Provide[IdentityContainer.config]),
     authorization: IAuthorization = Depends(Provide[IdentityContainer.authorization]),
 ) -> Response:
-    access_token = services.authorize(token, uri, method, secret=config.secret, authorization=authorization)
+    access_token = services.authorize(token, uri, method, secret=config.jwt_secret, authorization=authorization)
 
     if not access_token:
         raise Forbidden

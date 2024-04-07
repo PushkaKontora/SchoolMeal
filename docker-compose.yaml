@@ -27,6 +27,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
+      DOMAIN: ${DOMAIN}
       JWT_SECRET: ${JWT_SECRET}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}

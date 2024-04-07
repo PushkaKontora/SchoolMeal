@@ -11,11 +11,12 @@ from app.user_management.domain.jwt import Session
 _COOKIE_NAME = "refresh"
 
 
-def set_session_in_cookie(response: Response, session: Session) -> Response:
+def set_session_in_cookie(response: Response, session: Session, domain: str) -> Response:
     response.set_cookie(
         key=_COOKIE_NAME,
         value=str(session.id.value),
         expires=int(session.expires_in.timestamp()),
+        domain=f".{domain}",
         path="/api/user-management",
         httponly=True,
     )
