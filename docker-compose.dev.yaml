@@ -6,8 +6,6 @@ services:
       - ${DB_PORT:-5432}:${DB_PORT:-5432}
 
   app:
-    environment:
-      SHOW_SWAGGER_UI: "true"
     ports:
       - "8000:8000"
     environment:
