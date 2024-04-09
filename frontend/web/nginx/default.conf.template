@@ -14,8 +14,8 @@ server {
     ssl_certificate             /etc/ssl/school_meal/certificate.pem;
     ssl_certificate_key         /etc/ssl/school_meal/private.pem;
 
-    add_header Access-Control-Allow-Origin          "https://${DOMAIN}" always;
-    add_header Access-Control-Allow-Headers         "Authorization" always;
+    add_header Access-Control-Allow-Origin          "${ORIGIN}" always;
+    add_header Access-Control-Allow-Headers         "Content-Type, Authorization" always;
     add_header Access-Control-Allow-Methods         "*" always;
     add_header Access-Control-Allow-Credentials     "true" always;
     add_header Access-Control-Max-Age               "86400" always;
