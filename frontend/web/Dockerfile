@@ -30,10 +30,14 @@ RUN npm run build
 
 FROM nginx:1.23.4-alpine3.17 as proxy
 
+ARG TEMPLATE_DIR=/etc/nginx/templates
 ARG CONFIG_DIR=/etc/nginx/conf.d
 
-COPY nginx/default.conf $CONFIG_DIR
-COPY nginx/upstream.conf $CONFIG_DIR
+ENV NGINX_ENVSUBST_TEMPLATE_DIR $TEMPLATE_DIR
+ENV NGINX_ENVSUBST_OUTPUT_DIR $CONFIG_DIR
+
+RUN mkdir $TEMPLATE_DIR
+COPY nginx/default.conf.template $TEMPLATE_DIR
 
 EXPOSE 80
 USER $USER

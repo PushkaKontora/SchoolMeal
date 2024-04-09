@@ -2,7 +2,8 @@ version: "3.9"
 
 services:
   postgres:
-    image: peroovy/school_meal:postgres
+    build:
+      context: postgres
     healthcheck:
       test: pg_isready -U ${DB_USER} -p ${DB_PORT} -d ${DB_NAME}
       interval: 10s
@@ -19,12 +20,14 @@ services:
       - school_meal_nw
 
   app:
-    image: peroovy/school_meal:app
+    build:
+      context: backend
     container_name: school_meal_app
     depends_on:
       postgres:
         condition: service_healthy
     environment:
+      DOMAIN: ${DOMAIN}
       JWT_SECRET: ${JWT_SECRET}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -35,8 +38,11 @@ services:
       - school_meal_nw
 
   nginx:
-    image: peroovy/school_meal:nginx
+    build:
+      context: frontend/web
     container_name: school_meal_nginx
+    environment:
+      ORIGIN: "https://${DOMAIN}"
     ports:
       - "80:80"
       - "443:443"

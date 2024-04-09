@@ -1,10 +1,28 @@
-log_format upstreamlog '[$time_local] $remote_addr - $remote_user - $server_name to: $upstream_addr: $request upstream_response_time $upstream_response_time msec $msec request_time $request_time';
+upstream school_meal {
+    server app:8000;
+}
 
 server {
     listen 80;
-    client_max_body_size 100M;
+    return 301 https://$host$request_uri;
+}
 
-    access_log /var/log/nginx/access.log upstreamlog;
+server {
+    listen                      443 ssl;
+    client_max_body_size        100M;
+
+    ssl_certificate             /etc/ssl/school_meal/certificate.pem;
+    ssl_certificate_key         /etc/ssl/school_meal/private.pem;
+
+    add_header Access-Control-Allow-Origin          "${ORIGIN}" always;
+    add_header Access-Control-Allow-Headers         "Content-Type, Authorization" always;
+    add_header Access-Control-Allow-Methods         "*" always;
+    add_header Access-Control-Allow-Credentials     "true" always;
+    add_header Access-Control-Max-Age               "86400" always;
+
+    if ($request_method = OPTIONS) {
+      return 204;
+    }
 
     location /api/user-management {
         proxy_pass              http://school_meal/user-management;

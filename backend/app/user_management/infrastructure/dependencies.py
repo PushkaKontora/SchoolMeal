@@ -3,7 +3,7 @@ from dependency_injector.containers import DeclarativeContainer, WiringConfigura
 
 from app.user_management.application.authorizations.role import RoleAuthorization
 from app.user_management.application.limiters import BruteForceLimiter
-from app.user_management.infrastructure.config import JWTConfig
+from app.user_management.infrastructure.config import Config
 from app.user_management.infrastructure.dao import AlchemySessionRepository, AlchemyUserRepository
 
 
@@ -14,7 +14,7 @@ class IdentityContainer(DeclarativeContainer):
 
     alchemy = providers.DependenciesContainer()
 
-    jwt_config = providers.Singleton(JWTConfig)
+    config = providers.Singleton(Config)
 
     authorization = providers.Singleton(RoleAuthorization)
     limiter = providers.Singleton(BruteForceLimiter)
