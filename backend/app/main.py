@@ -9,6 +9,9 @@ from app.db.container import AlchemyORM
 from app.db.settings import DatabaseSettings
 from app.feedbacks.api import router as feedbacks_api
 from app.feedbacks.infrastructure.dependencies import FeedbacksContainer
+from app.notification.api.rest import router as notification_api
+from app.notification.application.tasks import scheduler as notification_scheduler
+from app.notification.dependencies import NotificationContainer
 from app.nutrition.api import router as nutrition_api
 from app.nutrition.application.tasks import scheduler as nutrition_scheduler
 from app.nutrition.infrastructure.dependencies import NutritionContainer
@@ -28,8 +31,13 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         NutritionContainer(alchemy=alchemy),
         FeedbacksContainer(alchemy=alchemy),
         IdentityContainer(alchemy=alchemy),
+        NotificationContainer(alchemy=alchemy),
     ]
-    schedulers: list[BaseScheduler] = [nutrition_scheduler, identity_scheduler]
+    schedulers: list[BaseScheduler] = [
+        nutrition_scheduler,
+        identity_scheduler,
+        notification_scheduler,
+    ]
 
     for module in modules:
         module.check_dependencies()
@@ -57,3 +65,4 @@ app.add_exception_handler(Exception, default_handler)
 app.include_router(identity_api, prefix="/user-management", tags=["User Management"])
 app.include_router(nutrition_api, prefix="/nutrition", tags=["Nutrition"])
 app.include_router(feedbacks_api, prefix="/feedbacks", tags=["Feedbacks"])
+app.include_router(notification_api, prefix="/notification", tags=["Notification"])

@@ -40,6 +40,12 @@ class RoleAuthorization(IAuthorization):
         "/feedbacks/v1/feedbacks": {
             Method.POST: {Role.PARENT},
         },
+        "/notification/v1/notifications": {
+            Method.GET: {Role.TEACHER},
+        },
+        "/notification/v1/notifications/read": {
+            Method.POST: {Role.TEACHER},
+        },
     }
 
     def authorize(self, token: AccessToken, uri: str, method: Method) -> bool:

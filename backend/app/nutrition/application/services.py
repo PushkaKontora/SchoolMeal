@@ -2,13 +2,14 @@ from datetime import date
 
 from result import Err, Ok, Result
 
+from app.nutrition.application.adapters import INotificationAdapter
 from app.nutrition.application.dao.pupils import IPupilRepository, PupilByClassID
 from app.nutrition.application.dao.requests import IRequestRepository
 from app.nutrition.application.dao.school_classes import ISchoolClassRepository
 from app.nutrition.application.errors import NotFoundPupil, NotFoundSchoolClass
 from app.nutrition.domain import services
 from app.nutrition.domain.mealtime import Mealtime
-from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
+from app.nutrition.domain.pupil import CancellationReason, CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
 from app.nutrition.domain.request import CannotSubmitAfterDeadline, Request
 from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.time import Day, Period
@@ -33,7 +34,12 @@ async def resume_pupil_on_day(
 
 
 async def cancel_pupil_for_period(
-    pupil_id: PupilID, period: Period, pupil_repository: IPupilRepository
+    pupil_id: PupilID,
+    period: Period,
+    reason: CancellationReason | None,
+    pupil_repository: IPupilRepository,
+    class_repository: ISchoolClassRepository,
+    notification_adapter: INotificationAdapter,
 ) -> Result[None, NotFoundPupil | CannotCancelAfterDeadline]:
     pupil = await pupil_repository.get(pupil_id)
 
@@ -46,6 +52,22 @@ async def cancel_pupil_for_period(
         return cancelling
 
     await pupil_repository.merge(cancelling.unwrap())
+
+    school_class = await class_repository.get(ident=pupil.class_id)
+    if school_class and school_class.teacher_id:
+        period_message = (
+            period.start.strftime("%d.%m.%Y")
+            if period.is_day
+            else f"{period.start.strftime('%d.%m.%Y')} - {period.end.strftime('%d.%m.%Y')}"
+        )
+
+        await notification_adapter.notify_teacher_about_cancellation(
+            teacher_id=school_class.teacher_id,
+            title=f"{pupil.name.first} {pupil.name.last}",
+            subtitle=f"не будет питаться {period_message}",
+            mark=f"{school_class.number}{school_class.literal}",
+            body=str(reason) if reason else "",
+        )
 
     return Ok(None)
 

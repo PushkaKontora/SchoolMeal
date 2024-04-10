@@ -38,6 +38,23 @@ class PupilID:
         return cls(secrets.token_hex(10))
 
 
+@dataclass(frozen=True, eq=True)
+class CancellationReason:
+    value: str
+
+    _MAX_LENGTH = 255
+
+    def __post_init__(self) -> None:
+        if not self.value:
+            raise ValueError("Причина снятия должна быть определена")
+
+        if len(self.value) > self._MAX_LENGTH:
+            raise ValueError(f"Превышена максимальная длина тела уведомления - {self._MAX_LENGTH} символов")
+
+    def __str__(self) -> str:
+        return self.value
+
+
 @unique
 class NutritionStatus(IntEnum):
     PAID = 0

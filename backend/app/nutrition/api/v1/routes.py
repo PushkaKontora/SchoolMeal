@@ -18,11 +18,12 @@ from app.nutrition.api.v1.schemas.params import (
 )
 from app.nutrition.api.v1.schemas.view import PortionsReportOut, PupilOut, RequestOut, SchoolClassOut
 from app.nutrition.application import services
+from app.nutrition.application.adapters import INotificationAdapter
 from app.nutrition.application.dao.pupils import IPupilRepository, PupilByClassID
 from app.nutrition.application.dao.requests import IRequestRepository, RequestByDate, RequestByStatus
 from app.nutrition.application.dao.school_classes import ClassByNumberRange, ISchoolClassRepository
 from app.nutrition.application.errors import NotFoundPupil, NotFoundSchoolClass
-from app.nutrition.domain.pupil import CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
+from app.nutrition.domain.pupil import CancellationReason, CannotCancelAfterDeadline, CannotResumeAfterDeadline, PupilID
 from app.nutrition.domain.request import CannotSubmitAfterDeadline, RequestStatus
 from app.nutrition.domain.school_class import ClassID
 from app.nutrition.domain.time import Day, Period
@@ -253,15 +254,23 @@ async def cancel_pupil_for_period(
     pupil_id: str,
     body: CancelPupilForPeriodBody,
     pupil_repository: IPupilRepository = Depends(Provide[NutritionContainer.pupil_repository]),
+    class_repository: ISchoolClassRepository = Depends(Provide[NutritionContainer.class_repository]),
+    notification_adapter: INotificationAdapter = Depends(Provide[NutritionContainer.notification_adapter]),
 ) -> OKSchema:
     try:
         pupil_id_ = PupilID(pupil_id)
         period = Period(start=body.start, end=body.end)
+        reason = CancellationReason(body.reason) if body.reason else None
     except ValueError as error:
         raise UnprocessableEntity(str(error)) from error
 
     result = await services.cancel_pupil_for_period(
-        pupil_id=pupil_id_, period=period, pupil_repository=pupil_repository
+        pupil_id=pupil_id_,
+        period=period,
+        reason=reason,
+        pupil_repository=pupil_repository,
+        class_repository=class_repository,
+        notification_adapter=notification_adapter,
     )
 
     match result:

@@ -11,6 +11,9 @@ class Name:
     _MAX_LENGTH = 64
     _REGEX = re.compile(r"[А-ЯЁ][а-яё]*")
 
+    def __str__(self) -> str:
+        return self.value
+
     def __post_init__(self) -> None:
         if not self.value:
             raise ValueError("Значение должно быть определено")
@@ -33,6 +36,9 @@ class FullName:
     last: Name
     first: Name
     patronymic: Name | None
+
+    def __str__(self) -> str:
+        return f"{self.last} {self.first} {self.patronymic or ''}".rstrip()
 
     @classmethod
     def create(cls, last: str, first: str, patronymic: str | None = None) -> "FullName":

@@ -33,6 +33,10 @@ class Period(Iterable[date]):
         if self.start > self.end:
             raise ValueError("Дата начала периода не может быть больше даты окончания")
 
+    @property
+    def is_day(self) -> bool:
+        return self.start == self.end
+
     def intersects(self, other: "Period") -> Optional["Period"]:
         max_start, min_end = max(self.start, other.start), min(self.end, other.end)
 

@@ -19,6 +19,7 @@ pydantic = {version = "^1.10.7", extras = ["email"]}
 dependency-injector = "^4.41.0"
 apscheduler = "^3.10.4"
 result = "^0.16.0"
+python-dateutil = "^2.9.0.post0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -27,7 +28,7 @@ pytest-asyncio = "^0.21.1"
 isort = "^5.12.0"
 black = "^23.9.1"
 flake8 = "^6.1.0"
-mypy = "^1.6.0"
+mypy = "^1.9.0"
 unify = "^0.5"
 autoflake = "^2.2.1"
 freezegun = "^1.2.2"

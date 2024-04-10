@@ -25,6 +25,9 @@ class Literal:
         if not self._REGEX.fullmatch(self.value):
             raise ValueError("Буква класса должны быть заглавной кириллицей")
 
+    def __str__(self) -> str:
+        return str(self.value)
+
 
 @dataclass(frozen=True, eq=True, order=True)
 class Number:
@@ -33,6 +36,9 @@ class Number:
     def __post_init__(self) -> None:
         if not 1 <= self.value <= 11:
             raise ValueError("Цифра класса должна быть от 1 до 11")
+
+    def __str__(self) -> str:
+        return str(self.value)
 
 
 @dataclass
