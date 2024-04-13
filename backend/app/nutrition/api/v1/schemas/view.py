@@ -6,10 +6,11 @@ from uuid import UUID
 
 from app.nutrition.api.v1.schemas.enums import MealtimeDTO, NutritionStatusDTO
 from app.nutrition.domain.pupil import NutritionStatus, Pupil
-from app.nutrition.domain.request import Request, RequestStatus
+from app.nutrition.domain.request import Declaration, Request, RequestStatus
 from app.nutrition.domain.school_class import SchoolClass
 from app.nutrition.domain.time import Period
 from app.shared.api.schemas import FrontendBody
+from app.shared.domain.personal_info import FullName
 
 
 @unique
@@ -80,30 +81,50 @@ class SchoolClassOut(FrontendBody):
         )
 
 
+class DeclarationOut(FrontendBody):
+    id: str
+    last_name: str
+    first_name: str
+    patronymic: str | None
+    mealtimes: list[MealtimeDTO]
+    nutrition: NutritionStatusDTO
+
+    @classmethod
+    def from_model(cls, declaration: Declaration, name: FullName) -> "DeclarationOut":
+        return cls(
+            id=declaration.pupil_id.value,
+            last_name=name.last.value,
+            first_name=name.first.value,
+            patronymic=name.patronymic.value if name.patronymic else None,
+            mealtimes=[MealtimeDTO.from_model(mealtime) for mealtime in declaration.mealtimes],
+            nutrition=NutritionStatusDTO.from_model(declaration.nutrition),
+        )
+
+
 class RequestOut(FrontendBody):
     class_id: UUID
     on_date: date
     status: RequestStatusOut
     mealtimes: list[MealtimeDTO]
-    pupils: list[PupilOut]
+    pupils: list[DeclarationOut]
 
     @classmethod
     def from_models(cls, request: Request, pupils: Iterable[Pupil]) -> "RequestOut":
         pupil_by_id = {pupil.id: pupil for pupil in pupils}
 
-        pupils_out: list[PupilOut] = []
+        declarations_out: list[DeclarationOut] = []
         for declaration in request.declarations:
             if not (pupil := pupil_by_id.get(declaration.pupil_id)):
                 continue
 
-            pupils_out.append(PupilOut.from_model(pupil))
+            declarations_out.append(DeclarationOut.from_model(declaration, name=pupil.name))
 
         return cls(
             class_id=request.class_id.value,
             on_date=request.on_date,
             status=RequestStatusOut.from_model(request.status),
             mealtimes=[MealtimeDTO.from_model(mealtime) for mealtime in request.mealtimes],
-            pupils=pupils_out,
+            pupils=declarations_out,
         )
 
 

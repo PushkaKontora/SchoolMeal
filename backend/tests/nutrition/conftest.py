@@ -10,7 +10,11 @@ from app.shared.domain.personal_info import FullName
 @pytest.fixture
 def school_class() -> SchoolClass:
     return SchoolClass(
-        id=ClassID.generate(), teacher_id=None, number=Number(1), literal=Literal("И"), mealtimes={Mealtime.DINNER}
+        id=ClassID.generate(),
+        teacher_id=None,
+        number=Number(1),
+        literal=Literal("И"),
+        mealtimes={Mealtime.DINNER, Mealtime.BREAKFAST},
     )
 
 
