@@ -1,6 +1,6 @@
 import {NutritionRequestOut} from '../backend-types/nutrition/requests.ts';
 import {NutritionRequest, NutritionRequestStatus} from '../frontend-types/nutrition/nutrition-request.ts';
-import {toPupilArray} from './pupil.ts';
+import {pupilDeclarationsToPupilArray} from './pupil.ts';
 import {toMealtimeArray} from './mealtime.ts';
 
 export const toNutritionRequest = (responseData: NutritionRequestOut): NutritionRequest => ({
@@ -8,7 +8,7 @@ export const toNutritionRequest = (responseData: NutritionRequestOut): Nutrition
   date: new Date(responseData.onDate),
   status: NutritionRequestStatus[responseData.status],
   mealtimes: toMealtimeArray(responseData.mealtimes),
-  pupils: toPupilArray(responseData.pupils)
+  pupils: pupilDeclarationsToPupilArray(responseData.pupils)
 });
 
 export const toNutritionRequestArray = (responseData: NutritionRequestOut[]) => responseData.map(toNutritionRequest);

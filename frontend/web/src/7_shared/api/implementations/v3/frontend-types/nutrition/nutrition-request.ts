@@ -8,7 +8,7 @@ export enum NutritionRequestStatus {
 
 // GET request
 
-export type GetNutritionRequestParams = {
+export type GetNutritionRequestFrontendParams = {
   classId: string,
   date: Date
 }

@@ -33,7 +33,6 @@ export const createColumns = (
       text={props.getValue()}
       cellProps={{
         key: props.cell.id,
-        header: true,
         cellStyles: {
           whiteSpace: 'nowrap'
         }
@@ -81,37 +80,31 @@ export const createColumns = (
   columnHelper.accessor('breakfast', {
     header: props => <MealPlanHeader
       key={props.header.id}
-      title={'Завтрак'}
-      showContent={tableData.hasBreakfast}/>,
+      title={'Завтрак'}/>,
     cell: props => <CheckboxCell
       key={props.cell.id}
-      disabled={!tableData.editable}
+      disabled={!tableData.editable || !tableData.hasBreakfast}
       checked={props.getValue()}
-      showContent={tableData.hasBreakfast}
       onChange={() => updateCellData(props, !props.getValue())}/>
   }),
   columnHelper.accessor('dinner', {
     header: props => <MealPlanHeader
       key={props.header.id}
-      title={'Обед'}
-      showContent={tableData.hasDinner}/>,
+      title={'Обед'}/>,
     cell: props => <CheckboxCell
       key={props.cell.id}
-      disabled={!tableData.editable}
+      disabled={!tableData.editable || !tableData.hasDinner}
       checked={props.getValue()}
-      showContent={tableData.hasDinner}
       onChange={() => updateCellData(props, !props.getValue())}/>
   }),
   columnHelper.accessor('snacks', {
     header: props => <MealPlanHeader
       key={props.header.id}
-      title={'Полдник'}
-      showContent={tableData.hasSnacks}/>,
+      title={'Полдник'}/>,
     cell: props => <CheckboxCell
       key={props.cell.id}
-      disabled={!tableData.editable}
+      disabled={!tableData.editable || !tableData.hasSnacks}
       checked={props.getValue()}
-      showContent={tableData.hasSnacks}
       onChange={() => updateCellData(props, !props.getValue())}/>
   }),
   /*

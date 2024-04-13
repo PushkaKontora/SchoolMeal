@@ -17,9 +17,16 @@ import {toSchoolClassArray} from '../mappers/school-class.ts';
 import {GetPortionsParams} from '../backend-types/nutrition/portions.ts';
 import {toPortionsReport} from '../mappers/portions.ts';
 import {toPupilArray} from '../mappers/pupil.ts';
+import {MealtimesPatchBody} from '../backend-types/nutrition/mealtime.ts';
+import {toNotificationArray} from '../mappers/notification.ts';
+
+enum ApiTagTypes {
+  NutritionRequest = 'NutritionRequest'
+}
 
 export const Api = createTypedApiFunction<HookDefinitions>()({
   reducerPath: 'api/v3',
+  tagTypes: Object.values(ApiTagTypes),
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_BACKEND_URL,
     prepareHeaders: async (headers) => {
@@ -28,7 +35,7 @@ export const Api = createTypedApiFunction<HookDefinitions>()({
         return addAuthHeader(headers, token);
       }
       return headers;
-    },
+    }
   }),
   endpoints: (builder) => ({
     getSchoolClasses: builder.query({
@@ -48,11 +55,13 @@ export const Api = createTypedApiFunction<HookDefinitions>()({
           on_date: dateToISOWithoutTime(frontendParams.date)
         } as GetNutritionRequestParams
       }),
-      transformResponse: toNutritionRequest
+      transformResponse: toNutritionRequest,
+      providesTags: [ApiTagTypes.NutritionRequest]
     }),
     sendNutritionRequest: builder.mutation({
       query: (body) => ({
         url: '/nutrition/v1/requests',
+        method: 'POST',
         body: {
           classId: body.classId,
           onDate: dateToISOWithoutTime(body.date),
@@ -61,7 +70,8 @@ export const Api = createTypedApiFunction<HookDefinitions>()({
             mealtimes: pupil.mealtimes.map(mealtime => Mealtime[mealtime])
           }))
         } as SubmitNutritionRequestBody
-      })
+      }),
+      invalidatesTags: [ApiTagTypes.NutritionRequest]
     }),
     prefillNutritionRequest: builder.query({
       query: (params) => ({
@@ -92,6 +102,28 @@ export const Api = createTypedApiFunction<HookDefinitions>()({
         } as GetPupilsParams
       }),
       transformResponse: toPupilArray
+    }),
+    updatePupilMealtimes: builder.mutation({
+      query: (params) => ({
+        url: `/nutrition/v1/pupils/${params.pupilId}/mealtimes`,
+        method: 'PATCH',
+        body: {
+          mealtimes: params.mealtimes
+        } as MealtimesPatchBody
+      })
+    }),
+    getNotifications: builder.query({
+      query: () => ({
+        url: 'notification/v1/notifications'
+      }),
+      transformResponse: toNotificationArray
+    }),
+    readNotifications: builder.mutation({
+      query: (params) => ({
+        url: 'notification/v1/notifications/read',
+        method: 'POST',
+        body: params
+      }),
     })
   })
 });
@@ -102,5 +134,8 @@ export const {
   useSendNutritionRequestMutation,
   usePrefillNutritionRequestQuery,
   useGetPortionsQuery,
-  useGetPupilsQuery
+  useGetPupilsQuery,
+  useUpdatePupilMealtimesMutation,
+  useGetNotificationsQuery,
+  useReadNotificationsMutation
 } = Api;

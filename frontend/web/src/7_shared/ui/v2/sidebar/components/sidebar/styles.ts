@@ -14,6 +14,8 @@ export const SidebarItemList = styled.nav`
   width: 100%;
   
   flex: 1;
+  
+  gap: 8px;
 `;
 
 export const SidebarBottomActions = styled.section`

@@ -1,7 +1,6 @@
 import {Mealtime} from '../../../7_shared/api/implementations/v3/frontend-types/nutrition/mealtime.ts';
 import {Pupil} from '../../../7_shared/api/implementations/v3/frontend-types/nutrition/pupil.ts';
 import {TableRowViewData, TableViewData} from '../../../6_entities/meal-plan';
-import {toNutritionStatusView} from '../../../5_features/nutrition-class-list-feature';
 
 export function toTableViewData(schoolClassMealtimes?: Mealtime[]): TableViewData {
   return {

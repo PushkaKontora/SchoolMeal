@@ -1,10 +1,10 @@
 import {ScreenConfig} from '../../../../7_shared/lib/stack-creator';
-import {DebugPage} from '../../../../3_pages/debug-page';
 import {StackHeaderProps, StackNavigationOptions} from '@react-navigation/stack';
 import {NutritionPage} from '../../../../3_pages/nutrition-page';
 import {AddChildrenPage} from '../../../../3_pages/add-children-page';
 import {ChildInformationPage} from '../../../../3_pages/child-information-page/ui/child-information-page';
 import {AppHeader} from '../../../../4_widgets/app-header';
+import { DebugPage } from '../../../../3_pages/debug-page';
 
 export const SCREENS: ScreenConfig = {
   'Debug': {

@@ -15,23 +15,27 @@ export function MealApplicationForm(props: MealApplicationFormProps) {
           <MealRequestStatusBadge
             status={props.status}/>
         </StatusContainer>
-        <Buttons>
-          {
-            props.status === MealApplicationFormStatus.Edit && (
-              <ButtonSecondary
-                title={'Отмена'}
-                width={'150px'}
+        {
+          props.showButtons && (
+            <Buttons>
+              {
+                props.status === MealApplicationFormStatus.Edit && (
+                  <ButtonSecondary
+                    title={'Отмена'}
+                    width={'150px'}
+                    height={'40px'}
+                    onPress={props.onCancel}/>
+                )
+              }
+              <ButtonPrimary
+                borderRadius={'100px'}
+                width={'270px'}
                 height={'40px'}
-                onPress={props.onCancel}/>
-            )
-          }
-          <ButtonPrimary
-            borderRadius={'100px'}
-            width={'270px'}
-            height={'40px'}
-            title={props.buttonTitles[props.status]}
-            onPress={props.onSend}/>
-        </Buttons>
+                title={props.buttonTitles[props.status]}
+                onPress={props.onSend}/>
+            </Buttons>
+          )
+        }
       </Header>
       <TableContainer>
         <MealRequestApplicationList

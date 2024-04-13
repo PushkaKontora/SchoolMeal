@@ -18,7 +18,8 @@ export function MealApplicationWidget(props: MealApplicationWidgetProps) {
         status={props.status}
         buttonTitles={props.buttonTitles}
         onSend={props.onSend}
-        onCancel={props.onCancel}/>
+        onCancel={props.onCancel}
+        showButtons={props.showButtons}/>
     </Container>
   );
 }

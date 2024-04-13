@@ -15,5 +15,7 @@ export const DEFAULT_STYLES: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
 
-  fontFamily: 'Inter'
+  fontFamily: 'Inter',
+
+  zIndex: 100,
 };

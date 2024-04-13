@@ -30,7 +30,7 @@ export const createColumns = (
       whiteSpace={'nowrap'}
     />
   }),
-  columnHelper.accessor(originalRow => toNutritionStatusView(originalRow), {
+  columnHelper.accessor(originalRow => toNutritionStatusView(originalRow, tableData), {
     id: 'status',
     header: props => <components.HeaderTextCell
       key={props.header.id}

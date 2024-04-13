@@ -20,6 +20,15 @@ export type PupilOut = {
   nutrition: NutritionStatusOut
 }
 
+export type PupilDeclarationOut = {
+  id: string,
+  firstName: string,
+  lastName: string,
+  patronymic?: string,
+  mealtimes: MealtimeOut[],
+  nutrition: NutritionStatusOut
+}
+
 export type ResumedPupilOut = {
   id: string,
   mealtimes: MealtimeOut[]

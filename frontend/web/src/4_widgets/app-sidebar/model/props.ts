@@ -4,4 +4,5 @@ export type AppSidebarProps= {
   selectedItemIndex: number,
   userName?: string,
   items: SidebarIconedButtonProps[]
+  actionItems?: SidebarIconedButtonProps[]
 }

@@ -4,6 +4,6 @@ import {LogoutButtonProps} from '../logout-button';
 export type SidebarProps = {
   selectedItemIndex: number,
   items: SidebarIconedButtonProps[],
-  actionItems: SidebarIconedButtonProps[],
+  actionItems?: SidebarIconedButtonProps[],
   logoutButtonProps: LogoutButtonProps
 };

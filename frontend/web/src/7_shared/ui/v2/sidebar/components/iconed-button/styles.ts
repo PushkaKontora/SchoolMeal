@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 
 export const SidebarIconedButtonContainer = styled.article<{
   active?: boolean
@@ -15,6 +15,16 @@ export const SidebarIconedButtonContainer = styled.article<{
   gap: 16px;
   
   background-color: ${props => props.active ? '#171717' : '#00000000'};
+  
+  ${props => {
+    if (!props.active) {
+      return css`
+        &:hover {
+          background-color: rgba(23, 23, 23, 0.5);
+        }
+      `;
+    }
+  }}
 `;
 
 export const SidebarIconedButtonText = styled.div`

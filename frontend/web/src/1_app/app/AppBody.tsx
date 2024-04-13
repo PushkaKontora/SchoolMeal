@@ -6,6 +6,9 @@ import {getFullName} from '../../6_entities/user';
 import {AppRouter} from '../../2_processes/routers/app-router';
 import {AuthTokenProcessor} from '../../5_features/auth';
 
+import 'react-toastify/dist/ReactToastify.css';
+import {AppToastContainer} from '../../7_shared/ui/v2/toast';
+
 export function AppBody() {
   const dispatch = useAppDispatch();
 
@@ -14,6 +17,7 @@ export function AppBody() {
 
   return (
     <>
+      <AppToastContainer/>
       <RoleController/>
       <SidebarAndContent
         shouldShowSidebar={authorized}

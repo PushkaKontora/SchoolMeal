@@ -1,4 +1,4 @@
-import {PupilOut} from '../backend-types/nutrition/pupils.ts';
+import {PupilDeclarationOut, PupilOut} from '../backend-types/nutrition/pupils.ts';
 import {Pupil} from '../frontend-types/nutrition/pupil.ts';
 import {toPeriodArray} from './period.ts';
 import {toMealtimeArray} from './mealtime.ts';
@@ -18,3 +18,19 @@ export const toPupil = (pupil: PupilOut): Pupil => ({
 });
 
 export const toPupilArray = (pupils: PupilOut[]): Pupil[] => pupils.map(toPupil);
+
+export const pupilDeclarationToPupil = (pupil: PupilDeclarationOut): Pupil => ({
+  id: pupil.id,
+  classId: '',
+  firstName: pupil.firstName,
+  lastName: pupil.lastName,
+  patronymic: pupil.patronymic,
+  parentIds: [],
+  cancelledPeriods: [],
+  mealtimes: toMealtimeArray(pupil.mealtimes),
+  preferentialUntil: undefined,
+  nutrition: NutritionStatus[pupil.nutrition]
+});
+
+export const pupilDeclarationsToPupilArray
+  = (pupils: PupilDeclarationOut[]): Pupil[] => pupils.map(pupilDeclarationToPupil);

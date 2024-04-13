@@ -4,6 +4,7 @@ import {Switch, SwitchProps} from '../../../interactive/switch';
 
 export function SwitchCell(props: SwitchCellProps) {
   const switchProps = props as SwitchProps;
+
   return (
     <AbstractCell
       {...props.cellProps}>

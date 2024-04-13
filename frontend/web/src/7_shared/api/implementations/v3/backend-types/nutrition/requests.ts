@@ -1,5 +1,5 @@
 import {MealtimeOut} from './mealtime.ts';
-import {PupilOut, ResumedPupilOut} from './pupils.ts';
+import {PupilDeclarationOut, ResumedPupilOut} from './pupils.ts';
 import {OkSchema} from '../universal/ok-schema.ts';
 
 export type NutritionRequestStatusOut = 'submitted'
@@ -17,7 +17,7 @@ export type NutritionRequestOut = {
   onDate: string,
   status: NutritionRequestStatusOut,
   mealtimes: MealtimeOut[],
-  pupils: PupilOut[]
+  pupils: PupilDeclarationOut[]
 }
 
 // POST requests

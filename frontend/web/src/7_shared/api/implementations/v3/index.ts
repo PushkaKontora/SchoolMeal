@@ -3,7 +3,9 @@ import {
   Api,
   useGetNutritionRequestQuery, useGetPortionsQuery,
   useGetSchoolClassesQuery, usePrefillNutritionRequestQuery,
-  useSendNutritionRequestMutation, useGetPupilsQuery
+  useSendNutritionRequestMutation, useGetPupilsQuery,
+  useUpdatePupilMealtimesMutation, useGetNotificationsQuery,
+  useReadNotificationsMutation
 } from './rtk-query/api.ts';
 import {Middleware} from '@reduxjs/toolkit';
 
@@ -18,7 +20,10 @@ export const HooksV3 = {
   useSendNutritionRequestMutation,
   usePrefillNutritionRequestQuery,
   useGetPortionsQuery,
-  useGetPupilsQuery
+  useGetPupilsQuery,
+  useUpdatePupilMealtimesMutation,
+  useGetNotificationsQuery,
+  useReadNotificationsMutation
 };
 
 export type HooksTypeV3 = typeof HooksV3;

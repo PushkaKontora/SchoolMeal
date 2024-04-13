@@ -16,7 +16,7 @@ export function Sidebar(props: SidebarProps) {
           />)}
       </SidebarItemList>
       <SidebarBottomActions>
-        {props.actionItems.map(item =>
+        {props?.actionItems?.map(item =>
           <SidebarIconedButton {...item}/>)}
       </SidebarBottomActions>
       <LogoutButton
