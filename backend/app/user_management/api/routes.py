@@ -11,7 +11,7 @@ from app.user_management.api.request import RequestMethodDep, RequestURIDep
 from app.user_management.api.schema import AccessTokenOut, LoginBody, RefreshBody
 from app.user_management.api.tokens import AccessTokenDep, RefreshTokenDep, clear_cookies, set_session_in_cookie
 from app.user_management.application import services
-from app.user_management.application.authorizations.abc import IAuthorization
+from app.user_management.application.authorization import IAuthorization
 from app.user_management.application.dao import ISessionRepository, IUserRepository
 from app.user_management.application.dto import AuthenticationIn, RefreshTokensIn
 from app.user_management.application.limiters import IBruteForceLimiter

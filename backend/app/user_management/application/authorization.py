@@ -1,10 +1,16 @@
 import re
+from abc import ABC, abstractmethod
 from functools import lru_cache
 
-from app.user_management.application.authorizations.abc import IAuthorization
 from app.user_management.domain.jwt import AccessToken
 from app.user_management.domain.rest import Method
 from app.user_management.domain.user import Role
+
+
+class IAuthorization(ABC):
+    @abstractmethod
+    def authorize(self, token: AccessToken, uri: str, method: Method) -> bool:
+        raise NotImplementedError
 
 
 class RoleAuthorization(IAuthorization):
@@ -24,7 +30,7 @@ class RoleAuthorization(IAuthorization):
         "/nutrition/v1/pupils/{pupil_id}/cancel": {
             Method.POST: {Role.PARENT},
         },
-        "/nutrition/v1/mealtimes": {
+        "/nutrition/v1/pupils/{pupil_id}/mealtimes": {
             Method.PATCH: {Role.PARENT, Role.TEACHER},
         },
         "/nutrition/v1/requests": {

@@ -1,7 +1,7 @@
 from dependency_injector import providers
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
-from app.user_management.application.authorizations.role import RoleAuthorization
+from app.user_management.application.authorization import RoleAuthorization
 from app.user_management.application.limiters import BruteForceLimiter
 from app.user_management.infrastructure.config import Config
 from app.user_management.infrastructure.dao import AlchemySessionRepository, AlchemyUserRepository

@@ -1,7 +1,7 @@
 from ipaddress import IPv4Address
 from uuid import UUID
 
-from app.user_management.application.authorizations.abc import IAuthorization
+from app.user_management.application.authorization import IAuthorization
 from app.user_management.application.dao import ISessionRepository, IUserRepository
 from app.user_management.application.dto import AuthenticationIn, RefreshTokensIn
 from app.user_management.application.limiters import IBruteForceLimiter

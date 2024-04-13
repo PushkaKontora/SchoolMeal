@@ -32,6 +32,7 @@ mypy = "^1.9.0"
 unify = "^0.5"
 autoflake = "^2.2.1"
 freezegun = "^1.2.2"
+types-python-dateutil = "^2.9.0.20240316"
 
 [build-system]
 requires = ["poetry-core"]
