@@ -11,28 +11,28 @@ export function RoleSidebar(props: RoleSidebarProps) {
 
   const [isNotificationHidden, setIsNotificationHidden] = useState(true);
 
-  const {data: notifications, refetch: refetchNotifications} = Api.useGetNotificationsQuery(
-    undefined,
-    {
-      skip: isNotificationHidden
-    }
-  );
   const [readNotifications] = Api.useReadNotificationsMutation();
+
+  const {data: notifications, refetch: refetchNotifications} = Api.useGetNotificationsQuery();
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
   const items = createItems(setSelectedItemIndex, navigate, props.userRole);
   const actionItems = createActionItems(props.userRole, [
     async () => {
-      setIsNotificationHidden(async (prev) => {
+      if (isNotificationHidden) {
         await refetchNotifications();
-        return !prev;
-      });
-      await refetchNotifications();
-      // await readNotifications({
-      //   ids: notifications
-      //     ?.filter(n => !n.read)
-      //     ?.map(n => n.id) || []
-      // });
+
+        const ids = notifications
+          ?.filter(n => !n.read)
+          ?.map(n => n.id);
+
+        if (ids && ids.length > 0) {
+          readNotifications({
+            ids: ids
+          });
+        }
+      }
+      setIsNotificationHidden(prev => !prev);
     }
   ]);
 
