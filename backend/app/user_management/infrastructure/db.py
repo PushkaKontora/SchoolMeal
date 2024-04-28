@@ -74,7 +74,7 @@ class SessionDB(UserManagementBase):
     __tablename__ = "session"
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
-    user_id: Mapped[UUID] = mapped_column(ForeignKey(UserDB.id))
+    user_id: Mapped[UUID] = mapped_column(ForeignKey(UserDB.id, ondelete="CASCADE"))
     fingerprint: Mapped[str] = mapped_column()
     ip: Mapped[str] = mapped_column()
     expires_in: Mapped[datetime] = mapped_column(DateTime(timezone=True))

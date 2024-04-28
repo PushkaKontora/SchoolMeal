@@ -79,7 +79,7 @@ class SchoolClassDB(NutritionBase):
     __tablename__ = "school_class"
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
-    teacher_id: Mapped[UUID | None] = mapped_column(ForeignKey(TeacherDB.id))
+    teacher_id: Mapped[UUID | None] = mapped_column(ForeignKey(TeacherDB.id, ondelete="SET NULL"))
     number: Mapped[int] = mapped_column()
     literal: Mapped[str] = mapped_column(String(1))
     mealtimes: Mapped[list[int]] = mapped_column(ARRAY(Integer, dimensions=1))
@@ -184,8 +184,8 @@ class PupilDB(NutritionBase):
 class PupilParentAssociation(NutritionBase):
     __tablename__ = "pupil_parent"
 
-    pupil_id: Mapped[str] = mapped_column(ForeignKey(PupilDB.id), primary_key=True)
-    parent_id: Mapped[UUID] = mapped_column(ForeignKey(ParentDB.id), primary_key=True)
+    pupil_id: Mapped[str] = mapped_column(ForeignKey(PupilDB.id, ondelete="CASCADE"), primary_key=True)
+    parent_id: Mapped[UUID] = mapped_column(ForeignKey(ParentDB.id, ondelete="CASCADE"), primary_key=True)
 
     def __init__(self, pupil_id: str, parent_id: UUID) -> None:
         super().__init__()
@@ -197,7 +197,7 @@ class PupilParentAssociation(NutritionBase):
 class RequestDB(NutritionBase):
     __tablename__ = "request"
 
-    class_id: Mapped[UUID] = mapped_column(ForeignKey(SchoolClassDB.id), primary_key=True)
+    class_id: Mapped[UUID] = mapped_column(ForeignKey(SchoolClassDB.id, ondelete="CASCADE"), primary_key=True)
     on_date: Mapped[date] = mapped_column(primary_key=True)
     mealtimes: Mapped[list[int]] = mapped_column(ARRAY(Integer, dimensions=1))
     status: Mapped[int] = mapped_column()
@@ -247,7 +247,9 @@ class DeclarationDB(NutritionBase):
     request_on_date: Mapped[date] = mapped_column()
 
     __table_args__ = (
-        ForeignKeyConstraint([request_class_id, request_on_date], [RequestDB.class_id, RequestDB.on_date]),
+        ForeignKeyConstraint(
+            [request_class_id, request_on_date], [RequestDB.class_id, RequestDB.on_date], ondelete="CASCADE"
+        ),
     )
 
     def __init__(
