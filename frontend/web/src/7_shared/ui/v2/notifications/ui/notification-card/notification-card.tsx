@@ -11,9 +11,13 @@ export function NotificationCard(props: NotificationCardProps) {
       <Reason>
         {props.subtitle}
       </Reason>
-      <Description>
-        {props.body}
-      </Description>
+      {
+        props.body && (
+          <Description>
+            {props.body}
+          </Description>
+        )
+      }
     </Card>
   );
 }

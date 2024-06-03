@@ -2,10 +2,10 @@ import {HooksTypeV3, HooksV3, MiddlewaresV3, ReducersV3} from '../implementation
 
 export const APIS: {
   current: HooksTypeV3,
-  v1: object
+  v2: HooksTypeV3
 } = {
   current: HooksV3,
-  v1: {}
+  v2: HooksV3
 };
 
 export const API_REDUCERS = {

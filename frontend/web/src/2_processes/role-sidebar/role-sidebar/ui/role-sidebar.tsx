@@ -22,15 +22,15 @@ export function RoleSidebar(props: RoleSidebarProps) {
       if (isNotificationHidden) {
         await refetchNotifications();
 
-        const ids = notifications
-          ?.filter(n => !n.read)
-          ?.map(n => n.id);
-
-        if (ids && ids.length > 0) {
-          readNotifications({
-            ids: ids
-          });
-        }
+        // const ids = notifications
+        //   ?.filter(n => !n.read)
+        //   ?.map(n => n.id);
+        //
+        // if (ids && ids.length > 0) {
+        //   readNotifications({
+        //     ids: ids
+        //   });
+        // }
       }
       setIsNotificationHidden(prev => !prev);
     }

@@ -40,9 +40,18 @@ export function MealApplicationPage() {
     = useAppSelector(state => state['auth'].jwtPayload?.user_id);
 
   const {data: classes} 
-    = Api.useGetSchoolClassesQuery({
-      teacherId: currentUserId!
-    }, {skip: currentUserId === undefined});
+    = Api.useGetSchoolClassesQuery(
+      {
+        teacherId: currentUserId!
+      },
+      {
+        skip: currentUserId === undefined
+      }
+    );
+
+  const [sendNutritionRequest]
+    = Api.useSendNutritionRequestMutation();
+
   const {data: request, isFetching: isRequestFetching, isError: isRequestError}
     = Api.useGetNutritionRequestQuery({
       classId: classes?.[classIndex].id || '',
@@ -56,8 +65,6 @@ export function MealApplicationPage() {
       skip: !classes || isRequestFetching || !isRequestError,
       refetchOnMountOrArgChange: true
     });
-  const [sendNutritionRequest]
-    = Api.useSendNutritionRequestMutation();
 
   useEffect(() => {
     if (request && !isRequestError) {

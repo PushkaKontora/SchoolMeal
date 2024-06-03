@@ -17,6 +17,7 @@ export function NutritionClassListPage() {
   const {data: classes} = Api.useGetSchoolClassesQuery({
     teacherId: userId!
   }, {skip: !userId});
+  
   const {data: pupils, isSuccess: isPupilsSuccess} = Api.useGetPupilsQuery({
     classId: classes?.[classIndex]?.id
   }, {skip: !classes, refetchOnMountOrArgChange: true});
