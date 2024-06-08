@@ -18,8 +18,8 @@ def main() -> None:
     connection = Connection(settings=DatabaseSettings())
 
     initializers: list[type[SchemaInitializer]] = [
-        NutritionInitializer,
         UserManagementInitializer,
+        NutritionInitializer,
     ]
 
     with connection as database:

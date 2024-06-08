@@ -39,7 +39,7 @@ class NutritionInitializer(SchemaInitializer):
         return "nutrition"
 
     def clear(self) -> None:
-        for table in ["school_class", "pupil", "declaration", "request", "teacher", "parent", "school", "pupil_parent"]:
+        for table in ["school_class", "pupil", "declaration", "request", "school", "pupil_parent"]:
             self._database.truncate(self.schema, table)
 
     def push(self, data: Data) -> None:
@@ -51,20 +51,6 @@ class NutritionInitializer(SchemaInitializer):
             data={
                 "id": Integer(1),
                 "name": String(school.name),
-            },
-        )
-        self._database.insert(
-            schema=self.schema,
-            table="teacher",
-            data={
-                "id": String(school.teacher.id),
-            },
-        )
-        self._database.insert(
-            schema=self.schema,
-            table="parent",
-            data={
-                "id": String(school.parent.id),
             },
         )
 
