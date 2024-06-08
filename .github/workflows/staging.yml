@@ -44,7 +44,7 @@ jobs:
         with:
           context: ${{ matrix.context }}
           target: ${{ matrix.target }}
-          build-args: API_DOMAIN=${{ secrets.API_DOMAIN }}
+          build-args: API_DOMAIN=${{ secrets.STAND_DOMAIN }}
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:${{ matrix.image }}
           push: true
 
@@ -63,7 +63,7 @@ jobs:
         with:
           host: ${{ secrets.STAND_HOST }}
           username: ${{ secrets.STAND_USER }}
-          key: ${{ secrets.STAND_KEY }}
+          password: ${{ secrets.STAND_PASSWORD }}
           source: "docker-compose.yaml,docker-compose.stand.yaml,.env"
           target: "~/school_meal"
           overwrite: true
@@ -73,7 +73,7 @@ jobs:
         with:
           host: ${{ secrets.STAND_HOST }}
           username: ${{ secrets.STAND_USER }}
-          key: ${{ secrets.STAND_KEY }}
+          password: ${{ secrets.STAND_PASSWORD }}
           script: |
             echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
             cd ~/school_meal

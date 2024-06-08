@@ -20,4 +20,3 @@ services:
       ORIGIN: "*"
     volumes:
       - ./frontend/web/nginx:/etc/nginx/templates
-      - ./certs:/etc/ssl/school_meal
