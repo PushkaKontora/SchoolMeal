@@ -1,2 +1,2 @@
-import {SidebarIconedButton} from './sidebar-iconed-button.tsx';
-import type {SidebarIconedButtonProps} from './props.ts';
+export {SidebarIconedButton} from './sidebar-iconed-button.tsx';
+export type {SidebarIconedButtonProps} from './props.ts';

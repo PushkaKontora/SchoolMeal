@@ -20,5 +20,5 @@ export function DefaultInputs(props: DefaultInputProps) {
           onDateChange={props.onDateSelect}/>
       </DatePickerContainer>
     </Container>
-  )
+  );
 }

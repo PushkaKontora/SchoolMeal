@@ -14,7 +14,7 @@ export function AppSidebar(props: AppSidebarProps) {
           <ExitIcon/>
         ),
         accountName: props.userName || '',
-        onClick: () => {return;}
+        onClick: props.onLogoutClick
       }}/>
   );
 }

@@ -1,7 +1,7 @@
 import {SidebarBottomActions, SidebarContainer, SidebarItemList} from './styles.ts';
 import {Logo} from '../logo/logo.tsx';
 import {SidebarProps} from './props.ts';
-import {SidebarIconedButton} from '../iconed-button/sidebar-iconed-button.tsx';
+import {SidebarIconedButton} from '../iconed-button';
 import {LogoutButton} from '../logout-button';
 
 export function Sidebar(props: SidebarProps) {

@@ -1,5 +1,5 @@
-import {createApi, QueryDefinition} from '@reduxjs/toolkit/query/react';
-import {BaseQueryFn, fetchBaseQuery} from '@reduxjs/toolkit/dist/query/react';
+import {createApi} from '@reduxjs/toolkit/query/react';
+import {fetchBaseQuery} from '@reduxjs/toolkit/dist/query/react';
 import {BASE_BACKEND_URL} from './config.ts';
 import {AuthTokenProcessor} from '../../../5_features/auth';
 import {addAuthHeader} from './procces-headers.ts';

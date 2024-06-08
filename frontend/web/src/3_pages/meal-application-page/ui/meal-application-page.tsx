@@ -147,9 +147,9 @@ export function MealApplicationPage() {
                     : 'Изменения успешно сохранены',
                   'success'
                 );
-                console.debug('successful');
+                //console.debug('successful');
               }, () => {
-                console.debug('failed');
+                //console.debug('failed');
               });
             }
           }

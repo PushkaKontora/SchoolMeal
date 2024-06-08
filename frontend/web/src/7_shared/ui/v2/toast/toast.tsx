@@ -27,5 +27,5 @@ export function Toast(props: CustomToastProps) {
           props?.onClose?.();
         }}/>
     </ToastStyles>
-  )
+  );
 }

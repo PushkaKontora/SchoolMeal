@@ -1,16 +1,22 @@
 import {RoleSidebarProps} from '../model/props.ts';
 import {createActionItems, createItems} from '../lib/create-items.tsx';
-import {useNavigate} from 'react-router-dom';
+import {redirect, useNavigate} from 'react-router-dom';
 import {AppSidebar} from '../../../../4_widgets/app-sidebar';
 import {useState} from 'react';
 import {NotificationWindow} from '../../../../7_shared/ui/v2/notifications';
 import {Api} from '../../../../7_shared/api';
+import {useAppDispatch} from '../../../../../store/hooks.ts';
+import {logout} from '../../../../5_features/auth/model/auth-slice';
+import {NO_AUTH_ROUTES} from '../../../../3_pages/routing';
 
 export function RoleSidebar(props: RoleSidebarProps) {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [isNotificationHidden, setIsNotificationHidden] = useState(true);
 
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  // @ts-expect-error Not used for demo
   const [readNotifications] = Api.useReadNotificationsMutation();
 
   const {data: notifications, refetch: refetchNotifications} = Api.useGetNotificationsQuery();
@@ -43,6 +49,10 @@ export function RoleSidebar(props: RoleSidebarProps) {
         userName={props.userName}
         items={items}
         actionItems={actionItems}
+        onLogoutClick={() => {
+          dispatch(logout());
+          redirect(NO_AUTH_ROUTES.login);
+        }}
       />
       <NotificationWindow
         notifications={notifications?.map(n => ({

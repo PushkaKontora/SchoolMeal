@@ -10,7 +10,7 @@ export const ButtonContainer = styled.button<ButtonSecondaryStyles>`
   border-radius: ${DEFAULT_STYLES.borderRadius};
   font-weight: ${DEFAULT_STYLES.fontWeight};
   font-family: ${DEFAULT_STYLES.fontFamily};
-  border: 1px solid ${props => props.textColor || DEFAULT_STYLES.borderColor};
+  border: 1px solid ${props => props.borderColor || props.textColor || DEFAULT_STYLES.borderColor};
   
   box-sizing: border-box;
   width: ${props => props.width};

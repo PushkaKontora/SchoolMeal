@@ -1,7 +1,6 @@
 import {RequestPlanReport} from '../../../7_shared/model/request-report.ts';
 import {Pupil} from '../../../7_shared/model/pupil.ts';
 import {HeaderViewData, MealRequestRowViewData} from '../../../6_entities/meal-request';
-import {isDateInAnyPeriods} from '../../../7_shared/lib/date-periods';
 import {Menu} from '../../../7_shared/model/menu.ts';
 import {SchoolClasses} from '../../../6_entities/nutrition/model/schoolClasses.ts';
 

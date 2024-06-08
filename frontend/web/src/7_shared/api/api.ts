@@ -11,7 +11,6 @@ import {UniversalResponse} from './types.ts';
 import {User} from '../model/user.ts';
 import {MealRequest} from '../model/meal-request.ts';
 import {ClassType} from '../model/class-type.ts';
-import {BaseQueryArg} from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 
 export const Api = createApi({
   reducerPath: 'api',

@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable */
 
 import {ScrollView, Text, View} from 'react-native';
 import {ButtonPrimary} from '../../../7_shared/ui/buttons/button-primary';
@@ -6,10 +6,8 @@ import {AUTH_API, AuthTokenService} from '../../../5_features/auth';
 import {useAppDispatch} from '../../../../store/hooks';
 import {setAuthorized} from '../../../5_features/auth/model/auth-slice/auth-slice';
 import {PropsWithNavigation} from '../../../7_shared/model/props-with-navigation';
-import {Child, useGetChildrenQuery} from '../../../6_entities/child';
+import {useGetChildrenQuery} from '../../../6_entities/child';
 import {useEffect} from 'react';
-import {magicModal} from 'react-native-magic-modal';
-import {ModalMealPeriod} from '../../../5_features/modal-meal-period';
 import {useCurrentUserQuery} from '../../../6_entities/user/api/api';
 import {TokenPayload} from '../../../5_features/auth/model/token-payload';
 import {ToastService} from '../../../7_shared/lib/toast-service';
@@ -53,24 +51,24 @@ export function DebugPage({navigation}: PropsWithNavigation) {
     navigation.navigate('MainChildren');
   };
 
-  const toNutrition = () => {
-    if (children && (children as Child[])[0]) {
-      const child = (children as Child[])[0];
-      navigation.navigate('Nutrition', {
-        childId: child.id
-      });
-    } else {
-      console.log(children);
-    }
-  };
-
-  const showCalendar = () => {
-    magicModal.show(() => (
-      <ModalMealPeriod
-        onConfirm={(startingDate, endingDate) => console.log(startingDate, endingDate)}
-        onClose={() => magicModal.hide()}/>
-    ));
-  };
+  // const toNutrition = () => {
+  //   if (children && (children as Child[])[0]) {
+  //     const child = (children as Child[])[0];
+  //     navigation.navigate('Nutrition', {
+  //       childId: child.id
+  //     });
+  //   } else {
+  //     console.log(children);
+  //   }
+  // };
+  //
+  // const showCalendar = () => {
+  //   magicModal.show(() => (
+  //     <ModalMealPeriod
+  //       onConfirm={(startingDate, endingDate) => console.log(startingDate, endingDate)}
+  //       onClose={() => magicModal.hide()}/>
+  //   ));
+  // };
 
   const showNotification = (type: string, title?: string, description?: string) => {
     ToastService.show(type, {
