@@ -8,6 +8,7 @@ import {MealRequestMonitorPage} from '../../../3_pages/meal-request-monitor-page
 import {Role} from '../../../5_features/auth';
 import {AppRouterProps} from './model/props.ts';
 import {NutritionClassListPage} from '../../../3_pages/nutrition-class-list-page';
+import {IndexRoute} from './index-route.tsx';
 
 const DefaultPrivateRoute = (props: Omit<PrivateRouteProps, 'redirectTo'>) => (
   <PrivateRoute
@@ -18,6 +19,12 @@ const DefaultPrivateRoute = (props: Omit<PrivateRouteProps, 'redirectTo'>) => (
 export function AppRouter(props: AppRouterProps) {
   return (
     <Routes>
+      {/*<Route*/}
+      {/*  index*/}
+      {/*  path={'/'}*/}
+      {/*  element={<IndexRoute/>}*/}
+      {/*/>*/}
+
       <Route
         path={NO_AUTH_ROUTES.login}
         element={<LoginPage {...props.loginPageProps}/>}/>

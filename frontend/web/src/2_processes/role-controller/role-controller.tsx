@@ -8,13 +8,12 @@ import {useEffect} from 'react';
 
 export function RoleController() {
   const navigate = useNavigate();
-  
   const dispatch = useAppDispatch();
 
   const [refreshToken] = Api.useRefreshMutation();
 
   useEffect(() => {
-    takeTokenAndCheckRole(dispatch)
+    takeTokenAndCheckRole(dispatch, navigate)
       .catch(() =>
         refreshToken({
           fingerprint: 'aaaaa'
@@ -23,13 +22,13 @@ export function RoleController() {
       .then(response => {
         if (response) {
           AuthTokenProcessor.saveAuthToken(response.token);
-          return takeTokenAndCheckRole(dispatch);
+          return takeTokenAndCheckRole(dispatch, navigate);
         }
       })
       .catch(() => {
         navigate(NO_AUTH_ROUTES.login);
       });
-  }, [dispatch, navigate, refreshToken]);
+  }, []);
 
   return null;
 }

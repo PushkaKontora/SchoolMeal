@@ -4,6 +4,7 @@ export const Container = styled.div`
   display: flex;
   
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 12px;
   
   border-top: 1px solid #DFDFDF;

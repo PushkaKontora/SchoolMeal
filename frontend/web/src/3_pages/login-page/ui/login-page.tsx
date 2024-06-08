@@ -12,7 +12,9 @@ export function LoginPage(props: LoginPageProps) {
       fingerprint: 'aaaaa'
     })
       .unwrap()
-      .then(response => props.onSuccess(response))
+      .then(response => {
+        props.onSuccess(response);
+      })
       .catch(() => props.onError?.());
   };
 

@@ -25,7 +25,7 @@ export const SwitchToggle = styled.div<{
   $disabled?: boolean
 }>`
   display: inline;
-  
+
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -34,13 +34,19 @@ export const SwitchToggle = styled.div<{
   bottom: 0;
   -webkit-transition: .4s;
   transition: .4s;
-  
+
   border-radius: 50px;
-  
-  opacity: ${props => props.$disabled ? 0.3 : 1};
-  
+
+  opacity: ${props => props.$disabled ? 0.25 : 1};
+
   background-color: ${props => props.$toggled ? '#2C2C2C' : '#E9E9E9'};
-  
+
+  input:disabled ~ & {
+    cursor: default;
+
+    background-color: #ff5f5f;
+  }
+
   &:before {
     position: absolute;
     content: "";
@@ -49,7 +55,7 @@ export const SwitchToggle = styled.div<{
     height: ${SWITCH_TOGGLE_WIDTH};
 
     border-radius: 50%;
-    
+
     left: ${SWITCH_PADDING};
     bottom: ${SWITCH_PADDING};
     background-color: white;
@@ -58,12 +64,12 @@ export const SwitchToggle = styled.div<{
     transition: .4s;
 
     ${props => {
-    if (props.$toggled) {
-      return css`
-        -ms-transform: translateX(${TRANSLATE_DISTANCE});
-        transform: translateX(${TRANSLATE_DISTANCE});
-      `;
-    }
-  }}
+      if (props.$toggled) {
+        return css`
+          -ms-transform: translateX(${TRANSLATE_DISTANCE});
+          transform: translateX(${TRANSLATE_DISTANCE});
+        `;
+      }
+    }}
   }
 `;

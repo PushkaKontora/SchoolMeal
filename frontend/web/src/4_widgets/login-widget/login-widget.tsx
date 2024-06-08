@@ -14,10 +14,10 @@ export function LoginWidget(props: LoginWidgetProps) {
   return (
     <Content width={'100%'}>
       <PaddingArea
-        padding={'74px 0 0 16px'}>
+        padding={'32px 0 0 16px'}>
         <LogoSvg
-          width={'329.4px'}
-          height={'44px'}/>
+          width={'246px'}
+          height={'33px'}/>
         <LoginFormTitle>
           Войдите в свой профиль
         </LoginFormTitle>

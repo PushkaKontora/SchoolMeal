@@ -8,12 +8,15 @@ import {Api} from '../../../../7_shared/api';
 import {useAppDispatch} from '../../../../../store/hooks.ts';
 import {logout} from '../../../../5_features/auth/model/auth-slice';
 import {NO_AUTH_ROUTES} from '../../../../3_pages/routing';
+import {LogoutModal} from '../../../../5_features/auth/ui/logout-modal/logout-modal.tsx';
+import {AuthTokenProcessor} from '../../../../5_features/auth';
 
 export function RoleSidebar(props: RoleSidebarProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [isNotificationHidden, setIsNotificationHidden] = useState(true);
+  const [isLogoutModalHidden, setLogoutModalHidden] = useState(true);
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
   // @ts-expect-error Not used for demo
@@ -50,8 +53,7 @@ export function RoleSidebar(props: RoleSidebarProps) {
         items={items}
         actionItems={actionItems}
         onLogoutClick={() => {
-          dispatch(logout());
-          redirect(NO_AUTH_ROUTES.login);
+          setLogoutModalHidden(false);
         }}
       />
       <NotificationWindow
@@ -64,6 +66,16 @@ export function RoleSidebar(props: RoleSidebarProps) {
         })) || []}
         onClose={() => setIsNotificationHidden(true)}
         hidden={isNotificationHidden}/>
+      <LogoutModal
+        hidden={isLogoutModalHidden}
+        onCancel={() => {
+          setLogoutModalHidden(true);
+        }}
+        onSubmit={() => {
+          dispatch(logout());
+          AuthTokenProcessor.deleteAuthToken();
+          navigate(NO_AUTH_ROUTES.login);
+        }}/>
     </>
   );
 }

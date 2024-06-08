@@ -90,14 +90,14 @@ export function MealApplicationPage() {
         title={'Подать заявку'}/>
       <MealApplicationWidget
         selectedClassIndex={classIndex}
-        showButtons={isAbleToApply(date)}
+        enableButtons={isAbleToApply(date)}
         classNames={createClassNames(classes)}
         onClassSelect={(index) => setClassIndex(index)}
         date={date}
         onDateSelect={(date) => setDate(date)}
         data={tableData}
         tableData={{
-          editable: isListEditable(applicationFormStatus),
+          editable: isListEditable(applicationFormStatus) && isAbleToApply(date),
           ...schoolClassToTableViewData(classes?.[classIndex])
         }}
         updateData={(rowIndex, columnId, value) => {

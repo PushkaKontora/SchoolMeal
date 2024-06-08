@@ -8,12 +8,21 @@ import {AuthTokenProcessor} from '../../5_features/auth';
 
 import 'react-toastify/dist/ReactToastify.css';
 import {AppToastContainer} from '../../7_shared/ui/v2/toast';
+import {useNavigate} from 'react-router-dom';
 
 export function AppBody() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const authorized = useAppSelector((state) => state['auth'].authorized);
   const jwtPayload = useAppSelector((state) => state['auth'].jwtPayload);
+  //
+  // useEffect(() => {
+  //   if (authorized === true && jwtPayload) {
+  //     redirect(chooseRedirectRoute(jwtPayload.role));
+  //     console.log('Aaaa');
+  //   }
+  // }, [authorized, jwtPayload]);
 
   return (
     <>
@@ -30,13 +39,13 @@ export function AppBody() {
             })}/>
         )}
         contentStyles={{
-          padding: '0px'
+          padding: '40px'
         }}>
         <AppRouter
           loginPageProps={{
             onSuccess: (response) => {
               AuthTokenProcessor.saveAuthToken(response.token);
-              return takeTokenAndCheckRole(dispatch);
+              return takeTokenAndCheckRole(dispatch, navigate);
             }
           }}/>
       </SidebarAndContent>

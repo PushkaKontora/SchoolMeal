@@ -16,7 +16,7 @@ export function MealApplicationForm(props: MealApplicationFormProps) {
             status={props.status}/>
         </StatusContainer>
         {
-          props.showButtons && (
+          props.enableButtons && (
             <Buttons>
               {
                 props.status === MealApplicationFormStatus.Edit && (

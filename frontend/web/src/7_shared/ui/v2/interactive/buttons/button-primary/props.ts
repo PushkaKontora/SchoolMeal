@@ -1,15 +1,16 @@
 import {CSSProperties} from 'react';
 
 export type ButtonPrimaryShadowedStyles = {
-    $borderRadius?: string,
+    $borderRadius?: CSSProperties['borderRadius'],
     $backgroundColor?: string
     $textColor?: string,
-    $fontSize?: string,
+    $fontSize?: CSSProperties['fontSize'],
     $fontFamily?: CSSProperties['fontFamily'],
     $paddingVertical?: string,
     $paddingHorizontal?: string,
     $width?: CSSProperties['width'],
-    $height?: CSSProperties['height']
+    $height?: CSSProperties['height'],
+    $flex?: CSSProperties['flex']
 }
 
 export type ButtonPrimaryStyles = {
@@ -21,7 +22,8 @@ export type ButtonPrimaryStyles = {
     paddingVertical?: string,
     paddingHorizontal?: string,
     width?: CSSProperties['width']
-    height?: CSSProperties['height']
+    height?: CSSProperties['height'],
+    flex?: CSSProperties['flex']
 }
 
 export type ButtonPrimaryProps =

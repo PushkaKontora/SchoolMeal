@@ -6,11 +6,13 @@ import CloseSvg from './assets/close.svg?react';
 
 export function LogoutModal(props: LogoutModalProps) {
   return (
-    <LogoutContainer>
+    <LogoutContainer
+      $hidden={props.hidden}>
       <LogoutWindow>
         <CloseSvg
           width={'28px'}
           height={'28px'}
+          onClick={props.onCancel}
         />
 
         <LogoutWindowContent>
@@ -20,9 +22,15 @@ export function LogoutModal(props: LogoutModalProps) {
           <LogoutButtons>
             <ButtonSecondary
               title={'Остаться'}
+              backgroundColor={'#F5F5F5'}
+              borderColor={'#00000000'}
+              borderRadius={'12px'}
+              flex={1}
               onPress={props.onCancel}/>
             <ButtonPrimary
               title={'Выйти'}
+              borderRadius={'12px'}
+              flex={1}
               onPress={props.onSubmit}/>
           </LogoutButtons>
         </LogoutWindowContent>

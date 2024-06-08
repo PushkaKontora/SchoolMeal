@@ -6,6 +6,9 @@ export const FormContainer = styled.div`
   
   width: 525px;
   gap: 32px;
+  
+  transform-origin: left top;
+  transform: scale(0.75);
 `;
 
 export const FieldContainer = styled.section`

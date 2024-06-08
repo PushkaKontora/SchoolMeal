@@ -20,6 +20,7 @@ export function ButtonPrimary(props: ButtonPrimaryProps) {
       $paddingHorizontal={props.paddingHorizontal}
       $width={props.width}
       $height={props.height}
+      $flex={props.flex}
       onClick={props.onPress}
       disabled={disabled}>
       {props.title}
