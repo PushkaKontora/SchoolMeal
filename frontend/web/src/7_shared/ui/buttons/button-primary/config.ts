@@ -1,11 +1,11 @@
 import {CSSProperties} from 'react';
 
 export const DEFAULT_STYLES: CSSProperties = {
-  padding: '14px',
-  fontWeight: '700',
+  padding: '16px',
+  fontWeight: '500',
   fontSize: '14px',
   color: '#FFFFFF',
   backgroundColor: '#EC662A',
   borderRadius: '10px',
-  fontFamily: 'Ubuntu',
+  fontFamily: '\'Graphik\', sans-serif',
 };

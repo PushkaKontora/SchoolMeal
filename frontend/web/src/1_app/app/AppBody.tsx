@@ -30,7 +30,7 @@ export function AppBody() {
             })}/>
         )}
         contentStyles={{
-          padding: '48px 40px 0 40px'
+          padding: '0px'
         }}>
         <AppRouter
           loginPageProps={{

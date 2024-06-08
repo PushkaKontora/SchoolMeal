@@ -28,8 +28,8 @@ export type HookDefinitions<
   T extends string = string
 > = {
   getSchoolClasses: QueryDefinition<GetSchoolClassesParams, B, T, SchoolClass[]>,
-  getNutritionRequest: QueryDefinition<GetNutritionRequestFrontendParams, B, T, NutritionRequest>,
   sendNutritionRequest: MutationDefinition<SubmitNutritionRequestBody, B, T, OkSchema>,
+  getNutritionRequest: QueryDefinition<GetNutritionRequestFrontendParams, B, T, NutritionRequest>,
   prefillNutritionRequest: QueryDefinition<GetNutritionRequestFrontendParams, B, T, NutritionRequest>,
   getPortions: QueryDefinition<GetPortionsParams, B, T, PortionsReport>,
   getPupils: QueryDefinition<GetPupilsParams, B, T, PupilsResponse>,

@@ -12,6 +12,7 @@ export function ButtonPrimary(props: ButtonPrimaryProps) {
   return (
     <ButtonContainer
       onClick={props.onPress}
+      fontSize={props.fontSize}
       disabled={disabled}>
       {props.title}
     </ButtonContainer>

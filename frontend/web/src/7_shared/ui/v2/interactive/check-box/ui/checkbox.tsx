@@ -1,5 +1,3 @@
-import {useEffect, useState} from 'react';
-
 import {CheckboxProps} from '../model/props.ts';
 import {CheckboxContainer, CheckboxInput, CheckboxLabel} from '../consts/styles.ts';
 import {Tick} from './tick.tsx';

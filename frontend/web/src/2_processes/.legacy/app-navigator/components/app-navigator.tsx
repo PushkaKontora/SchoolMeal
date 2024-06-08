@@ -1,5 +1,4 @@
 import { BrowserRouter } from 'react-router-dom';
-import { AppRouter } from '../../../routers/app-router';
 import { useAppSelector } from '../../../../../store/hooks.ts';
 import { AuthController } from '../../../auth-controller';
 import {RoleSidebar} from '../../../role-sidebar/role-sidebar/ui/role-sidebar.tsx';

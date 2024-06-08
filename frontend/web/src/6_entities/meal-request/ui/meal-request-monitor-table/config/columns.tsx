@@ -9,6 +9,8 @@ export const columnHelper = createColumnHelper<MealRequestRowViewData>();
 export const createColumns = (
   CommonValueCell: IValueBadgeCellView,
   TotalValueBadge: IValueBadgeCellView,
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  // @ts-expect-error May be useful later
   FooterTotalValueBadge: IValueBadgeCellView
 )
   : ColumnDef<MealRequestRowViewData, any>[] => [

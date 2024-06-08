@@ -7,6 +7,8 @@ export const ButtonContainer =
     margin-top: 8px;
     
     flex-direction: row-reverse;
+    
+    cursor: pointer;
   `;
 
 export const ButtonText
