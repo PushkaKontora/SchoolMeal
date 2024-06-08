@@ -39,7 +39,7 @@ class NutritionInitializer(SchemaInitializer):
         return "nutrition"
 
     def clear(self) -> None:
-        for table in ["school_class", "pupil", "declaration", "request", "school", "pupil_parent"]:
+        for table in ["school_class", "pupil", "declaration", "teacher", "parent", "request", "school", "pupil_parent"]:
             self._database.truncate(self.schema, table)
 
     def push(self, data: Data) -> None:
@@ -117,3 +117,29 @@ class UserManagementInitializer(SchemaInitializer):
                     "patronymic": String(user.patronymic) if user.patronymic else Null(),
                 },
             )
+
+
+class NotificationInitializer(SchemaInitializer):
+    @property
+    def schema(self) -> str:
+        return "notification"
+
+    def clear(self) -> None:
+        for table in ["notification", "user"]:
+            self._database.truncate(self.schema, table)
+
+    def push(self, data: Data) -> None:
+        pass
+
+
+class FeedbacksInitializer(SchemaInitializer):
+    @property
+    def schema(self) -> str:
+        return "feedbacks"
+
+    def clear(self) -> None:
+        for table in ["feedback"]:
+            self._database.truncate(self.schema, table)
+
+    def push(self, data: Data) -> None:
+        pass

@@ -4,7 +4,8 @@ from src.data.menu import generate_foods, generate_menus
 from src.data.schools import generate_school
 from src.data.users import generate_users
 from src.db import Connection, DatabaseSettings
-from src.schemas import Data, NutritionInitializer, SchemaInitializer, UserManagementInitializer
+from src.schemas import Data, NutritionInitializer, SchemaInitializer, UserManagementInitializer, \
+    NotificationInitializer, FeedbacksInitializer
 
 
 def main() -> None:
@@ -17,16 +18,20 @@ def main() -> None:
 
     connection = Connection(settings=DatabaseSettings())
 
-    initializers: list[type[SchemaInitializer]] = [
+    initializers_cls: list[type[SchemaInitializer]] = [
         UserManagementInitializer,
         NutritionInitializer,
+        NotificationInitializer,
+        FeedbacksInitializer,
     ]
 
     with connection as database:
-        for initializer_cls in initializers:
-            initializer = initializer_cls(database)
+        initializers = [cls(database) for cls in initializers_cls]
 
+        for initializer in initializers:
             initializer.clear()
+
+        for initializer in initializers:
             initializer.push(data)
             logger.success(f"Проинициализирована схема {initializer.schema}")
 
