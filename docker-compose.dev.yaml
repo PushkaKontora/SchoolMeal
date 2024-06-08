@@ -2,10 +2,14 @@ version: "3.9"
 
 services:
   postgres:
+    build:
+      context: postgres
     ports:
       - ${DB_PORT:-5432}:${DB_PORT:-5432}
 
   app:
+    build:
+      context: backend
     ports:
       - "8000:8000"
     environment:
@@ -15,6 +19,7 @@ services:
 
   nginx:
     build:
+      context: frontend/web
       target: proxy
     environment:
       ORIGIN: "*"
