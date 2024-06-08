@@ -41,6 +41,6 @@ EXPOSE 80
 USER $USER
 
 
-FROM proxy
+FROM proxy as web
 
 COPY --from=build /web/dist /usr/share/nginx/html
