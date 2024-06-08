@@ -20,7 +20,6 @@ services:
   nginx:
     build:
       context: frontend/web
-      target: proxy
     environment:
       ORIGIN: "*"
     volumes:

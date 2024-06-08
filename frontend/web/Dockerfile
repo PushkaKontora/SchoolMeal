@@ -19,9 +19,7 @@ COPY index.html $WORK_DIR
 COPY store $WORK_DIR/store
 COPY src $WORK_DIR/src
 
-COPY configure_api.sh $WORK_DIR
-RUN chmod +x $WORK_DIR/configure_api.sh && \
-    $WORK_DIR/configure_api.sh ./src/7_shared/api/config.ts
+RUN echo "export const BASE_BACKEND_URL = 'https://$API_DOMAIN/api';" > $WORK_DIR/src/7_shared/api/implementations/basic/config.ts
 
 RUN npm run lint
 
@@ -43,6 +41,6 @@ EXPOSE 80
 USER $USER
 
 
-FROM proxy as web
+FROM proxy
 
 COPY --from=build /web/dist /usr/share/nginx/html
