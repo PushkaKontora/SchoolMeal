@@ -2,7 +2,7 @@ import {PrivateRouteProps} from './props.ts';
 
 export function PrivateRoute(props: PrivateRouteProps) {
   /*
-  config authorized = useAppSelector((state) => state.auth.authorized);
+  config authorized = useAppSelector((state) => state.auth-forms.authorized);
   config {data: currentUser, refetch: refetchUser} = useGetCurrentUserQuery();
 
   config location = useLocation();

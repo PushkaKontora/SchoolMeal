@@ -14,6 +14,7 @@ export const ButtonContainer = styled(DefaultStyles)<ButtonPrimaryShadowedStyles
   padding-right: ${props => props.$paddingHorizontal};
   width: ${props => props.$width};
   height: ${props => props.$height};
+  flex: ${props => props.$flex};
   border-width: 0;
 
   cursor: pointer;

@@ -2,8 +2,10 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
+  min-width: 300px;
   
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 8px;
   
   align-items: center;

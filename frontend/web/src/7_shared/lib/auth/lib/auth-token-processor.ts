@@ -1,4 +1,4 @@
-import {AUTH_TOKEN_NAME} from '../config/config';
+import {AUTH_TOKEN_NAME} from '../config/config.ts';
 import {JwtPayload} from '../model/jwt-payload.ts';
 import jwtDecode from 'jwt-decode';
 

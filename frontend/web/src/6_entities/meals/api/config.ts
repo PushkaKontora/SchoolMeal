@@ -1,7 +1,7 @@
 import {addAuthHeader, ConfigSettings} from '../../../7_shared/api';
 import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {BASE_BACKEND_URL} from '../../../7_shared/api/deprecated/config.ts';
-import {AuthTokenProcessor} from '../../../5_features/auth';
+import {AuthTokenProcessor} from '../../../7_shared/lib/auth';
 import {Meal} from '../model/meal';
 import {GetMealRequestsParams} from './types';
 

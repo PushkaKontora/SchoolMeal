@@ -5,9 +5,9 @@ import {CANTEEN_STAFF_ROUTES, TEACHER_ROUTES} from '../../../3_pages/routing';
 import {PrivateRoute, PrivateRouteProps} from '../../../3_pages/routing/private-route';
 import {MealApplicationPage} from '../../../3_pages/meal-application-page';
 import {MealRequestMonitorPage} from '../../../3_pages/meal-request-monitor-page';
-import {Role} from '../../../5_features/auth';
 import {AppRouterProps} from './model/props.ts';
 import {NutritionClassListPage} from '../../../3_pages/nutrition-class-list-page';
+import {Role} from '../../../7_shared/lib/auth';
 
 const DefaultPrivateRoute = (props: Omit<PrivateRouteProps, 'redirectTo'>) => (
   <PrivateRoute
@@ -18,6 +18,12 @@ const DefaultPrivateRoute = (props: Omit<PrivateRouteProps, 'redirectTo'>) => (
 export function AppRouter(props: AppRouterProps) {
   return (
     <Routes>
+      {/*<Route*/}
+      {/*  index*/}
+      {/*  path={'/'}*/}
+      {/*  element={<IndexRoute/>}*/}
+      {/*/>*/}
+
       <Route
         path={NO_AUTH_ROUTES.login}
         element={<LoginPage {...props.loginPageProps}/>}/>

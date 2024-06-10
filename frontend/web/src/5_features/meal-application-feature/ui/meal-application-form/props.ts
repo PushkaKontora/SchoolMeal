@@ -18,5 +18,5 @@ export type MealApplicationFormProps = {
   onCancel: () => void,
   onSend: () => void,
   tableStyles?: TableStyles,
-  showButtons: (() => boolean) | boolean
+  enableButtons: (() => boolean) | boolean
 }

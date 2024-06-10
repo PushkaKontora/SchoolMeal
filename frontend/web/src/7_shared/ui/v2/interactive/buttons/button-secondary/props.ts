@@ -1,7 +1,7 @@
 import {CSSProperties} from 'react';
 
 export type ButtonSecondaryStyles = {
-  borderRadius?: string,
+  borderRadius?: CSSProperties['borderRadius'],
   borderColor?: CSSProperties['borderColor']
   backgroundColor?: string
   textColor?: string,
@@ -9,7 +9,8 @@ export type ButtonSecondaryStyles = {
   paddingVertical?: string,
   paddingHorizontal?: string,
   width?: CSSProperties['width'],
-  height?: CSSProperties['height']
+  height?: CSSProperties['height'],
+  flex?: CSSProperties['flex']
 }
 
 export type ButtonSecondaryProps =

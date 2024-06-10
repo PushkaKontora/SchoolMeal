@@ -15,6 +15,8 @@ export const SidebarIconedButtonContainer = styled.article<{
   gap: 16px;
   
   background-color: ${props => props.active ? '#171717' : '#00000000'};
+
+  cursor: pointer;
   
   ${props => {
     if (!props.active) {

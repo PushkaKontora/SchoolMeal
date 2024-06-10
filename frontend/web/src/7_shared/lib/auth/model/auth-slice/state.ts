@@ -1,4 +1,4 @@
-import {User} from '../../../../6_entities/user';
+import {User} from '../../../../../6_entities/user';
 import {JwtPayload} from '../jwt-payload.ts';
 import {Role} from '../role.ts';
 

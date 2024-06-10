@@ -1,4 +1,4 @@
-import {Role} from '../../../../5_features/auth';
+import {Role} from '../../../../7_shared/lib/auth';
 
 export type RoleSidebarProps = {
   userRole?: Role,
