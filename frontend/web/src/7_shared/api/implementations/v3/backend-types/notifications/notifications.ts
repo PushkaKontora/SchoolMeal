@@ -13,3 +13,7 @@ export type NotificationListOut = NotificationOut[]
 export type ReadNotificationsBody = {
   ids: NotificationOut['id'][]
 }
+
+export type NotificationAmountOut = {
+  count: number
+}

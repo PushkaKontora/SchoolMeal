@@ -12,7 +12,11 @@ import {
 import {GetPortionsParams, PortionsReport} from '../frontend-types/nutrition/portions.ts';
 import {GetPupilsParams, PupilsResponse} from '../frontend-types/nutrition/pupil.ts';
 import {MealtimesUpdate} from '../frontend-types/nutrition/mealtime.ts';
-import {Notification, ReadNotificationsFrontendParams} from '../frontend-types/notifications/notifications.ts';
+import {
+  Notification,
+  NotificationAmount,
+  ReadNotificationsFrontendParams
+} from '../frontend-types/notifications/notifications.ts';
 
 export type AuthHookDefinitions<
   B extends BaseQueryFn = BaseQueryFn,
@@ -35,5 +39,6 @@ export type HookDefinitions<
   getPupils: QueryDefinition<GetPupilsParams, B, T, PupilsResponse>,
   updatePupilMealtimes: MutationDefinition<MealtimesUpdate, B, T, OkSchema>,
   getNotifications: QueryDefinition<void, B, T, Notification[]>,
-  readNotifications: MutationDefinition<ReadNotificationsFrontendParams, B, T, OkSchema>
+  readNotifications: MutationDefinition<ReadNotificationsFrontendParams, B, T, OkSchema>,
+  getNotificationAmount: QueryDefinition<void, B, T, NotificationAmount>
 }

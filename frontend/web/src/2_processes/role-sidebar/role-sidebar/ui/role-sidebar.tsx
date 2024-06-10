@@ -9,6 +9,7 @@ import {useAppDispatch} from '../../../../../store/hooks.ts';
 import {logout} from '../../../../7_shared/lib/auth/model/auth-slice';
 import {LogoutModal} from '../../../../5_features/auth-forms/ui/logout-modal/logout-modal.tsx';
 import {AuthTokenProcessor} from '../../../../7_shared/lib/auth';
+import {NotificationBadge} from './notification-badge.tsx';
 
 export function RoleSidebar(props: RoleSidebarProps) {
   const dispatch = useAppDispatch();
@@ -20,6 +21,7 @@ export function RoleSidebar(props: RoleSidebarProps) {
   const [readNotifications] = Api.useReadNotificationsMutation();
 
   const {data: notifications, refetch: refetchNotifications} = Api.useGetNotificationsQuery();
+  const {data: notificationAmount} = Api.useGetNotificationAmountQuery();
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
   const items = createItems(setSelectedItemIndex, navigate, props.userRole);
@@ -40,6 +42,8 @@ export function RoleSidebar(props: RoleSidebarProps) {
       }
       setIsNotificationHidden(prev => !prev);
     }
+  ], [
+    <NotificationBadge value={notificationAmount}/>
   ]);
 
   return (

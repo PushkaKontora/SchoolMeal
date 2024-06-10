@@ -2,6 +2,7 @@ import {ITEM_ROUTES, ITEMS} from '../const/items.tsx';
 import {ACTION_ITEMS} from '../const/action-items.tsx';
 import {SidebarIconedButtonProps} from '../../../../7_shared/ui/v2/sidebar/components/iconed-button';
 import {Role} from '../../../../7_shared/lib/auth';
+import {ReactNode} from 'react';
 
 export function createItems(onClick: (index: number) => void, navigate: (route: string) => unknown, role?: Role) {
   if (!role) {
@@ -22,7 +23,9 @@ export function createItems(onClick: (index: number) => void, navigate: (route: 
   return result;
 }
 
-export function createActionItems(role?: Role, clickCallbacks?: SidebarIconedButtonProps['onClick'][]) {
+export function createActionItems(role?: Role,
+  clickCallbacks?: SidebarIconedButtonProps['onClick'][],
+  children?: (ReactNode | undefined)[]) {
   if (!role) {
     return [];
   }
@@ -30,7 +33,8 @@ export function createActionItems(role?: Role, clickCallbacks?: SidebarIconedBut
   if (role === Role.teacher) {
     return ACTION_ITEMS.map((item, index) => ({
       ...item,
-      onClick: clickCallbacks?.[index]
+      onClick: clickCallbacks?.[index],
+      children: children?.[index]
     }));
   } else {
     return [];

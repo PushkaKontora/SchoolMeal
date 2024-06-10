@@ -13,8 +13,8 @@ export function SidebarIconedButton(props: SidebarIconedButtonProps) {
         <div>
           {props.text}
         </div>
-        {props.children}
       </SidebarIconedButtonText>
+      {props.children}
     </SidebarIconedButtonContainer>
   );
 }

@@ -14,11 +14,12 @@ import {GetPortionsParams} from '../backend-types/nutrition/portions.ts';
 import {toPortionsReport} from '../mappers/portions.ts';
 import {toPupilArray} from '../mappers/pupil.ts';
 import {MealtimesPatchBody} from '../backend-types/nutrition/mealtime.ts';
-import {toNotificationArray} from '../mappers/notification.ts';
+import {toNotificationAmount, toNotificationArray} from '../mappers/notification.ts';
 import {fetchBaseQueryWithRefresh} from './base-queries.ts';
 
 enum ApiTagTypes {
-  NutritionRequest = 'NutritionRequest'
+  NutritionRequest = 'NutritionRequest',
+  Notifications = 'Notifications'
 }
 
 export const Api = createTypedApiFunction<HookDefinitions>()({
@@ -112,6 +113,15 @@ export const Api = createTypedApiFunction<HookDefinitions>()({
         method: 'POST',
         body: params
       }),
+      invalidatesTags: [ApiTagTypes.Notifications]
+    }),
+    getNotificationAmount: builder.query({
+      query: () => ({
+        url: 'notification/v1/notifications/count',
+        method: 'GET'
+      }),
+      transformResponse: toNotificationAmount,
+      providesTags: [ApiTagTypes.Notifications]
     })
   })
 });
@@ -125,5 +135,6 @@ export const {
   useGetPupilsQuery,
   useUpdatePupilMealtimesMutation,
   useGetNotificationsQuery,
-  useReadNotificationsMutation
+  useReadNotificationsMutation,
+  useGetNotificationAmountQuery
 } = Api;

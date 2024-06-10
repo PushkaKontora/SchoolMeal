@@ -1,4 +1,4 @@
-import {ReadNotificationsBody} from '../../backend-types/notifications/notifications.ts';
+import {NotificationAmountOut, ReadNotificationsBody} from '../../backend-types/notifications/notifications.ts';
 
 export type Notification = {
   id: string,
@@ -11,3 +11,5 @@ export type Notification = {
 }
 
 export type ReadNotificationsFrontendParams = ReadNotificationsBody
+
+export type NotificationAmount = NotificationAmountOut

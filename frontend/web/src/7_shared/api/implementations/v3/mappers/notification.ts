@@ -1,5 +1,5 @@
-import {NotificationOut} from '../backend-types/notifications/notifications.ts';
-import {Notification} from '../frontend-types/notifications/notifications.ts';
+import {NotificationAmountOut, NotificationOut} from '../backend-types/notifications/notifications.ts';
+import {Notification, NotificationAmount} from '../frontend-types/notifications/notifications.ts';
 
 export const toNotification = (notification: NotificationOut): Notification => ({
   id: notification.id,
@@ -13,3 +13,6 @@ export const toNotification = (notification: NotificationOut): Notification => (
 
 export const toNotificationArray
   = (notifications: NotificationOut[]): Notification[] => notifications.map(toNotification);
+
+export const toNotificationAmount
+  = (amount: NotificationAmountOut): NotificationAmount => ({count: amount.count});
