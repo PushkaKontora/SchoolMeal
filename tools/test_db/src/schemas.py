@@ -1,10 +1,12 @@
+import uuid
 from abc import ABC, abstractmethod
+from datetime import datetime, timezone
 
 from pydantic import BaseModel
 
 from src.data.menu import Food, Menu
-from src.data.schools import School
-from src.data.users import User
+from src.data.schools import Pupil, School
+from src.data.users import Role, User
 from src.db import Array, Database, Date, Integer, Null, String
 
 
@@ -129,7 +131,35 @@ class NotificationInitializer(SchemaInitializer):
             self._database.truncate(self.schema, table)
 
     def push(self, data: Data) -> None:
-        pass
+        teacher = next(user for user in data.users if user.role is Role.TEACHER)
+        school_class = data.school.school_classes[0]
+
+        notifications: list[tuple[Pupil, str, str]] = [
+            (school_class.pupils[0], "", "17.06.2024"),
+            (school_class.pupils[1], "Поднялась температура, неделю на больничном", "17.06.2024 - 21.06.2024"),
+            (
+                school_class.pupils[2],
+                "Пошёл гулять с друзьями, нашли какую-то странную собаку, собака покусала - лежим в больнице",
+                "10.06.2024 - 21.06.2024",
+            ),
+            (school_class.pupils[3], "Уезжает на соревнования", "14.06.2024"),
+            (school_class.pupils[4], "Уедем в другой город ко врачу", "20.06.2024"),
+        ]
+
+        for pupil, reason, period in notifications:
+            self._database.insert(
+                self.schema,
+                table="notification",
+                data={
+                    "id": String(str(uuid.uuid4())),
+                    "recipients": Array((String(str(teacher.id)),)),
+                    "title": String(f"{pupil.first_name} {pupil.last_name}"),
+                    "subtitle": String(f"не будет питаться {period}"),
+                    "mark": String(f"{school_class.number}{school_class.literal}"),
+                    "body": String(reason),
+                    "created_at": Date(datetime.now(timezone.utc)),
+                },
+            )
 
 
 class FeedbacksInitializer(SchemaInitializer):

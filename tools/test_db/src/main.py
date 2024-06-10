@@ -4,8 +4,14 @@ from src.data.menu import generate_foods, generate_menus
 from src.data.schools import generate_school
 from src.data.users import generate_users
 from src.db import Connection, DatabaseSettings
-from src.schemas import Data, NutritionInitializer, SchemaInitializer, UserManagementInitializer, \
-    NotificationInitializer, FeedbacksInitializer
+from src.schemas import (
+    Data,
+    FeedbacksInitializer,
+    NotificationInitializer,
+    NutritionInitializer,
+    SchemaInitializer,
+    UserManagementInitializer,
+)
 
 
 def main() -> None:

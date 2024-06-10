@@ -111,7 +111,7 @@ class Array(DBObject, Generic[T]):
     value: tuple[T, ...]
 
     def __str__(self) -> str:
-        _values = ",".join(str(v) for v in self.value)
+        _values = ",".join(str(v) for v in self.value).replace("'", '"')
 
         return "'{" + _values + "}'"
 
