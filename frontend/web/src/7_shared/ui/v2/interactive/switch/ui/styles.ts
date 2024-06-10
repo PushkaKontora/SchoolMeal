@@ -64,12 +64,12 @@ export const SwitchToggle = styled.div<{
     transition: .4s;
 
     ${props => {
-      if (props.$toggled) {
-        return css`
+    if (props.$toggled) {
+      return css`
           -ms-transform: translateX(${TRANSLATE_DISTANCE});
           transform: translateX(${TRANSLATE_DISTANCE});
         `;
-      }
-    }}
+    }
+  }}
   }
 `;

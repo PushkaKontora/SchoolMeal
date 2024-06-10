@@ -28,6 +28,7 @@ export function RoleController() {
       .catch(() => {
         navigate(NO_AUTH_ROUTES.login);
       });
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, []);
 
   return null;

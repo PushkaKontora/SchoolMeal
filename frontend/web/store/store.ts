@@ -7,6 +7,7 @@ import {API_MIDDLEWARES, API_REDUCERS} from '../src/7_shared/api';
 import {Api} from '../src/7_shared/api/deprecated/api.ts';
 import {authSlice} from '../src/7_shared/lib/auth';
 
+
 const middleware = [
   ...API_MIDDLEWARES,
   Api.middleware as Middleware

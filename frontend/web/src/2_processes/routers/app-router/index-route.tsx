@@ -15,6 +15,7 @@ export function IndexRoute() {
     } else if (authorized === true && jwtPayload) {
       navigate(chooseRedirectRoute(jwtPayload.role));
     }
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, [authorized, jwtPayload]);
 
   return null;
