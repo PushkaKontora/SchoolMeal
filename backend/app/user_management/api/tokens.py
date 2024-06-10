@@ -1,3 +1,4 @@
+from datetime import timezone
 from typing import Annotated
 from uuid import UUID
 
@@ -15,7 +16,7 @@ def set_session_in_cookie(response: Response, session: Session, domain: str) -> 
     response.set_cookie(
         key=_COOKIE_NAME,
         value=str(session.id.value),
-        expires=int(session.expires_in.timestamp()),
+        expires=session.expires_in.astimezone(timezone.utc),
         domain=f".{domain}",
         path="/api/user-management",
         httponly=True,
