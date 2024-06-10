@@ -9,6 +9,7 @@ import {AppRouterProps} from './model/props.ts';
 import {NutritionClassListPage} from '../../../3_pages/nutrition-class-list-page';
 import {Role} from '../../../7_shared/lib/auth';
 
+
 const DefaultPrivateRoute = (props: Omit<PrivateRouteProps, 'redirectTo'>) => (
   <PrivateRoute
     {...props}

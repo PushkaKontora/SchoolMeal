@@ -3,6 +3,7 @@ export type NotificationCardProps = {
   title: string
   subtitle: string,
   body: string,
+  mark: string,
   read?: boolean
 };
 

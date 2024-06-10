@@ -20,6 +20,8 @@ services:
   nginx:
     build:
       context: frontend/web
+      args:
+        API_DOMAIN: localhost
     environment:
       ORIGIN: "*"
     volumes:
