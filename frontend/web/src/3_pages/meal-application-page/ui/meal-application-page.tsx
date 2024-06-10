@@ -130,7 +130,17 @@ export function MealApplicationPage() {
           if (applicationFormStatus === MealApplicationFormStatus.Applied) {
             setPrevTableData(tableData);
             setApplicationFormStatus(MealApplicationFormStatus.Edit);
-            setOverriddenPupils({});
+
+            const pupils: typeof overriddenPupils = {};
+            tableData.forEach((value, index) => {
+              const id = pupilIds[index];
+              pupils[id] = {
+                breakfast: value.breakfast,
+                dinner: value.dinner,
+                snacks: value.snacks
+              };
+            });
+            setOverriddenPupils(pupils);
           } else {
             if (classes) {
               sendNutritionRequest({

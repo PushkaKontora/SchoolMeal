@@ -1,6 +1,3 @@
-import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import {BASE_BACKEND_URL} from '../../basic/config.ts';
-import {addAuthHeader} from '../headers/process-headers.ts';
 import {createTypedApiFunction} from '../../../infrastructure/create-api.ts';
 import {HookDefinitions} from './hook-definitions.ts';
 import {GetSchoolClassesParams} from '../backend-types/nutrition/school-classes.ts';
@@ -18,7 +15,7 @@ import {toPortionsReport} from '../mappers/portions.ts';
 import {toPupilArray} from '../mappers/pupil.ts';
 import {MealtimesPatchBody} from '../backend-types/nutrition/mealtime.ts';
 import {toNotificationArray} from '../mappers/notification.ts';
-import {AuthTokenProcessor} from '../../../../lib/auth';
+import {fetchBaseQueryWithRefresh} from './base-queries.ts';
 
 enum ApiTagTypes {
   NutritionRequest = 'NutritionRequest'
@@ -27,16 +24,7 @@ enum ApiTagTypes {
 export const Api = createTypedApiFunction<HookDefinitions>()({
   reducerPath: 'api/v3',
   tagTypes: Object.values(ApiTagTypes),
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_BACKEND_URL,
-    prepareHeaders: async (headers) => {
-      const token = await AuthTokenProcessor.getAuthToken();
-      if (token) {
-        return addAuthHeader(headers, token);
-      }
-      return headers;
-    }
-  }),
+  baseQuery: fetchBaseQueryWithRefresh,
   endpoints: (builder) => ({
     getSchoolClasses: builder.query({
       query: (params) => ({

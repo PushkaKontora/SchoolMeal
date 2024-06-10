@@ -3,5 +3,5 @@ export function getFullName(userName: {
   lastName?: string,
   patronymic?: string
 }) {
-  return `${userName.firstName || ''} ${userName.lastName || ''} ${userName.patronymic || ''}`;
+  return `${userName.lastName || ''} ${userName.firstName || ''} ${userName.patronymic || ''}`;
 }

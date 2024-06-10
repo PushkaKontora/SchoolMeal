@@ -3,6 +3,8 @@ import styled from 'styled-components';
 export const Card = styled.article<{
   $read?: boolean
 }>`
+  position: relative;
+  
   background-color: ${props => props.$read ? '#00000000' : '#333333'};
   padding: 16px;
   
@@ -44,4 +46,26 @@ export const Description = styled.div`
   color: #C5C5C5;
   
   line-height: 16.8px;
+`;
+
+export const Mark = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  
+  width: 32px;
+  height: 32px;
+  
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #171717;
+  
+  text-align: center;
+  vertical-align: middle;
+  
+  line-height: 30px;
 `;

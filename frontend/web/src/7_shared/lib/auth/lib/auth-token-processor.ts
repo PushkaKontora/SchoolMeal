@@ -8,7 +8,7 @@ export const AuthTokenProcessor = {
     return localStorage.getItem(AUTH_TOKEN_NAME);
   },
 
-  decodeAuthToken(token: string): JwtPayload | null {
+  decodeAuthToken(token: string | null): JwtPayload | null {
     if (token)
       return jwtDecode(token) as JwtPayload;
     return null;
@@ -17,9 +17,7 @@ export const AuthTokenProcessor = {
   getAndDecodeAuthToken(): JwtPayload | null {
     const token = localStorage.getItem(AUTH_TOKEN_NAME);
 
-    if (token)
-      return jwtDecode(token) as JwtPayload;
-    return null;
+    return this.decodeAuthToken(token);
   },
 
   saveAuthToken(token: string) {
@@ -30,7 +28,10 @@ export const AuthTokenProcessor = {
     localStorage.removeItem(AUTH_TOKEN_NAME);
   },
 
-  isTokenExpired(payload: JwtPayload) {
+  isTokenExpired(payload: JwtPayload | null) {
+    if (payload == null)
+      return true;
+
     return new Date(Date.now()) >= new Date(payload.exp * 1000);
   }
 };

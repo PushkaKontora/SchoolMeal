@@ -7,7 +7,6 @@ import {NotificationWindow} from '../../../../7_shared/ui/v2/notifications';
 import {Api} from '../../../../7_shared/api';
 import {useAppDispatch} from '../../../../../store/hooks.ts';
 import {logout} from '../../../../7_shared/lib/auth/model/auth-slice';
-import {NO_AUTH_ROUTES} from '../../../../3_pages/routing';
 import {LogoutModal} from '../../../../5_features/auth-forms/ui/logout-modal/logout-modal.tsx';
 import {AuthTokenProcessor} from '../../../../7_shared/lib/auth';
 
@@ -60,6 +59,7 @@ export function RoleSidebar(props: RoleSidebarProps) {
           subtitle: n.subtitle,
           className: n.mark,
           body: n.body,
+          mark: n.mark,
           read: n.read
         })) || []}
         onClose={() => setIsNotificationHidden(true)}
@@ -72,7 +72,7 @@ export function RoleSidebar(props: RoleSidebarProps) {
         onSubmit={() => {
           dispatch(logout());
           AuthTokenProcessor.deleteAuthToken();
-          navigate(NO_AUTH_ROUTES.login);
+          //navigate(NO_AUTH_ROUTES.login);
         }}/>
     </>
   );
