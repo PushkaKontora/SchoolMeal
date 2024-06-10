@@ -48,7 +48,11 @@ class AlchemyPupilRepository(IPupilRepository):
             return pupil_db.to_model() if pupil_db else None
 
     async def all(self, spec: Specification[Pupil] | None = None) -> list[Pupil]:
-        query = select(PupilDB)
+        query = select(PupilDB).order_by(
+            PupilDB.last_name.asc(),
+            PupilDB.first_name.asc(),
+            PupilDB.patronymic.asc().nulls_last(),
+        )
 
         async with self._session_factory() as session:
             pupils = (pupil_db.to_model() for pupil_db in (await session.scalars(query)).all())
