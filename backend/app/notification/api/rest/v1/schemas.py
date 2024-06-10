@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import AsyncIterable
 from uuid import UUID
 
 from app.notification.domain.notification import Notification
@@ -30,3 +31,16 @@ class NotificationOut(FrontendBody):
 
 class ReadNotificationBody(FrontendBody):
     ids: set[UUID]
+
+
+class NewNotificationCountOut(FrontendBody):
+    count: int
+
+    @classmethod
+    async def from_model(cls, user: User, notifications: AsyncIterable[Notification]) -> "NewNotificationCountOut":
+        result = 0
+
+        async for notification in notifications:
+            result += int(user.is_recipient(notification) and not user.did_read(notification))
+
+        return cls(count=result)

@@ -4,7 +4,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Body, Depends, status
 from result import Err
 
-from app.notification.api.rest.v1.schemas import NotificationOut, ReadNotificationBody
+from app.notification.api.rest.v1.schemas import NewNotificationCountOut, NotificationOut, ReadNotificationBody
 from app.notification.application import services
 from app.notification.application.dao import INotificationRepository, IUserRepository
 from app.notification.application.errors import NotFoundUser
@@ -49,6 +49,27 @@ async def get_notifications(
     notifications_out.sort(key=lambda x: (x.is_read, -x.created_at.timestamp()))
 
     return notifications_out
+
+
+@router.get(
+    "/notifications/count",
+    summary="Количество непрочитанных уведомлений пользователя",
+    status_code=status.HTTP_200_OK,
+)
+@inject
+async def get_new_notification_count(
+    authorized_user: AuthorizedUserDep,
+    user_repository: IUserRepository = Depends(Provide[NotificationContainer.user_repository]),
+    notification_repository: INotificationRepository = Depends(Provide[NotificationContainer.notification_repository]),
+) -> NewNotificationCountOut:
+    user_id = UserID(authorized_user.id)
+
+    if not (user := await user_repository.get(user_id)):
+        raise NotFound(f"Не найден пользователь id={user_id.value}")
+
+    notifications = notification_repository.all_by_user_id(user_id)
+
+    return await NewNotificationCountOut.from_model(user, notifications)
 
 
 @router.post(

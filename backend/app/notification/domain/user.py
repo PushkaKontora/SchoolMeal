@@ -19,3 +19,6 @@ class User:
 
     def did_read(self, notification: Notification) -> bool:
         return notification.id in self.read_notification_ids
+
+    def is_recipient(self, notification: Notification) -> bool:
+        return self.id in notification.recipients

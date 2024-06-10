@@ -49,6 +49,9 @@ class RoleAuthorization(IAuthorization):
         "/notification/v1/notifications": {
             Method.GET: {Role.TEACHER},
         },
+        "/notification/v1/notifications/count": {
+            Method.GET: {Role.TEACHER},
+        },
         "/notification/v1/notifications/read": {
             Method.POST: {Role.TEACHER},
         },
