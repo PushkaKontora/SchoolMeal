@@ -125,12 +125,12 @@ export function MealApplicationPage() {
         onCancel={() => {
           setApplicationFormStatus(requestStatus);
           setTableData(prevTableData);
-          setOverriddenPupils({});
         }}
         onSend={() => {
           if (applicationFormStatus === MealApplicationFormStatus.Applied) {
             setPrevTableData(tableData);
             setApplicationFormStatus(MealApplicationFormStatus.Edit);
+            setOverriddenPupils({});
           } else {
             if (classes) {
               sendNutritionRequest({

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { addAuthHeader } from '../../../7_shared/api';
 import { BASE_BACKEND_URL } from '../../../7_shared/api/deprecated/config.ts';
-import { AuthTokenProcessor } from '../../../5_features/auth';
+import { AuthTokenProcessor } from '../../../7_shared/lib/auth';
 import { SchoolClasses } from '../model/schoolClasses';
 import { PlanReport } from '../model/PlanReport';
 import { RegisterBody } from '../model/RegisterBody';

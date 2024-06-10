@@ -1,4 +1,4 @@
-import {AuthState} from './state';
+import {AuthState} from './state.ts';
 
 export const initialState: AuthState = {
   authorized: undefined,

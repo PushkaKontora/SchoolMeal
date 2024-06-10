@@ -4,7 +4,7 @@ import {fetchBaseQuery} from '@reduxjs/toolkit/dist/query/react';
 import {BASE_BACKEND_URL} from '../../basic/config.ts';
 
 export const AuthApi = createTypedApiFunction<AuthHookDefinitions>()({
-  reducerPath: 'api/v3/auth',
+  reducerPath: 'api/v3/auth-forms',
   baseQuery: fetchBaseQuery({
     baseUrl: `${BASE_BACKEND_URL}/user-management`
   }),

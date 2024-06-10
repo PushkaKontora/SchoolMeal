@@ -2,7 +2,7 @@ import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {BASE_BACKEND_URL} from '../../../7_shared/api/deprecated/config.ts';
 import {RegisterBody} from './types';
 import {User} from '../model/user';
-import {AuthTokenProcessor} from '../../../5_features/auth';
+import {AuthTokenProcessor} from '../../../7_shared/lib/auth';
 import {ConfigSettings} from '../../../7_shared/api/deprecated/types.ts';
 import {addAuthHeader} from '../../../7_shared/api/deprecated/procces-headers.ts';
 

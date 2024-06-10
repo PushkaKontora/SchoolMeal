@@ -1,7 +1,7 @@
 import {ITEM_ROUTES, ITEMS} from '../const/items.tsx';
-import {Role} from '../../../../5_features/auth';
 import {ACTION_ITEMS} from '../const/action-items.tsx';
-import {SidebarIconedButtonProps} from '../../../../7_shared/ui/v2/sidebar/components/iconed-button/props.ts';
+import {SidebarIconedButtonProps} from '../../../../7_shared/ui/v2/sidebar/components/iconed-button';
+import {Role} from '../../../../7_shared/lib/auth';
 
 export function createItems(onClick: (index: number) => void, navigate: (route: string) => unknown, role?: Role) {
   if (!role) {

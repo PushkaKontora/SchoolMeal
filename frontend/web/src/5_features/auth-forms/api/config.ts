@@ -15,7 +15,7 @@ export enum Tags {
  * @deprecated
  */
 export const CONFIG: ConfigSettings = {
-  reducerPath: 'api/auth',
+  reducerPath: 'api/auth-forms',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_BACKEND_URL + '/users'
   }),

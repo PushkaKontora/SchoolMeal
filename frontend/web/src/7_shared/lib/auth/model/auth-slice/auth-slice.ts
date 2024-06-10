@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {initialState} from './consts';
+import {initialState} from './consts.ts';
 import {JwtPayload} from '../jwt-payload.ts';
 import {Role} from '../role.ts';
 

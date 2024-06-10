@@ -1,5 +1,4 @@
 import {fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import {AuthTokenProcessor} from '../../../../../5_features/auth';
 import {BASE_BACKEND_URL} from '../../basic/config.ts';
 import {addAuthHeader} from '../headers/process-headers.ts';
 import {createTypedApiFunction} from '../../../infrastructure/create-api.ts';
@@ -19,6 +18,7 @@ import {toPortionsReport} from '../mappers/portions.ts';
 import {toPupilArray} from '../mappers/pupil.ts';
 import {MealtimesPatchBody} from '../backend-types/nutrition/mealtime.ts';
 import {toNotificationArray} from '../mappers/notification.ts';
+import {AuthTokenProcessor} from '../../../../lib/auth';
 
 enum ApiTagTypes {
   NutritionRequest = 'NutritionRequest'

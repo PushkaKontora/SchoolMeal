@@ -3,7 +3,7 @@
  */
 export function AuthController() {
   /*
-  const authorized = useAppSelector((state) => state.auth.authorized);
+  const authorized = useAppSelector((state) => state.auth-forms.authorized);
   const {data: currentUser, refetch: refetchUser} = useGetCurrentUserQuery();
 
   const dispatch = useAppDispatch();

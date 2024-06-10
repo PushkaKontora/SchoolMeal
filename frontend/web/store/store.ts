@@ -4,8 +4,8 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import classTabsSlice from '../src/5_features/tabs/class-selection/model/class-tabs-slice';
 import dateTeacherTableSlice from '../src/7_shared/ui/special/dates/model/date-teacher-table-slice';
 import {API_MIDDLEWARES, API_REDUCERS} from '../src/7_shared/api';
-import {authSlice} from '../src/5_features/auth';
 import {Api} from '../src/7_shared/api/deprecated/api.ts';
+import {authSlice} from '../src/7_shared/lib/auth';
 
 const middleware = [
   ...API_MIDDLEWARES,

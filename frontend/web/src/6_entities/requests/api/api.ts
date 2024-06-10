@@ -1,7 +1,7 @@
 import {createApi} from '@reduxjs/toolkit/query/react';
 import {fetchBaseQuery} from '@reduxjs/toolkit/dist/query/react';
 import {BASE_BACKEND_URL} from '../../../7_shared/api/deprecated/config.ts';
-import {AuthTokenProcessor} from '../../../5_features/auth';
+import {AuthTokenProcessor} from '../../../7_shared/lib/auth';
 import {addAuthHeader} from '../../../7_shared/api';
 import {RequestReport, RequestReportIn} from './types.ts';
 

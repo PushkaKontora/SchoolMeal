@@ -4,11 +4,11 @@ import {SidebarAndContent} from '../../2_processes/role-sidebar/sidebar-and-cont
 import {RoleSidebar} from '../../2_processes/role-sidebar/role-sidebar/ui/role-sidebar.tsx';
 import {getFullName} from '../../6_entities/user';
 import {AppRouter} from '../../2_processes/routers/app-router';
-import {AuthTokenProcessor} from '../../5_features/auth';
 
 import 'react-toastify/dist/ReactToastify.css';
 import {AppToastContainer} from '../../7_shared/ui/v2/toast';
 import {useNavigate} from 'react-router-dom';
+import {AuthTokenProcessor} from '../../7_shared/lib/auth';
 
 export function AppBody() {
   const dispatch = useAppDispatch();
