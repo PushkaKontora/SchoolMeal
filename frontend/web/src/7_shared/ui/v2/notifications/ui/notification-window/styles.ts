@@ -45,4 +45,6 @@ export const WindowBody = styled.section`
   gap: 12px;
 
   margin-top: 8px;
+  
+  padding-bottom: 24px;
 `;

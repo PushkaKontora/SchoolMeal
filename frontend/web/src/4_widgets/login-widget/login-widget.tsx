@@ -21,7 +21,10 @@ export function LoginWidget(props: LoginWidgetProps) {
         <LoginFormTitle>
           Войдите в свой профиль
         </LoginFormTitle>
-        <LoginForm onSubmit={onSubmit} />
+        <LoginForm
+          onSubmit={onSubmit}
+          disabled={props.disabled}
+        />
       </PaddingArea>
     </Content>
   );

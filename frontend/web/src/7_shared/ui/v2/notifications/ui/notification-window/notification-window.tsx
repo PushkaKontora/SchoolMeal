@@ -15,7 +15,7 @@ export function NotificationWindow(props: NotificationWindowProps) {
       </CloseButton>
       <WindowBody>
         {
-          props.notifications.map(item => 
+          props.notifications.map(item =>
             <NotificationCard
               {...item}
             />)

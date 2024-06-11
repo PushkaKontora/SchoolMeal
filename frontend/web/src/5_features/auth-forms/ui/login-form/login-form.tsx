@@ -4,7 +4,6 @@ import {FieldContainer, FormContainer, InputLabelStyled} from './styles';
 import {INPUT_DATA} from './input-data';
 import {ControlledInputField} from '../../../../7_shared/ui/fields/controlled-input-field/controlled-input-field';
 import {ButtonPrimary} from '../../../../7_shared/ui/buttons/button-primary';
-import {useState} from 'react';
 import {LoginFormProps} from './props';
 
 export function LoginForm(props: LoginFormProps) {
@@ -16,10 +15,7 @@ export function LoginForm(props: LoginFormProps) {
     mode: 'onChange'
   });
 
-  const [disabled, setDisabled] = useState(false);
-
   const onSubmit = (data: LoginFormData) => {
-    setDisabled(true);
     props.onSubmit(data);
   };
 
@@ -46,7 +42,7 @@ export function LoginForm(props: LoginFormProps) {
         title={'Далее'}
         fontSize={'24px'}
         onPress={handleSubmit(onSubmit)}
-        disabled={disabled}/>
+        disabled={props.disabled}/>
 
     </FormContainer>
   );

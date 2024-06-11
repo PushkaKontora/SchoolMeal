@@ -14,15 +14,18 @@ export const ButtonContainer = styled.button<ButtonPrimaryStyles>`
   width: 100%;
   border-width: 0;
 
+  transition: 0.1s linear;
+
   &:hover {
     background-color: #e57645;
-    transition: 0.3s linear;
-    
     cursor: pointer;
   }
 
   &:active {
     background-color: #d5551c;
-    transition: 0.3s linear;
+  }
+  
+  &:disabled {
+    opacity: 0.3;
   }
 `;
